@@ -1,0 +1,16 @@
+form label {
+  font-weight : bold;
+  width : 8em;
+  display : block;
+  float : left;
+}
+form textarea {
+  width : 40em;
+  height : 10em;
+}
+.pager {
+  padding : .25em 1em;
+}
+.pager a {
+  margin-right : 1em;
+}

@@ -1,0 +1,4038 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+  <title>API documentation for Konstrukt</title>
+<style type="text/css">
+body {
+	font-family: georgia, "bitstream vera serif", "Times New Roman", serif;
+  line-height: 150%;
+  color : #666;
+	background-color : #fff;
+	margin : 0;
+	padding : 1em 4em;
+}
+h1, h2, h3, h4 {
+  line-height: 150%;
+}
+code, pre {
+/*  font-family: "lucidia console", "courier";*/
+}
+pre {
+  line-height: 125%;
+}
+
+h1 { 2em; }
+h2 { 1.5em; }
+h3 { 1.25em; }
+h4 { 1em; }
+
+h1 {
+  color : #0c0;
+}
+h2 em.modifier,
+h4 em.modifier {
+  color : #aaa;
+}
+a {
+  color : #2aaaff;
+  text-decoration : none;
+  border-bottom : 1px solid #ccc;
+}
+a:hover {
+  color : red;
+  border-bottom : 1px solid red;
+}
+div.class {
+  border-bottom : 1px dotted #666;
+  margin-top : 1em;
+  margin-bottom : 1em;
+}
+div.properties,
+div.methods {
+  padding-left : 2em;
+}
+div.docblock {
+  padding-left : 1em;
+  margin-top : 1em;
+  margin-bottom : 1em;
+}
+p.todo {
+  color : red;
+}
+span.tooltip {
+  cursor : help;
+}
+code.block {
+  display : block;
+  white-space: pre;
+}
+div.deprecated h4,
+div.deprecated div.docblock {
+  text-decoration: line-through
+}
+</style>
+</head>
+<body>
+
+<h1>API documentation for Konstrukt</h1><div class="class">
+<h2 id="class-k_icontext">
+  <em>interface</em>
+  <a href="#class-k_icontext">k_iContext</a>
+</h2>
+
+<div class="docblock">
+  <p>The context forms the interface between <a href="#class-k_controller">controllers</a>
+and their surrounding scope.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_icontext-method-url">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  url(<em> [ <span class="tooltip" title="URI-subspace"><span class="modifier">string</span>
+
+$href</span> [ , <span class="tooltip" title="GET-parameters"><span class="modifier">array</span>
+
+$args</span> ]  ] </em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Creates a URL to this controller, with additional
+parameters.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_icontext-method-getsubspace">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  getSubspace()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Returns the URI-subspace for this controller.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_icontext-method-getregistry">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  getRegistry()
+
+  : <em class="modifier"><a href="#class-k_registry">k_Registry</a></em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Returns the registry.</p>
+</div>
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_component">
+  <em class="modifier">abstract</em>
+
+  <em>class</em>
+  <a href="#class-k_component">k_Component</a>
+</h2>
+
+<div class="docblock">
+  <p>The baseclass for presentation layer components.</p>
+<p>Components provide the capability to handle a request, often as one of
+several components. In order to work, it must be created inside a
+<a href="#class-k_icontext">context</a>. Components provide the base for
+the fully capable <a href="#class-k_controller">controller</a>, but classes
+may also directly extend from k_Component, if their purpose is as reusable
+presentation components, often referred to as &quot;widgets&quot;. Examples of such
+components are <a href="#class-k_datalist">k_Datalist</a> and
+<a href="#class-k_formbehaviour">k_FormBehaviour</a>.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_component-property-context">
+  <em class="modifier">public</em>
+
+
+  $context
+  : <em class="modifier"><a href="#class-k_icontext">k_iContext</a></em>
+
+</h4>
+
+<div class="docblock">
+  <p>The parent context.</p>
+<p>This value is assigned in the constructor and shouldn&#039;t be changed at runtime.</p>
+</div>
+
+  <h4 id="class-k_component-property-registry">
+  <em class="modifier">public</em>
+
+
+  $registry
+  : <em class="modifier"><a href="#class-k_registry">k_Registry</a></em>
+
+</h4>
+
+
+  <h4 id="class-k_component-property-urlstate">
+  <em class="modifier">public</em>
+
+
+  $urlState
+  : <em class="modifier">array</em>
+
+</h4>
+
+<div class="docblock">
+  <p>Variables to be propagated over url&#039;s from this controller or subcontrollers.</p>
+<p>The state is volatile compared to $_SESSION in that it only
+is preserved in URL&#039;s to this controller or it&#039;s child-controllers</p>
+</div>
+
+  <h4 id="class-k_component-property-i18n">
+  <em class="modifier">protected</em>
+
+
+  $i18n
+  : <em class="modifier">array</em>
+
+</h4>
+
+<div class="docblock">
+  <p>A hashmap of phrases for the built-in translation feature.
+Used by <a href="#class-k_component-method-__">__()</a>.</p>
+</div>
+
+  <h4 id="class-k_component-property-outputfilters">
+  <em class="modifier">protected</em>
+
+
+  $outputFilters
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+<div class="docblock">
+  <p>Array of callbacks, used to format default output.</p>
+<p>This is used by the managed static function e()
+Since HTML is the most common output, the default filter is htmlspecialchars.</p>
+</div>
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_component-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$context</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_component-method-getregistry">
+
+  <em class="modifier">public</em>
+
+
+  getRegistry()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  <div class="deprecated">
+
+
+<h4 id="class-k_component-method-__get">
+
+  <em class="modifier">public</em>
+
+
+  __get(<em><span class="modifier">mixed</span>
+
+$property</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Property getter.
+Delegates to the components registry, so referring to $this-&gt;foo equals $this-&gt;registry-&gt;foo</p>
+</div>
+
+</div>
+
+  <div class="deprecated">
+
+
+<h4 id="class-k_component-method-__isset">
+
+  <em class="modifier">public</em>
+
+
+  __isset(<em><span class="modifier">mixed</span>
+
+$property</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Property getter.</p>
+</div>
+
+</div>
+
+  
+
+<h4 id="class-k_component-method-__">
+
+  <em class="modifier">public</em>
+
+
+  __(<em><span class="modifier">mixed</span>
+
+$phrase</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Returns a localized string from the stringtable</p>
+<p>Recurses up to the context, if the phrase is not found in the scope of this object.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_component-method-url">
+
+  <em class="modifier">public</em>
+
+
+  url(<em> [ <span class="modifier">mixed</span>
+
+$href [ , <span class="modifier">mixed</span>
+
+$args ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_component-method-execute">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  execute()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_component-method-render">
+
+  <em class="modifier">public</em>
+
+
+  render()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Includes a file and returns the output.</p>
+<p>Essentially this is just a wrapper around include, which returns the
+result rather than send it to stdout.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_component-method-outputstring">
+
+  <em class="modifier">public</em>
+
+
+  outputString(<em><span class="modifier">mixed</span>
+
+$str</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_controller">
+  <em>class</em>
+  <a href="#class-k_controller">k_Controller</a>
+
+  <em>extends</em>
+  <a href="#class-k_component">k_Component</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_icontext">k_iContext</a></h3>
+
+<div class="docblock">
+  <p>This is the baseclass for all controllers.</p>
+<p>In Konstrukt, controllers are closely related to URI&#039;s, which means that the
+responsibility for generating URL&#039;s is with the controller. The method
+<a href="#class-k_controller-method-url">url()</a> generates a URL pointing to
+the controller.</p>
+<p>The incomming (http) request is resolved by a chain of controllers, where
+each has the responsibility to delegate control to each other. This is
+unlike most other frameworks in that there isn&#039;t an up-front frontcontroller,
+which dispatches to a single final handler. Each controller can delegate
+to another controller or it can handle the request on itself. This design
+gives a greater flexibility, while ensuring structure in your application.</p>
+<h2>Flow</h2>
+<p>A controller will always have a <a href="#class-k_controller-property-context">context</a>,
+which will normally be another controller or a <a href="#class-k_http_request">k_http_Request</a>.
+If the controller forwards to a child-controller, it will become context for this.</p>
+<p>A controllers execution begins with <a href="#class-k_controller-method-handlerequest">handleRequest()</a>.
+This method, determines if the flow should be forwarded to a child-controller
+or if this is the final handler. This is determined on ground of the context&#039;s
+URI-subspace. If the subspace indicates that control be forwarded, the method
+<a href="#class-k_controller-method-forward">forward()</a> is called, with the
+name, identifying the delegate. If the controller doesn&#039;t override the default
+implementation of forward(), the name is resolved to a classname, using <a href="#class-k_controller-property-map">$map</a></p>
+<p>If the controller is the final handler, a method corresponding to the HTTP
+request method will be called. The most common is <a href="#class-k_controller-method-get">GET()</a>
+Alternatively, if the controller needs to act on <em>every</em> request-type, you can override
+<a href="#class-k_controller-method-execute">execute()</a> instead. This is however not recommended
+in general.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_controller-property-map">
+  <em class="modifier">public</em>
+
+
+  $map
+  : <em class="modifier">array</em>
+
+</h4>
+
+<div class="docblock">
+  <p>An hashmap of URI-name =&gt; classname of sub-controllers.</p>
+<p>An ArrayAccess can be used</p>
+</div>
+
+  <h4 id="class-k_controller-property-name">
+  <em class="modifier">public</em>
+
+
+  $name
+  : <em class="modifier">string</em>
+
+</h4>
+
+<div class="docblock">
+  <p>The URI-name of this controller.</p>
+<p>This value is assigned in the constructor and shouldn&#039;t be changed at runtime.
+The value is the name, by which the context chose to forward to this controller.</p>
+</div>
+
+  <h4 id="class-k_controller-property-subspace">
+  <em class="modifier">protected</em>
+
+
+  $subspace
+  : <em class="modifier">string</em>
+
+</h4>
+
+<div class="docblock">
+  <p>The URI-subspace for this controller.</p>
+<p>This value is normally assigned from the creating context.</p>
+</div>
+
+  <h4 id="class-k_controller-property-forward">
+  <em class="modifier">protected</em>
+
+
+  $forward
+  : <em class="modifier">string</em>
+
+</h4>
+
+<div class="docblock">
+  <p>The name of the forwarded sub-controller if any.</p>
+<p>This is a subset of property &#039;subspace&#039;. It is equal to the sub-controllers property &#039;name&#039;.
+This value is assigned when and if the controller forwards to a child-controller.</p>
+</div>
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_controller-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="tooltip" title="The creating context"><a href="#class-k_icontext"
+>k_iContext</a>
+
+$context</span> [ , <span class="tooltip" title="URI-name relative to the parent"><span class="modifier">string</span>
+
+$name</span> ] </em>)
+
+  : <em class="modifier">void</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_controller-method-getsubspace">
+
+  <em class="modifier">public</em>
+
+
+  getSubspace()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_controller-method-url">
+
+  <em class="modifier">public</em>
+
+
+  url(<em> [ <span class="modifier">mixed</span>
+
+$href [ , <span class="modifier">mixed</span>
+
+$args ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  <div class="deprecated">
+
+
+<h4 id="class-k_controller-method-top">
+
+  <em class="modifier">public</em>
+
+
+  top(<em> [ <span class="modifier">mixed</span>
+
+$href [ , <span class="modifier">mixed</span>
+
+$args ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>This is for BC. Use $this-&gt;url(&quot;/xxx&quot;) instead of $this-&gt;top(&quot;xxx&quot;)</p>
+</div>
+
+</div>
+
+  
+
+<h4 id="class-k_controller-method-handlerequest">
+
+  <em class="modifier">public</em>
+
+
+  handleRequest()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Entrypoint for execution.</p>
+<p>You shouldn&#039;t need to call this directly.
+The method determines if the controller is final handler or if it should forward,
+and then either calls <a href="#class-k_controller-method-forward">forward()</a> or
+<a href="#class-k_controller-method-execute">execute()</a>.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_controller-method-findnext">
+
+  <em class="modifier">protected</em>
+
+
+  findNext()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>determine the name of the next controller, if any.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_controller-method-forward">
+
+  <em class="modifier">protected</em>
+
+
+  forward(<em><span class="tooltip" title="URI-name of the child-controller"><span class="modifier">string</span>
+
+$name</span></em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Indirects execution to a child-controller.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_controller-method-execute">
+
+  <em class="modifier">public</em>
+
+
+  execute()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>This method is called if this controller is the final handler.</p>
+<p>Per default, it delegates to <a href="#class-k_controller-method-get">GET()</a>,
+<a href="#class-k_controller-method-post">POST()</a> etc., so you should only override
+this method, in special cases. Otherwise
+<a href="#class-k_controller-method-get">GET()</a> is most likely what you
+are looking for.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_controller-method-get">
+
+  <em class="modifier">public</em>
+
+
+  GET()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>GET handler.</p>
+<p>This is where you should implement the code for dealing with
+GET-type requests.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_controller-method-post">
+
+  <em class="modifier">public</em>
+
+
+  POST()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>POST handler.</p>
+<p>This is where you should implement the code for dealing with
+POST-type requests.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_controller-method-head">
+
+  <em class="modifier">public</em>
+
+
+  HEAD()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>HEAD handler.</p>
+<p>This is where you should implement the code for dealing with
+HEAD-type requests.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_controller-method-put">
+
+  <em class="modifier">public</em>
+
+
+  PUT()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>PUT handler.</p>
+<p>This is where you should implement the code for dealing with
+PUT-type requests.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_controller-method-delete">
+
+  <em class="modifier">public</em>
+
+
+  DELETE()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>DELETE handler.</p>
+<p>This is where you should implement the code for dealing with
+DELETE-type requests.</p>
+</div>
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_dispatcher">
+  <em>class</em>
+  <a href="#class-k_dispatcher">k_Dispatcher</a>
+
+  <em>extends</em>
+  <a href="#class-k_controller">k_Controller</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_icontext">k_iContext</a></h3>
+
+<div class="docblock">
+  <p>The dispatcher is the top level controller in the hierarchy.
+It provides a common place for every thing global to the request, such as
+loading the users identity.</p>
+<p>Rather than calling handleRequest directly, users should call dispatch,
+which executes the hierarchy and outputs the response to the browser.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_dispatcher-property-usergateway">
+  <em class="modifier">public</em>
+
+
+  $userGateway
+  : <em class="modifier">callback</em>
+
+</h4>
+
+
+  <h4 id="class-k_dispatcher-property-debug">
+  <em class="modifier">public</em>
+
+
+  $debug
+  : <em class="modifier">boolean</em>
+
+</h4>
+
+<div class="docblock">
+  <p>When TRUE, debugging can be enabled by setting the cookie named &#039;DEBUG&#039;.</p>
+</div>
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_dispatcher-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_dispatcher-method-dispatch">
+
+  <em class="modifier">public</em>
+
+
+  dispatch()
+
+  : <em class="modifier">void</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Main entrypoint of the application.</p>
+<p>Handles request, and outputs the result to the client.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_dispatcher-method-loadidentity">
+
+  <em class="modifier">public</em>
+
+
+  loadIdentity()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_dispatcher-method-loaduser">
+
+  <em class="modifier">public</em>
+
+
+  loadUser(<em><span class="modifier">string</span>
+
+$username, <span class="modifier">string</span>
+
+$password</em>)
+
+  : <em class="modifier">User object instance.</em>
+
+
+</h4>
+
+
+
+  <div class="deprecated">
+
+
+<h4 id="class-k_dispatcher-method-top">
+
+  <em class="modifier">public</em>
+
+
+  top(<em> [ <span class="modifier">mixed</span>
+
+$href [ , <span class="modifier">mixed</span>
+
+$args ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>This is for BC. Use $this-&gt;url(&quot;/xxx&quot;) instead of $this-&gt;top(&quot;xxx&quot;)</p>
+</div>
+
+</div>
+
+  
+
+<h4 id="class-k_dispatcher-method-handlerequest">
+
+  <em class="modifier">public</em>
+
+
+  handleRequest()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_dispatcher-method-url">
+
+  <em class="modifier">public</em>
+
+
+  url(<em> [ <span class="modifier">mixed</span>
+
+$href [ , <span class="modifier">mixed</span>
+
+$args ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_http_request">
+  <em>class</em>
+  <a href="#class-k_http_request">k_http_Request</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_icontext">k_iContext</a></h3>
+
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_http_request-property-registry">
+  <em class="modifier">protected</em>
+
+
+  $registry
+  : <em class="modifier"><a href="#class-k_registry">k_Registry</a></em>
+
+</h4>
+
+
+  <h4 id="class-k_http_request-property-subspace">
+  <em class="modifier">protected</em>
+
+
+  $subspace
+  : <em class="modifier">string</em>
+
+</h4>
+
+<div class="docblock">
+  <p>The URI-subspace for this controller.</p>
+<p>Is normally assigned from the creating context.</p>
+</div>
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_http_request-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_request-method-unmagic">
+
+  <em class="modifier">protected</em>
+
+
+  unMagic(<em><span class="modifier">mixed</span>
+
+$input</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_request-method-decodecharset">
+
+  <em class="modifier">protected</em>
+
+
+  decodeCharset(<em><span class="modifier">mixed</span>
+
+$input</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_request-method-url">
+
+  <em class="modifier">public</em>
+
+
+  url(<em> [ <span class="modifier">mixed</span>
+
+$href [ , <span class="modifier">mixed</span>
+
+$args ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_request-method-getsubspace">
+
+  <em class="modifier">public</em>
+
+
+  getSubspace()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_request-method-getregistry">
+
+  <em class="modifier">public</em>
+
+
+  getRegistry()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_http_authenticate">
+  <em>class</em>
+  <a href="#class-k_http_authenticate">k_http_Authenticate</a>
+
+  <em>extends</em>
+  <a href="#class-k_http_response">k_http_Response</a>
+</h2>
+
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_http_authenticate-property-realm">
+  <em class="modifier">public</em>
+
+
+  $realm
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_http_authenticate-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em> [ <span class="modifier">mixed</span>
+
+$realm ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_authenticate-method-out">
+
+  <em class="modifier">public</em>
+
+
+  out()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_http_redirect">
+  <em>class</em>
+  <a href="#class-k_http_redirect">k_http_Redirect</a>
+
+  <em>extends</em>
+  <a href="#class-k_http_response">k_http_Response</a>
+</h2>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_http_redirect-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$url</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_http_response">
+  <em>class</em>
+  <a href="#class-k_http_response">k_http_Response</a>
+
+  <em>extends</em>
+  <a href="#class-exception">Exception</a>
+</h2>
+
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_http_response-property-status">
+  <em class="modifier">public</em>
+
+
+  $status
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_http_response-property-content">
+  <em class="modifier">public</em>
+
+
+  $content
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_http_response-property-encoding">
+  <em class="modifier">public</em>
+
+
+  $encoding
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_http_response-property-contenttype">
+  <em class="modifier">public</em>
+
+
+  $contentType
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_http_response-property-protocol">
+  <em class="modifier">public</em>
+
+
+  $protocol
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_http_response-property-headers">
+  <em class="modifier">public</em>
+
+
+  $headers
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_http_response-property-outputencoder">
+  <em class="modifier">public</em>
+
+
+  $outputEncoder
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_http_response-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em> [ <span class="modifier">mixed</span>
+
+$status [ , <span class="modifier">mixed</span>
+
+$content ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_response-method-__tostring">
+
+  <em class="modifier">public</em>
+
+
+  __toString()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_response-method-setheader">
+
+  <em class="modifier">public</em>
+
+
+  setHeader(<em><span class="modifier">mixed</span>
+
+$key, <span class="modifier">mixed</span>
+
+$value</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_response-method-setstatus">
+
+  <em class="modifier">public</em>
+
+
+  setStatus(<em><span class="modifier">mixed</span>
+
+$status</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_response-method-setcontenttype">
+
+  <em class="modifier">public</em>
+
+
+  setContentType(<em><span class="modifier">mixed</span>
+
+$contentType</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_response-method-setencoding">
+
+  <em class="modifier">public</em>
+
+
+  setEncoding(<em><span class="modifier">mixed</span>
+
+$encoding</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_response-method-appendcontent">
+
+  <em class="modifier">public</em>
+
+
+  appendContent(<em><span class="modifier">mixed</span>
+
+$content</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_response-method-setcontent">
+
+  <em class="modifier">public</em>
+
+
+  setContent(<em><span class="modifier">mixed</span>
+
+$content</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_response-method-sendstatus">
+
+  <em class="modifier">protected</em>
+
+
+  sendStatus()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_response-method-sendheaders">
+
+  <em class="modifier">protected</em>
+
+
+  sendHeaders()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_response-method-sendbody">
+
+  <em class="modifier">protected</em>
+
+
+  sendBody()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_response-method-out">
+
+  <em class="modifier">public</em>
+
+
+  out()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_http_session">
+  <em>class</em>
+  <a href="#class-k_http_session">k_http_Session</a>
+</h2>
+
+<div class="docblock">
+  <p>Wrapper to http sessions.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_http_session-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_session-method-getsessionid">
+
+  <em class="modifier">public</em>
+
+
+  getSessionId()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_session-method-destroy">
+
+  <em class="modifier">public</em>
+
+
+  destroy()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_session-method-regenerateid">
+
+  <em class="modifier">public</em>
+
+
+  regenerateId()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_session-method-close">
+
+  <em class="modifier">public</em>
+
+
+  close()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_session-method-get">
+
+  <em class="modifier">public</em>
+
+
+  get(<em> [ <span class="tooltip" title="Name of session-space or NULL for $_SESSION"><span class="modifier">string</span>
+
+$name</span> ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Returns a reference to a session-space (array).</p>
+<p>If the session-space doesn&#039;t exist, it will be created silently.</p>
+</div>
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_anonymous">
+  <em>class</em>
+  <a href="#class-k_anonymous">k_Anonymous</a>
+</h2>
+
+<div class="docblock">
+  <p>An anonymous user</p>
+<p>This dummy/specialcase implementation of user is used until
+a real user can be logged in. In your application, you might
+want to put additional functionality in here.</p>
+</div>
+
+
+</div><div class="class">
+<h2 id="class-k_document">
+  <em>class</em>
+  <a href="#class-k_document">k_Document</a>
+</h2>
+
+<div class="docblock">
+  <p>The document is a container for properties of the HTML-document.</p>
+<p>The <a href="#class-k_dispatcher">dispatcher</a> will render the document,
+using the <a href="#class-k_document-property-template">template</a> as
+the template file, if supplied. Set it to NULL, if you do not wish to have
+the dispatcher render the document.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_document-property-template">
+  <em class="modifier">public</em>
+
+
+  $template
+  : <em class="modifier">string</em>
+
+</h4>
+
+<div class="docblock">
+  <p>The template file to use for rendering the document.</p>
+<p>If set to NULL, the document won&#039;t be rendered by the dispatcher.</p>
+</div>
+
+  <h4 id="class-k_document-property-encoding">
+  <em class="modifier">public</em>
+
+
+  $encoding
+  : <em class="modifier">string</em>
+
+</h4>
+
+<div class="docblock">
+  <p>The content-encoding.</p>
+<p>This should match the encoding of the response generated. It is highly
+recommended to leave it as UTF-8</p>
+</div>
+
+  <h4 id="class-k_document-property-title">
+  <em class="modifier">public</em>
+
+
+  $title
+  : <em class="modifier">string</em>
+
+</h4>
+
+<div class="docblock">
+  <p>The title-tag of the document.</p>
+</div>
+
+  <h4 id="class-k_document-property-scripts">
+  <em class="modifier">public</em>
+
+
+  $scripts
+  : <em class="modifier">array</em>
+
+</h4>
+
+<div class="docblock">
+  <p>External javascript files to load in the header section of the document.</p>
+</div>
+
+  <h4 id="class-k_document-property-styles">
+  <em class="modifier">public</em>
+
+
+  $styles
+  : <em class="modifier">array</em>
+
+</h4>
+
+<div class="docblock">
+  <p>External style sheet files to load in the header section of the document.</p>
+</div>
+
+  <h4 id="class-k_document-property-onload">
+  <em class="modifier">public</em>
+
+
+  $onload
+  : <em class="modifier">array</em>
+
+</h4>
+
+<div class="docblock">
+  <p>Javascript code to execute at document load time.</p>
+</div>
+
+</div>
+
+</div><div class="class">
+<h2 id="class-k_formbehaviour">
+  <em>class</em>
+  <a href="#class-k_formbehaviour">k_FormBehaviour</a>
+
+  <em>extends</em>
+  <a href="#class-k_component">k_Component</a>
+</h2>
+
+<div class="docblock">
+  <p>The k_FormBehaviour is a complex component, which provides the
+expected behaviour of standard one-page forms. It has a number of hooks
+and configurable features, and so should be useable for most
+forms.</p>
+<p>When using the class, you will generally delegate full control to an
+instance, by calling the forms execute() method from a controllers own
+execute() method.</p>
+<p>The form can be configured by setting various public properties, of which
+the <a href="#class-k_formbehaviour-property-descriptors">$descriptors</a> is perhaps the most important.</p>
+<p>The form further connects with the controller by assuming it to provide a
+public method validate(), which must return TRUE is the form is valid.</p>
+<p>Likewise, the controller must implement a public method validHandler(),
+which will be called, if the form has been posted, and is valid.</p>
+<p>To simplify the implementation of validation, the form provides a <a href="#class-k_validator">validator</a>,
+which can be recieved by calling <a href="#class-k_formbehaviour-method-getvalidator">getValidator()</a>.</p>
+<p>The form can further be customized by implementing the following public
+methods in the controller, which will then be used instead of the default:</p>
+<ul>
+  <li><a href="#class-k_formbehaviour-method-getmemory">getMemory()</a></li>
+  <li><a href="#class-k_formbehaviour-method-getdefaultvalues">getDefaultValues()</a></li>
+  <li><a href="#class-k_formbehaviour-method-renderfield">renderField()</a></li>
+</ul>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_formbehaviour-property-memory">
+  <em class="modifier">protected</em>
+
+
+  $memory
+  : <em class="modifier"><a href="#class-k_memory">k_Memory</a></em>
+
+</h4>
+
+
+  <h4 id="class-k_formbehaviour-property-fields">
+  <em class="modifier">protected</em>
+
+
+  $fields
+  : <em class="modifier"><a href="#class-k_fieldcollection">k_FieldCollection</a></em>
+
+</h4>
+
+
+  <h4 id="class-k_formbehaviour-property-file_name">
+  <em class="modifier">public</em>
+
+
+  $file_name
+  : <em class="modifier">string</em>
+
+</h4>
+
+<div class="docblock">
+  <p>Name of the template to use for rendering the form.</p>
+</div>
+
+  <h4 id="class-k_formbehaviour-property-descriptors">
+  <em class="modifier">public</em>
+
+
+  $descriptors
+  : <em class="modifier">array</em>
+
+</h4>
+
+<div class="docblock">
+  <p>An array of field descriptors.</p>
+<p>At the minimum, each descriptor must have a property &#039;name&#039;.
+Optionally, a property &#039;filters&#039; can provide a number of callbacks to
+filter incomming data. Also, a property &#039;default&#039; may denote the
+initial value of the field, although this can be overridden by
+providing a custom implementation of <a href="#class-k_formbehaviour-method-getdefaultvalues">getDefaultValues()</a></p>
+</div>
+
+  <h4 id="class-k_formbehaviour-property-autodestroy">
+  <em class="modifier">public</em>
+
+
+  $autoDestroy
+  : <em class="modifier">boolean</em>
+
+</h4>
+
+<div class="docblock">
+  <p>Controls whether the form values should be cleared, after
+the validHandler() has been invoked.</p>
+<p>This will normally be TRUE for single page forms, and FALSE for multipage forms,</p>
+</div>
+
+  <h4 id="class-k_formbehaviour-property-retaintoken">
+  <em class="modifier">public</em>
+
+
+  $retainToken
+  : <em class="modifier">string</em>
+
+</h4>
+
+<div class="docblock">
+  <p>QueryParam token, used for controlling persistence.</p>
+<p>This should generally be left untouched.</p>
+</div>
+
+  <h4 id="class-k_formbehaviour-property-properties">
+  <em class="modifier">public</em>
+
+
+  $properties
+  : <em class="modifier">array</em>
+
+</h4>
+
+<div class="docblock">
+  <p>Ascosiative array of HTML-attributes for the form element.</p>
+</div>
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_formbehaviour-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$context [ , <span class="modifier">mixed</span>
+
+$file_name ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_formbehaviour-method-assertdescriptorssyntax">
+
+  <em class="modifier">public</em>
+
+
+  assertDescriptorsSyntax()
+
+  : <em class="modifier">void</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Validates the syntax of descriptors.</p>
+<p>If the syntax is invalid, an exception is thrown.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_formbehaviour-method-getvalidator">
+
+  <em class="modifier">public</em>
+
+
+  getValidator()
+
+  : <em class="modifier"><a href="#class-k_validator">k_Validator</a></em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Creates a new validator for validating the forms values.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_formbehaviour-method-getmemory">
+
+  <em class="modifier">protected</em>
+
+
+  getMemory()
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Callback to retrieve the memory object.</p>
+<p>The call is delegated to the context, if it provides a getMemory method;
+Otherwise, a memory object is instantiated and stored in session.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_formbehaviour-method-getdefaultvalues">
+
+  <em class="modifier">protected</em>
+
+
+  getDefaultValues()
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Callback to populate the memory with initial data.</p>
+<p>The call is delegated to the context, if it provides a getDefaultValues method;
+Otherwise, the descriptors are scanned for a property &#039;default&#039;</p>
+</div>
+
+
+  
+
+<h4 id="class-k_formbehaviour-method-renderfield">
+
+  <em class="modifier">public</em>
+
+
+  renderField(<em><span class="modifier">mixed</span>
+
+$field</em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Callback from the template, to allow the controller to render the HTML for a field.</p>
+<p>The call is delegated to the context, if it provides a renderField method;
+Otherwise, a &lt;input type=&#039;text&#039;/&gt; is returned.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_formbehaviour-method-getformproperties">
+
+  <em class="modifier">public</em>
+
+
+  getFormProperties(<em> [ <span class="modifier">mixed</span>
+
+$args ] </em>)
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Returns the HTML-attributes for the form element.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_formbehaviour-method-execute">
+
+  <em class="modifier">public</em>
+
+
+  execute()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_formbehaviour-method-get">
+
+  <em class="modifier">protected</em>
+
+
+  GET()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_formbehaviour-method-post">
+
+  <em class="modifier">protected</em>
+
+
+  POST()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_fieldcollection">
+  <em>class</em>
+  <a href="#class-k_fieldcollection">k_FieldCollection</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-iteratoraggregate">IteratorAggregate</a>,  <a href="#class-traversable">Traversable</a></h3>
+
+<div class="docblock">
+  <p>A collection of <a href="#class-k_field">fields</a>.</p>
+<p>The k_FieldCollection is used by <a href="#class-k_fieldbehaviour">k_FieldBehaviour</a>.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_fieldcollection-property-fields">
+  <em class="modifier">protected</em>
+
+
+  $fields
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_fieldcollection-property-memory">
+  <em class="modifier">protected</em>
+
+
+  $memory
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_fieldcollection-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$memory, <span class="modifier">mixed</span>
+
+$renderer, <span class="modifier">mixed</span>
+
+$descriptors</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_fieldcollection-method-__get">
+
+  <em class="modifier">public</em>
+
+
+  __get(<em><span class="modifier">mixed</span>
+
+$name</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_fieldcollection-method-getiterator">
+
+  <em class="modifier">public</em>
+
+
+  getIterator()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_fieldcollection-method-import">
+
+  <em class="modifier">public</em>
+
+
+  import(<em><span class="modifier">mixed</span>
+
+$input [ , <span class="modifier">mixed</span>
+
+$datasource ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_fieldcollection-method-neededdatasources">
+
+  <em class="modifier">public</em>
+
+
+  neededDatasources()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_fieldcollection-method-render">
+
+  <em class="modifier">public</em>
+
+
+  render(<em><span class="modifier">mixed</span>
+
+$name</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_fieldcollection-method-getid">
+
+  <em class="modifier">public</em>
+
+
+  getId(<em><span class="modifier">mixed</span>
+
+$name</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_fieldcollection-method-getmessages">
+
+  <em class="modifier">public</em>
+
+
+  getMessages()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_fieldcollection-method-getbyfieldset">
+
+  <em class="modifier">public</em>
+
+
+  getByFieldset(<em><span class="modifier">mixed</span>
+
+$fieldset</em>)
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Returns a hash of fields of a particular fieldset.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_fieldcollection-method-getexclusive">
+
+  <em class="modifier">public</em>
+
+
+  getExclusive(<em><span class="modifier">mixed</span>
+
+$name</em>)
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Returns a hash of fields, exclusive those explicitly named.</p>
+<p>You can either pass an array of names to exclude or pass each field to exclude as string arguments.</p>
+</div>
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_field">
+  <em>class</em>
+  <a href="#class-k_field">k_Field</a>
+</h2>
+
+<div class="docblock">
+  <p>Encapsulates a single form field.</p>
+<p>This object is mostly internal to the <a href="#class-k_formbehaviour">k_FormBehaviour</a> class,
+but is also exposed to the template, when rendering a form.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_field-property-renderer">
+  <em class="modifier">protected</em>
+
+
+  $renderer
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_field-property-memory">
+  <em class="modifier">protected</em>
+
+
+  $memory
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_field-property-name">
+  <em class="modifier">protected</em>
+
+
+  $name
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_field-property-id">
+  <em class="modifier">protected</em>
+
+
+  $id
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_field-property-fieldset">
+  <em class="modifier">protected</em>
+
+
+  $fieldset
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_field-property-filters">
+  <em class="modifier">protected</em>
+
+
+  $filters
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_field-property-value">
+  <em class="modifier">protected</em>
+
+
+  $value
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_field-property-datasource">
+  <em class="modifier">protected</em>
+
+
+  $datasource
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_field-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$renderer, <span class="modifier">mixed</span>
+
+$memory, <span class="modifier">mixed</span>
+
+$descriptor</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_field-method-__get">
+
+  <em class="modifier">public</em>
+
+
+  __get(<em><span class="modifier">mixed</span>
+
+$property</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_field-method-getdatasource">
+
+  <em class="modifier">public</em>
+
+
+  getDatasource()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_field-method-getname">
+
+  <em class="modifier">public</em>
+
+
+  getName()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_field-method-getid">
+
+  <em class="modifier">public</em>
+
+
+  getId()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_field-method-getfieldset">
+
+  <em class="modifier">public</em>
+
+
+  getFieldset()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_field-method-getvalue">
+
+  <em class="modifier">public</em>
+
+
+  getValue()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_field-method-getmessages">
+
+  <em class="modifier">public</em>
+
+
+  getMessages()
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Returns any validation errors from previous form submit.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_field-method-render">
+
+  <em class="modifier">public</em>
+
+
+  render()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Calls back to the owning controller, to let it render the fields HTML representation.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_field-method-__tostring">
+
+  <em class="modifier">public</em>
+
+
+  __toString()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_field-method-import">
+
+  <em class="modifier">public</em>
+
+
+  import(<em> [ <span class="modifier">mixed</span>
+
+$input ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_validator">
+  <em>class</em>
+  <a href="#class-k_validator">k_Validator</a>
+</h2>
+
+<div class="docblock">
+  <p>A helper class for validating a <a href="#class-k_formbehaviour">form</a>.</p>
+<p>In addition to providing a collection of standard validation methods,
+it provides a simple interface for writing more complex validation of
+forms.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_validator-property-logger">
+  <em class="modifier">protected</em>
+
+
+  $logger
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_validator-property-translator">
+  <em class="modifier">protected</em>
+
+
+  $translator
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_validator-property-values">
+  <em class="modifier">protected</em>
+
+
+  $values
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_validator-property-valid">
+  <em class="modifier">protected</em>
+
+
+  $valid
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_validator-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$logger, <span class="modifier">mixed</span>
+
+$translator, <span class="modifier">mixed</span>
+
+$values [ , <span class="modifier">mixed</span>
+
+$valid ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_validator-method-isvalid">
+
+  <em class="modifier">public</em>
+
+
+  isValid()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_validator-method-fail">
+
+  <em class="modifier">public</em>
+
+
+  fail(<em><span class="modifier">mixed</span>
+
+$message</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_validator-method-failfield">
+
+  <em class="modifier">public</em>
+
+
+  failField(<em><span class="modifier">mixed</span>
+
+$field, <span class="modifier">mixed</span>
+
+$message</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_validator-method-assertrequired">
+
+  <em class="modifier">public</em>
+
+
+  assertRequired(<em><span class="modifier">mixed</span>
+
+$name [ , <span class="modifier">mixed</span>
+
+$message ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_validator-method-assertregex">
+
+  <em class="modifier">public</em>
+
+
+  assertRegex(<em><span class="modifier">mixed</span>
+
+$name, <span class="modifier">mixed</span>
+
+$regex [ , <span class="modifier">mixed</span>
+
+$message ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_validator-method-assertemail">
+
+  <em class="modifier">public</em>
+
+
+  assertEmail(<em><span class="modifier">mixed</span>
+
+$name [ , <span class="modifier">mixed</span>
+
+$message ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_validator-method-assertnumeric">
+
+  <em class="modifier">public</em>
+
+
+  assertNumeric(<em><span class="modifier">mixed</span>
+
+$name [ , <span class="modifier">mixed</span>
+
+$message ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_validator-method-assertwithin">
+
+  <em class="modifier">public</em>
+
+
+  assertWithin(<em><span class="modifier">mixed</span>
+
+$name [ , <span class="modifier">mixed</span>
+
+$options [ , <span class="modifier">mixed</span>
+
+$message ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_validator-method-assertequal">
+
+  <em class="modifier">public</em>
+
+
+  assertEqual(<em><span class="modifier">mixed</span>
+
+$name, <span class="modifier">mixed</span>
+
+$name2 [ , <span class="modifier">mixed</span>
+
+$message ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_memory">
+  <em>class</em>
+  <a href="#class-k_memory">k_Memory</a>
+</h2>
+
+<div class="docblock">
+  <p>The memory object is essentially a wrapper over the state of a <a href="#class-k_formbehaviour">form</a>.</p>
+<p>In addition to the values of the form, the memory also holds error-messages
+from the previous validation, of any.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_memory-property-state">
+  <em class="modifier">protected</em>
+
+
+  $state
+  : <em class="modifier">boolean</em>
+
+</h4>
+
+
+  <h4 id="class-k_memory-property-data">
+  <em class="modifier">protected</em>
+
+
+  $data
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+  <h4 id="class-k_memory-property-messages">
+  <em class="modifier">protected</em>
+
+
+  $messages
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+  <h4 id="class-k_memory-property-volatilefields">
+  <em class="modifier">protected</em>
+
+
+  $volatileFields
+  : <em class="modifier">boolean</em>
+
+</h4>
+
+<div class="docblock">
+  <p>If volatile fields is set, the form values will not be
+persisted -- only error messages will.</p>
+<p>This is useful for forms with confidential data, such as
+creditcard information etc.</p>
+</div>
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_memory-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em> [ <span class="tooltip" title="Set to TRUE to get volatile fields. (State isn't persisted)"><span class="modifier">boolean</span>
+
+$volatileFields</span> ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_memory-method-__sleep">
+
+  <em class="modifier">public</em>
+
+
+  __sleep()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_memory-method-destroy">
+
+  <em class="modifier">public</em>
+
+
+  destroy()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_memory-method-isnew">
+
+  <em class="modifier">public</em>
+
+
+  isNew()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_memory-method-setnotnew">
+
+  <em class="modifier">public</em>
+
+
+  setNotNew()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_memory-method-getfields">
+
+  <em class="modifier">public</em>
+
+
+  getFields()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_memory-method-set">
+
+  <em class="modifier">public</em>
+
+
+  set(<em><span class="modifier">mixed</span>
+
+$key, <span class="modifier">mixed</span>
+
+$value</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_memory-method-get">
+
+  <em class="modifier">public</em>
+
+
+  get(<em><span class="modifier">mixed</span>
+
+$key</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_memory-method-purgemessages">
+
+  <em class="modifier">public</em>
+
+
+  purgeMessages()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Flushes all error-messages.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_memory-method-getmessages">
+
+  <em class="modifier">public</em>
+
+
+  getMessages(<em> [ <span class="modifier">mixed</span>
+
+$key ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_memory-method-exportmessages">
+
+  <em class="modifier">public</em>
+
+
+  exportMessages()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_memory-method-logfail">
+
+  <em class="modifier">public</em>
+
+
+  logFail(<em><span class="modifier">mixed</span>
+
+$key, <span class="modifier">mixed</span>
+
+$message</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Logs an error message on a field.</p>
+<p>Used by validation.</p>
+</div>
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_datalist">
+  <em>class</em>
+  <a href="#class-k_datalist">k_DataList</a>
+
+  <em>extends</em>
+  <a href="#class-k_component">k_Component</a>
+</h2>
+
+<div class="docblock">
+  <p>The Datalist is a standard component, for providing a list of
+results. In addition to sort options, it provides pagination.
+The view state is carried over queryParams (GET-method).</p>
+<p>The main interface is provided through two callbacks; <a href="#class-k_datalist-property-query">query</a>
+and <a href="#class-k_datalist-property-count">count</a>, which are set by
+their respective setter methods.</p>
+<p>Further customization can happen by setting public properties and the
+fieldnames property.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_datalist-property-query">
+  <em class="modifier">protected</em>
+
+
+  $query
+  : <em class="modifier">callback</em>
+
+</h4>
+
+
+  <h4 id="class-k_datalist-property-count">
+  <em class="modifier">protected</em>
+
+
+  $count
+  : <em class="modifier">callback</em>
+
+</h4>
+
+
+  <h4 id="class-k_datalist-property-fieldnames">
+  <em class="modifier">protected</em>
+
+
+  $fieldNames
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+  <h4 id="class-k_datalist-property-template">
+  <em class="modifier">public</em>
+
+
+  $template
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_datalist-property-offset">
+  <em class="modifier">public</em>
+
+
+  $offset
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_datalist-property-order">
+  <em class="modifier">public</em>
+
+
+  $order
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_datalist-property-direction">
+  <em class="modifier">public</em>
+
+
+  $direction
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_datalist-property-pagesize">
+  <em class="modifier">public</em>
+
+
+  $pageSize
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_datalist-property-showpager">
+  <em class="modifier">public</em>
+
+
+  $showPager
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_datalist-method-setquerycallback">
+
+  <em class="modifier">public</em>
+
+
+  setQueryCallback(<em><span class="tooltip" title="A callback, which returns a list of results."><span class="modifier">callback</span>
+
+$callback</span></em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Sets the callback for querying results. The callback must be a valid
+callback, and will be invoked with the following arguments:</p>
+<p><code>offset</code>, <code>limit</code>, <code>order-by</code>, and <code>direction</code></p>
+<p>These arguments maps directly to the <code>limit</code> and <code>order by</code>
+clauses of a mysql select query.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_datalist-method-setcountcallback">
+
+  <em class="modifier">public</em>
+
+
+  setCountCallback(<em><span class="tooltip" title="A callback, which returns the number of results."><span class="modifier">callback</span>
+
+$callback</span></em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Sets the callback for counting all results.</p>
+<p>The value is used for calculating pagination. It can be implemented as
+a <code>count(*)</code> corresponding to the actual query.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_datalist-method-setfieldnames">
+
+  <em class="modifier">public</em>
+
+
+  setFieldNames(<em><span class="tooltip" title="An array of strings"><span class="modifier">array</span>
+
+$fieldNames</span></em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Sets the fields which should be displayed from the resultset.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_datalist-method-viewhandler">
+
+  <em class="modifier">public</em>
+
+
+  viewHandler(<em><span class="tooltip" title="An associative array of view-data for rendering the view."><span class="modifier">array</span>
+
+$tableData</span></em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>The handler for rendering view.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_datalist-method-execute">
+
+  <em class="modifier">public</em>
+
+
+  execute()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_datalist-method-loadstate">
+
+  <em class="modifier">protected</em>
+
+
+  loadState()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_datalist-method-calculatepagination">
+
+  <em class="modifier">protected</em>
+
+
+  calculatePagination(<em><span class="modifier">mixed</span>
+
+$show_page, <span class="modifier">mixed</span>
+
+$item_count [ , <span class="modifier">mixed</span>
+
+$limit ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_classloader">
+  <em>class</em>
+  <a href="#class-k_classloader">k_ClassLoader</a>
+</h2>
+
+<div class="docblock">
+  <p>Provides functionality for including files.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_classloader-method-autoload">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">public</em>
+
+
+  autoload(<em><span class="modifier">mixed</span>
+
+$classname</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Default autoloader for Konstrukt naming scheme.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_classloader-method-searchincludepath">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">public</em>
+
+
+  SearchIncludePath(<em><span class="modifier">mixed</span>
+
+$filename</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Searches the include-path for a filename.
+Returns the absolute path (realpath) if found or FALSE</p>
+</div>
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_debugger">
+  <em>class</em>
+  <a href="#class-k_debugger">k_Debugger</a>
+</h2>
+
+<div class="docblock">
+  <p>Displays debug information about the request.</p>
+<p>By default, the debugger is created by the dispatcher, if the cookie &#039;DEBUG&#039; is set, and debugging is allowed.</p>
+<p>You can use the following bookmarklet to switch debug output on for a request:</p>
+<div class="nostyle">javascript:(function (document) { var COOKIE_NAME = %22DEBUG%22; var isset = function () {var nameEQ = COOKIE_NAME + %22=1%22;var ca = document.cookie.split(%22;%22);for (i = 0; i < ca.length; i++) {var c = ca[i];while (c.charAt(0) == %22 %22) {c = c.substring(1, c.length);}if (c.indexOf(nameEQ) == 0) {return true;}}return false;}; var set = function (timeout) {if (timeout) {var date = new Date;date.setTime(date.getTime() + timeout * 1000);var expires = %22; expires=%22 + date.toGMTString();} else {var expires = %22%22;}document.cookie = COOKIE_NAME + %22=1%22 + expires + %22; path=/%22;}; if (isset()) { set(-3600); alert(%22Debug: Off%22); } else { set(3600); } })(document);</div>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_debugger-property-msgcontrollers">
+  <em class="modifier">protected</em>
+
+
+  $msgControllers
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_debugger-method-logcontroller">
+
+  <em class="modifier">public</em>
+
+
+  logController(<em><span class="modifier">mixed</span>
+
+$controller</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_debugger-method-outputresponse">
+
+  <em class="modifier">public</em>
+
+
+  outputResponse(<em><span class="modifier">mixed</span>
+
+$response</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_debugger-method-limit">
+
+  <em class="modifier">protected</em>
+
+
+  limit(<em><span class="modifier">mixed</span>
+
+$in_str [ , <span class="modifier">mixed</span>
+
+$limit [ , <span class="modifier">mixed</span>
+
+$symbol ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_registry">
+  <em>class</em>
+  <a href="#class-k_registry">k_Registry</a>
+</h2>
+
+<div class="docblock">
+  <p>A combined singleton registry and general purpose class factory</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_registry-property-__instances">
+  <em class="modifier">protected</em>
+
+
+  $__instances
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_registry-property-__constructors">
+  <em class="modifier">protected</em>
+
+
+  $__constructors
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_registry-property-__aliases">
+  <em class="modifier">protected</em>
+
+
+  $__aliases
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_registry-method-load">
+
+  <em class="modifier">public</em>
+
+
+  load(<em><span class="modifier">mixed</span>
+
+$filename</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Loads configuration from a file</p>
+</div>
+
+
+  
+
+<h4 id="class-k_registry-method-__get">
+
+  <em class="modifier">public</em>
+
+
+  __get(<em><span class="modifier">mixed</span>
+
+$className</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Magic method. Gets a singleton instance.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_registry-method-__isset">
+
+  <em class="modifier">public</em>
+
+
+  __isset(<em><span class="modifier">mixed</span>
+
+$className</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Magic method. Tells whether a given property exists, or can be created on the fly.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_registry-method-get">
+
+  <em class="modifier">public</em>
+
+
+  get(<em><span class="modifier">mixed</span>
+
+$className</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Returns a singleton instance of a class.</p>
+<p>If the instance hasn&#039;t been explicitly registered previously with set, it
+will be created the first time it&#039;s requested.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_registry-method-set">
+
+  <em class="modifier">public</em>
+
+
+  set(<em><span class="modifier">mixed</span>
+
+$className, <span class="modifier">mixed</span>
+
+$instance</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Sets an object as a singleton instance.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_registry-method-create">
+
+  <em class="modifier">public</em>
+
+
+  create(<em><span class="modifier">mixed</span>
+
+$className</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Create a new instance of the requested class.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_registry-method-createargs">
+
+  <em class="modifier">public</em>
+
+
+  createArgs(<em><span class="modifier">mixed</span>
+
+$className [ , <span class="modifier">mixed</span>
+
+$args ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Create a new instance of the requested class with arguments as an array.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_registry-method-registerconstructor">
+
+  <em class="modifier">public</em>
+
+
+  registerConstructor(<em><span class="modifier">mixed</span>
+
+$className, <span class="modifier">mixed</span>
+
+$callback</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Registers a new factory for class.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_registry-method-registeralias">
+
+  <em class="modifier">public</em>
+
+
+  registerAlias(<em><span class="modifier">mixed</span>
+
+$alias, <span class="modifier">mixed</span>
+
+$classsName</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Register an alias for a classname.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_registry-method-defaultconstructor">
+
+  <em class="modifier">protected</em>
+
+
+  defaultConstructor(<em><span class="modifier">mixed</span>
+
+$className, <span class="modifier">mixed</span>
+
+$args, <span class="modifier">mixed</span>
+
+$registry</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>The default constructor.</p>
+</div>
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_staticadapter">
+  <em>class</em>
+  <a href="#class-k_staticadapter">k_StaticAdapter</a>
+</h2>
+
+<div class="docblock">
+  <p>Adapter for managed static function.</p>
+<p>This class is a static callback registry for deferring global static functions to callbacks.
+There are no sanitychecks, in order to maximise performance. You&#039;re expected to know, what you&#039;re doing.</p>
+<p>This makes it possible to redefine behaviour of certain static functions, at runtime.
+The functions currently supported are:</p>
+<p>  e()       Prints string, formatted with output filters.
+  __()      Translate phrase.
+  trace()   Dumps one or more variables for debugging.
+  url()     Build a URL.</p>
+<p>You can register a callback to handle each of these functions with k_StaticAdapter.
+The following code will defer <code>e()</code> to <code>$callback</code>:</p>
+<pre class="php">k_StaticAdapter::<span class="me2">connect</span><span class="br0">&#40;</span><span class="st0">'e'</span>, <span class="re0">$callback</span><span class="br0">&#41;</span>;</pre><p>To remove the callback, and restore the previous handler, use:</p>
+<pre class="php">k_StaticAdapter::<span class="me2">disconnect</span><span class="br0">&#40;</span><span class="st0">'e'</span><span class="br0">&#41;</span>;</pre></div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_staticadapter-property-callbacks">
+  <em class="modifier">protected</em>
+
+
+  $callbacks
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_staticadapter-method-call">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">public</em>
+
+
+  call(<em><span class="modifier">mixed</span>
+
+$function, <span class="modifier">mixed</span>
+
+$args</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Invokes a call to one of the callbacks.
+This is not supposed to be called directly, but is used by the static function stubs.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_staticadapter-method-connect">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">public</em>
+
+
+  connect(<em><span class="modifier">mixed</span>
+
+$function, <span class="modifier">mixed</span>
+
+$handler</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Connects a callback to one of the managed functions.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_staticadapter-method-disconnect">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">public</em>
+
+
+  disconnect(<em><span class="modifier">mixed</span>
+
+$function</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Restores the previous handler for a managed function.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_staticadapter-method-defaultoutput">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">protected</em>
+
+
+  defaultOutput(<em><span class="modifier">mixed</span>
+
+$str</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Default implementation for e()
+Echoes input to stdout.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_staticadapter-method-defaulttranslate">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">protected</em>
+
+
+  defaultTranslate(<em><span class="modifier">mixed</span>
+
+$str</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Default implementation for __()
+Returns input.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_staticadapter-method-defaulttrace">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">protected</em>
+
+
+  defaultTrace()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Default implementation for trace()
+Dumps input variables.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_staticadapter-method-defaultbuildurl">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">protected</em>
+
+
+  defaultBuildUrl()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Default implementation for url()
+This is a stub. No default implementation exists.</p>
+</div>
+
+
+</div>
+</div></body>
+</html>
