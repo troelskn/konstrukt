@@ -1,6 +1,27 @@
 <?php
 /**
+  * Encapsulates the incomming HTTP-request.
   *
+  * A single instance of this class is normally used as the top-level context in
+  * an application. It has the interface of a [[context|#class-k_icontext]], but is not a controller.
+  *
+  * Input variables are automatically reverted, if the magic-quotes feature is on.
+  * Since Konstrukt assumes all input to be UTF-8 encoded, it is converted
+  * from UTF-8 to ISO-8859-1 (The internal charset of PHP). Therefore, if you use
+  * another source, than a UTF-8 encoded form to provide input data, make sure to
+  * send content encoded with UTF-8. This is normally the default encoding for
+  * non-browser clients (Such as XmlHttpRequest), and so should just be left to its
+  * defaults.
+  *
+  * The request creates a registry, and registers a number of input sources with it,
+  * making them to any controllers, which use the httprequest as context. The available
+  * datasources are:
+  *   GET, POST, FILES, HEADERS, ENV, INPUT
+  * The three first are copies of PHP's superglobals, $_GET, $_POST, $_FILES
+  * HEADERS contains all headers of the http request
+  * ENV contains environment variables. Corresponds to the $_SERVER superglobal, but
+  * adds a few fields.
+  * INPUT contains the raw input body of the request. This corresponds to ``php://input``
   */
 class k_http_Request implements k_iContext
 {
@@ -10,8 +31,6 @@ class k_http_Request implements k_iContext
   protected $registry = NULL;
   /**
     * The URI-subspace for this controller.
-    *
-    * Is normally assigned from the creating context.
     * @var string
     */
   protected $subspace = "";
@@ -113,7 +132,7 @@ class k_http_Request implements k_iContext
       }
     }
     $href = implode("/", $parts);
-    
+
     $href = $this->registry->ENV['K_URL_BASE'].$href;
     if (!$args) {
       return $href;

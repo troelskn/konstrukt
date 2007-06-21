@@ -176,6 +176,20 @@ may also directly extend from k_Component, if their purpose is as reusable
 presentation components, often referred to as &quot;widgets&quot;. Examples of such
 components are <a href="#class-k_datalist">k_Datalist</a> and
 <a href="#class-k_formbehaviour">k_FormBehaviour</a>.</p>
+<p>The <a href="#class-k_component-method-render">render()</a> method is a simple, yet
+powerful rendering engine. It includes a procedural PHP file, using <code>include</code>
+and captures the output to a string, which is returned.
+Within the rendering template, you can use the following static functions as
+convenient shortcuts:</p>
+<p><code>e(...)</code> Echoes out the input. It&#039;s basically a shortcut for
+<code>echo htmlspecialchars(...)</code>, although it could be extended by adding callbacks
+to <a href="#class-k_component-property-outputFilters">$outputFilters</a></p>
+<p><code>url(...)</code> Shortcut for <code>$this-&gt;url(...)</code></p>
+<p><code>__(...)</code> Shortcut for <code>$this-&gt;__(...)</code></p>
+<p>The implementation of these helper functions is implemented by
+<a href="#class-k_staticadapter">k_StaticAdapter</a>. If you need to reuse procedural
+templates, written for use with Konstrukt, outside of Konstrukt, you can
+provide implementations for these, by using StaticAdapter.</p>
 </div>
 
 <h3>properties</h3>
@@ -286,8 +300,7 @@ $context</em>)
 
 
 
-  <div class="deprecated">
-
+  
 
 <h4 id="class-k_component-method-__get">
 
@@ -308,10 +321,8 @@ $property</em>)
 Delegates to the components registry, so referring to $this-&gt;foo equals $this-&gt;registry-&gt;foo</p>
 </div>
 
-</div>
 
-  <div class="deprecated">
-
+  
 
 <h4 id="class-k_component-method-__isset">
 
@@ -331,7 +342,6 @@ $property</em>)
   <p>Property getter.</p>
 </div>
 
-</div>
 
   
 
@@ -352,6 +362,7 @@ $phrase</em>)
 <div class="docblock">
   <p>Returns a localized string from the stringtable</p>
 <p>Recurses up to the context, if the phrase is not found in the scope of this object.</p>
+<p>This function can be called from within a rendering template, with the shortcut function <code>__</code></p>
 </div>
 
 
@@ -373,6 +384,9 @@ $args ]  ] </em>)
 
 </h4>
 
+<div class="docblock">
+  <p>This function can be called from within a rendering template, with the shortcut function <code>url</code></p>
+</div>
 
 
   
@@ -430,6 +444,10 @@ $str</em>)
 
 </h4>
 
+<div class="docblock">
+  <p>Outputs the input string, escaping it with the default output filters (defaults to htmlspecialchars)
+This function can be called from within a rendering template, with the shortcut function <code>e</code></p>
+</div>
 
 
 </div>
@@ -1006,6 +1024,27 @@ $args ]  ] </em>)
   <em>implements</em>
   <a href="#class-k_icontext">k_iContext</a></h3>
 
+<div class="docblock">
+  <p>Encapsulates the incomming HTTP-request.</p>
+<p>A single instance of this class is normally used as the top-level context in
+an application. It has the interface of a <a href="#class-k_icontext">context</a>, but is not a controller.</p>
+<p>Input variables are automatically reverted, if the magic-quotes feature is on.
+Since Konstrukt assumes all input to be UTF-8 encoded, it is converted
+from UTF-8 to ISO-8859-1 (The internal charset of PHP). Therefore, if you use
+another source, than a UTF-8 encoded form to provide input data, make sure to
+send content encoded with UTF-8. This is normally the default encoding for
+non-browser clients (Such as XmlHttpRequest), and so should just be left to its
+defaults.</p>
+<p>The request creates a registry, and registers a number of input sources with it,
+making them to any controllers, which use the httprequest as context. The available
+datasources are:
+  GET, POST, FILES, HEADERS, ENV, INPUT
+The three first are copies of PHP&#039;s superglobals, $_GET, $_POST, $_FILES
+HEADERS contains all headers of the http request
+ENV contains environment variables. Corresponds to the $_SERVER superglobal, but
+adds a few fields.
+INPUT contains the raw input body of the request. This corresponds to <code>php://input</code></p>
+</div>
 
 <h3>properties</h3>
 <div class="properties">
@@ -1030,7 +1069,6 @@ $args ]  ] </em>)
 
 <div class="docblock">
   <p>The URI-subspace for this controller.</p>
-<p>Is normally assigned from the creating context.</p>
 </div>
 
 </div>
@@ -3411,6 +3449,210 @@ $limit ] </em>)
 
 </div>
 </div><div class="class">
+<h2 id="class-k_staticadapter">
+  <em>class</em>
+  <a href="#class-k_staticadapter">k_StaticAdapter</a>
+</h2>
+
+<div class="docblock">
+  <p>Adapter for managed static function.</p>
+<p>This class is a static callback registry for deferring global static functions to callbacks.
+There are no sanitychecks, in order to maximise performance. You&#039;re expected to know, what you&#039;re doing.</p>
+<p>This makes it possible to redefine behaviour of certain static functions, at runtime.
+The functions currently supported are:</p>
+<p>  e()       Prints string, formatted with output filters.
+  __()      Translate phrase.
+  trace()   Dumps one or more variables for debugging.
+  url()     Build a URL.</p>
+<p>You can register a callback to handle each of these functions with k_StaticAdapter.
+The following code will defer <code>e()</code> to <code>$callback</code>:</p>
+<pre class="php">k_StaticAdapter::<span class="me2">connect</span><span class="br0">&#40;</span><span class="st0">'e'</span>, <span class="re0">$callback</span><span class="br0">&#41;</span>;</pre><p>To remove the callback, and restore the previous handler, use:</p>
+<pre class="php">k_StaticAdapter::<span class="me2">disconnect</span><span class="br0">&#40;</span><span class="st0">'e'</span><span class="br0">&#41;</span>;</pre></div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_staticadapter-property-callbacks">
+  <em class="modifier">protected</em>
+
+
+  $callbacks
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_staticadapter-method-call">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">public</em>
+
+
+  call(<em><span class="modifier">mixed</span>
+
+$function, <span class="modifier">mixed</span>
+
+$args</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Invokes a call to one of the callbacks.
+This is not supposed to be called directly, but is used by the static function stubs.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_staticadapter-method-connect">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">public</em>
+
+
+  connect(<em><span class="modifier">mixed</span>
+
+$function, <span class="modifier">mixed</span>
+
+$handler</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Connects a callback to one of the managed functions.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_staticadapter-method-disconnect">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">public</em>
+
+
+  disconnect(<em><span class="modifier">mixed</span>
+
+$function</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Restores the previous handler for a managed function.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_staticadapter-method-defaultoutput">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">protected</em>
+
+
+  defaultOutput(<em><span class="modifier">mixed</span>
+
+$str</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Default implementation for e()
+Echoes input to stdout.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_staticadapter-method-defaulttranslate">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">protected</em>
+
+
+  defaultTranslate(<em><span class="modifier">mixed</span>
+
+$str</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Default implementation for __()
+Returns input.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_staticadapter-method-defaulttrace">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">protected</em>
+
+
+  defaultTrace()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Default implementation for trace()
+Dumps input variables.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_staticadapter-method-defaultbuildurl">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">protected</em>
+
+
+  defaultBuildUrl()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Default implementation for url()
+This is a stub. No default implementation exists.</p>
+</div>
+
+
+</div>
+</div><div class="class">
 <h2 id="class-k_classloader">
   <em>class</em>
   <a href="#class-k_classloader">k_ClassLoader</a>
@@ -3826,210 +4068,6 @@ $registry</em>)
 
 <div class="docblock">
   <p>The default constructor.</p>
-</div>
-
-
-</div>
-</div><div class="class">
-<h2 id="class-k_staticadapter">
-  <em>class</em>
-  <a href="#class-k_staticadapter">k_StaticAdapter</a>
-</h2>
-
-<div class="docblock">
-  <p>Adapter for managed static function.</p>
-<p>This class is a static callback registry for deferring global static functions to callbacks.
-There are no sanitychecks, in order to maximise performance. You&#039;re expected to know, what you&#039;re doing.</p>
-<p>This makes it possible to redefine behaviour of certain static functions, at runtime.
-The functions currently supported are:</p>
-<p>  e()       Prints string, formatted with output filters.
-  __()      Translate phrase.
-  trace()   Dumps one or more variables for debugging.
-  url()     Build a URL.</p>
-<p>You can register a callback to handle each of these functions with k_StaticAdapter.
-The following code will defer <code>e()</code> to <code>$callback</code>:</p>
-<pre class="php">k_StaticAdapter::<span class="me2">connect</span><span class="br0">&#40;</span><span class="st0">'e'</span>, <span class="re0">$callback</span><span class="br0">&#41;</span>;</pre><p>To remove the callback, and restore the previous handler, use:</p>
-<pre class="php">k_StaticAdapter::<span class="me2">disconnect</span><span class="br0">&#40;</span><span class="st0">'e'</span><span class="br0">&#41;</span>;</pre></div>
-
-<h3>properties</h3>
-<div class="properties">
-  <h4 id="class-k_staticadapter-property-callbacks">
-  <em class="modifier">protected</em>
-
-
-  $callbacks
-  : <em class="modifier">mixed</em>
-
-</h4>
-
-
-</div>
-
-<h3>methods</h3>
-<div class="methods">
-  
-
-<h4 id="class-k_staticadapter-method-call">
-
-  <em class="modifier">static</em>,
-
-  <em class="modifier">public</em>
-
-
-  call(<em><span class="modifier">mixed</span>
-
-$function, <span class="modifier">mixed</span>
-
-$args</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-<div class="docblock">
-  <p>Invokes a call to one of the callbacks.
-This is not supposed to be called directly, but is used by the static function stubs.</p>
-</div>
-
-
-  
-
-<h4 id="class-k_staticadapter-method-connect">
-
-  <em class="modifier">static</em>,
-
-  <em class="modifier">public</em>
-
-
-  connect(<em><span class="modifier">mixed</span>
-
-$function, <span class="modifier">mixed</span>
-
-$handler</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-<div class="docblock">
-  <p>Connects a callback to one of the managed functions.</p>
-</div>
-
-
-  
-
-<h4 id="class-k_staticadapter-method-disconnect">
-
-  <em class="modifier">static</em>,
-
-  <em class="modifier">public</em>
-
-
-  disconnect(<em><span class="modifier">mixed</span>
-
-$function</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-<div class="docblock">
-  <p>Restores the previous handler for a managed function.</p>
-</div>
-
-
-  
-
-<h4 id="class-k_staticadapter-method-defaultoutput">
-
-  <em class="modifier">static</em>,
-
-  <em class="modifier">protected</em>
-
-
-  defaultOutput(<em><span class="modifier">mixed</span>
-
-$str</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-<div class="docblock">
-  <p>Default implementation for e()
-Echoes input to stdout.</p>
-</div>
-
-
-  
-
-<h4 id="class-k_staticadapter-method-defaulttranslate">
-
-  <em class="modifier">static</em>,
-
-  <em class="modifier">protected</em>
-
-
-  defaultTranslate(<em><span class="modifier">mixed</span>
-
-$str</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-<div class="docblock">
-  <p>Default implementation for __()
-Returns input.</p>
-</div>
-
-
-  
-
-<h4 id="class-k_staticadapter-method-defaulttrace">
-
-  <em class="modifier">static</em>,
-
-  <em class="modifier">protected</em>
-
-
-  defaultTrace()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-<div class="docblock">
-  <p>Default implementation for trace()
-Dumps input variables.</p>
-</div>
-
-
-  
-
-<h4 id="class-k_staticadapter-method-defaultbuildurl">
-
-  <em class="modifier">static</em>,
-
-  <em class="modifier">protected</em>
-
-
-  defaultBuildUrl()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-<div class="docblock">
-  <p>Default implementation for url()
-This is a stub. No default implementation exists.</p>
 </div>
 
 

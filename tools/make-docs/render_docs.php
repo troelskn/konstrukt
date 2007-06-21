@@ -17,6 +17,7 @@ $discoverer->readFile("../../lib/k/field.php");
 $discoverer->readFile("../../lib/k/validator.php");
 $discoverer->readFile("../../lib/k/memory.php");
 $discoverer->readFile("../../lib/k/datalist.php");
+$discoverer->readFile("../../lib/k/staticadapter.php");
 $discoverer->readFile("../../lib/k/");
 
 // write api docs

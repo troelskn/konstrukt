@@ -10,6 +10,25 @@
   * presentation components, often referred to as "widgets". Examples of such
   * components are [[k_Datalist|#class-k_datalist]] and
   * [[k_FormBehaviour|#class-k_formbehaviour]].
+  *
+  * The [[render()|#class-k_component-method-render]] method is a simple, yet
+  * powerful rendering engine. It includes a procedural PHP file, using ``include``
+  * and captures the output to a string, which is returned.
+  * Within the rendering template, you can use the following static functions as
+  * convenient shortcuts:
+  *
+  * ``e(...)`` Echoes out the input. It's basically a shortcut for
+  * ``echo htmlspecialchars(...)``, although it could be extended by adding callbacks
+  * to [[$outputFilters|#class-k_component-property-outputFilters]]
+  *
+  * ``url(...)`` Shortcut for ``$this->url(...)``
+  *
+  * ``__(...)`` Shortcut for ``$this->__(...)``
+  *
+  * The implementation of these helper functions is implemented by
+  * [[k_StaticAdapter|#class-k_staticadapter]]. If you need to reuse procedural
+  * templates, written for use with Konstrukt, outside of Konstrukt, you can
+  * provide implementations for these, by using StaticAdapter.
   */
 abstract class k_Component
 {
@@ -59,7 +78,6 @@ abstract class k_Component
   /**
     * Property getter.
     * Delegates to the components registry, so referring to $this->foo equals $this->registry->foo
-    * @deprecated
     */
   function __get($property) {
     return $this->registry->get($property);
@@ -67,7 +85,6 @@ abstract class k_Component
 
   /**
     * Property getter.
-    * @deprecated
     * @see __get
     */
   function __isset($property) {
@@ -78,6 +95,8 @@ abstract class k_Component
     * Returns a localized string from the stringtable
     *
     * Recurses up to the context, if the phrase is not found in the scope of this object.
+    *
+    * This function can be called from within a rendering template, with the shortcut function ``__``
     */
   function __($phrase) {
     if (isset($this->i18n[$phrase])) {
@@ -89,6 +108,9 @@ abstract class k_Component
     return $phrase;
   }
 
+  /**
+    * This function can be called from within a rendering template, with the shortcut function ``url``
+    */
   function url($href = "", $args = Array()) {
     if (is_null($args)) {
       return $this->context->url($href, NULL);
@@ -138,6 +160,10 @@ abstract class k_Component
     }
   }
 
+  /**
+    * Outputs the input string, escaping it with the default output filters (defaults to htmlspecialchars)
+    * This function can be called from within a rendering template, with the shortcut function ``e``
+    */
   function outputString($str) {
     foreach ($this->outputFilters as $callback) {
       $str = call_user_func($callback, $str);
