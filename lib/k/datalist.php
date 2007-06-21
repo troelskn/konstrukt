@@ -90,7 +90,10 @@ class k_DataList extends k_Component
     if (!is_callable($this->query)) {
       throw new Exception("Type mismatch. \$this->query not callable");
     }
-
+    $count = call_user_func($this->count);
+    if ($count == 0) {
+      return $this->__("empty");
+    }
     if ($this->offset < 0) {
       $this->offset = ceil($count / $this->pageSize) + $this->offset;
       if ($this->offset < 0) {
@@ -101,11 +104,6 @@ class k_DataList extends k_Component
     $offset = $this->offset * $this->pageSize;
     $result = call_user_func($this->query, $offset, $this->pageSize, $this->order, $this->direction);
     if (!is_array($result)) {
-      return $this->__("empty");
-    }
-
-    $count = call_user_func($this->count);
-    if ($count == 0) {
       return $this->__("empty");
     }
     $pager = $this->calculatePagination($this->offset, $count, $this->pageSize);
