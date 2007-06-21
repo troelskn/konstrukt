@@ -47,7 +47,7 @@ class k_Validator
   }
 
   function assertRequired($name, $message = "%s is required") {
-    if (@$this->values[$name] == "") {
+    if (!isset($this->values[$name]) || $this->values[$name] == "") {
       $this->failField($name,
         sprintf($message,
           call_user_func($this->translator, $name)
@@ -58,7 +58,7 @@ class k_Validator
   }
 
   function assertRegex($name, $regex, $message = "%s doesn't match") {
-    if (!preg_match($regex, @$this->values[$name])) {
+    if (!preg_match($regex, isset($this->values[$name]) ? $this->values[$name] : "")) {
       $this->failField($name,
         sprintf($message,
           call_user_func($this->translator, $name)
@@ -73,7 +73,7 @@ class k_Validator
   }
 
   function assertNumeric($name, $message = "%s must be numeric") {
-    if (!is_numeric(@$this->values[$name])) {
+    if (!isset($this->values[$name]) || !is_numeric($this->values[$name])) {
       $this->failField($name,
         sprintf($message,
           call_user_func($this->translator, $name)
@@ -84,7 +84,7 @@ class k_Validator
   }
 
   function assertWithin($name, $options = Array(), $message = "%s isn't an valid option") {
-    if (!in_array(@$this->values[$name], $options)) {
+    if (!in_array(isset($this->values[$name]) ? $this->values[$name] : "", $options)) {
       $this->failField($name,
         sprintf($message,
           call_user_func($this->translator, $name)
@@ -95,7 +95,7 @@ class k_Validator
   }
 
   function assertEqual($name, $name2, $message = "%s must be equal to %s") {
-    if (@$this->values[$name] != @$this->values[$name2]) {
+    if (!isset($this->values[$name]) || !isset($this->values[$name2]) || $this->values[$name] != $this->values[$name2]) {
       $this->failField($name2,
         sprintf($message,
           call_user_func($this->translator, $name),
