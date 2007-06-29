@@ -1,5 +1,5 @@
 <?php
-require_once('../../../../std.inc.php');
+require_once('../../std.inc.php');
 
 //////////////////////////////////////////////////////////////////////////////
 class Controller_Default extends k_Controller

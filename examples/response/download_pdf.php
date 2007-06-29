@@ -1,5 +1,5 @@
 <?php
-require_once('../../../../std.inc.php');
+require_once('../../std.inc.php');
 
     $data = "foobar";
     $response = new k_http_Response(200, $data);
