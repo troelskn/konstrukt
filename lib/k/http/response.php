@@ -12,7 +12,9 @@ class k_http_Response extends Exception
 
   function __construct($status = 200, $content = "") {
     $this->status = $status;
-    $this->protocol = $_SERVER['SERVER_PROTOCOL'];
+    if (isset($_SERVER['SERVER_PROTOCOL'])) {
+      $this->protocol = $_SERVER['SERVER_PROTOCOL'];
+    }
     $this->content = $content;
   }
 
