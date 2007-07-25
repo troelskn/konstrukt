@@ -4,7 +4,7 @@ ini_set('include_path',
   .PATH_SEPARATOR.dirname(dirname(__FILE__))."/lib"
 );
 
-require_once('../../../std.inc.php');
+require_once('../../../examples/std.inc.php');
 
 //////////////////////////////////////////////////////////////////////////////
 $application = new Root();

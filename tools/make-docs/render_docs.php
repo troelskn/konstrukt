@@ -2,7 +2,7 @@
 <?php
 require_once('pepper.php');
 $discoverer = new Pepper_Discoverer();
-require_once("../../std.inc.php");
+require_once("../../examples/std.inc.php");
 $discoverer->readFile("../../lib/k/icontext.php");
 $discoverer->readFile("../../lib/k/component.php");
 $discoverer->readFile("../../lib/k/controller.php");

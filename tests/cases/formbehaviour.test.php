@@ -1,5 +1,5 @@
 <?php
-require_once('../std.inc.php');
+require_once('../examples/std.inc.php');
 require_once('mocks.inc.php');
 
 class TestOfFormBehaviour extends UnitTestCase

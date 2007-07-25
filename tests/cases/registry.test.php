@@ -1,5 +1,5 @@
 <?php
-require_once('../std.inc.php');
+require_once('../examples/std.inc.php');
 
 class TestOfRegistry_Foo
 {
@@ -189,7 +189,7 @@ class TestOfRegistry extends UnitTestCase
 
   function test_load_from_config_file() {
     $registry = new k_Registry();
-    require_once '../std.inc.php';
+    require_once '../examples/std.inc.php';
     $registry->load(dirname(__FILE__)."/registry.config.php");
     $this->assertIsA($registry->get("TestOfRegistry_Foo"), "StdClass");
     $this->assertIsA($registry->get("yabba_the_hutt"), "StdClass");

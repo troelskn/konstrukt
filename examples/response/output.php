@@ -1,5 +1,5 @@
 <?php
-require_once('../../std.inc.php');
+require_once('../../examples/std.inc.php');
 
     $data = "binary\0safe?";
     $response = new k_http_Response(200, $data);

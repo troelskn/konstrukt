@@ -1,5 +1,5 @@
 <?php
-require_once('../std.inc.php');
+require_once('../examples/std.inc.php');
 error_reporting(E_USER_ERROR | E_USER_WARNING);
 
 class TestOfRequest extends UnitTestCase
