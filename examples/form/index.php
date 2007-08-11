@@ -21,12 +21,12 @@ class IndexPage extends k_Controller
     return $this->form->execute();
   }
 
-  function validHandler($data) {
-    return "<h1>valid</h1>\n<pre>".var_export($this->memory->getFields(), TRUE)."</pre>";
+  function validHandler($fields) {
+    return "<h1>valid</h1>\n<pre>".var_export($fields, TRUE)."</pre>";
   }
 
   function validate($values) {
-    $validator = $validator = $this->form->getValidator();
+    $validator = $this->form->getValidator();
     $validator->assertNumeric("age");
     $validator->assertEmail("email");
     $validator->assertEqual("email", "email_again", "emails doesn't match");

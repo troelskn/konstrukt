@@ -141,6 +141,17 @@ class WebTestOfFormBehaviour extends ExtendedWebTestCase
     $this->assertField('age', '');
   }
 
+  function test_submit_form_with_valid_input() {
+    $this->get($this->_baseUrl.'form/');
+
+    $this->setField('email', 'foo@example.org');
+    $this->setField('email_again', 'foo@example.org');
+    $this->setField('age', '30');
+
+    $this->clickSubmit();
+    $this->assertWantedPattern("/'email' => 'foo@example\\.org'/i");
+  }
+
   function test_form_transports_exotic_characters_undamaged() {
     $this->get($this->_baseUrl.'form/');
 
