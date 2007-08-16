@@ -1,5 +1,7 @@
 <?php
-require_once('../examples/std.inc.php');
+require_once 'support/simpletest.inc.php';
+require_once '../examples/std.inc.php';
+require_once 'support/mocks.inc.php';
 
 class TestOfResponse extends UnitTestCase
 {
@@ -81,3 +83,5 @@ class WebTestOfResponse extends ExtendedWebTestCase
     $this->assertEqual("binary\0safe?", $data);
   }
 }
+
+simpletest_autorun(__FILE__);
