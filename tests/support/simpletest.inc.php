@@ -16,7 +16,9 @@ class simpletest_autorun_VerboseTextReporter extends TextReporter
 {
   function paintMethodStart($test_name) {
     parent::paintMethodStart($test_name);
-    echo "[".date("H:i:s")."] Running: " . $test_name . "\n";
+    $breadcrumb = $this->getTestList();
+    array_shift($breadcrumb);
+    echo "[".date("H:i:s")."] " . implode(" : ", $breadcrumb) . "\n";
   }
 }
 
@@ -27,7 +29,7 @@ function simpletest_autorun($filename) {
   if (!is_array($filename)) {
     $filename = Array($filename);
   }
-  //     set_time_limit(0);
+  // set_time_limit(0);
   error_reporting(E_ALL);
   $time = microtime(TRUE);
   $test = new GroupTest("Automatic Test Runner");
@@ -35,7 +37,7 @@ function simpletest_autorun($filename) {
   $webKlass = new ReflectionClass("WebTestCase");
   foreach (get_declared_classes() as $classname) {
     $klass = new ReflectionClass($classname);
-    if ($klass->isSubclassOf($testKlass) && in_array(basename($klass->getFileName()), $filename)) {
+    if ($klass->isSubclassOf($testKlass) && in_array($klass->getFileName(), $filename)) {
       if (!SimpleReporter::inCli() || !$klass->isSubclassOf($webKlass)) {
         $test->addTestCase(new $classname());
       }
