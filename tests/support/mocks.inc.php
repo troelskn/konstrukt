@@ -21,6 +21,10 @@ class ExtendedWebTestCase extends WebTestCase
 		$this->_baseUrl = $GLOBALS['simpletest_configuration']['test_server_url'];
 	}
 
+  function skip() {
+    $this->skipIf(@SimpleReporter::inCli());
+  }
+
 	function request($method, $url, $parameters = FALSE) {
 		if (!is_object($url)) {
 			$url = new SimpleUrl($url);
@@ -120,6 +124,14 @@ class MockGETController extends ExposedController
     $this->calls[] = 'adaptResponse';
     return $response;
   }
+}
+
+class StatefulController extends k_Controller
+{
+  protected $urlGlobals = Array('foo');
+  protected $urlState = Array(
+    'foo' => 'default-foo'
+  );
 }
 
 class MockFormBehaviour extends k_FormBehaviour

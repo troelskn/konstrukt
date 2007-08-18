@@ -48,13 +48,20 @@ abstract class k_Component
     *
     * The state is volatile compared to $_SESSION in that it only
     * is preserved in URL's to this controller or it's child-controllers
-    * @var array
+    * @var hashmap
     */
-  public $urlState = Array();
+  protected $urlState = Array();
+  /**
+    * Parameters in urlState, which should propagate to global scope.
+    * List a URL-state parameter here, to have it propagated to the context.
+    * @note experimental
+    * @var [] string
+    */
+  protected $urlGlobals = Array();
   /**
     * A hashmap of phrases for the built-in translation feature.
     * Used by [[__()|#class-k_component-method-__]].
-    * @var array
+    * @var hashmap
     */
   protected $i18n = Array();
 
@@ -63,12 +70,19 @@ abstract class k_Component
     *
     * This is used by the managed static function e()
     * Since HTML is the most common output, the default filter is htmlspecialchars.
+    *
+    * @var [] callback
     */
   protected $outputFilters = Array('htmlspecialchars');
 
   function __construct($context) {
     $this->context = $context;
     $this->registry = $this->context->getRegistry();
+    foreach ($this->urlGlobals as $name) { // export state to context
+      if (array_key_exists($name, $this->urlState) && method_exists($this->context, 'setUrlState')) {
+        $this->context->setUrlState($name, $this->urlState[$name]);
+      }
+    }
   }
 
   function getRegistry() {
@@ -76,8 +90,21 @@ abstract class k_Component
   }
 
   /**
+    * Sets a parameter on the URL state. Values are propagated over links, generated
+    * by this components or its children.
+    * If the value is declared global scope, it will be propagated to its context.
+    */
+  function setUrlState($key, $value = NULL) {
+    if (in_array($key, $this->urlGlobals) && method_exists($this->context, 'setUrlState')) {
+      $this->context->setUrlState($key, $value);
+    }
+    $this->urlState[$key] = $value;
+  }
+
+  /**
     * Property getter.
     * Delegates to the components registry, so referring to $this->foo equals $this->registry->foo
+    * @note experimental
     */
   function __get($property) {
     return $this->registry->get($property);
@@ -86,6 +113,7 @@ abstract class k_Component
   /**
     * Property getter.
     * @see __get
+    * @note experimental
     */
   function __isset($property) {
     return isset($this->registry) && $this->registry->__isset($property);
