@@ -65,7 +65,7 @@ function simpletest_autorun($filename) {
     }
     $casename = @$arguments[0];
     $testname = @$arguments[1];
-    $is_verbose = isset($option['v']) || isset($option['verbose']);
+    $is_verbose = isset($options['v']) || isset($options['verbose']);
     if ($is_verbose) {
       $reporter = new simpletest_autorun_VerboseTextReporter();
     } else {
