@@ -34,15 +34,21 @@ class k_http_Request implements k_iContext
     * @var string
     */
   protected $subspace = "";
+  /**
+    * @var k_UrlBuilder
+    */
+  protected $urlBuilder;
 
   function __construct() {
     // workaround for wierd "undocumented feature" of IE
     $HEADERS = Array();
-    foreach (apache_request_headers() as $key => $value) {
-      for ($tmp = explode("-", strtolower($key)), $i=0;$i<count($tmp);$i++) {
-        $tmp[$i] = ucfirst($tmp[$i]);
+    if (function_exists('apache_request_headers')) {
+      foreach (apache_request_headers() as $key => $value) {
+        for ($tmp = explode("-", strtolower($key)), $i=0; $i<count($tmp); ++$i) {
+          $tmp[$i] = ucfirst($tmp[$i]);
+        }
+        $HEADERS[implode("-", $tmp)] = $value;
       }
-      $HEADERS[implode("-", $tmp)] = $value;
     }
 
     $ENV = $_SERVER;
@@ -66,7 +72,8 @@ class k_http_Request implements k_iContext
     }
 
     $root = rtrim(str_replace("\\", "/", dirname($ENV['PHP_SELF'])), "/")."/";
-    $ENV['K_URL_BASE'] = $ENV['K_HTTP_ROOT'].$root;
+    $ENV['K_URL_BASE'] = $ENV['K_HTTP_ROOT'] . $root;
+    $this->urlBuilder = new k_UrlBuilder($ENV['K_URL_BASE']);
     $this->subspace = trim(preg_replace("/^(".preg_quote($root,"/").")([^\?]*)(.*)/", "\$2", rawurldecode($ENV['REQUEST_URI'])), "/");
     $this->subspace = $this->decodeCharset($this->subspace);
 
@@ -109,60 +116,7 @@ class k_http_Request implements k_iContext
   }
 
   function url($href = "", $args = Array()) {
-    $href = (string) $href;
-    $hash = NULL;
-    if (preg_match('/^(.*)#(.*)$/', $href, $matches)) {
-      preg_match('/^(.*)#(.*)$/', $href, $matches);
-      $href = $matches[1];
-      $hash = $matches[2];
-    }
-
-    // re-parse path to normalize relative symbols
-    $href = rtrim($href, "?");
-    $href = trim($href, "/");
-    $parts = Array();
-    foreach (explode("/", $href) as $part) {
-      if ($part == '..') {
-        if (count($parts) == 0) {
-          throw new Exception("Illegal path. Relative level extends below root.");
-        }
-        array_pop($parts);
-      } else {
-        $parts[] = $part;
-      }
-    }
-    $href = implode("/", $parts);
-
-    $href = $this->registry->ENV['K_URL_BASE'].$href;
-    if (!$args) {
-      return $href;
-    }
-    if (preg_match("/(.*)\\?(.*)/", $href, $matches)) {
-      $href = $matches[1];
-      parse_str($matches[2], $parsed);
-      $args = array_merge($parsed, $args);
-    }
-    $params = Array();
-    foreach ($args as $key => $value) {
-      if (!is_null($value)) {
-        if (is_integer($key)) {
-          $params[] = rawurlencode($value);
-        } else {
-          $params[] = rawurlencode($key)."=".rawurlencode($value);
-        }
-      }
-    }
-    if (count($params) > 0) {
-      if (strpos($href, "?") === FALSE) {
-        $href .= "?".implode("&", $params);
-      } else {
-        $href .= "&".implode("&", $params);
-      }
-    }
-    if ($hash) {
-      $href .= "#".$hash;
-    }
-    return $href;
+    return $this->urlBuilder->url($href, $args);
   }
 
   function getSubspace() {

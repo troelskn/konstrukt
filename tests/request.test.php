@@ -5,6 +5,25 @@ require_once 'support/mocks.inc.php';
 
 class TestOfRequest extends UnitTestCase
 {
+  protected $SERVER_BACKUP;
+  protected $GET_BACKUP;
+  protected $POST_BACKUP;
+
+  function setUp() {
+    $this->SERVER_BACKUP = $_SERVER;
+    $this->GET_BACKUP = $_SERVER;
+    $this->POST_BACKUP = $_SERVER;
+    $_SERVER['SERVER_NAME'] = 'example.org';
+    $_SERVER['REQUEST_URI'] = 'http://example.org';
+    $_SERVER['REQUEST_METHOD'] = 'GET';
+  }
+
+  function tearDown() {
+    $_SERVER = $this->SERVER_BACKUP;
+    $_GET = $this->GET_BACKUP;
+    $_POST = $this->POST_BACKUP;
+  }
+
   function test_should_detect_request_method() {
     $_SERVER['REQUEST_METHOD'] = 'POST';
     $request = new k_http_Request();
@@ -44,8 +63,8 @@ class TestOfRequest extends UnitTestCase
 
 class WebTestOfRequest extends ExtendedWebTestCase
 {
-    function test_web_case_available() {
-        if (!$this->get($this->_baseUrl.'dispatcher/')) {
+  function test_web_case_available() {
+    if (!$this->get($this->_baseUrl.'dispatcher/')) {
       $this->fail("failed connection to : " . $this->_baseUrl.'dispatcher/');
     }
   }

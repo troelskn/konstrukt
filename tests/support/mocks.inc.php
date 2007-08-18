@@ -47,6 +47,7 @@ class ExtendedWebTestCase extends WebTestCase
 
 class MockContext extends SimpleMock implements k_iContext
 {
+  protected $urlBuilder;
   public $registry;
 
   function __construct() {
@@ -61,6 +62,7 @@ class MockContext extends SimpleMock implements k_iContext
       )
     );
     $this->registry->registerAlias('session', ':session');
+    $this->urlBuilder = new k_UrlBuilder("test://example.org/");
   }
 
   function getSubspace() {
@@ -72,7 +74,7 @@ class MockContext extends SimpleMock implements k_iContext
   }
 
   function url($href = "", $args = Array()) {
-    return $href;
+    return $this->urlBuilder->url($href, $args);
   }
 }
 

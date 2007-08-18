@@ -24,7 +24,7 @@ class MockDataListCrudeView extends k_DataList
   class="first"
 <?php endif; ?>
 >
-<a href="<?php echo $th['href']; ?>" title="<?php echo sprintf($this->__("sort_".strtolower($th['direction'])), $this->__($th['column']))?>"><?php echo htmlentities($this->__($th['column'])); ?></a>
+<a href="<?php echo htmlentities($th['href']); ?>" title="<?php echo sprintf($this->__("sort_".strtolower($th['direction'])), $this->__($th['column']))?>"><?php echo htmlentities($this->__($th['column'])); ?></a>
 </th>
 <?php $first = FALSE; endforeach; ?>
 </tr>

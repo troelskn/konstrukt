@@ -21,8 +21,8 @@ class k_Dispatcher extends k_Controller
     */
   public $debug = FALSE;
 
-  function __construct() {
-    parent::__construct(new k_http_Request());
+  function __construct(k_iContext $context = NULL) {
+    parent::__construct(is_null($context) ? new k_http_Request() : $context);
     $this->registry->set('document', new k_Document());
     // @see k_Debugger
     if ($this->debug && isset($_COOKIE['DEBUG'])) {

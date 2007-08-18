@@ -6,10 +6,7 @@ require_once 'support/mocks.inc.php';
 class TestOfUrl extends UnitTestCase
 {
   function getMockHttpRequestObject() {
-    $request = new k_http_Request();
-    $registry = $request->getRegistry();
-    $registry->ENV['K_URL_BASE'] = "test://example.org/";
-    return $request;
+    return new MockContext();
   }
 
   function test_request_generates_toplevel_url() {
