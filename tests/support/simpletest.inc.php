@@ -15,10 +15,18 @@ require_once 'simpletest/mock_objects.php';
 class simpletest_autorun_TextReporter extends TextReporter
 {
   var $is_verbose = FALSE;
+  var $begin_time = NULL;
 
   function simpletest_autorun_TextReporter($is_verbose = FALSE) {
     parent::TextReporter();
     $this->is_verbose = $is_verbose;
+  }
+
+  function paintGroupStart($test_name, $size) {
+    parent::paintGroupStart($test_name, $size);
+    if (is_null($this->begin_time)) {
+      $this->begin_time = microtime(TRUE);
+    }
   }
 
   function paintMethodStart($test_name) {
@@ -27,13 +35,95 @@ class simpletest_autorun_TextReporter extends TextReporter
       $breadcrumb = $this->getTestList();
       array_shift($breadcrumb);
       echo "[".date("H:i:s")."] " . implode(" : ", $breadcrumb) . "\n";
+      if (ob_get_level() > 0) {
+        ob_flush();
+      }
     }
   }
 
   function paintSkip($message) {
     if ($this->is_verbose) {
       print "Skip: $message\n";
+      if (ob_get_level() > 0) {
+        ob_flush();
+      }
     }
+  }
+
+  function paintFooter($test_name) {
+    if ($this->getFailCount() + $this->getExceptionCount() == 0) {
+      print "OK\n";
+    } else {
+      print "FAILURES!!!\n";
+    }
+    $print = "Test cases run: " . $this->getTestCaseProgress() .
+      "/" . $this->getTestCaseCount() .
+      ", Passes: " . $this->getPassCount() .
+      ", Failures: " . $this->getFailCount() .
+      ", Exceptions: " . $this->getExceptionCount();
+    if ($this->is_verbose) {
+      $print .= ", Time taken: " . round(microtime(TRUE) - $this->begin_time) . " sec";
+    }
+    print $print . "\n";
+  }
+}
+
+class simpletest_autorun_HtmlReporter extends HtmlReporter
+{
+  var $is_verbose = FALSE;
+  var $begin_time = NULL;
+
+  function simpletest_autorun_HtmlReporter($is_verbose = FALSE) {
+    parent::HtmlReporter();
+    $this->is_verbose = $is_verbose;
+  }
+
+  function paintGroupStart($test_name, $size) {
+    parent::paintGroupStart($test_name, $size);
+    if (is_null($this->begin_time)) {
+      $this->begin_time = microtime(TRUE);
+    }
+  }
+
+  function paintPass($message) {
+    parent::paintPass($message);
+    if ($this->is_verbose) {
+      print "<span class=\"pass\">Pass</span>: ";
+      $breadcrumb = $this->getTestList();
+      array_shift($breadcrumb);
+      $case = $breadcrumb[0];
+      $test = $breadcrumb[1];
+      print "<a href=\"?c=".rawurlencode($case)."&verbose=1\">" . $case . "</a>";
+      print "-&gt;";
+      print "<a href=\"?c=".rawurlencode($case)."&t=".rawurlencode($test)."&verbose=1\">" . $test . "</a>";
+      print "-&gt;" . htmlspecialchars($message) . "<br />\n";
+      if (ob_get_level() > 0) {
+        ob_flush();
+      }
+    }
+  }
+
+  function paintFooter($test_name) {
+    $colour = ($this->getFailCount() + $this->getExceptionCount() > 0 ? "red" : "green");
+    print "<div style=\"";
+    print "padding: 8px; margin-top: 1em; background-color: $colour; color: white;";
+    print "\">";
+    print $this->getTestCaseProgress() . "/" . $this->getTestCaseCount();
+    print " test cases complete:\n";
+    print "<strong>" . $this->getPassCount() . "</strong> passes, ";
+    print "<strong>" . $this->getFailCount() . "</strong> fails and ";
+    print "<strong>" . $this->getExceptionCount() . "</strong> exceptions.";
+    if ($this->is_verbose) {
+      print " Time taken: <strong>" . round(microtime(TRUE) - $this->begin_time) . "</strong> sec.";
+    } else {
+      print " [<a href=\"?verbose=1\">verbose</a>]";
+    }
+    print "</div>\n";
+    print "</body>\n</html>\n";
+  }
+
+  function _getCss() {
+    return parent::_getCss() . ' .pass { color: green; }';
   }
 }
 
@@ -62,8 +152,9 @@ function simpletest_autorun($filename) {
       }
     }
     if (isset($options['help'])) {
-      echo "Simpletest autorunner.\n";
+      print "Simpletest autorunner.\n";
       printf("Usage: php %s [-v|--verbose] [casename [testname]]", basename(@$_SERVER['argv'][0]));
+      print "\n";
       exit;
     }
     $casename = @$arguments[0];
@@ -71,6 +162,7 @@ function simpletest_autorun($filename) {
   } else {
     $casename = @$_GET['c'];
     $testname = @$_GET['t'];
+    $options = $_GET;
   }
   // set_time_limit(0);
   $test = new GroupTest("Automatic Test Runner");
@@ -81,16 +173,12 @@ function simpletest_autorun($filename) {
       $test->addTestCase(new $classname());
     }
   }
+  $is_verbose = isset($options['v']) || isset($options['verbose']);
   if (SimpleReporter::inCli()) {
-    $is_verbose = isset($options['v']) || isset($options['verbose']);
     $reporter = new simpletest_autorun_TextReporter($is_verbose);
-    $time = microtime(TRUE);
-    $result = $test->run(new SelectiveReporter($reporter, $casename, $testname));
-    if ($is_verbose) {
-      echo "Time taken: " . round(microtime(TRUE) - $time) . " sec\n";
-    }
-    exit($result ? 0 : 1);
+  } else {
+    $reporter = new simpletest_autorun_HtmlReporter($is_verbose);
   }
-  $test->run(new SelectiveReporter(new HtmlReporter(), $casename, $testname));
-
+  $result = $test->run(new SelectiveReporter($reporter, $casename, $testname));
+  exit($result ? 0 : 1);
 }
