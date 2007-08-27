@@ -53,8 +53,9 @@ class k_Validator
           call_user_func($this->translator, $name)
         )
       );
+      return FALSE;
     }
-    return $this->isValid();
+    return TRUE;
   }
 
   function assertRegex($name, $regex, $message = "%s doesn't match") {
@@ -64,8 +65,9 @@ class k_Validator
           call_user_func($this->translator, $name)
         )
       );
+      return FALSE;
     }
-    return $this->isValid();
+    return TRUE;
   }
 
   function assertEmail($name, $message = "%s is not a valid email-address") {
@@ -79,8 +81,9 @@ class k_Validator
           call_user_func($this->translator, $name)
         )
       );
+      return FALSE;
     }
-    return $this->isValid();
+    return TRUE;
   }
 
   function assertWithin($name, $options = Array(), $message = "%s isn't an valid option") {
@@ -90,8 +93,9 @@ class k_Validator
           call_user_func($this->translator, $name)
         )
       );
+      return FALSE;
     }
-    return $this->isValid();
+    return TRUE;
   }
 
   function assertEqual($name, $name2, $message = "%s must be equal to %s") {
@@ -102,7 +106,8 @@ class k_Validator
           call_user_func($this->translator, $name2)
         )
       );
+      return FALSE;
     }
-    return $this->isValid();
+    return TRUE;
   }
 }
