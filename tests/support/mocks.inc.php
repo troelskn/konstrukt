@@ -66,7 +66,7 @@ class MockContext extends SimpleMock implements k_iContext
       )
     );
     $this->registry->registerAlias('session', ':session');
-    $this->urlBuilder = new k_UrlBuilder("test://example.org/");
+    $this->urlBuilder = new k_UrlBuilder("test://example.org/", new k_UrlStateSource($this));
   }
 
   function getSubspace() {
@@ -80,6 +80,11 @@ class MockContext extends SimpleMock implements k_iContext
   function url($href = "", $args = Array()) {
     return $this->urlBuilder->url($href, $args);
   }
+
+  function getUrlStateContainer($namespace = "") {
+    return new k_UrlState(new k_UrlStateSource($this), $namespace);
+  }
+
 }
 
 class MockContextWithFormValidation extends MockContext
@@ -102,6 +107,10 @@ class ExposedController extends k_Controller
   public function forward($name) {
     return parent::forward($name);
   }
+
+  public function setUrlState($key, $value) {
+    $this->state->set($key, $value);
+  }
 }
 
 class MockController extends ExposedController
@@ -110,6 +119,18 @@ class MockController extends ExposedController
     return "MockController";
   }
 }
+
+class StatefulController extends ExposedController
+{
+  protected function initializeState() {
+    $this->state->initialize(
+      Array(
+        'foo' => 'default-foo'
+      )
+    );
+  }
+}
+
 
 class MockGETController extends ExposedController
 {
@@ -124,14 +145,6 @@ class MockGETController extends ExposedController
     $this->calls[] = 'adaptResponse';
     return $response;
   }
-}
-
-class StatefulController extends k_Controller
-{
-  protected $urlGlobals = Array('foo');
-  protected $urlState = Array(
-    'foo' => 'default-foo'
-  );
 }
 
 class MockFormBehaviour extends k_FormBehaviour

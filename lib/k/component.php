@@ -44,20 +44,11 @@ abstract class k_Component
     */
   public $registry;
   /**
-    * Variables to be propagated over url's from this controller or subcontrollers.
+    * Container for URL-propagated state.
     *
-    * The state is volatile compared to $_SESSION in that it only
-    * is preserved in URL's to this controller or it's child-controllers
-    * @var hashmap
+    * @var k_iStateContainer
     */
-  protected $urlState = Array();
-  /**
-    * Parameters in urlState, which should propagate to global scope.
-    * List a URL-state parameter here, to have it propagated to the context.
-    * @note experimental
-    * @var [] string
-    */
-  protected $urlGlobals = Array();
+  protected $state;
   /**
     * A hashmap of phrases for the built-in translation feature.
     * Used by [[__()|#class-k_component-method-__]].
@@ -75,30 +66,25 @@ abstract class k_Component
     */
   protected $outputFilters = Array('htmlspecialchars');
 
-  function __construct($context) {
+  function __construct(k_iContext $context, $urlNamespace = "") {
     $this->context = $context;
     $this->registry = $this->context->getRegistry();
-    foreach ($this->urlGlobals as $name) { // export state to context
-      if (array_key_exists($name, $this->urlState) && method_exists($this->context, 'setUrlState')) {
-        $this->context->setUrlState($name, $this->urlState[$name]);
-      }
-    }
+    $this->state = $this->context->getUrlStateContainer($urlNamespace);
+    $this->initializeState();
+  }
+
+  /**
+   * Initializes the state container.
+   */
+  protected function initializeState() {
   }
 
   function getRegistry() {
     return $this->registry;
   }
 
-  /**
-    * Sets a parameter on the URL state. Values are propagated over links, generated
-    * by this components or its children.
-    * If the value is declared global scope, it will be propagated to its context.
-    */
-  function setUrlState($key, $value = NULL) {
-    if (in_array($key, $this->urlGlobals) && method_exists($this->context, 'setUrlState')) {
-      $this->context->setUrlState($key, $value);
-    }
-    $this->urlState[$key] = $value;
+  function getUrlStateContainer($namespace = "") {
+    return new k_UrlState($this->state, $namespace);
   }
 
   /**
@@ -143,7 +129,7 @@ abstract class k_Component
     if (is_null($args)) {
       return $this->context->url($href, NULL);
     }
-    return $this->context->url($href, array_merge($args, $this->urlState));
+    return $this->context->url($href, $this->state->export($args));
   }
 
   abstract function execute();

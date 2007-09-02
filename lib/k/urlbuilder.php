@@ -1,26 +1,21 @@
 <?php
+/**
+ * Utility for manipulating URL's at the string level.
+ */
 class k_UrlBuilder
 {
+  protected $normalize;
   protected $base;
 
-  function __construct($base) {
+  function __construct($base, $normalize = TRUE) {
     $this->base = $base;
+    $this->normalize = $normalize;
   }
 
-  function url($href = "", $args = Array()) {
-    $href = (string) $href;
-    $hash = NULL;
-    if (preg_match('/^(.*)#(.*)$/', $href, $matches)) {
-      preg_match('/^(.*)#(.*)$/', $href, $matches);
-      $href = $matches[1];
-      $hash = $matches[2];
-    }
-
-    // re-parse path to normalize relative symbols
-    $href = rtrim($href, "?");
-    $href = trim($href, "/");
+  protected function normalizePath($path) {
+    $path = trim($path, "/");
     $parts = Array();
-    foreach (explode("/", $href) as $part) {
+    foreach (explode("/", $path) as $part) {
       if ($part == '..') {
         if (count($parts) == 0) {
           throw new Exception("Illegal path. Relative level extends below root.");
@@ -30,16 +25,28 @@ class k_UrlBuilder
         $parts[] = $part;
       }
     }
-    $href = implode("/", $parts);
+    return implode('/', $parts);
+  }
 
-    $href = $this->base . $href;
-    if (!$args) {
-      return $href;
-    }
-    if (preg_match("/(.*)\\?(.*)/", $href, $matches)) {
+  protected function parseUrl($href = '') {
+    $hash = NULL;
+    $query_string = NULL;
+    if (preg_match('/^(.*)#(.*)$/', $href, $matches)) {
       $href = $matches[1];
-      parse_str($matches[2], $parsed);
-      $args = array_merge($parsed, $args);
+      $hash = $matches[2];
+    }
+    if (preg_match('/^(.*)?(.*)$/', $href, $matches)) {
+      $href = $matches[1];
+      $query_string = $matches[2];
+    }
+    $params = Array();
+    parse_str($query_string, $params);
+    return Array($href, $params, $hash);
+  }
+
+  protected function compileQueryString($args = Array()) {
+    if (count($args) == 0) {
+      return '';
     }
     $params = Array();
     foreach ($args as $key => $value) {
@@ -47,19 +54,23 @@ class k_UrlBuilder
         if (is_integer($key)) {
           $params[] = rawurlencode($value);
         } else {
-          $params[] = rawurlencode($key) . "=" . rawurlencode($value);
+          $params[] = rawurlencode($key) . '=' . rawurlencode($value);
         }
       }
     }
-    if (count($params) > 0) {
-      if (strpos($href, "?") === FALSE) {
-        $href .= "?".implode("&", $params);
-      } else {
-        $href .= "&".implode("&", $params);
-      }
+    return '?' . implode('&', $params);
+  }
+
+  function url($href = '', $args = Array()) {
+    list($href, $params, $hash) = $this->parseUrl((string) $href);
+    if (!is_array($args)) {
+      $args = Array();
     }
+    $args = array_merge($params, $args);
+    $href = $this->base . ($this->normalize ? $this->normalizePath($href) : $href);
+    $href .= $this->compileQueryString($args);
     if ($hash) {
-      $href .= "#".$hash;
+      $href .= '#' . $hash;
     }
     return $href;
   }

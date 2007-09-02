@@ -2,7 +2,7 @@
 /**
   * The Datalist is a standard component, for providing a list of
   * results. In addition to sort options, it provides pagination.
-  * The view state is carried over queryParams (GET-method).
+  * The view state is propagated over queryParams (GET-method).
   *
   * The main interface is provided through two callbacks; [[query|#class-k_datalist-property-query]]
   * and [[count|#class-k_datalist-property-count]], which are set by
@@ -27,14 +27,31 @@ class k_DataList extends k_Component
   protected $fieldNames = Array();
 
   public $template = "../templates/datalist.tpl.php";
-
-  public $offset = 0;
-  public $order = NULL;
-  public $direction = 'ASC';
-
   public $pageSize = 10;
-
   public $showPager = TRUE;
+
+  /**
+   * @deprecated
+   */
+  private $offset;
+  /**
+   * @deprecated
+   */
+  private $order;
+  /**
+   * @deprecated
+   */
+  private $direction;
+
+  protected function initializeState() {
+    $this->state->initialize(
+      Array(
+        'offset' => 0,
+        'order' => NULL,
+        'direction' => 'ASC',
+      )
+    );
+  }
 
   /**
     * Sets the callback for querying results. The callback must be a valid
@@ -83,7 +100,6 @@ class k_DataList extends k_Component
   }
 
   function execute() {
-    $this->loadState();
     if (!is_callable($this->count)) {
       throw new Exception("Type mismatch. \$this->count not callable");
     }
@@ -94,27 +110,27 @@ class k_DataList extends k_Component
     if ($count == 0) {
       return $this->__("empty");
     }
-    if ($this->offset < 0) {
-      $this->offset = ceil($count / $this->pageSize) + $this->offset;
-      if ($this->offset < 0) {
-        $this->offset = 0;
+    if ($this->state->get('offset') < 0) {
+      $this->state->set('offset', ceil($count / $this->pageSize) + $this->state->get('offset'));
+      if ($this->state->get('offset') < 0) {
+        $this->state->set('offset', 0);
       }
     }
 
-    $offset = $this->offset * $this->pageSize;
-    $result = call_user_func($this->query, $offset, $this->pageSize, $this->order, $this->direction);
+    $offset = $this->state->get('offset') * $this->pageSize;
+    $result = call_user_func($this->query, $offset, $this->pageSize, $this->state->get('order'), $this->state->get('direction'));
     if (!is_array($result)) {
       return $this->__("empty");
     }
-    $pager = $this->calculatePagination($this->offset, $count, $this->pageSize);
+    $pager = $this->calculatePagination($this->state->get('offset'), $count, $this->pageSize);
 
     $head = Array();
     foreach ($this->fieldNames as $column) {
       $th = Array();
       $th['column'] = $column;
-      $th['direction'] = ($this->order == $column && $this->direction == 'ASC') ? 'DESC' : 'ASC';
+      $th['direction'] = ($this->state->get('order') == $column && $this->state->get('direction') == 'ASC') ? 'DESC' : 'ASC';
       $th['href'] = $this->url("", Array('order' => $column, 'direction' => $th['direction']));
-      $th['selected'] = $this->order == $column;
+      $th['selected'] = $this->state->get('order') == $column;
       $head[] = $th;
     }
     $tableData = Array(
@@ -124,15 +140,6 @@ class k_DataList extends k_Component
       'pager' => $pager,
     );
     return $this->viewHandler($tableData);
-  }
-
-  protected function loadState() {
-    foreach (Array('offset', 'order', 'direction') as $param) {
-      if (isset($this->GET[$param])) {
-        $this->$param = $this->GET[$param];
-      }
-      $this->direction = strtoupper($this->direction);
-    }
   }
 
   protected function calculatePagination($show_page, $item_count, $limit = 10) {
@@ -184,7 +191,7 @@ class k_DataList extends k_Component
 
     $viewData['sections'] = Array();
     $paging = Array();
-    for ($n=0; $n < $viewData['page_count']; $n++) {
+    for ($n = 0; $n < $viewData['page_count']; $n++) {
       if ($n < 3 || ($n > $viewData['show_page'] - 2 && $n < $viewData['show_page'] + 2) || $n >= $viewData['page_count'] - 3) {
         $link_or_last = !($n+1 < 3 || ($n+1 > $viewData['show_page']-2 && $n+1 < $viewData['show_page']+2) || $n+1 >= $viewData['page_count']-3);
         if ($n == $viewData['page_count']-1) {

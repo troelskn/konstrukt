@@ -34,7 +34,7 @@ class simpletest_autorun_TextReporter extends TextReporter
     if ($this->is_verbose) {
       $breadcrumb = $this->getTestList();
       array_shift($breadcrumb);
-      echo "[".date("H:i:s")."] " . implode(" : ", $breadcrumb) . "\n";
+      echo "[".date("H:i:s")."] " . implode(" ", $breadcrumb) . "\n";
       if (ob_get_level() > 0) {
         ob_flush();
       }

@@ -68,12 +68,12 @@ class k_Controller extends k_Component implements k_iContext
   protected $forward;
 
   /**
-    * @param   k_iContext $context  The creating context
-    * @param   string     $name     URI-name relative to the parent
+    * @param   k_iContext         $context   The creating context
+    * @param   string             $name      URI-name relative to the parent
     * @return  void
     */
-  function __construct(k_iContext $context, $name = "") {
-    parent::__construct($context);
+  function __construct(k_iContext $context, $name = "", $urlNamespace = "") {
+    parent::__construct($context, $urlNamespace);
     $this->name = $name;
     if (isset($this->debugger)) {
       $this->debugger->logController($this);

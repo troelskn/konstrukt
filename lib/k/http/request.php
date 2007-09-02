@@ -38,6 +38,10 @@ class k_http_Request implements k_iContext
     * @var k_UrlBuilder
     */
   protected $urlBuilder;
+  /**
+    * @var k_UrlStateSource
+    */
+  protected $state;
 
   function __construct() {
     // workaround for wierd "undocumented feature" of IE
@@ -73,7 +77,8 @@ class k_http_Request implements k_iContext
 
     $root = rtrim(str_replace("\\", "/", dirname($ENV['PHP_SELF'])), "/")."/";
     $ENV['K_URL_BASE'] = $ENV['K_HTTP_ROOT'] . $root;
-    $this->urlBuilder = new k_UrlBuilder($ENV['K_URL_BASE']);
+    $this->state = new k_UrlStateSource($this);
+    $this->urlBuilder = new k_UrlBuilder($ENV['K_URL_BASE'], $this->state);
     $this->subspace = trim(preg_replace("/^(".preg_quote($root,"/").")([^\?]*)(.*)/", "\$2", rawurldecode($ENV['REQUEST_URI'])), "/");
     $this->subspace = $this->decodeCharset($this->subspace);
 
@@ -125,5 +130,9 @@ class k_http_Request implements k_iContext
 
   function getRegistry() {
     return $this->registry;
+  }
+
+  function getUrlStateContainer($namespace = "") {
+    return new k_UrlState($this->state, $namespace);
   }
 }

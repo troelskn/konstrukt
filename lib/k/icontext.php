@@ -26,4 +26,10 @@ interface k_iContext
     * @return k_Registry
     */
   function getRegistry();
+  /**
+    * Returns a new URL-state container
+    *
+    * @return k_UrlState
+    */
+  function getUrlStateContainer($namespace = "");
 }
