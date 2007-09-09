@@ -16,13 +16,14 @@ class k_UrlBuilder
     $path = trim($path, "/");
     $parts = Array();
     foreach (explode("/", $path) as $part) {
+      $part = urldecode($part);
       if ($part == '..') {
         if (count($parts) == 0) {
           throw new Exception("Illegal path. Relative level extends below root.");
         }
         array_pop($parts);
       } else {
-        $parts[] = $part;
+        $parts[] = urlencode($part);
       }
     }
     return implode('/', $parts);

@@ -96,13 +96,14 @@ class WebTestOfRequest extends ExtendedWebTestCase
     $this->assertWantedPattern("/Last-Request-Method:DELETE/i");
   }
 
-  function test_queryparam_transports_exotic_characters_undamaged() {
-    $this->get($this->_baseUrl.'dispatcher/foo/myspace');
-    $this->assertWantedPattern("/subspace:myspace/i");
+  function test_url_encoded_path_gets_decoded() {
+    $raw = file_get_contents($this->_baseUrl.'dispatcher/foo/barnes%20%26%20noble');
+    $this->assertTrue(preg_match("/barnes & noble/", utf8_decode($raw)));
+  }
 
-    // currently simpletest doesn't support utf-8, so this crude hack is nescesarry
-    $this->get($this->_baseUrl.'dispatcher/foo/'.rawurlencode(utf8_encode('iñtërnâtiônàlizætiøn')));
-    $this->assertWantedPattern("/".preg_quote(utf8_encode("subspace:iñtërnâtiônàlizætiøn"), "/")."/i");
+  function test_exotic_characters_in_path_gets_decoded() {
+    $raw = file_get_contents($this->_baseUrl.'dispatcher/foo/' . rawurlencode('iñtërnâtiônàlizætiøn'));
+    $this->assertTrue(preg_match("/iñtërnâtiônàlizætiøn/", utf8_decode($raw)));
   }
 
   function test_headers_may_override_request_method() {

@@ -124,6 +124,7 @@ class k_Controller extends k_Component implements k_iContext
     * @throws k_http_Response
     */
   function handleRequest() {
+    // @todo This could just be moved into getSubspace()
     // determine this controllers subspace from name + context->subspace
     $this->subspace = preg_replace('~^'.(preg_quote($this->name, "~")).'/?~', "", $this->context->getSubspace());
 

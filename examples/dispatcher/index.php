@@ -19,7 +19,7 @@ class Controller_Foo extends k_Controller
     $session =& $this->registry->session->get(get_class($this));
     $response = "<h1>Controller_Foo</h1>\n<a href='".$this->top()."'>Default</a>\n"
         ."<p><a href='".$this->url()."'>Foo</a></p>\n"
-        ."<p>subspace:".$this->subspace."</p>\n"
+        ."<p>subspace:".$this->getSubspace()."</p>\n"
         ."<p>Last-Request-Method:".@$session['Last-Request-Method']."</p>";
     $session['Last-Request-Method'] = "GET";
     return $response;

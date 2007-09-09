@@ -80,7 +80,6 @@ class k_http_Request implements k_iContext
     $this->state = new k_UrlStateSource($this);
     $this->urlBuilder = new k_UrlBuilder($ENV['K_URL_BASE'], $this->state);
     $this->subspace = trim(preg_replace("/^(".preg_quote($root,"/").")([^\?]*)(.*)/", "\$2", rawurldecode($ENV['REQUEST_URI'])), "/");
-    $this->subspace = $this->decodeCharset($this->subspace);
 
     $this->registry = new k_Registry();
     $this->registry->set('GET', new ArrayObject($this->decodeCharset($this->unMagic($_GET)), ArrayObject::ARRAY_AS_PROPS | ArrayObject::STD_PROP_LIST));
