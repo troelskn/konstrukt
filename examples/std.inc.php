@@ -14,8 +14,8 @@ ini_set('include_path',
 
 // These classes can't be autoloaded, and so must be manually included
 // Everything else can be autoloaded, by adding the autoload callback (See end of this file)
-require_once('k/classloader.php');
-require_once('k/staticadapter.php');
+require_once 'k/classloader.php';
+require_once 'k/staticadapter.php';
 
 // This is a default error-handler, which simply converts errors to exceptions
 // Konstrukt doesn't need this setup, but it's a pretty sane choice.
