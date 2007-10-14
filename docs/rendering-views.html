@@ -17,7 +17,7 @@
 <h3>Getting data to the view</h3>
 <p>Including the file is only the first step though; Templates usually use dynamic data to render the output. There are basically two ways of accomplishing this -- Either you <em>push</em> data to the template, or you let the template <em>pull</em> the data it needs. The first technique is the most straight forward. Inside the controller, you can pass the data to the template by using the optional second argument to <code>render()</code>. The argument should be an associative array, which is then expanded into the scope of the template. This means that the keys of the array becomes variables in the scope of the template.</p>
 <p>Given the following example:</p>
-<pre class="php"><span class="kw2">class</span> MyController
+<pre class="php"><span class="kw2">class</span> MyController <span class="kw2">extends</span> k_Controller
 <span class="br0">&#123;</span>
   <span class="kw2">function</span> GET<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="re0">$params</span> = <span class="kw3">Array</span><span class="br0">&#40;</span><span class="st0">'foo'</span> =&gt; <span class="st0">'value of foo'</span><span class="br0">&#41;</span>;
@@ -49,7 +49,7 @@
 <p>In an effort to encourage developers to detach localised string constants, Konstrukt features a built-in mechanism for translation. This feature is completely optional, and if you use an external templating engine, it may not already supply something similar.</p>
 <p>The way it works, is that instead of hardcoding language-specific strings into your application, you should use the translation function <code>__()</code>, supplied by the controller. If a translation exists for the string parameter, it is returned. Otherwise, the input string is simply returned. This makes it transparent to use, which means that you can implement the feature even if you&#039;re not making a multi-lingual application from the outset.</p>
 <p>The default implementation of translation is to look strings up in an associative array <code>$i18n</code>. To supply a translation for your controller, you simply put translations in this mapping. Where the translations come from is beyond the scope of Konstrukt, but they would typically be loaded from a configuration file, or the database. If a translation isn&#039;t found, the controller recurses up to the context controller. That way, you can put generic translations in a top-level controller (such as the <em>Root</em>), and more specific translations in deeper nested controllers. This also makes it easy to implement your own translation service, by overriding the <code>__()</code> function in your root controller.</p>
-<pre class="php"><span class="kw2">class</span> MyController
+<pre class="php"><span class="kw2">class</span> MyController <span class="kw2">extends</span> k_Controller
 <span class="br0">&#123;</span>
   <span class="kw2">protected</span> <span class="re0">$i18n</span> = <span class="kw3">Array</span><span class="br0">&#40;</span>
     <span class="st0">'hello world'</span> =&gt; <span class="st0">'hej verden'</span>
@@ -59,13 +59,13 @@
   <span class="br0">&#125;</span>
 <span class="br0">&#125;</span></pre><h2>The document</h2>
 <p>When building HTML applications, you will need to set certain values for the entire HTML document. This includes the <code>&lt;title&gt;</code> and inclusion of style sheets and javascript files. The registry contains an object for holding these values -- the <code>k_Document</code>. You can access the document through all controllers in the hierarchy, by referring to <code>$this-&gt;document</code>. For example, to set the title of the rendering view:</p>
-<pre class="php"><span class="kw2">class</span> MyController
+<pre class="php"><span class="kw2">class</span> MyController <span class="kw2">extends</span> k_Controller
 <span class="br0">&#123;</span>
   <span class="kw2">function</span> GET<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="re0">$this</span>-&gt;<span class="me1">document</span>-&gt;<span class="me1">title</span> = <span class="st0">&quot;My Title&quot;</span>;
   <span class="br0">&#125;</span>
 <span class="br0">&#125;</span></pre><p>Or to include a style sheet:</p>
-<pre class="php"><span class="kw2">class</span> MyController
+<pre class="php"><span class="kw2">class</span> MyController <span class="kw2">extends</span> k_Controller
 <span class="br0">&#123;</span>
   <span class="kw2">function</span> GET<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="re0">$this</span>-&gt;<span class="me1">document</span>-&gt;<span class="me1">styles</span><span class="br0">&#91;</span><span class="br0">&#93;</span> = <span class="re0">$this</span>-&gt;<span class="me1">url</span><span class="br0">&#40;</span><span class="st0">&quot;/css/somestyle.css&quot;</span><span class="br0">&#41;</span>;
@@ -81,7 +81,7 @@
 <h2>Using the hierarchy</h2>
 <p>Because of Konstrukts nested controllers, the hierarchy is often used in the view rendering phase to render common sections of the final view. An example of this technique can be observed in the <code>k_Dispatcher</code>&#039;s use of the document. The child controller is embedded inside a wrap of HTML. This can be used for generating repeated HTML wrapping in your application. The most common use is for navigational elements.</p>
 <p>To wrap the result of child controllers, simply override the handleRequest method of the parent controller to embed the result in some HTML. The following example should illustrate how:</p>
-<pre class="php"><span class="kw2">class</span> MyController
+<pre class="php"><span class="kw2">class</span> MyController <span class="kw2">extends</span> k_Controller
 <span class="br0">&#123;</span>
   <span class="kw2">public</span> <span class="re0">$map</span> = <span class="kw3">Array</span><span class="br0">&#40;</span>
     <span class="st0">&quot;foo&quot;</span> =&gt; <span class="st0">&quot;MyController2&quot;</span>,

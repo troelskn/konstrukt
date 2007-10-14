@@ -157,6 +157,29 @@ parameters.</p>
 </div>
 
 
+  
+
+<h4 id="class-k_icontext-method-geturlstatecontainer">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  getUrlStateContainer(<em> [ <span class="modifier">mixed</span>
+
+$namespace ] </em>)
+
+  : <em class="modifier"><a href="#class-k_urlstate">k_UrlState</a></em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Returns a new URL-state container</p>
+</div>
+
+
 </div>
 </div><div class="class">
 <h2 id="class-k_component">
@@ -218,19 +241,17 @@ provide implementations for these, by using StaticAdapter.</p>
 </h4>
 
 
-  <h4 id="class-k_component-property-urlstate">
-  <em class="modifier">public</em>
+  <h4 id="class-k_component-property-state">
+  <em class="modifier">protected</em>
 
 
-  $urlState
-  : <em class="modifier">array</em>
+  $state
+  : <em class="modifier"><a href="#class-k_istatecontainer">k_iStateContainer</a></em>
 
 </h4>
 
 <div class="docblock">
-  <p>Variables to be propagated over url&#039;s from this controller or subcontrollers.</p>
-<p>The state is volatile compared to $_SESSION in that it only
-is preserved in URL&#039;s to this controller or it&#039;s child-controllers</p>
+  <p>Container for URL-propagated state.</p>
 </div>
 
   <h4 id="class-k_component-property-i18n">
@@ -238,7 +259,7 @@ is preserved in URL&#039;s to this controller or it&#039;s child-controllers</p>
 
 
   $i18n
-  : <em class="modifier">array</em>
+  : <em class="modifier">hashmap</em>
 
 </h4>
 
@@ -252,7 +273,7 @@ Used by <a href="#class-k_component-method-__">__()</a>.</p>
 
 
   $outputFilters
-  : <em class="modifier">mixed</em>
+  : <em class="modifier">[] callback</em>
 
 </h4>
 
@@ -273,9 +294,12 @@ Since HTML is the most common output, the default filter is htmlspecialchars.</p
   <em class="modifier">public</em>
 
 
-  __construct(<em><span class="modifier">mixed</span>
+  __construct(<em><a href="#class-k_icontext"
+>k_iContext</a>
 
-$context</em>)
+$context [ , <span class="modifier">mixed</span>
+
+$urlNamespace ] </em>)
 
   : <em class="modifier">mixed</em>
 
@@ -286,12 +310,49 @@ $context</em>)
 
   
 
+<h4 id="class-k_component-method-initializestate">
+
+  <em class="modifier">protected</em>
+
+
+  initializeState()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Initializes the state container.</p>
+</div>
+
+
+  
+
 <h4 id="class-k_component-method-getregistry">
 
   <em class="modifier">public</em>
 
 
   getRegistry()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_component-method-geturlstatecontainer">
+
+  <em class="modifier">public</em>
+
+
+  getUrlStateContainer(<em> [ <span class="modifier">mixed</span>
+
+$namespace ] </em>)
 
   : <em class="modifier">mixed</em>
 
@@ -569,7 +630,9 @@ This value is assigned when and if the controller forwards to a child-controller
 
 $context</span> [ , <span class="tooltip" title="URI-name relative to the parent"><span class="modifier">string</span>
 
-$name</span> ] </em>)
+$name</span> [ , <span class="modifier">mixed</span>
+
+$urlNamespace ]  ] </em>)
 
   : <em class="modifier">void</em>
 
@@ -888,7 +951,10 @@ which executes the hierarchy and outputs the response to the browser.</p>
   <em class="modifier">public</em>
 
 
-  __construct()
+  __construct(<em> [ <a href="#class-k_icontext"
+>k_iContext</a>
+
+$context ] </em>)
 
   : <em class="modifier">mixed</em>
 
@@ -1071,6 +1137,26 @@ INPUT contains the raw input body of the request. This corresponds to <code>php:
   <p>The URI-subspace for this controller.</p>
 </div>
 
+  <h4 id="class-k_http_request-property-urlbuilder">
+  <em class="modifier">protected</em>
+
+
+  $urlBuilder
+  : <em class="modifier"><a href="#class-k_urlbuilder">k_UrlBuilder</a></em>
+
+</h4>
+
+
+  <h4 id="class-k_http_request-property-state">
+  <em class="modifier">protected</em>
+
+
+  $state
+  : <em class="modifier"><a href="#class-k_urlstatesource">k_UrlStateSource</a></em>
+
+</h4>
+
+
 </div>
 
 <h3>methods</h3>
@@ -1179,6 +1265,172 @@ $args ]  ] </em>)
 
 
 
+  
+
+<h4 id="class-k_http_request-method-geturlstatecontainer">
+
+  <em class="modifier">public</em>
+
+
+  getUrlStateContainer(<em> [ <span class="modifier">mixed</span>
+
+$namespace ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_http_redirect">
+  <em>class</em>
+  <a href="#class-k_http_redirect">k_http_Redirect</a>
+
+  <em>extends</em>
+  <a href="#class-k_http_response">k_http_Response</a>
+</h2>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_http_redirect-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$url</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_http_session">
+  <em>class</em>
+  <a href="#class-k_http_session">k_http_Session</a>
+</h2>
+
+<div class="docblock">
+  <p>Wrapper to http sessions.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_http_session-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_session-method-getsessionid">
+
+  <em class="modifier">public</em>
+
+
+  getSessionId()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_session-method-destroy">
+
+  <em class="modifier">public</em>
+
+
+  destroy()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_session-method-regenerateid">
+
+  <em class="modifier">public</em>
+
+
+  regenerateId()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_session-method-close">
+
+  <em class="modifier">public</em>
+
+
+  close()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_http_session-method-get">
+
+  <em class="modifier">public</em>
+
+
+  get(<em> [ <span class="tooltip" title="Name of session-space or NULL for $_SESSION"><span class="modifier">string</span>
+
+$name</span> ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Returns a reference to a session-space (array).</p>
+<p>If the session-space doesn&#039;t exist, it will be created silently.</p>
+</div>
+
+
 </div>
 </div><div class="class">
 <h2 id="class-k_http_authenticate">
@@ -1232,38 +1484,6 @@ $realm ] </em>)
 
 
   out()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-</div>
-</div><div class="class">
-<h2 id="class-k_http_redirect">
-  <em>class</em>
-  <a href="#class-k_http_redirect">k_http_Redirect</a>
-
-  <em>extends</em>
-  <a href="#class-k_http_response">k_http_Response</a>
-</h2>
-
-
-
-<h3>methods</h3>
-<div class="methods">
-  
-
-<h4 id="class-k_http_redirect-method-__construct">
-
-  <em class="modifier">public</em>
-
-
-  __construct(<em><span class="modifier">mixed</span>
-
-$url</em>)
 
   : <em class="modifier">mixed</em>
 
@@ -1567,122 +1787,6 @@ $content</em>)
 
 </h4>
 
-
-
-</div>
-</div><div class="class">
-<h2 id="class-k_http_session">
-  <em>class</em>
-  <a href="#class-k_http_session">k_http_Session</a>
-</h2>
-
-<div class="docblock">
-  <p>Wrapper to http sessions.</p>
-</div>
-
-
-<h3>methods</h3>
-<div class="methods">
-  
-
-<h4 id="class-k_http_session-method-__construct">
-
-  <em class="modifier">public</em>
-
-
-  __construct()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_http_session-method-getsessionid">
-
-  <em class="modifier">public</em>
-
-
-  getSessionId()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_http_session-method-destroy">
-
-  <em class="modifier">public</em>
-
-
-  destroy()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_http_session-method-regenerateid">
-
-  <em class="modifier">public</em>
-
-
-  regenerateId()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_http_session-method-close">
-
-  <em class="modifier">public</em>
-
-
-  close()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_http_session-method-get">
-
-  <em class="modifier">public</em>
-
-
-  get(<em> [ <span class="tooltip" title="Name of session-space or NULL for $_SESSION"><span class="modifier">string</span>
-
-$name</span> ] </em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-<div class="docblock">
-  <p>Returns a reference to a session-space (array).</p>
-<p>If the session-space doesn&#039;t exist, it will be created silently.</p>
-</div>
 
 
 </div>
@@ -3199,7 +3303,7 @@ $message</em>)
 <div class="docblock">
   <p>The Datalist is a standard component, for providing a list of
 results. In addition to sort options, it provides pagination.
-The view state is carried over queryParams (GET-method).</p>
+The view state is propagated over queryParams (GET-method).</p>
 <p>The main interface is provided through two callbacks; <a href="#class-k_datalist-property-query">query</a>
 and <a href="#class-k_datalist-property-count">count</a>, which are set by
 their respective setter methods.</p>
@@ -3249,36 +3353,6 @@ fieldnames property.</p>
 </h4>
 
 
-  <h4 id="class-k_datalist-property-offset">
-  <em class="modifier">public</em>
-
-
-  $offset
-  : <em class="modifier">mixed</em>
-
-</h4>
-
-
-  <h4 id="class-k_datalist-property-order">
-  <em class="modifier">public</em>
-
-
-  $order
-  : <em class="modifier">mixed</em>
-
-</h4>
-
-
-  <h4 id="class-k_datalist-property-direction">
-  <em class="modifier">public</em>
-
-
-  $direction
-  : <em class="modifier">mixed</em>
-
-</h4>
-
-
   <h4 id="class-k_datalist-property-pagesize">
   <em class="modifier">public</em>
 
@@ -3299,10 +3373,56 @@ fieldnames property.</p>
 </h4>
 
 
+  <h4 id="class-k_datalist-property-offset">
+  <em class="modifier">private</em>
+
+
+  $offset
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_datalist-property-order">
+  <em class="modifier">private</em>
+
+
+  $order
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_datalist-property-direction">
+  <em class="modifier">private</em>
+
+
+  $direction
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
 </div>
 
 <h3>methods</h3>
 <div class="methods">
+  
+
+<h4 id="class-k_datalist-method-initializestate">
+
+  <em class="modifier">protected</em>
+
+
+  initializeState()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
   
 
 <h4 id="class-k_datalist-method-setquerycallback">
@@ -3401,22 +3521,6 @@ $tableData</span></em>)
 
 
   execute()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_datalist-method-loadstate">
-
-  <em class="modifier">protected</em>
-
-
-  loadState()
 
   : <em class="modifier">mixed</em>
 
@@ -3714,6 +3818,398 @@ Returns the absolute path (realpath) if found or FALSE</p>
 
 </div>
 </div><div class="class">
+<h2 id="class-k_istatecontainer">
+  <em>interface</em>
+  <a href="#class-k_istatecontainer">k_iStateContainer</a>
+</h2>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_istatecontainer-method-set">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  set(<em><span class="modifier">mixed</span>
+
+$key, <span class="modifier">mixed</span>
+
+$value</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_istatecontainer-method-get">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  get(<em><span class="modifier">mixed</span>
+
+$key</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_urlstate">
+  <em>class</em>
+  <a href="#class-k_urlstate">k_UrlState</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_istatecontainer">k_iStateContainer</a></h3>
+
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_urlstate-property-source">
+  <em class="modifier">protected</em>
+
+
+  $source
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_urlstate-property-namespace">
+  <em class="modifier">protected</em>
+
+
+  $namespace
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_urlstate-property-separator">
+  <em class="modifier">protected</em>
+
+
+  $separator
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_urlstate-property-values">
+  <em class="modifier">protected</em>
+
+
+  $values
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_urlstate-property-contextstateparams">
+  <em class="modifier">protected</em>
+
+
+  $contextStateParams
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_urlstate-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><a href="#class-k_istatecontainer"
+>k_iStateContainer</a>
+
+$source [ , <span class="modifier">mixed</span>
+
+$namespace ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_urlstate-method-initialize">
+
+  <em class="modifier">public</em>
+
+
+  initialize(<em> [ <span class="modifier">mixed</span>
+
+$params ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Initializes the state-container with persistent values.
+Takes array of name =&gt; default-value</p>
+</div>
+
+
+  
+
+<h4 id="class-k_urlstate-method-registerpersistent">
+
+  <em class="modifier">public</em>
+
+
+  registerPersistent(<em><span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default_value ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Initializes a single persistent value.
+The optional default value will be used only if the source doesn&#039;t already have a value.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_urlstate-method-canonizename">
+
+  <em class="modifier">protected</em>
+
+
+  canonizeName(<em><span class="modifier">mixed</span>
+
+$key</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_urlstate-method-set">
+
+  <em class="modifier">public</em>
+
+
+  set(<em><span class="modifier">mixed</span>
+
+$key, <span class="modifier">mixed</span>
+
+$value</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_urlstate-method-get">
+
+  <em class="modifier">public</em>
+
+
+  get(<em><span class="modifier">mixed</span>
+
+$key</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_urlstate-method-export">
+
+  <em class="modifier">public</em>
+
+
+  export(<em> [ <span class="modifier">mixed</span>
+
+$args ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_urlbuilder">
+  <em>class</em>
+  <a href="#class-k_urlbuilder">k_UrlBuilder</a>
+</h2>
+
+<div class="docblock">
+  <p>Utility for manipulating URL&#039;s at the string level.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_urlbuilder-property-normalize">
+  <em class="modifier">protected</em>
+
+
+  $normalize
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_urlbuilder-property-base">
+  <em class="modifier">protected</em>
+
+
+  $base
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_urlbuilder-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$base [ , <span class="modifier">mixed</span>
+
+$normalize ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_urlbuilder-method-normalizepath">
+
+  <em class="modifier">protected</em>
+
+
+  normalizePath(<em><span class="modifier">mixed</span>
+
+$path</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_urlbuilder-method-parseurl">
+
+  <em class="modifier">protected</em>
+
+
+  parseUrl(<em> [ <span class="modifier">mixed</span>
+
+$href ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_urlbuilder-method-compilequerystring">
+
+  <em class="modifier">protected</em>
+
+
+  compileQueryString(<em> [ <span class="modifier">mixed</span>
+
+$args ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_urlbuilder-method-url">
+
+  <em class="modifier">public</em>
+
+
+  url(<em> [ <span class="modifier">mixed</span>
+
+$href [ , <span class="modifier">mixed</span>
+
+$args ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
 <h2 id="class-k_debugger">
   <em>class</em>
   <a href="#class-k_debugger">k_Debugger</a>
@@ -3792,6 +4288,96 @@ $in_str [ , <span class="modifier">mixed</span>
 $limit [ , <span class="modifier">mixed</span>
 
 $symbol ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_urlstatesource">
+  <em>class</em>
+  <a href="#class-k_urlstatesource">k_UrlStateSource</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_istatecontainer">k_iStateContainer</a></h3>
+
+<div class="docblock">
+  <p>A stateles state container. Used at the top level, for reading from GET.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_urlstatesource-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><a href="#class-k_icontext"
+>k_iContext</a>
+
+$context</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_urlstatesource-method-set">
+
+  <em class="modifier">public</em>
+
+
+  set(<em><span class="modifier">mixed</span>
+
+$key, <span class="modifier">mixed</span>
+
+$value</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_urlstatesource-method-get">
+
+  <em class="modifier">public</em>
+
+
+  get(<em><span class="modifier">mixed</span>
+
+$key</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_urlstatesource-method-export">
+
+  <em class="modifier">public</em>
+
+
+  export()
 
   : <em class="modifier">mixed</em>
 

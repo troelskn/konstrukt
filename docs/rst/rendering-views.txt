@@ -24,7 +24,7 @@ Including the file is only the first step though; Templates usually use dynamic 
 Given the following example:
 
 ::
-class MyController
+class MyController extends k_Controller
 {
   function GET() {
     $params = Array('foo' => 'value of foo');
@@ -76,7 +76,7 @@ The way it works, is that instead of hardcoding language-specific strings into y
 The default implementation of translation is to look strings up in an associative array ``$i18n``. To supply a translation for your controller, you simply put translations in this mapping. Where the translations come from is beyond the scope of Konstrukt, but they would typically be loaded from a configuration file, or the database. If a translation isn't found, the controller recurses up to the context controller. That way, you can put generic translations in a top-level controller (such as the *Root*), and more specific translations in deeper nested controllers. This also makes it easy to implement your own translation service, by overriding the ``__()`` function in your root controller.
 
 ::
-class MyController
+class MyController extends k_Controller
 {
   protected $i18n = Array(
     'hello world' => 'hej verden'
@@ -91,7 +91,7 @@ The document
 When building HTML applications, you will need to set certain values for the entire HTML document. This includes the ``<title>`` and inclusion of style sheets and javascript files. The registry contains an object for holding these values -- the ``k_Document``. You can access the document through all controllers in the hierarchy, by referring to ``$this->document``. For example, to set the title of the rendering view:
 
 ::
-class MyController
+class MyController extends k_Controller
 {
   function GET() {
     $this->document->title = "My Title";
@@ -101,7 +101,7 @@ class MyController
 Or to include a style sheet:
 
 ::
-class MyController
+class MyController extends k_Controller
 {
   function GET() {
     $this->document->styles[] = $this->url("/css/somestyle.css");
@@ -129,7 +129,7 @@ Because of Konstrukts nested controllers, the hierarchy is often used in the vie
 To wrap the result of child controllers, simply override the handleRequest method of the parent controller to embed the result in some HTML. The following example should illustrate how:
 
 ::
-class MyController
+class MyController extends k_Controller
 {
   public $map = Array(
     "foo" => "MyController2",

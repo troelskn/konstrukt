@@ -26,7 +26,7 @@ class MyForm extends k_Controller
   }
 }
 
-This rudimentary example will create a form -- sort of -- but the form won't have any fields, and it isn't really useful for a couple of other reasons. 
+This rudimentary example will create a form -- sort of -- but the form won't have any fields, and it isn't really useful for a couple of other reasons.
 
 Form descriptor
 ---------------
