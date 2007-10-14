@@ -153,3 +153,20 @@ And the contents of ``../templates/navigation.tpl.php``:
 </div>
 
 Note that because abnormal responses (Such as a redirect) are generated with exceptions, they will circumvent the normal rendering call stack. Therefore, you can safely wrap the result of child controllers, since they will only return during normal rendering.
+
+Convenience Methods
+-------------------
+Whenever you echo out a variable in HTML, you need to escape any HTML specialcharacters (& < and >). Since it's rather longwinded to write ``echo htmlspecialchars`` all the time, Konstrukt offers a convenient regular function for this. Likewise, it offers a regular function ``url`` which is synonymous to calling ``$this->url``, and there is a ``__``, which corresponds to ``$this->__``. You could thus write the above code as:
+
+::
+<ul class="menu">
+<?php foreach (array_keys($this->map) as $name): ?>
+  <li><a href="<?php e(url($name)); ?>"><?php e($name); ?></a></li>
+<?php endforeach; ?>
+</ul>
+<div class="content">
+<?php echo $content; ?>
+</div>
+
+These functions look like regular, static functions, but are in fact dynamically mapped to call back to methods on the current rendering controller.
+

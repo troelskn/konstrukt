@@ -7,7 +7,7 @@
 // Adds /lib/ to the path
 ini_set('include_path',
   "lib"
-        .PATH_SEPARATOR.dirname(dirname(__FILE__))."/lib"
+  .PATH_SEPARATOR.dirname(dirname(__FILE__))."/lib"
   .PATH_SEPARATOR.ini_get('include_path')
 );
 

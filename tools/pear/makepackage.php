@@ -27,9 +27,9 @@
 
 require_once 'PEAR/PackageFileManager2.php';
 
-$version   = '0.3.0';
+$version   = '0.4.0';
 $stability = 'beta';
-$notes     = '* initial release as a PEAR package.';
+$notes     = 'Initial release as a PEAR package.';
 
 PEAR::setErrorHandling(PEAR_ERROR_DIE);
 $pfm = new PEAR_PackageFileManager2();
@@ -95,40 +95,45 @@ $pfm->setPhpDep('5.1.3');
 $pfm->setPearinstallerDep('1.5.0');
 
 $lib_files = array(
-  'http/authenticate.php',
-  'http/redirect.php',
-  'http/request.php',
-  'http/response.php',
-  'http/session.php',
-  'anonymous.php',
-  'classloader.php',
-  'component.php',
-  'controller.php',
-  'datalist.php',
-  'debugger.php',
-  'dispatcher.php',
-  'document.php',
-  'field.php',
-  'fieldcollection.php',
   'formbehaviour.php',
+  'dispatcher.php',
+  'component.php',
+  'classloader.php',
+  'datalist.php',
+  'istatecontainer.php',
+  'fieldcollection.php',
   'icontext.php',
+  'urlstate.php',
+  'urlbuilder.php',
+  'debugger.php',
+  'controller.php',
+  'urlstatesource.php',
+  'http/request.php',
+  'http/redirect.php',
+  'http/session.php',
+  'http/authenticate.php',
+  'http/response.php',
+  'staticadapter.php',
+  'field.php',
+  'validator.php',
+  'anonymous.php',
   'memory.php',
   'registry.php',
-  'staticadapter.php',
-  'validator.php'
+  'document.php',
 );
 
 foreach ($lib_files as $file) {
-    $pfm->addInstallAs('lib/k/' . $file, 'k/' . $file);
+  $pfm->addInstallAs('lib/k/' . $file, 'k/' . $file);
 }
 
 $pfm->generateContents();
 
 if (isset($_GET['make']) || (isset($_SERVER['argv']) && @$_SERVER['argv'][1] == 'make')) {
+  echo "\nCreating PEAR package file\n";
   if ($pfm->writePackageFile()) {
-    exit('package file written');
+    echo "\npackage.xml written\n\n";
+    exit;
   }
 } else {
   $pfm->debugPackageFile();
 }
-?>

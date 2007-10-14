@@ -99,5 +99,15 @@
 &lt;div <span class="kw2">class</span>=<span class="st0">&quot;content&quot;</span>&gt;
 <span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class="re0">$content</span>; <span class="kw2">?&gt;</span>
 &lt;/div&gt;</pre><p>Note that because abnormal responses (Such as a redirect) are generated with exceptions, they will circumvent the normal rendering call stack. Therefore, you can safely wrap the result of child controllers, since they will only return during normal rendering.</p>
+<h2>Convenience Methods</h2>
+<p>Whenever you echo out a variable in HTML, you need to escape any HTML specialcharacters (&amp; &lt; and &gt;). Since it&#039;s rather longwinded to write <code>echo htmlspecialchars</code> all the time, Konstrukt offers a convenient regular function for this. Likewise, it offers a regular function <code>url</code> which is synonymous to calling <code>$this-&gt;url</code>, and there is a <code>__</code>, which corresponds to <code>$this-&gt;__</code>. You could thus write the above code as:</p>
+<pre class="php">&lt;ul <span class="kw2">class</span>=<span class="st0">&quot;menu&quot;</span>&gt;
+<span class="kw2">&lt;?php</span> <span class="kw1">foreach</span> <span class="br0">&#40;</span><span class="kw3">array_keys</span><span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">map</span><span class="br0">&#41;</span> <span class="kw1">as</span> <span class="re0">$name</span><span class="br0">&#41;</span>: <span class="kw2">?&gt;</span>
+  &lt;li&gt;&lt;a href=<span class="st0">&quot;&lt;?php e(url($name)); ?&gt;&quot;</span>&gt;&lt;?php e<span class="br0">&#40;</span><span class="re0">$name</span><span class="br0">&#41;</span>; ?&gt;&lt;/a&gt;&lt;/li&gt;
+<span class="kw2">&lt;?php</span> <span class="kw1">endforeach</span>; <span class="kw2">?&gt;</span>
+&lt;/ul&gt;
+&lt;div <span class="kw2">class</span>=<span class="st0">&quot;content&quot;</span>&gt;
+<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class="re0">$content</span>; <span class="kw2">?&gt;</span>
+&lt;/div&gt;</pre><p>These functions look like regular, static functions, but are in fact dynamically mapped to call back to methods on the current rendering controller.</p>
 </body>
 </html>

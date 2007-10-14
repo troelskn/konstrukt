@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.5.4" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+    http://pear.php.net/dtd/tasks-1.0.xsd
+    http://pear.php.net/dtd/package-2.0
+    http://pear.php.net/dtd/package-2.0.xsd">
+ <name>konstrukt</name>
+ <uri>http://localhost/</uri>
+ <summary>A REST-ful framework of controllers for PHP5.</summary>
+ <description>
+Key Aspects
+
+    * Controllers are resources
+    * URI-to-controller-mapping gives your application a logical structure
+    * Routing based on logic rather than rules
+    * Nested controllers supports composite view rendering
+    * Formcontroller provides filtering and validation
+
+Design Goals
+
+    * Embrace HTTP rather than hide it
+    * Enable the programmer, rather than automating
+    * Favour aggregation over code-generation or config-files
+    * Encourage encapsulation, and deter use of global scope
+    * Limit focus to the controller layer
+ </description>
+ <lead>
+  <name>Troels Knak-Nielsen</name>
+  <user>swaxi</user>
+  <email>troels@konstrukt.dk</email>
+  <active>yes</active>
+ </lead>
+ <helper>
+  <name>Lars Olesen</name>
+  <user>lsolesen</user>
+  <email>lsolesen@users.sourceforge.net</email>
+  <active>yes</active>
+ </helper>
+ <date>2007-10-14</date>
+ <time>21:35:50</time>
+ <version>
+  <release>0.4.0</release>
+  <api>0.4.0</api>
+ </version>
+ <stability>
+  <release>beta</release>
+  <api>beta</api>
+ </stability>
+ <license uri="http://www.gnu.org/licenses/lgpl.html">LGPL License</license>
+ <notes>Initial release as a PEAR package.</notes>
+ <contents>
+  <dir baseinstalldir="/" name="/">
+   <dir name="blank_project">
+    <dir name="lib">
+     <file baseinstalldir="/" name="root.php" role="doc" />
+    </dir> <!-- /blank_project/lib -->
+    <dir name="www">
+     <file baseinstalldir="/" name="index.php" role="doc" />
+    </dir> <!-- /blank_project/www -->
+    <file baseinstalldir="/" name="std.inc.php" role="doc" />
+   </dir> <!-- /blank_project -->
+   <dir name="docs">
+    <dir name="rst">
+     <file baseinstalldir="/" name="introduction.txt" role="doc" />
+     <file baseinstalldir="/" name="rendering-views.txt" role="doc" />
+     <file baseinstalldir="/" name="using-forms.txt" role="doc" />
+     <file baseinstalldir="/" name="working-with-controllers.txt" role="doc" />
+    </dir> <!-- /docs/rst -->
+    <dir name="visio">
+     <file baseinstalldir="/" name="component-response-1-to-1.vsd" role="doc" />
+     <file baseinstalldir="/" name="component-response-1-to-many.vsd" role="doc" />
+     <file baseinstalldir="/" name="controller-flow.vsd" role="doc" />
+     <file baseinstalldir="/" name="controller-lifecycle.vsd" role="doc" />
+     <file baseinstalldir="/" name="web-application-request-response-lifecycle.vsd" role="doc" />
+    </dir> <!-- /docs/visio -->
+    <file baseinstalldir="/" name="apidocs.html" role="doc" />
+    <file baseinstalldir="/" name="classdiagram.png" role="doc" />
+    <file baseinstalldir="/" name="component-response-1-to-1.png" role="doc" />
+    <file baseinstalldir="/" name="component-response-1-to-many.png" role="doc" />
+    <file baseinstalldir="/" name="controller-lifecycle.png" role="doc" />
+    <file baseinstalldir="/" name="documentation.css" role="doc" />
+    <file baseinstalldir="/" name="index.html" role="doc" />
+    <file baseinstalldir="/" name="introduction.html" role="doc" />
+    <file baseinstalldir="/" name="rendering-views.html" role="doc" />
+    <file baseinstalldir="/" name="using-forms.html" role="doc" />
+    <file baseinstalldir="/" name="web-application-request-response-lifecycle.png" role="doc" />
+    <file baseinstalldir="/" name="working-with-controllers.html" role="doc" />
+   </dir> <!-- /docs -->
+   <dir name="examples">
+    <dir name="blog-php">
+     <dir name="lib">
+      <dir name="controller">
+       <dir name="blog">
+        <file baseinstalldir="/" name="create.php" role="doc" />
+        <file baseinstalldir="/" name="delete.php" role="doc" />
+        <file baseinstalldir="/" name="edit.php" role="doc" />
+        <file baseinstalldir="/" name="index.php" role="doc" />
+        <file baseinstalldir="/" name="show.php" role="doc" />
+       </dir> <!-- /examples/blog-php/lib/controller/blog -->
+      </dir> <!-- /examples/blog-php/lib/controller -->
+      <file baseinstalldir="/" name="database.php" role="doc" />
+      <file baseinstalldir="/" name="root.php" role="doc" />
+      <file baseinstalldir="/" name="tablegateway.php" role="doc" />
+     </dir> <!-- /examples/blog-php/lib -->
+     <dir name="templates">
+      <dir name="blog">
+       <file baseinstalldir="/" name="delete.tpl.php" role="doc" />
+       <file baseinstalldir="/" name="form.tpl.php" role="doc" />
+       <file baseinstalldir="/" name="index.tpl.php" role="doc" />
+       <file baseinstalldir="/" name="show.tpl.php" role="doc" />
+      </dir> <!-- /examples/blog-php/templates/blog -->
+      <file baseinstalldir="/" name="document.tpl.php" role="doc" />
+      <file baseinstalldir="/" name="wrapper.tpl.php" role="doc" />
+     </dir> <!-- /examples/blog-php/templates -->
+     <dir name="www">
+      <dir name="res">
+       <file baseinstalldir="/" name="style.css" role="doc" />
+      </dir> <!-- /examples/blog-php/www/res -->
+      <file baseinstalldir="/" name="index.php" role="doc" />
+     </dir> <!-- /examples/blog-php/www -->
+     <file baseinstalldir="/" name="blog.ddl" role="doc" />
+    </dir> <!-- /examples/blog-php -->
+    <dir name="datalist">
+     <file baseinstalldir="/" name="datalist.tpl.php" role="doc" />
+     <file baseinstalldir="/" name="index.php" role="doc" />
+     <file baseinstalldir="/" name="models.inc.php" role="doc" />
+    </dir> <!-- /examples/datalist -->
+    <dir name="dispatcher">
+     <file baseinstalldir="/" name="index.php" role="doc" />
+    </dir> <!-- /examples/dispatcher -->
+    <dir name="form">
+     <file baseinstalldir="/" name="index.php" role="doc" />
+     <file baseinstalldir="/" name="index.template.php" role="doc" />
+    </dir> <!-- /examples/form -->
+    <dir name="response">
+     <file baseinstalldir="/" name="download_pdf.php" role="doc" />
+     <file baseinstalldir="/" name="download_pdf_legacy.php" role="doc" />
+     <file baseinstalldir="/" name="output.php" role="doc" />
+    </dir> <!-- /examples/response -->
+    <dir name="wrap">
+     <file baseinstalldir="/" name="index.php" role="doc" />
+    </dir> <!-- /examples/wrap -->
+    <file baseinstalldir="/" name="std.inc.php" role="doc" />
+   </dir> <!-- /examples -->
+   <dir name="lib">
+    <dir name="k">
+     <dir name="http">
+      <file baseinstalldir="/" name="authenticate.php" role="php" />
+      <file baseinstalldir="/" name="redirect.php" role="php" />
+      <file baseinstalldir="/" name="request.php" role="php" />
+      <file baseinstalldir="/" name="response.php" role="php" />
+      <file baseinstalldir="/" name="session.php" role="php" />
+     </dir> <!-- /lib/k/http -->
+     <file baseinstalldir="/" name="anonymous.php" role="php" />
+     <file baseinstalldir="/" name="classloader.php" role="php" />
+     <file baseinstalldir="/" name="component.php" role="php" />
+     <file baseinstalldir="/" name="controller.php" role="php" />
+     <file baseinstalldir="/" name="datalist.php" role="php" />
+     <file baseinstalldir="/" name="debugger.php" role="php" />
+     <file baseinstalldir="/" name="dispatcher.php" role="php" />
+     <file baseinstalldir="/" name="document.php" role="php" />
+     <file baseinstalldir="/" name="field.php" role="php" />
+     <file baseinstalldir="/" name="fieldcollection.php" role="php" />
+     <file baseinstalldir="/" name="formbehaviour.php" role="php" />
+     <file baseinstalldir="/" name="icontext.php" role="php" />
+     <file baseinstalldir="/" name="istatecontainer.php" role="php" />
+     <file baseinstalldir="/" name="memory.php" role="php" />
+     <file baseinstalldir="/" name="registry.php" role="php" />
+     <file baseinstalldir="/" name="staticadapter.php" role="php" />
+     <file baseinstalldir="/" name="urlbuilder.php" role="php" />
+     <file baseinstalldir="/" name="urlstate.php" role="php" />
+     <file baseinstalldir="/" name="urlstatesource.php" role="php" />
+     <file baseinstalldir="/" name="validator.php" role="php" />
+    </dir> <!-- /lib/k -->
+   </dir> <!-- /lib -->
+   <dir name="tests">
+    <dir name="support">
+     <file baseinstalldir="/" name="config.default.php" role="test" />
+     <file baseinstalldir="/" name="mocks.inc.php" role="test" />
+     <file baseinstalldir="/" name="registry.config.php" role="test" />
+     <file baseinstalldir="/" name="simpletest.inc.php" role="test" />
+    </dir> <!-- /tests/support -->
+    <file baseinstalldir="/" name="all.test.php" role="test" />
+    <file baseinstalldir="/" name="controller.test.php" role="test" />
+    <file baseinstalldir="/" name="datalist.test.php" role="test" />
+    <file baseinstalldir="/" name="dispatcher.test.php" role="test" />
+    <file baseinstalldir="/" name="formbehaviour.test.php" role="test" />
+    <file baseinstalldir="/" name="registry.test.php" role="test" />
+    <file baseinstalldir="/" name="request.test.php" role="test" />
+    <file baseinstalldir="/" name="response.test.php" role="test" />
+    <file baseinstalldir="/" name="url.test.php" role="test" />
+   </dir> <!-- /tests -->
+   <file baseinstalldir="/" name="LICENSE" role="data" />
+  </dir> <!-- / -->
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>5.1.3</min>
+   </php>
+   <pearinstaller>
+    <min>1.5.0</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+ <phprelease>
+  <filelist>
+   <install as="k/formbehaviour.php" name="lib/k/formbehaviour.php" />
+   <install as="k/dispatcher.php" name="lib/k/dispatcher.php" />
+   <install as="k/component.php" name="lib/k/component.php" />
+   <install as="k/classloader.php" name="lib/k/classloader.php" />
+   <install as="k/datalist.php" name="lib/k/datalist.php" />
+   <install as="k/istatecontainer.php" name="lib/k/istatecontainer.php" />
+   <install as="k/fieldcollection.php" name="lib/k/fieldcollection.php" />
+   <install as="k/icontext.php" name="lib/k/icontext.php" />
+   <install as="k/urlstate.php" name="lib/k/urlstate.php" />
+   <install as="k/urlbuilder.php" name="lib/k/urlbuilder.php" />
+   <install as="k/debugger.php" name="lib/k/debugger.php" />
+   <install as="k/controller.php" name="lib/k/controller.php" />
+   <install as="k/urlstatesource.php" name="lib/k/urlstatesource.php" />
+   <install as="k/http/request.php" name="lib/k/http/request.php" />
+   <install as="k/http/redirect.php" name="lib/k/http/redirect.php" />
+   <install as="k/http/session.php" name="lib/k/http/session.php" />
+   <install as="k/http/authenticate.php" name="lib/k/http/authenticate.php" />
+   <install as="k/http/response.php" name="lib/k/http/response.php" />
+   <install as="k/staticadapter.php" name="lib/k/staticadapter.php" />
+   <install as="k/field.php" name="lib/k/field.php" />
+   <install as="k/validator.php" name="lib/k/validator.php" />
+   <install as="k/anonymous.php" name="lib/k/anonymous.php" />
+   <install as="k/memory.php" name="lib/k/memory.php" />
+   <install as="k/registry.php" name="lib/k/registry.php" />
+   <install as="k/document.php" name="lib/k/document.php" />
+  </filelist>
+ </phprelease>
+ <changelog>
+  <release>
+   <version>
+    <release>0.4.0</release>
+    <api>0.4.0</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>beta</api>
+   </stability>
+   <date>2007-10-14</date>
+   <license uri="http://www.gnu.org/licenses/lgpl.html">LGPL License</license>
+   <notes>Initial release as a PEAR package.</notes>
+  </release>
+ </changelog>
+</package>
