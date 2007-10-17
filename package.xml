@@ -36,7 +36,7 @@ Design Goals
   <active>yes</active>
  </helper>
  <date>2007-10-17</date>
- <time>21:18:21</time>
+ <time>22:05:57</time>
  <version>
   <release>0.4.0</release>
   <api>0.4.0</api>
@@ -204,6 +204,7 @@ Design Goals
  </dependencies>
  <phprelease>
   <filelist>
+   <install as="k.php" name="lib/k.php" />
    <install as="k/formbehaviour.php" name="lib/k/formbehaviour.php" />
    <install as="k/dispatcher.php" name="lib/k/dispatcher.php" />
    <install as="k/component.php" name="lib/k/component.php" />

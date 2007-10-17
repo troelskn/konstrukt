@@ -95,34 +95,35 @@ $pfm->setPhpDep('5.1.3');
 $pfm->setPearinstallerDep('1.5.0');
 
 $lib_files = array(
-  'formbehaviour.php',
-  'dispatcher.php',
-  'component.php',
-  'classloader.php',
-  'datalist.php',
-  'istatecontainer.php',
-  'fieldcollection.php',
-  'icontext.php',
-  'urlstate.php',
-  'urlbuilder.php',
-  'debugger.php',
-  'controller.php',
-  'urlstatesource.php',
-  'http/request.php',
-  'http/redirect.php',
-  'http/session.php',
-  'http/authenticate.php',
-  'http/response.php',
-  'field.php',
-  'validator.php',
-  'anonymous.php',
-  'memory.php',
-  'registry.php',
-  'document.php',
+  'k.php',
+  'k/formbehaviour.php',
+  'k/dispatcher.php',
+  'k/component.php',
+  'k/classloader.php',
+  'k/datalist.php',
+  'k/istatecontainer.php',
+  'k/fieldcollection.php',
+  'k/icontext.php',
+  'k/urlstate.php',
+  'k/urlbuilder.php',
+  'k/debugger.php',
+  'k/controller.php',
+  'k/urlstatesource.php',
+  'k/http/request.php',
+  'k/http/redirect.php',
+  'k/http/session.php',
+  'k/http/authenticate.php',
+  'k/http/response.php',
+  'k/field.php',
+  'k/validator.php',
+  'k/anonymous.php',
+  'k/memory.php',
+  'k/registry.php',
+  'k/document.php',
 );
 
 foreach ($lib_files as $file) {
-  $pfm->addInstallAs('lib/k/' . $file, 'k/' . $file);
+  $pfm->addInstallAs('lib/' . $file, $file);
 }
 
 $pfm->generateContents();
