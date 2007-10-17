@@ -113,7 +113,6 @@ $lib_files = array(
   'http/session.php',
   'http/authenticate.php',
   'http/response.php',
-  'staticadapter.php',
   'field.php',
   'validator.php',
   'anonymous.php',

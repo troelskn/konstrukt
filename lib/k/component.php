@@ -14,7 +14,7 @@
   * The [[render()|#class-k_component-method-render]] method is a simple, yet
   * powerful rendering engine. It includes a procedural PHP file, using ``include``
   * and captures the output to a string, which is returned.
-  * Within the rendering template, you can use the following static functions as
+  * Within the rendering template, you can use the following global functions as
   * convenient shortcuts:
   *
   * ``e(...)`` Echoes out the input. It's basically a shortcut for
@@ -24,11 +24,12 @@
   * ``url(...)`` Shortcut for ``$this->url(...)``
   *
   * ``__(...)`` Shortcut for ``$this->__(...)``
+  * ``t(...)`` Shortcut for ``$this->__(...)``
   *
-  * The implementation of these helper functions is implemented by
-  * [[k_StaticAdapter|#class-k_staticadapter]]. If you need to reuse procedural
-  * templates, written for use with Konstrukt, outside of Konstrukt, you can
-  * provide implementations for these, by using StaticAdapter.
+  * The implementation of these helper functions is dynamically resolved through a
+  * callback. If you need to reuse procedural templates, written for use with
+  * Konstrukt, outside it, you can provide implementations for these, by
+  * connecting different callbacks to the global handlers.
   */
 abstract class k_Component
 {
@@ -154,22 +155,29 @@ abstract class k_Component
     if (!is_file($__template_filename__)) {
       throw new Exception("Failed opening '".func_get_arg(0)."' for inclusion. (include_path=".ini_get('include_path').")");
     }
-    k_StaticAdapter::connect('e', Array($this, 'outputString'));
-    k_StaticAdapter::connect('__', Array($this, '__'));
-    k_StaticAdapter::connect('url', Array($this, 'url'));
+    $__old_handler_e__ = $GLOBALS['_global_function_callback_e'];
+    $__old_handler_____ = $GLOBALS['_global_function_callback___'];
+    $__old_handler_t__ = $GLOBALS['_global_function_callback_t'];
+    $__old_handler_url__ = $GLOBALS['_global_function_callback_url'];
+    $GLOBALS['_global_function_callback_e'] = Array($this, 'outputString');
+    $GLOBALS['_global_function_callback___'] = Array($this, '__');
+    $GLOBALS['_global_function_callback_t'] = Array($this, '__');
+    $GLOBALS['_global_function_callback_url'] = Array($this, 'url');
     ob_start();
     try {
       include($__template_filename__);
       $buffer = ob_get_clean();
-      k_StaticAdapter::disconnect('e');
-      k_StaticAdapter::disconnect('__');
-      k_StaticAdapter::disconnect('url');
+      $GLOBALS['_global_function_callback_e'] = $__old_handler_e__;
+      $GLOBALS['_global_function_callback___'] = $__old_handler_____;
+      $GLOBALS['_global_function_callback_t'] = $__old_handler_t__;
+      $GLOBALS['_global_function_callback_url'] = $__old_handler_url__;
       return $buffer;
     } catch (Exception $ex) {
       ob_end_clean();
-      k_StaticAdapter::disconnect('e');
-      k_StaticAdapter::disconnect('__');
-      k_StaticAdapter::disconnect('url');
+      $GLOBALS['_global_function_callback_e'] = $__old_handler_e__;
+      $GLOBALS['_global_function_callback___'] = $__old_handler_____;
+      $GLOBALS['_global_function_callback_t'] = $__old_handler_t__;
+      $GLOBALS['_global_function_callback_url'] = $__old_handler_url__;
       throw $ex;
     }
   }

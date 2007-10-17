@@ -35,8 +35,8 @@ Design Goals
   <email>lsolesen@users.sourceforge.net</email>
   <active>yes</active>
  </helper>
- <date>2007-10-14</date>
- <time>21:35:50</time>
+ <date>2007-10-17</date>
+ <time>21:05:56</time>
  <version>
   <release>0.4.0</release>
   <api>0.4.0</api>
@@ -165,12 +165,12 @@ Design Goals
      <file baseinstalldir="/" name="istatecontainer.php" role="php" />
      <file baseinstalldir="/" name="memory.php" role="php" />
      <file baseinstalldir="/" name="registry.php" role="php" />
-     <file baseinstalldir="/" name="staticadapter.php" role="php" />
      <file baseinstalldir="/" name="urlbuilder.php" role="php" />
      <file baseinstalldir="/" name="urlstate.php" role="php" />
      <file baseinstalldir="/" name="urlstatesource.php" role="php" />
      <file baseinstalldir="/" name="validator.php" role="php" />
     </dir> <!-- /lib/k -->
+    <file baseinstalldir="/" name="k.php" role="php" />
    </dir> <!-- /lib -->
    <dir name="tests">
     <dir name="support">
@@ -222,7 +222,6 @@ Design Goals
    <install as="k/http/session.php" name="lib/k/http/session.php" />
    <install as="k/http/authenticate.php" name="lib/k/http/authenticate.php" />
    <install as="k/http/response.php" name="lib/k/http/response.php" />
-   <install as="k/staticadapter.php" name="lib/k/staticadapter.php" />
    <install as="k/field.php" name="lib/k/field.php" />
    <install as="k/validator.php" name="lib/k/validator.php" />
    <install as="k/anonymous.php" name="lib/k/anonymous.php" />
@@ -241,7 +240,7 @@ Design Goals
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <date>2007-10-14</date>
+   <date>2007-10-17</date>
    <license uri="http://www.gnu.org/licenses/lgpl.html">LGPL License</license>
    <notes>Initial release as a PEAR package.</notes>
   </release>

@@ -11,10 +11,8 @@ ini_set('include_path',
   .PATH_SEPARATOR.ini_get('include_path')
 );
 
-// These classes can't be autoloaded, and so must be manually included
-// Everything else can be autoloaded, by adding the autoload callback (See end of this file)
-require_once 'k/classloader.php';
-require_once 'k/staticadapter.php';
+// Loads Konstrukt global symbols
+require_once 'k.php';
 
 // This is a default error-handler, which simply converts errors to exceptions
 // Konstrukt doesn't need this setup, but it's a pretty sane choice.
@@ -38,18 +36,17 @@ set_error_handler('exceptions_error_handler');
 // For production, you should replace this handler with something, which logs the error,
 // and doesn't dump a trace. Failing to do so could be a security risk.
 function debug_exception_handler($ex) {
-  echo "<p style='font-family:helvetica,sans-serif'>";
-  echo "<b>Error :</b>".$ex->getMessage()."<br />";
-  echo "<b>Code :</b>".$ex->getCode()."<br />";
-  echo "<b>File :</b>".$ex->getFile()."<br />";
-  echo "<b>Line :</b>".$ex->getLine()."</p>";
-  echo "<div style='font-family:garamond'>".nl2br($ex->getTraceAsString())."</div>";
-  exit;
+  if (php_sapi_name() == 'cli') {
+    echo "Error (code:".$ex->getCode().") :".$ex->getMessage()."\n at line ".$ex->getLine()." in file ".$ex->getFile()."\n";
+    echo $ex->getTraceAsString()."\n";
+  } else {
+    echo "<p style='font-family:helvetica,sans-serif'>\n";
+    echo "<b>Error :</b>".$ex->getMessage()."<br />\n";
+    echo "<b>Code :</b>".$ex->getCode()."<br />\n";
+    echo "<b>File :</b>".$ex->getFile()."<br />\n";
+    echo "<b>Line :</b>".$ex->getLine()."</p>\n";
+    echo "<div style='font-family:garamond'>".nl2br(htmlspecialchars($ex->getTraceAsString()))."</div>\n";
+  }
+  exit -1;
 }
 set_exception_handler('debug_exception_handler');
-
-// Here we hook up the default autoloader. With this, you don't need to explicitly include
-// files, as long as they follow the Konstrukt naming scheme.
-// Note that Konstrukt differs slightly from PEAR, in that all filenames are lowercase.
-// This is to ensure portability across filesystems, with casesensitive filenames (*nix)
-spl_autoload_register(Array('k_ClassLoader', 'autoload'));

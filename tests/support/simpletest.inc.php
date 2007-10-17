@@ -103,6 +103,26 @@ class simpletest_autorun_HtmlReporter extends HtmlReporter
     }
   }
 
+  function paintFail($message) {
+    if ($this->is_verbose) {
+      $this->_fails++;
+      print "<span class=\"fail\">Fail</span>: ";
+      $breadcrumb = $this->getTestList();
+      array_shift($breadcrumb);
+      $case = $breadcrumb[0];
+      $test = $breadcrumb[1];
+      print "<a href=\"?c=".rawurlencode($case)."&verbose=1\">" . $case . "</a>";
+      print "-&gt;";
+      print "<a href=\"?c=".rawurlencode($case)."&t=".rawurlencode($test)."&verbose=1\">" . $test . "</a>";
+      print "-&gt;" . htmlspecialchars($message) . "<br />\n";
+      if (ob_get_level() > 0) {
+        ob_flush();
+      }
+    } else {
+      parent::paintFail($message);
+    }
+  }
+
   function paintFooter($test_name) {
     $colour = ($this->getFailCount() + $this->getExceptionCount() > 0 ? "red" : "green");
     print "<div style=\"";
