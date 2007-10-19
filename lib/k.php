@@ -16,7 +16,7 @@ if (!function_exists('e')) {
    */
   function e($args) {
     $args = func_get_args();
-    return call_user_func($GLOBALS['_global_function_callback_e'], $args);
+    return call_user_func_array($GLOBALS['_global_function_callback_e'], $args);
   }
   if (!isset($GLOBALS['_global_function_callback_e'])) {
     $GLOBALS['_global_function_callback_e'] = NULL;
@@ -30,7 +30,7 @@ if (!function_exists('__')) {
    */
   function __($args) {
     $args = func_get_args();
-    return call_user_func($GLOBALS['_global_function_callback___'], $args);
+    return call_user_func_array($GLOBALS['_global_function_callback___'], $args);
   }
   if (!isset($GLOBALS['_global_function_callback___'])) {
     $GLOBALS['_global_function_callback___'] = NULL;
@@ -44,7 +44,7 @@ if (!function_exists('t')) {
    */
   function t($args) {
     $args = func_get_args();
-    return call_user_func($GLOBALS['_global_function_callback_t'], $args);
+    return call_user_func_array($GLOBALS['_global_function_callback_t'], $args);
   }
   if (!isset($GLOBALS['_global_function_callback_t'])) {
     $GLOBALS['_global_function_callback_t'] = NULL;
@@ -58,7 +58,7 @@ if (!function_exists('url')) {
    */
   function url($args) {
     $args = func_get_args();
-    return call_user_func($GLOBALS['_global_function_callback_url'], $args);
+    return call_user_func_array($GLOBALS['_global_function_callback_url'], $args);
   }
   if (!isset($GLOBALS['_global_function_callback_url'])) {
     $GLOBALS['_global_function_callback_url'] = NULL;
