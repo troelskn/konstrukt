@@ -66,6 +66,10 @@ class k_Controller extends k_Component implements k_iContext
     * @var string
     */
   protected $forward;
+  /**
+    * @var array
+    */
+  protected $subController = Array();
 
   /**
     * @param   k_iContext         $context   The creating context
@@ -127,20 +131,19 @@ class k_Controller extends k_Component implements k_iContext
     // @todo This could just be moved into getSubspace()
     // determine this controllers subspace from name + context->subspace
     $this->subspace = preg_replace('~^'.(preg_quote($this->name, "~")).'/?~', "", $this->context->getSubspace());
-
     $next = $this->findNext();
     if (!is_null($next)) {
       return $this->forward($next);
     }
-
     // execute this controller, since we didn't forward
     $response = $this->execute();
-
     return $response;
   }
 
   /**
-    * determine the name of the next controller, if any.
+    * Determine the name of the next controller, if any.
+    * As long as your URL's follow the standard / delimited style, you shouldn't need to override this method.
+    * If you find that you do, you might want to reconsider why you URL's are structured as they are.
     */
   protected function findNext() {
     if (preg_match('~^([^/]+)/?(.*)$~', $this->subspace, $matches)) {
@@ -149,13 +152,40 @@ class k_Controller extends k_Component implements k_iContext
   }
 
   /**
-    * Indirects execution to a child-controller.
+    * Indirects execution to a subcontroller.
+    * You shouldn't need to override this method. If you want to change the mapping logic, override
+    * createSubController instead.
+    * Note that forward was split up, so code which overrides forward() are likely candidates to
+    * be moved to createSubController, with small adjustments.
     *
-    * @param    string    $name    URI-name of the child-controller
+    * @param  string    $name    URI-name of the subcontroller
     * @return string
     * @throws k_http_Response
     */
   protected function forward($name) {
+    $next = $this->getSubController($name);
+    $this->forward = $name;
+    return $next->handleRequest();
+  }
+
+  /**
+   * Returns a subcontroller.
+   * Acts as a registry, so the same subcontroller is only created once.
+   * @see createSubController
+   */
+  protected function getSubController($name) {
+    if (!isset($this->subController[$name])) {
+      $this->subController[$name] = $this->createSubController($name);
+    }
+    return $this->subController[$name];
+  }
+
+  /**
+   * Creates a subcontroller.
+   * By default, $map is used to map name to classname, but you can override this
+   * method, to supply specific mapping logic.
+   */
+  protected function createSubController($name) {
     if (!isset($this->map[$name])) {
       throw new k_http_Response(404);
     }
@@ -163,9 +193,7 @@ class k_Controller extends k_Component implements k_iContext
     if (!class_exists($classname)) {
       throw new k_http_Response(500);
     }
-    $this->forward = $name;
-    $next = new $classname($this, $name);
-    return $next->handleRequest();
+    return new $classname($this, $name);
   }
 
   /**

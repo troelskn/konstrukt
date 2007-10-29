@@ -43,14 +43,15 @@ class Controller_Blog_Index extends k_Controller
     throw new k_http_Response(200);
   }
 
-  protected function forward($name) {
+  protected function createSubController($name) {
     if ($name == 'create') {
-      $next = new Controller_Blog_Create($this, $name);
-    } else {
-      $next = new Controller_Blog_Show($this, $name);
+      return new Controller_Blog_Create($this, $name);
     }
+    return new Controller_Blog_Show($this, $name);
+  }
 
-    $response = $next->handleRequest();
+  protected function forward($name) {
+    $response = parent::forward($name);
     $model = Array(
       'href' => $this->url(),
       'title' => "index",
