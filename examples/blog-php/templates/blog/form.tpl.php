@@ -1,17 +1,17 @@
 <form <?php echo $this->getFormProperties(); ?>>
 <?php if (count($this->fields->getMessages()) > 0) : ?>
   <p class="error">
-    <?php echo implode("<br/>", $this->fields->getMessages()); ?>
+    <?php echo implode("<br/>", array_map('e', $this->fields->getMessages())); ?>
   </p>
 <?php endif; ?>
 <?php foreach ($this->fields as $field) : ?>
 <p>
-<label for="<?php echo $field->id; ?>"><?php echo $field->name; ?></label>
+  <label for="<?php e($field->id); ?>"><?php e($field->name); ?></label>
 <?php echo $field; ?>
 <?php if (!empty($field->messages)) : ?>
   <br />
   <span class="error">
-    <?php echo implode(", ", $field->messages); ?>
+    <?php e(implode(", ", $field->messages)); ?>
   </span>
 <?php endif; ?>
 

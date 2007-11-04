@@ -1,10 +1,11 @@
+<?php $record = $this->getModel(); ?>
 <h1>
-  <?php echo $record->title; ?>
+  <?php e($record->title); ?>
 </h1>
-<span class="date"><?php echo $record->published; ?></span>
-<a href="<?php echo $edit; ?>">edit</a>
+<span class="date"><?php e($record->published); ?></span>
+<a href="<?php e(url('edit')); ?>">edit</a>
 |
-<a href="<?php echo $delete; ?>">delete</a>
+<a href="<?php e(url('delete')); ?>">delete</a>
 <p>
-  <?php echo $record->content; ?>
+  <?php e($record->content); ?>
 </p>

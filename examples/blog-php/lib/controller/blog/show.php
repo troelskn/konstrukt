@@ -29,12 +29,7 @@ class Controller_Blog_Show extends k_Controller
     if (is_null($record)) {
       throw new k_http_Response(404);
     }
-    $model = Array(
-      'edit' => $this->url('edit'),
-      'delete' => $this->url('delete'),
-      'record' => $record
-    );
-    return $this->render("../templates/blog/show.tpl.php", $model);
+    return $this->render("../templates/blog/show.tpl.php");
   }
 
   function HEAD() {

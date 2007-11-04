@@ -1,28 +1,29 @@
 <?php
 class Controller_Blog_Index extends k_Controller
 {
-  protected $offset = 0;
+  function __construct(k_iContext $context, $name = "", $urlNamespace = "blog") {
+    parent::__construct($context, $name, $urlNamespace);
+  }
+
+  protected function initializeState() {
+    $this->state->initialize(
+      Array(
+        'offset' => 0));
+  }
 
   function getDatasource() {
     return $this->registry->get('table:blogentries');
-  }
-
-  function execute() {
-    $this->offset = (int) isset($this->GET['offset']) ? $this->GET['offset'] : 0;
-    return parent::execute();
   }
 
   function GET() {
     $datasource = $this->getDatasource();
     $resultset = Array();
     $results = $datasource->select('published', 'desc');
-    foreach (array_slice($results, $this->offset, 3) as $record) {
-      $record['href'] = $this->url($record['name']);
+    foreach (array_slice($results, $this->state->get('offset'), 3) as $record) {
       $resultset[] = $record;
     }
     $model = Array(
       'resultset' => $resultset,
-      'create' => $this->url('create'),
       'pagination' => $this->calculatePagination(count($results), 3),
     );
     return $this->render("../templates/blog/index.tpl.php", $model);
