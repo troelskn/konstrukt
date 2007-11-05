@@ -48,12 +48,7 @@ class k_Debugger
     $debug .= sprintf("Content-Length: %d\n", strlen($response->content));
 
     $debug .= "\n"."Output Headers\n"."--------------\n";
-    if (count($response->headers) == 0) {
-      $debug .= "(none)\n";
-    }
-    foreach ($response->headers as $key => $value) {
-      $debug .= $key.": ".$value."\n";
-    }
+    $debug .= $this->printArrayRecursively($response->headers);
 
     $debug .= "\n"."Stacktrace\n"."----------\n";
     $debug .= $response->getTraceAsString();
@@ -62,26 +57,11 @@ class k_Debugger
     $debug .= "\n"."Request\n"."=======\n";
     $debug .= sprintf("Request URI:    %s\n", $_SERVER['REQUEST_URI']);
     $debug .= "\n"."GET\n"."---\n";
-    if (count($_GET) == 0) {
-      $debug .= "(none)\n";
-    }
-    foreach ($_GET as $key => $value) {
-      $debug .= $key.": ".$this->limit($value)."\n";
-    }
+    $debug .= $this->printArrayRecursively($_GET);
     $debug .= "\n"."POST\n"."----\n";
-    if (count($_POST) == 0) {
-      $debug .= "(none)\n";
-    }
-    foreach ($_POST as $key => $value) {
-      $debug .= $key.": ".$this->limit($value)."\n";
-    }
+    $debug .= $this->printArrayRecursively($_POST);
     $debug .= "\n"."COOKIES\n"."-------\n";
-    if (count($_COOKIE) == 0) {
-      $debug .= "(none)\n";
-    }
-    foreach ($_COOKIE as $key => $value) {
-      $debug .= $key.": ".$this->limit($value)."\n";
-    }
+    $debug .= $this->printArrayRecursively($_COOKIE);
 
     // If it's a regular HTTP response -- inject the debug data
     if ($response->status == 200 && $response->contentType == 'text/html' && FALSE !== ($pos = strripos($response->content, "</body>"))) {
@@ -92,6 +72,21 @@ class k_Debugger
       @header("Content-Type: text");
       print($debug);
     }
+  }
+
+  protected function printArrayRecursively($arr) {
+    $debug = "";
+    if (count($arr) == 0) {
+      $debug .= "(none)\n";
+    }
+    foreach ($arr as $key => $value) {
+      if (is_array($value)) {
+        $debug .= $key.":\n  ".str_replace("\n", "\n  ", trim($this->printArrayRecursively($value)))."\n";
+      } else {
+        $debug .= $key.": ".$this->limit($value)."\n";
+      }
+    }
+    return $debug;
   }
 
   protected function limit($in_str, $limit = 40, $symbol = "...") {
