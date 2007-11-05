@@ -615,6 +615,16 @@ The value is the name, by which the context chose to forward to this controller.
 This value is assigned when and if the controller forwards to a child-controller.</p>
 </div>
 
+  <h4 id="class-k_controller-property-subcontroller">
+  <em class="modifier">protected</em>
+
+
+  $subController
+  : <em class="modifier">array</em>
+
+</h4>
+
+
 </div>
 
 <h3>methods</h3>
@@ -741,7 +751,9 @@ and then either calls <a href="#class-k_controller-method-forward">forward()</a>
 </h4>
 
 <div class="docblock">
-  <p>determine the name of the next controller, if any.</p>
+  <p>Determine the name of the next controller, if any.
+As long as your URL&#039;s follow the standard / delimited style, you shouldn&#039;t need to override this method.
+If you find that you do, you might want to reconsider why you URL&#039;s are structured as they are.</p>
 </div>
 
 
@@ -752,7 +764,7 @@ and then either calls <a href="#class-k_controller-method-forward">forward()</a>
   <em class="modifier">protected</em>
 
 
-  forward(<em><span class="tooltip" title="URI-name of the child-controller"><span class="modifier">string</span>
+  forward(<em><span class="tooltip" title="URI-name of the subcontroller"><span class="modifier">string</span>
 
 $name</span></em>)
 
@@ -762,7 +774,56 @@ $name</span></em>)
 </h4>
 
 <div class="docblock">
-  <p>Indirects execution to a child-controller.</p>
+  <p>Indirects execution to a subcontroller.
+You shouldn&#039;t need to override this method. If you want to change the mapping logic, override
+createSubController instead.
+Note that forward was split up, so code which overrides forward() are likely candidates to
+be moved to createSubController, with small adjustments.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_controller-method-getsubcontroller">
+
+  <em class="modifier">protected</em>
+
+
+  getSubController(<em><span class="modifier">mixed</span>
+
+$name</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Returns a subcontroller.
+Acts as a registry, so the same subcontroller is only created once.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_controller-method-createsubcontroller">
+
+  <em class="modifier">protected</em>
+
+
+  createSubController(<em><span class="modifier">mixed</span>
+
+$name</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Creates a subcontroller.
+By default, $map is used to map name to classname, but you can override this
+method, to supply specific mapping logic.</p>
 </div>
 
 
@@ -1169,7 +1230,10 @@ INPUT contains the raw input body of the request. This corresponds to <code>php:
   <em class="modifier">public</em>
 
 
-  __construct()
+  __construct(<em> [ <a href="#class-k_registry"
+>k_Registry</a>
+
+$registry ] </em>)
 
   : <em class="modifier">mixed</em>
 
@@ -3554,120 +3618,6 @@ $limit ] </em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k_classloader">
-  <em>class</em>
-  <a href="#class-k_classloader">k_ClassLoader</a>
-</h2>
-
-<div class="docblock">
-  <p>Provides functionality for including files.</p>
-</div>
-
-
-<h3>methods</h3>
-<div class="methods">
-  
-
-<h4 id="class-k_classloader-method-autoload">
-
-  <em class="modifier">static</em>,
-
-  <em class="modifier">public</em>
-
-
-  autoload(<em><span class="modifier">mixed</span>
-
-$classname</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-<div class="docblock">
-  <p>Default autoloader for Konstrukt naming scheme.</p>
-</div>
-
-
-  
-
-<h4 id="class-k_classloader-method-searchincludepath">
-
-  <em class="modifier">static</em>,
-
-  <em class="modifier">public</em>
-
-
-  SearchIncludePath(<em><span class="modifier">mixed</span>
-
-$filename</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-<div class="docblock">
-  <p>Searches the include-path for a filename.
-Returns the absolute path (realpath) if found or FALSE</p>
-</div>
-
-
-</div>
-</div><div class="class">
-<h2 id="class-k_istatecontainer">
-  <em>interface</em>
-  <a href="#class-k_istatecontainer">k_iStateContainer</a>
-</h2>
-
-
-
-<h3>methods</h3>
-<div class="methods">
-  
-
-<h4 id="class-k_istatecontainer-method-set">
-
-  <em class="modifier">abstract</em>,
-
-  <em class="modifier">public</em>
-
-
-  set(<em><span class="modifier">mixed</span>
-
-$key, <span class="modifier">mixed</span>
-
-$value</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_istatecontainer-method-get">
-
-  <em class="modifier">abstract</em>,
-
-  <em class="modifier">public</em>
-
-
-  get(<em><span class="modifier">mixed</span>
-
-$key</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-</div>
-</div><div class="class">
 <h2 id="class-k_urlstate">
   <em>class</em>
   <a href="#class-k_urlstate">k_UrlState</a>
@@ -4007,94 +3957,6 @@ $args ]  ] </em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k_debugger">
-  <em>class</em>
-  <a href="#class-k_debugger">k_Debugger</a>
-</h2>
-
-<div class="docblock">
-  <p>Displays debug information about the request.</p>
-<p>By default, the debugger is created by the dispatcher, if the cookie &#039;DEBUG&#039; is set, and debugging is allowed.</p>
-<p>You can use the following bookmarklet to switch debug output on for a request:</p>
-<div class="nostyle">javascript:(function (document) { var COOKIE_NAME = %22DEBUG%22; var isset = function () {var nameEQ = COOKIE_NAME + %22=1%22;var ca = document.cookie.split(%22;%22);for (i = 0; i < ca.length; i++) {var c = ca[i];while (c.charAt(0) == %22 %22) {c = c.substring(1, c.length);}if (c.indexOf(nameEQ) == 0) {return true;}}return false;}; var set = function (timeout) {if (timeout) {var date = new Date;date.setTime(date.getTime() + timeout * 1000);var expires = %22; expires=%22 + date.toGMTString();} else {var expires = %22%22;}document.cookie = COOKIE_NAME + %22=1%22 + expires + %22; path=/%22;}; if (isset()) { set(-3600); alert(%22Debug: Off%22); } else { set(3600); } })(document);</div>
-</div>
-
-<h3>properties</h3>
-<div class="properties">
-  <h4 id="class-k_debugger-property-msgcontrollers">
-  <em class="modifier">protected</em>
-
-
-  $msgControllers
-  : <em class="modifier">mixed</em>
-
-</h4>
-
-
-</div>
-
-<h3>methods</h3>
-<div class="methods">
-  
-
-<h4 id="class-k_debugger-method-logcontroller">
-
-  <em class="modifier">public</em>
-
-
-  logController(<em><span class="modifier">mixed</span>
-
-$controller</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_debugger-method-outputresponse">
-
-  <em class="modifier">public</em>
-
-
-  outputResponse(<em><span class="modifier">mixed</span>
-
-$response</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_debugger-method-limit">
-
-  <em class="modifier">protected</em>
-
-
-  limit(<em><span class="modifier">mixed</span>
-
-$in_str [ , <span class="modifier">mixed</span>
-
-$limit [ , <span class="modifier">mixed</span>
-
-$symbol ]  ] </em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-</div>
-</div><div class="class">
 <h2 id="class-k_urlstatesource">
   <em>class</em>
   <a href="#class-k_urlstatesource">k_UrlStateSource</a>
@@ -4188,39 +4050,40 @@ $key</em>)
 <h2 id="class-k_registry">
   <em>class</em>
   <a href="#class-k_registry">k_Registry</a>
+
+  <em>extends</em>
+  <a href="#class-k_wire_container">k_wire_Container</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_wire_icreator">k_wire_iCreator</a>,  <a href="#class-k_wire_ilocator">k_wire_iLocator</a></h3>
+
+<div class="docblock">
+  <p>A combined singleton registry and general purpose class factory
+k_Registry has been replaced with k_wire_Container</p>
+</div>
+
+
+</div><div class="class">
+<h2 id="class-k_debugger">
+  <em>class</em>
+  <a href="#class-k_debugger">k_Debugger</a>
 </h2>
 
 <div class="docblock">
-  <p>A combined singleton registry and general purpose class factory</p>
+  <p>Displays debug information about the request.</p>
+<p>By default, the debugger is created by the dispatcher, if the cookie &#039;DEBUG&#039; is set, and debugging is allowed.</p>
+<p>You can use the following bookmarklet to switch debug output on for a request:</p>
+<div class="nostyle">javascript:(function (document) { var COOKIE_NAME = %22DEBUG%22; var isset = function () {var nameEQ = COOKIE_NAME + %22=1%22;var ca = document.cookie.split(%22;%22);for (i = 0; i < ca.length; i++) {var c = ca[i];while (c.charAt(0) == %22 %22) {c = c.substring(1, c.length);}if (c.indexOf(nameEQ) == 0) {return true;}}return false;}; var set = function (timeout) {if (timeout) {var date = new Date;date.setTime(date.getTime() + timeout * 1000);var expires = %22; expires=%22 + date.toGMTString();} else {var expires = %22%22;}document.cookie = COOKIE_NAME + %22=1%22 + expires + %22; path=/%22;}; if (isset()) { set(-3600); alert(%22Debug: Off%22); } else { set(3600); } })(document);</div>
 </div>
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k_registry-property-__instances">
+  <h4 id="class-k_debugger-property-msgcontrollers">
   <em class="modifier">protected</em>
 
 
-  $__instances
-  : <em class="modifier">mixed</em>
-
-</h4>
-
-
-  <h4 id="class-k_registry-property-__constructors">
-  <em class="modifier">protected</em>
-
-
-  $__constructors
-  : <em class="modifier">mixed</em>
-
-</h4>
-
-
-  <h4 id="class-k_registry-property-__aliases">
-  <em class="modifier">protected</em>
-
-
-  $__aliases
+  $msgControllers
   : <em class="modifier">mixed</em>
 
 </h4>
@@ -4232,7 +4095,585 @@ $key</em>)
 <div class="methods">
   
 
-<h4 id="class-k_registry-method-load">
+<h4 id="class-k_debugger-method-logcontroller">
+
+  <em class="modifier">public</em>
+
+
+  logController(<em><span class="modifier">mixed</span>
+
+$controller</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_debugger-method-outputresponse">
+
+  <em class="modifier">public</em>
+
+
+  outputResponse(<em><span class="modifier">mixed</span>
+
+$response</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_debugger-method-limit">
+
+  <em class="modifier">protected</em>
+
+
+  limit(<em><span class="modifier">mixed</span>
+
+$in_str [ , <span class="modifier">mixed</span>
+
+$limit [ , <span class="modifier">mixed</span>
+
+$symbol ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_classloader">
+  <em>class</em>
+  <a href="#class-k_classloader">k_ClassLoader</a>
+</h2>
+
+<div class="docblock">
+  <p>Provides functionality for including files.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_classloader-method-autoload">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">public</em>
+
+
+  autoload(<em><span class="modifier">mixed</span>
+
+$classname</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Default autoloader for Konstrukt naming scheme.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_classloader-method-searchincludepath">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">public</em>
+
+
+  SearchIncludePath(<em><span class="modifier">mixed</span>
+
+$filename</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Searches the include-path for a filename.
+Returns the absolute path (realpath) if found or FALSE</p>
+</div>
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_istatecontainer">
+  <em>interface</em>
+  <a href="#class-k_istatecontainer">k_iStateContainer</a>
+</h2>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_istatecontainer-method-set">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  set(<em><span class="modifier">mixed</span>
+
+$key, <span class="modifier">mixed</span>
+
+$value</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_istatecontainer-method-get">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  get(<em><span class="modifier">mixed</span>
+
+$key</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_wire_userlandarguments">
+  <em>class</em>
+  <a href="#class-k_wire_userlandarguments">k_wire_UserlandArguments</a>
+</h2>
+
+<div class="docblock">
+  <p>Used by k_wire_Container to wrap userland arguments.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_wire_userlandarguments-property-arguments">
+  <em class="modifier">protected</em>
+
+
+  $arguments
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_wire_userlandarguments-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em> [ <span class="modifier">mixed</span>
+
+$arguments ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_userlandarguments-method-hasnext">
+
+  <em class="modifier">public</em>
+
+
+  hasNext()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_userlandarguments-method-next">
+
+  <em class="modifier">public</em>
+
+
+  next()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_wire_container">
+  <em>class</em>
+  <a href="#class-k_wire_container">k_wire_Container</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_wire_ilocator">k_wire_iLocator</a>,  <a href="#class-k_wire_icreator">k_wire_iCreator</a></h3>
+
+<div class="docblock">
+  <p>A dependency injection container.
+This is the primary interface to wire. An application would typically have just
+one instance of k_wire_Container.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_wire_container-property-registry">
+  <em class="modifier">protected</em>
+
+
+  $registry
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_wire_container-property-emptyarguments">
+  <em class="modifier">protected</em>
+
+
+  $emptyArguments
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_wire_container-property-defaultfactory">
+  <em class="modifier">protected</em>
+
+
+  $defaultFactory
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_wire_container-property-factories">
+  <em class="modifier">protected</em>
+
+
+  $factories
+  : <em class="modifier">[] k_wire_iClassFactory</em>
+
+</h4>
+
+
+  <h4 id="class-k_wire_container-property-aliases">
+  <em class="modifier">protected</em>
+
+
+  $aliases
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_wire_container-property-preventlocatorpropagation">
+  <em class="modifier">protected</em>
+
+
+  $preventLocatorPropagation
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_wire_container-property-pending">
+  <em class="modifier">protected</em>
+
+
+  $pending
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_wire_container-property-call_stack">
+  <em class="modifier">protected</em>
+
+
+  $call_stack
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_wire_container-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_container-method-preventlocatorpropagation">
+
+  <em class="modifier">public</em>
+
+
+  preventLocatorPropagation(<em> [ <span class="modifier">mixed</span>
+
+$prevent ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Turns on/off preventLocatorPropagation.
+When this setting is on, it isn&#039;t possible to propagate the locator itself.
+You can turn on this setting, to enforce a stricter decoupling of dependencies.</p>
+</div>
+
+
+  <div class="deprecated">
+
+
+<h4 id="class-k_wire_container-method-set">
+
+  <em class="modifier">public</em>
+
+
+  set(<em><span class="modifier">mixed</span>
+
+$classname, <span class="modifier">mixed</span>
+
+$instance</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Stores an instance in the registry.</p>
+</div>
+
+</div>
+
+  
+
+<h4 id="class-k_wire_container-method-__get">
+
+  <em class="modifier">public</em>
+
+
+  __get(<em><span class="modifier">mixed</span>
+
+$classname</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_container-method-__isset">
+
+  <em class="modifier">public</em>
+
+
+  __isset(<em><span class="modifier">mixed</span>
+
+$classname</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_container-method-get">
+
+  <em class="modifier">public</em>
+
+
+  get(<em><span class="modifier">mixed</span>
+
+$classname</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_container-method-create">
+
+  <em class="modifier">public</em>
+
+
+  create(<em><span class="modifier">mixed</span>
+
+$classname</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_container-method-createargs">
+
+  <em class="modifier">public</em>
+
+
+  createArgs(<em><span class="modifier">mixed</span>
+
+$classname, <span class="modifier">mixed</span>
+
+$args</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_container-method-registerfactory">
+
+  <em class="modifier">public</em>
+
+
+  registerFactory(<em><span class="modifier">mixed</span>
+
+$classname, <a href="#class-k_wire_iclassfactory"
+>k_wire_iClassFactory</a>
+
+$factory</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Registers a factory for a class.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_wire_container-method-register">
+
+  <em class="modifier">public</em>
+
+
+  register(<em><span class="modifier">mixed</span>
+
+$classname</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Creates a new configurable factory for a class.</p>
+</div>
+
+
+  <div class="deprecated">
+
+
+<h4 id="class-k_wire_container-method-registerconstructor">
+
+  <em class="modifier">public</em>
+
+
+  registerConstructor(<em><span class="modifier">mixed</span>
+
+$classname, <span class="modifier">mixed</span>
+
+$callback</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Registers a callback factory for a class.</p>
+</div>
+
+</div>
+
+  <div class="deprecated">
+
+
+<h4 id="class-k_wire_container-method-load">
 
   <em class="modifier">public</em>
 
@@ -4247,168 +4688,14 @@ $filename</em>)
 </h4>
 
 <div class="docblock">
-  <p>Loads configuration from a file</p>
+  <p>Loads configuration from a file.</p>
 </div>
 
+</div>
 
   
 
-<h4 id="class-k_registry-method-__get">
-
-  <em class="modifier">public</em>
-
-
-  __get(<em><span class="modifier">mixed</span>
-
-$className</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-<div class="docblock">
-  <p>Magic method. Gets a singleton instance.</p>
-</div>
-
-
-  
-
-<h4 id="class-k_registry-method-__isset">
-
-  <em class="modifier">public</em>
-
-
-  __isset(<em><span class="modifier">mixed</span>
-
-$className</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-<div class="docblock">
-  <p>Magic method. Tells whether a given property exists, or can be created on the fly.</p>
-</div>
-
-
-  
-
-<h4 id="class-k_registry-method-get">
-
-  <em class="modifier">public</em>
-
-
-  get(<em><span class="modifier">mixed</span>
-
-$className</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-<div class="docblock">
-  <p>Returns a singleton instance of a class.</p>
-<p>If the instance hasn&#039;t been explicitly registered previously with set, it
-will be created the first time it&#039;s requested.</p>
-</div>
-
-
-  
-
-<h4 id="class-k_registry-method-set">
-
-  <em class="modifier">public</em>
-
-
-  set(<em><span class="modifier">mixed</span>
-
-$className, <span class="modifier">mixed</span>
-
-$instance</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-<div class="docblock">
-  <p>Sets an object as a singleton instance.</p>
-</div>
-
-
-  
-
-<h4 id="class-k_registry-method-create">
-
-  <em class="modifier">public</em>
-
-
-  create(<em><span class="modifier">mixed</span>
-
-$className</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-<div class="docblock">
-  <p>Create a new instance of the requested class.</p>
-</div>
-
-
-  
-
-<h4 id="class-k_registry-method-createargs">
-
-  <em class="modifier">public</em>
-
-
-  createArgs(<em><span class="modifier">mixed</span>
-
-$className [ , <span class="modifier">mixed</span>
-
-$args ] </em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-<div class="docblock">
-  <p>Create a new instance of the requested class with arguments as an array.</p>
-</div>
-
-
-  
-
-<h4 id="class-k_registry-method-registerconstructor">
-
-  <em class="modifier">public</em>
-
-
-  registerConstructor(<em><span class="modifier">mixed</span>
-
-$className, <span class="modifier">mixed</span>
-
-$callback</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-<div class="docblock">
-  <p>Registers a new factory for class.</p>
-</div>
-
-
-  
-
-<h4 id="class-k_registry-method-registeralias">
+<h4 id="class-k_wire_container-method-registeralias">
 
   <em class="modifier">public</em>
 
@@ -4417,7 +4704,7 @@ $callback</em>)
 
 $alias, <span class="modifier">mixed</span>
 
-$classsName</em>)
+$classsname</em>)
 
   : <em class="modifier">mixed</em>
 
@@ -4431,18 +4718,110 @@ $classsName</em>)
 
   
 
-<h4 id="class-k_registry-method-defaultconstructor">
+<h4 id="class-k_wire_container-method-normalisealias">
 
   <em class="modifier">protected</em>
 
 
-  defaultConstructor(<em><span class="modifier">mixed</span>
+  normaliseAlias(<em><span class="modifier">mixed</span>
 
-$className, <span class="modifier">mixed</span>
+$classname</em>)
 
-$args, <span class="modifier">mixed</span>
+  : <em class="modifier">mixed</em>
 
-$registry</em>)
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_container-method-resolvelatedependencies">
+
+  <em class="modifier">protected</em>
+
+
+  resolveLateDependencies()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_container-method-sortlatedependencies">
+
+  <em class="modifier">protected</em>
+
+
+  sortLateDependencies(<em><span class="modifier">mixed</span>
+
+$a, <span class="modifier">mixed</span>
+
+$b</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_container-method-findfactory">
+
+  <em class="modifier">protected</em>
+
+
+  findFactory(<em><span class="modifier">mixed</span>
+
+$classname</em>)
+
+  : <em class="modifier"><a href="#class-k_wire_iclassfactory">k_wire_iClassFactory</a></em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Returns the best suitable factory for a class</p>
+</div>
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_wire_defaultfactory">
+  <em>class</em>
+  <a href="#class-k_wire_defaultfactory">k_wire_DefaultFactory</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_wire_iclassfactory">k_wire_iClassFactory</a></h3>
+
+<div class="docblock">
+  <p>Default factory.
+Assumes that constructor has no dependencies, and passes it all userland arguments.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_wire_defaultfactory-method-createinstanceargs">
+
+  <em class="modifier">public</em>
+
+
+  createInstanceArgs(<em><span class="modifier">mixed</span>
+
+$classname, <a href="#class-k_wire_userlandarguments"
+>k_wire_UserlandArguments</a>
+
+$args</em>)
 
   : <em class="modifier">mixed</em>
 
@@ -4450,8 +4829,1152 @@ $registry</em>)
 </h4>
 
 <div class="docblock">
-  <p>The default constructor.</p>
+  <p>Creates a new instance.</p>
 </div>
+
+
+  
+
+<h4 id="class-k_wire_defaultfactory-method-loaddependencies">
+
+  <em class="modifier">public</em>
+
+
+  loadDependencies(<em><span class="modifier">mixed</span>
+
+$instance, <a href="#class-k_wire_userlandarguments"
+>k_wire_UserlandArguments</a>
+
+$args</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_wire_shareddependency">
+  <em>class</em>
+  <a href="#class-k_wire_shareddependency">k_wire_SharedDependency</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_wire_idependencysource">k_wire_iDependencySource</a></h3>
+
+<div class="docblock">
+  <p>A dependency on a shared instance.
+The dependency is unique for the container.
+Will never touch the userland arguments.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_wire_shareddependency-property-classname">
+  <em class="modifier">protected</em>
+
+
+  $classname
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_wire_shareddependency-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$classname</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_shareddependency-method-resolve">
+
+  <em class="modifier">public</em>
+
+
+  resolve(<em><a href="#class-k_wire_ilocator"
+>k_wire_iLocator</a>
+
+$locator, <a href="#class-k_wire_userlandarguments"
+>k_wire_UserlandArguments</a>
+
+$args</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_wire_userdependency">
+  <em>class</em>
+  <a href="#class-k_wire_userdependency">k_wire_UserDependency</a>
+
+  <em>extends</em>
+  <a href="#class-k_wire_requireduserdependency">k_wire_RequiredUserDependency</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_wire_idependencysource">k_wire_iDependencySource</a></h3>
+
+<div class="docblock">
+  <p>A userland suppliable value, which can be left out, in which case a default is applied.
+This will only pop a userland argument, if any are left. Otherwise, a default (constant)
+value is supplied. In behaviour, it&#039;s a mix of k_wire_RequiredUserDependency and k_wire_ConstantDependency</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_wire_userdependency-property-defaultvalue">
+  <em class="modifier">protected</em>
+
+
+  $defaultValue
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_wire_userdependency-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em> [ <span class="modifier">mixed</span>
+
+$defaultValue ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_userdependency-method-resolve">
+
+  <em class="modifier">public</em>
+
+
+  resolve(<em><a href="#class-k_wire_ilocator"
+>k_wire_iLocator</a>
+
+$locator, <a href="#class-k_wire_userlandarguments"
+>k_wire_UserlandArguments</a>
+
+$args</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_wire_configurablefactory">
+  <em>class</em>
+  <a href="#class-k_wire_configurablefactory">k_wire_ConfigurableFactory</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_wire_iclassfactory">k_wire_iClassFactory</a></h3>
+
+<div class="docblock">
+  <p>A highly flexible factory, for creating instances of classes.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_wire_configurablefactory-property-locator">
+  <em class="modifier">protected</em>
+
+
+  $locator
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_wire_configurablefactory-property-early">
+  <em class="modifier">protected</em>
+
+
+  $early
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_wire_configurablefactory-property-late">
+  <em class="modifier">protected</em>
+
+
+  $late
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_wire_configurablefactory-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><a href="#class-k_wire_ilocator"
+>k_wire_iLocator</a>
+
+$locator</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_configurablefactory-method-createinstanceargs">
+
+  <em class="modifier">public</em>
+
+
+  createInstanceArgs(<em><span class="modifier">mixed</span>
+
+$classname, <a href="#class-k_wire_userlandarguments"
+>k_wire_UserlandArguments</a>
+
+$args</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Creates a new instance.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_wire_configurablefactory-method-loaddependencies">
+
+  <em class="modifier">public</em>
+
+
+  loadDependencies(<em><span class="modifier">mixed</span>
+
+$instance, <a href="#class-k_wire_userlandarguments"
+>k_wire_UserlandArguments</a>
+
+$args</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Injects late dependencies (setter-dependencies) to an instance, previously created with createInstanceArgs()</p>
+</div>
+
+
+  
+
+<h4 id="class-k_wire_configurablefactory-method-registerconstructor">
+
+  <em class="modifier">public</em>
+
+
+  registerConstructor(<em><a href="#class-k_wire_idependencysource"
+>k_wire_iDependencySource</a>
+
+$source</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Register a dependency for injection through the constructor.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_wire_configurablefactory-method-registersetter">
+
+  <em class="modifier">public</em>
+
+
+  registerSetter(<em><a href="#class-k_wire_idependencysource"
+>k_wire_iDependencySource</a>
+
+$source, <span class="modifier">mixed</span>
+
+$methodname</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Register a dependency for injection through a setter method.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_wire_configurablefactory-method-registerproperty">
+
+  <em class="modifier">public</em>
+
+
+  registerProperty(<em><a href="#class-k_wire_idependencysource"
+>k_wire_iDependencySource</a>
+
+$source, <span class="modifier">mixed</span>
+
+$propertyname</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Register a dependency for injection through a public property.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_wire_configurablefactory-method-resolveearly">
+
+  <em class="modifier">protected</em>
+
+
+  resolveEarly(<em><a href="#class-k_wire_userlandarguments"
+>k_wire_UserlandArguments</a>
+
+$args</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_wire_ilocator">
+  <em>interface</em>
+  <a href="#class-k_wire_ilocator">k_wire_iLocator</a>
+</h2>
+
+<div class="docblock">
+  <p>A locator can get a shared instance.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_wire_ilocator-method-get">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  get(<em><span class="modifier">mixed</span>
+
+$classname</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Gets a shared instance of a class.
+If the instance doesn&#039;t exist yet in the internal registry, it will be created.
+A shared instance is unique for the container. It is still possible to create
+multiple instances, but calling get() multiple times, will yield the same instance.</p>
+</div>
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_wire_callbackfactory">
+  <em>class</em>
+  <a href="#class-k_wire_callbackfactory">k_wire_CallbackFactory</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_wire_iclassfactory">k_wire_iClassFactory</a></h3>
+
+<div class="docblock">
+  <p>A factory, which employs a callback for creating instances.
+This is extremely flexible, but also a bit impractical. It&#039;s mostly provided
+for backwards compatibility, and to serve very odd cases.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_wire_callbackfactory-property-locator">
+  <em class="modifier">protected</em>
+
+
+  $locator
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k_wire_callbackfactory-property-callback">
+  <em class="modifier">protected</em>
+
+
+  $callback
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_wire_callbackfactory-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><a href="#class-k_wire_ilocator"
+>k_wire_iLocator</a>
+
+$locator, <span class="modifier">mixed</span>
+
+$callback</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_callbackfactory-method-createinstanceargs">
+
+  <em class="modifier">public</em>
+
+
+  createInstanceArgs(<em><span class="modifier">mixed</span>
+
+$classname, <a href="#class-k_wire_userlandarguments"
+>k_wire_UserlandArguments</a>
+
+$args</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Creates a new instance.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_wire_callbackfactory-method-loaddependencies">
+
+  <em class="modifier">public</em>
+
+
+  loadDependencies(<em><span class="modifier">mixed</span>
+
+$instance, <a href="#class-k_wire_userlandarguments"
+>k_wire_UserlandArguments</a>
+
+$args</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_wire_idependencysource">
+  <em>interface</em>
+  <a href="#class-k_wire_idependencysource">k_wire_iDependencySource</a>
+</h2>
+
+<div class="docblock">
+  <p>A representation of a dependency source.
+A source is able to resolve a dependency. How this is delivered to the consumer
+is irellevant for the source.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_wire_idependencysource-method-resolve">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  resolve(<em><a href="#class-k_wire_ilocator"
+>k_wire_iLocator</a>
+
+$locator, <a href="#class-k_wire_userlandarguments"
+>k_wire_UserlandArguments</a>
+
+$args</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Resolves the dependency and returns it.</p>
+</div>
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_wire_iclassfactory">
+  <em>interface</em>
+  <a href="#class-k_wire_iclassfactory">k_wire_iClassFactory</a>
+</h2>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_wire_iclassfactory-method-createinstanceargs">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  createInstanceArgs(<em><span class="modifier">mixed</span>
+
+$classname, <a href="#class-k_wire_userlandarguments"
+>k_wire_UserlandArguments</a>
+
+$args</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Creates a new instance.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_wire_iclassfactory-method-loaddependencies">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  loadDependencies(<em><span class="modifier">mixed</span>
+
+$instance, <a href="#class-k_wire_userlandarguments"
+>k_wire_UserlandArguments</a>
+
+$args</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Injects late dependencies (setter-dependencies) to an instance, previously created with createInstanceArgs()</p>
+</div>
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_wire_icreator">
+  <em>interface</em>
+  <a href="#class-k_wire_icreator">k_wire_iCreator</a>
+</h2>
+
+<div class="docblock">
+  <p>A creator is a general factory, capable of creating instances of classes.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_wire_icreator-method-create">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  create(<em><span class="modifier">mixed</span>
+
+$classname</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Creates a transient (new) instance of a class.
+Calling this multiple times, will return a new instance each time.
+The function takes a variable number of arguments, after the classname. If the
+factory needs userland arguments, these should be passed that way.
+Alternatively, createArgs() can be used, if you want to pass the arguments as an array.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_wire_icreator-method-createargs">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  createArgs(<em><span class="modifier">mixed</span>
+
+$classname, <span class="modifier">mixed</span>
+
+$args</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Creates a transient (new) instance of a class, using an array of userland arguments.
+Works like create(), but takes userland arguments as an array.</p>
+</div>
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_wire_transientdependency">
+  <em>class</em>
+  <a href="#class-k_wire_transientdependency">k_wire_TransientDependency</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_wire_idependencysource">k_wire_iDependencySource</a></h3>
+
+<div class="docblock">
+  <p>A dependency on a transient instance.
+There can be an arbitrary number of transient instances per container.
+May consume userland arguments. These are cascaded to the locator, so sub-dependencies may also
+use of the userland arguments.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_wire_transientdependency-property-classname">
+  <em class="modifier">protected</em>
+
+
+  $classname
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_wire_transientdependency-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$classname</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_transientdependency-method-resolve">
+
+  <em class="modifier">public</em>
+
+
+  resolve(<em><a href="#class-k_wire_ilocator"
+>k_wire_iLocator</a>
+
+$locator, <a href="#class-k_wire_userlandarguments"
+>k_wire_UserlandArguments</a>
+
+$args</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_wire_requireduserdependency">
+  <em>class</em>
+  <a href="#class-k_wire_requireduserdependency">k_wire_RequiredUserDependency</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_wire_idependencysource">k_wire_iDependencySource</a></h3>
+
+<div class="docblock">
+  <p>A dependency on a userland supplied value.
+This will pop an argument from the userland arguments.
+Since userland arguments are only passed to transiently created instance, adding such a
+dependency will limit the class to be created transiently.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_wire_requireduserdependency-method-resolve">
+
+  <em class="modifier">public</em>
+
+
+  resolve(<em><a href="#class-k_wire_ilocator"
+>k_wire_iLocator</a>
+
+$locator, <a href="#class-k_wire_userlandarguments"
+>k_wire_UserlandArguments</a>
+
+$args</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_wire_constantdependency">
+  <em>class</em>
+  <a href="#class-k_wire_constantdependency">k_wire_ConstantDependency</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_wire_idependencysource">k_wire_iDependencySource</a></h3>
+
+<div class="docblock">
+  <p>A constant value to satisfy a dependency.
+Will neither touch userland arguments, nor the locator.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_wire_constantdependency-property-value">
+  <em class="modifier">protected</em>
+
+
+  $value
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_wire_constantdependency-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$value</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_constantdependency-method-resolve">
+
+  <em class="modifier">public</em>
+
+
+  resolve(<em><a href="#class-k_wire_ilocator"
+>k_wire_iLocator</a>
+
+$locator, <a href="#class-k_wire_userlandarguments"
+>k_wire_UserlandArguments</a>
+
+$args</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_wire_registry">
+  <em>class</em>
+  <a href="#class-k_wire_registry">k_wire_Registry</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_wire_ilocator">k_wire_iLocator</a></h3>
+
+<div class="docblock">
+  <p>Used by k_wire_Container to hold shared instances.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_wire_registry-property-_instances">
+  <em class="modifier">protected</em>
+
+
+  $_instances
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_wire_registry-method-get">
+
+  <em class="modifier">public</em>
+
+
+  get(<em><span class="modifier">mixed</span>
+
+$classname</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_registry-method-has">
+
+  <em class="modifier">public</em>
+
+
+  has(<em><span class="modifier">mixed</span>
+
+$classname</em>)
+
+  : <em class="modifier">boolean</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Returns true, if the class has already been registered.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_wire_registry-method-set">
+
+  <em class="modifier">public</em>
+
+
+  set(<em><span class="modifier">mixed</span>
+
+$classname, <span class="modifier">mixed</span>
+
+$instance</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Stores an instance in the registry.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_wire_registry-method-__get">
+
+  <em class="modifier">public</em>
+
+
+  __get(<em><span class="modifier">mixed</span>
+
+$classname</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_registry-method-__isset">
+
+  <em class="modifier">public</em>
+
+
+  __isset(<em><span class="modifier">mixed</span>
+
+$classname</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_wire_exception">
+  <em>class</em>
+  <a href="#class-k_wire_exception">k_wire_Exception</a>
+
+  <em>extends</em>
+  <a href="#class-exception">Exception</a>
+</h2>
+
+<div class="docblock">
+  <p>Exceptions generated by wire</p>
+</div>
+
+
+</div><div class="class">
+<h2 id="class-k_wire_creator">
+  <em>class</em>
+  <a href="#class-k_wire_creator">k_wire_Creator</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_wire_icreator">k_wire_iCreator</a></h3>
+
+<div class="docblock">
+  <p>A proxy to limit a k_wire_iLocator to the capabilities of a k_wire_iCreator.
+This is useful in combination with the preventLocatorPropagation setting on k_wire_Container</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_wire_creator-property-creator">
+  <em class="modifier">protected</em>
+
+
+  $creator
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_wire_creator-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><a href="#class-k_wire_icreator"
+>k_wire_iCreator</a>
+
+$creator</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_creator-method-create">
+
+  <em class="modifier">public</em>
+
+
+  create(<em><span class="modifier">mixed</span>
+
+$classname</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_wire_creator-method-createargs">
+
+  <em class="modifier">public</em>
+
+
+  createArgs(<em><span class="modifier">mixed</span>
+
+$classname, <span class="modifier">mixed</span>
+
+$args</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_wire_locatorpropagationexception">
+  <em>class</em>
+  <a href="#class-k_wire_locatorpropagationexception">k_wire_LocatorPropagationException</a>
+
+  <em>extends</em>
+  <a href="#class-k_wire_exception">k_wire_Exception</a>
+</h2>
+
+<div class="docblock">
+  <p>Thrown if preventLocatorPropagation is enabled, and k_wire_Locator is requested as a dependency.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_wire_locatorpropagationexception-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
 
 
 </div>

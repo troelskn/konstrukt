@@ -17,6 +17,11 @@ $discoverer->readFile("../../lib/k/field.php");
 $discoverer->readFile("../../lib/k/validator.php");
 $discoverer->readFile("../../lib/k/memory.php");
 $discoverer->readFile("../../lib/k/datalist.php");
+$discoverer->readFile("../../lib/k/urlstate.php");
+$discoverer->readFile("../../lib/k/urlbuilder.php");
+$discoverer->readFile("../../lib/k/urlstatesource.php");
+$discoverer->readFile("../../lib/k/registry.php");
+$discoverer->readFile("../../lib/k/debugger.php");
 $discoverer->readFile("../../lib/k/");
 
 // write api docs

@@ -43,7 +43,9 @@ class k_http_Request implements k_iContext
     */
   protected $state;
 
-  function __construct() {
+  function __construct(k_Registry $registry = null) {
+    $this->registry = $registry ? $registry : new k_Registry();
+
     // workaround for wierd "undocumented feature" of IE
     $HEADERS = Array();
     if (function_exists('apache_request_headers')) {
@@ -81,7 +83,6 @@ class k_http_Request implements k_iContext
     $this->urlBuilder = new k_UrlBuilder($ENV['K_URL_BASE'], $this->state);
     $this->subspace = trim(preg_replace("/^(".preg_quote($root,"/").")([^\?]*)(.*)/", "\$2", rawurldecode($ENV['REQUEST_URI'])), "/");
 
-    $this->registry = new k_Registry();
     $this->registry->set('GET', new ArrayObject($this->decodeCharset($this->unMagic($_GET)), ArrayObject::ARRAY_AS_PROPS | ArrayObject::STD_PROP_LIST));
     $this->registry->set('POST', new ArrayObject($this->decodeCharset($this->unMagic($_POST)), ArrayObject::ARRAY_AS_PROPS | ArrayObject::STD_PROP_LIST));
     $this->registry->set('FILES', new ArrayObject($this->decodeCharset($_FILES), ArrayObject::ARRAY_AS_PROPS | ArrayObject::STD_PROP_LIST));

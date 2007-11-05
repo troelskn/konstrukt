@@ -120,6 +120,24 @@ $lib_files = array(
   'k/memory.php',
   'k/registry.php',
   'k/document.php',
+  'k/wire/userlandarguments.php',
+  'k/wire/container.php',
+  'k/wire/defaultfactory.php',
+  'k/wire/shareddependency.php',
+  'k/wire/userdependency.php',
+  'k/wire/configurablefactory.php',
+  'k/wire/ilocator.php',
+  'k/wire/callbackfactory.php',
+  'k/wire/idependencysource.php',
+  'k/wire/iclassfactory.php',
+  'k/wire/icreator.php',
+  'k/wire/transientdependency.php',
+  'k/wire/requireduserdependency.php',
+  'k/wire/constantdependency.php',
+  'k/wire/registry.php',
+  'k/wire/exception.php',
+  'k/wire/creator.php',
+  'k/wire/locatorpropagationexception.php'
 );
 
 foreach ($lib_files as $file) {

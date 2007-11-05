@@ -35,8 +35,8 @@ Design Goals
   <email>lsolesen@users.sourceforge.net</email>
   <active>yes</active>
  </helper>
- <date>2007-10-17</date>
- <time>22:05:57</time>
+ <date>2007-11-05</date>
+ <time>21:30:22</time>
  <version>
   <release>0.4.0</release>
   <api>0.4.0</api>
@@ -63,6 +63,7 @@ Design Goals
      <file baseinstalldir="/" name="introduction.txt" role="doc" />
      <file baseinstalldir="/" name="rendering-views.txt" role="doc" />
      <file baseinstalldir="/" name="using-forms.txt" role="doc" />
+     <file baseinstalldir="/" name="wiring-dependencies.txt" role="doc" />
      <file baseinstalldir="/" name="working-with-controllers.txt" role="doc" />
     </dir> <!-- /docs/rst -->
     <dir name="visio">
@@ -83,6 +84,7 @@ Design Goals
     <file baseinstalldir="/" name="rendering-views.html" role="doc" />
     <file baseinstalldir="/" name="using-forms.html" role="doc" />
     <file baseinstalldir="/" name="web-application-request-response-lifecycle.png" role="doc" />
+    <file baseinstalldir="/" name="wiring-dependencies.html" role="doc" />
     <file baseinstalldir="/" name="working-with-controllers.html" role="doc" />
    </dir> <!-- /docs -->
    <dir name="examples">
@@ -118,6 +120,7 @@ Design Goals
       <file baseinstalldir="/" name="index.php" role="doc" />
      </dir> <!-- /examples/blog-php/www -->
      <file baseinstalldir="/" name="blog.ddl" role="doc" />
+     <file baseinstalldir="/" name="blog.sqlite" role="doc" />
     </dir> <!-- /examples/blog-php -->
     <dir name="datalist">
      <file baseinstalldir="/" name="datalist.tpl.php" role="doc" />
@@ -136,6 +139,59 @@ Design Goals
      <file baseinstalldir="/" name="download_pdf_legacy.php" role="doc" />
      <file baseinstalldir="/" name="output.php" role="doc" />
     </dir> <!-- /examples/response -->
+    <dir name="taesk">
+     <dir name="lib">
+      <dir name="todolist">
+       <dir name="action">
+        <file baseinstalldir="/" name="complete.php" role="doc" />
+        <file baseinstalldir="/" name="create.php" role="doc" />
+        <file baseinstalldir="/" name="delete.php" role="doc" />
+        <file baseinstalldir="/" name="edit.php" role="doc" />
+        <file baseinstalldir="/" name="list.php" role="doc" />
+        <file baseinstalldir="/" name="move.php" role="doc" />
+        <file baseinstalldir="/" name="uncomplete.php" role="doc" />
+       </dir> <!-- /examples/taesk/lib/todolist/action -->
+       <file baseinstalldir="/" name="itemgateway.php" role="doc" />
+      </dir> <!-- /examples/taesk/lib/todolist -->
+      <file baseinstalldir="/" name="markdown.php" role="doc" />
+      <file baseinstalldir="/" name="markdownext.php" role="doc" />
+      <file baseinstalldir="/" name="root.php" role="doc" />
+     </dir> <!-- /examples/taesk/lib -->
+     <dir name="res">
+      <file baseinstalldir="/" name="animator.js" role="doc" />
+      <file baseinstalldir="/" name="closed.png" role="doc" />
+      <file baseinstalldir="/" name="item-background.png" role="doc" />
+      <file baseinstalldir="/" name="minikit.core.js" role="doc" />
+      <file baseinstalldir="/" name="minikit.fx.js" role="doc" />
+      <file baseinstalldir="/" name="minikit.widget.js" role="doc" />
+      <file baseinstalldir="/" name="mochikit.js" role="doc" />
+      <file baseinstalldir="/" name="open.png" role="doc" />
+      <file baseinstalldir="/" name="print.css" role="doc" />
+      <file baseinstalldir="/" name="screen.css" role="doc" />
+      <file baseinstalldir="/" name="showdown.js" role="doc" />
+      <file baseinstalldir="/" name="taesk.form.js" role="doc" />
+      <file baseinstalldir="/" name="taesk.index.js" role="doc" />
+      <file baseinstalldir="/" name="tk_sub_bg.gif" role="doc" />
+     </dir> <!-- /examples/taesk/res -->
+     <dir name="templates">
+      <file baseinstalldir="/" name="complete.tpl.php" role="doc" />
+      <file baseinstalldir="/" name="create.tpl.php" role="doc" />
+      <file baseinstalldir="/" name="delete.tpl.php" role="doc" />
+      <file baseinstalldir="/" name="document.tpl.php" role="doc" />
+      <file baseinstalldir="/" name="edit.tpl.php" role="doc" />
+      <file baseinstalldir="/" name="list.tpl.php" role="doc" />
+      <file baseinstalldir="/" name="move.tpl.php" role="doc" />
+      <file baseinstalldir="/" name="todolist-item.tpl.php" role="doc" />
+      <file baseinstalldir="/" name="uncomplete.tpl.php" role="doc" />
+     </dir> <!-- /examples/taesk/templates -->
+     <file baseinstalldir="/" name="favicon.ico" role="doc" />
+     <file baseinstalldir="/" name="index.php" role="doc" />
+     <file baseinstalldir="/" name="registry.inc.php" role="doc" />
+     <file baseinstalldir="/" name="todo.001.zip" role="doc" />
+     <file baseinstalldir="/" name="todo.sql" role="doc" />
+     <file baseinstalldir="/" name="todo.sqlite" role="doc" />
+     <file baseinstalldir="/" name="todo.zip" role="doc" />
+    </dir> <!-- /examples/taesk -->
     <dir name="wrap">
      <file baseinstalldir="/" name="index.php" role="doc" />
     </dir> <!-- /examples/wrap -->
@@ -150,6 +206,26 @@ Design Goals
       <file baseinstalldir="/" name="response.php" role="php" />
       <file baseinstalldir="/" name="session.php" role="php" />
      </dir> <!-- /lib/k/http -->
+     <dir name="wire">
+      <file baseinstalldir="/" name="callbackfactory.php" role="php" />
+      <file baseinstalldir="/" name="configurablefactory.php" role="php" />
+      <file baseinstalldir="/" name="constantdependency.php" role="php" />
+      <file baseinstalldir="/" name="container.php" role="php" />
+      <file baseinstalldir="/" name="creator.php" role="php" />
+      <file baseinstalldir="/" name="defaultfactory.php" role="php" />
+      <file baseinstalldir="/" name="exception.php" role="php" />
+      <file baseinstalldir="/" name="iclassfactory.php" role="php" />
+      <file baseinstalldir="/" name="icreator.php" role="php" />
+      <file baseinstalldir="/" name="idependencysource.php" role="php" />
+      <file baseinstalldir="/" name="ilocator.php" role="php" />
+      <file baseinstalldir="/" name="locatorpropagationexception.php" role="php" />
+      <file baseinstalldir="/" name="registry.php" role="php" />
+      <file baseinstalldir="/" name="requireduserdependency.php" role="php" />
+      <file baseinstalldir="/" name="shareddependency.php" role="php" />
+      <file baseinstalldir="/" name="transientdependency.php" role="php" />
+      <file baseinstalldir="/" name="userdependency.php" role="php" />
+      <file baseinstalldir="/" name="userlandarguments.php" role="php" />
+     </dir> <!-- /lib/k/wire -->
      <file baseinstalldir="/" name="anonymous.php" role="php" />
      <file baseinstalldir="/" name="classloader.php" role="php" />
      <file baseinstalldir="/" name="component.php" role="php" />
@@ -174,20 +250,24 @@ Design Goals
    </dir> <!-- /lib -->
    <dir name="tests">
     <dir name="support">
+     <file baseinstalldir="/" name="call_url.tpl.php" role="test" />
      <file baseinstalldir="/" name="config.default.php" role="test" />
+     <file baseinstalldir="/" name="echo.tpl.php" role="test" />
+     <file baseinstalldir="/" name="hello_world.tpl.php" role="test" />
      <file baseinstalldir="/" name="mocks.inc.php" role="test" />
      <file baseinstalldir="/" name="registry.config.php" role="test" />
      <file baseinstalldir="/" name="simpletest.inc.php" role="test" />
     </dir> <!-- /tests/support -->
     <file baseinstalldir="/" name="all.test.php" role="test" />
+    <file baseinstalldir="/" name="component.test.php" role="test" />
     <file baseinstalldir="/" name="controller.test.php" role="test" />
     <file baseinstalldir="/" name="datalist.test.php" role="test" />
     <file baseinstalldir="/" name="dispatcher.test.php" role="test" />
     <file baseinstalldir="/" name="formbehaviour.test.php" role="test" />
-    <file baseinstalldir="/" name="registry.test.php" role="test" />
     <file baseinstalldir="/" name="request.test.php" role="test" />
     <file baseinstalldir="/" name="response.test.php" role="test" />
     <file baseinstalldir="/" name="url.test.php" role="test" />
+    <file baseinstalldir="/" name="wire.test.php" role="test" />
    </dir> <!-- /tests -->
    <file baseinstalldir="/" name="LICENSE" role="data" />
   </dir> <!-- / -->
@@ -229,6 +309,24 @@ Design Goals
    <install as="k/memory.php" name="lib/k/memory.php" />
    <install as="k/registry.php" name="lib/k/registry.php" />
    <install as="k/document.php" name="lib/k/document.php" />
+   <install as="k/wire/userlandarguments.php" name="lib/k/wire/userlandarguments.php" />
+   <install as="k/wire/container.php" name="lib/k/wire/container.php" />
+   <install as="k/wire/defaultfactory.php" name="lib/k/wire/defaultfactory.php" />
+   <install as="k/wire/shareddependency.php" name="lib/k/wire/shareddependency.php" />
+   <install as="k/wire/userdependency.php" name="lib/k/wire/userdependency.php" />
+   <install as="k/wire/configurablefactory.php" name="lib/k/wire/configurablefactory.php" />
+   <install as="k/wire/ilocator.php" name="lib/k/wire/ilocator.php" />
+   <install as="k/wire/callbackfactory.php" name="lib/k/wire/callbackfactory.php" />
+   <install as="k/wire/idependencysource.php" name="lib/k/wire/idependencysource.php" />
+   <install as="k/wire/iclassfactory.php" name="lib/k/wire/iclassfactory.php" />
+   <install as="k/wire/icreator.php" name="lib/k/wire/icreator.php" />
+   <install as="k/wire/transientdependency.php" name="lib/k/wire/transientdependency.php" />
+   <install as="k/wire/requireduserdependency.php" name="lib/k/wire/requireduserdependency.php" />
+   <install as="k/wire/constantdependency.php" name="lib/k/wire/constantdependency.php" />
+   <install as="k/wire/registry.php" name="lib/k/wire/registry.php" />
+   <install as="k/wire/exception.php" name="lib/k/wire/exception.php" />
+   <install as="k/wire/creator.php" name="lib/k/wire/creator.php" />
+   <install as="k/wire/locatorpropagationexception.php" name="lib/k/wire/locatorpropagationexception.php" />
   </filelist>
  </phprelease>
  <changelog>
@@ -241,7 +339,7 @@ Design Goals
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <date>2007-10-17</date>
+   <date>2007-11-05</date>
    <license uri="http://www.gnu.org/licenses/lgpl.html">LGPL License</license>
    <notes>Initial release as a PEAR package.</notes>
   </release>

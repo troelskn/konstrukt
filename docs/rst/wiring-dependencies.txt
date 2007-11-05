@@ -1,0 +1,178 @@
+Wiring dependencies
+===================
+
+The wire package
+----------------
+**Wire** is a simple dependency injection container for PHP5. It's implemented as a hybrid registry/DI container, which makes it suitable to use for small as well as bigger projects. It's a sub project of the Konstrukt library, but it can easily be used on its own. The relevant classes are all in the ``k/wire`` namespace, and there are no dependencies on the rest of Konstrukt.
+
+So what is a DI container anyway? Shortly put, it's a class factory. The benefit of using it is, that it can hide away constructor complexity and that it can remove concrete class dependencies. The latter is perhaps most important, when writing unit tests, while the former helps to simplify code and makes refactoring a lot easier. For a more thorough explanation, you should visit [[www.picocontainer.org|http://www.picocontainer.org/]].
+
+Motivation for wire
+-------------------
+Most programs has objects, which are somewhat global in nature; The same instance needs to be shared among several components. The simplest way of acquiring this is, to use some sort of global scope. Be it global variables, singletons or other, global scope introduce severe problems into an application and should therefore be avoided; The details of why, is beyond the scope of this text.
+
+As mentioned, Wire is a hybrid registry/dependency injection container. Unlike other DI containers, it's relatively simple to configure. It also has sane default behaviour, which means that for simple cases, you don't need any explicit configuration. This addresses (what I perceive as) the main problem with existing solutions, such as [[PicoPhp|http://www.picophp.com/]] and [[Phemto|http://sourceforge.net/projects/phemto/]].
+
+###Forces of Wire
+The biggest benefits of Wire, compared to other similar packages are as follows:
+
+* Works out-of-the-box. Classes without dependencies, can be be created without any explicit registration.
+
+* Since Wire can simply be used as a registry, it allows you to an ad-hoc strategy. For example, you could begin by using the simpler registry pattern and only move on to DI, when the need arises. This allows the container to grow with your application, rather than being tailored for a specific style.
+
+* While the default method to wire components, is to use a configurable factory, Wire allows you to register callbacks as factories. This gives ultimate control for those odd cases, which can otherwise be hard to fit in. It also has a default factory, so for classes, which doesn't have any dependencies, you don't need to explicitly register a factory.
+
+* Another difference from existing solutions is, that it doesn't use interfaces as markers. If you don't fancy writing interfaces for everything, you can still use Wire. This is important, because interfaces are a relatively new, and somewhat strange, construction in the PHP language.
+
+* Finally, Wire supports setter injection. The main usage for this, is to overcome recursive dependencies.
+
+Using Wire as a registry
+------------------------
+Using Wire as a registry is straight forward. You instantiate a new instance of k_wire_Registry and can then use the methods set() and get() to store/retrieve instances. This doesn't really add any functionality, but since k_wire_Container has the same interface as k_wire_Registry, they become interchangeable. This allows you to escalate to use DI, if you later find the need.
+
+The benefit gained, from using a registry is, that complex constructors can be simplified. For example, instead of this:
+::
+class Foo
+{
+  function __construct($bar, $cux, $zip, $zap) {
+    $this->bar = $bar;
+    $this->cux = $cux;
+    $this->zip = $zip;
+    $this->zap = $zap;
+  }
+}
+
+You could have this:
+::
+class Foo
+{
+  function __construct($registry) {
+    $this->bar = $registry->get('bar');
+    $this->cux = $registry->get('cux');
+    $this->zip = $registry->get('zip');
+    $this->zap = $registry->get('zap');
+  }
+}
+
+If you later decide to add a dependency to that class, the signature of the constructor wouldn't change. This makes it easier to add new dependencies and remove them again.
+
+The biggest downside of using a registry is, that it isn't apparent from the interface alone, which dependencies a given class has. For example, one couldn't know that Foo has four dependencies in the above example, without looking at the implementation of the constructor.
+
+Another problem is, that all *potential* dependencies must be created in advance. So if you don't know for sure, if Foo is going to be instantiated, you still need to load all its dependencies into the registry. This is problematic in PHP, since each process is very short-lived.
+
+::note
+A registry should *never* be made globally available. Any code, which needs access to it, should get it passed in.
+
+Upgrading the registry with a factory
+-------------------------------------
+To fix the issue of creating dependencies in advanced, you can use factories to create the dependencies on demand. Wire supports this -- Instead of using k_wire_Registry, you can use k_wire_Container. The container works as the registry, but allows you to register a factory for creating dependencies. There are two kinds of factories; Callbacks and configurable factories. Callbacks are the more primitive of the two, so we'll cover those first.
+
+Let's assume that your application has a database connection object, which looks a bit like this:
+::
+class DatabaseConnection
+{
+  function __construct($host, $username, $password) {
+    // ...
+  }
+}
+
+Presumably, we may or may not need an instance. Since it's rather costly to create a connection, if it's never used, we set up a factory for creating it:
+::
+$container = new k_wire_Container();
+$registry->registerConstructor(
+  "DatabaseConnection",
+  create_function(
+    '$className, $args, $registry',
+    'return new $className("localhost", "root", "secret");'
+  )
+);
+
+It's now possible to ask the container for an instance of *DatabaseConnection*. The first time, it will be created, from the registered factory. Any subsequent calls will return the first instance.
+::
+$connection = $container->get('DatabaseConnection');
+assert($connection instanceOf DatabaseConnection); // yields true
+$connection2 = $container->get('DatabaseConnection');
+assert($connection === $connection2); // yields true
+
+The argument for ``registerConstructor`` is a [[callback|http://docs.php.net/callback]]. You can use anything, which is a valid callback.
+
+Configurable factories
+----------------------
+While callback factories are flexible, they are also a bit awkward. The recommended way to create factories, is therefore with the configurable factory. The following shows the same example as above, using a configurable factory:
+::
+$container = new k_wire_Container();
+$factory = $container->register('DatabaseConnection');
+$factory->registerConstructor(new k_wire_ConstantDependency('localhost'));
+$factory->registerConstructor(new k_wire_ConstantDependency('root'));
+$factory->registerConstructor(new k_wire_ConstantDependency('secret'));
+
+Shared dependencies
+----------------------
+Most dependencies are shared throughout the application. For example, you would probably want to use the same DatabaseConnection instance for all dependants. When you register a dependency as a *shared dependency*, there will only be one instance per container. For example:
+::
+$factory = $container->register('Foo');
+$factory->registerConstructor(new k_wire_SharedDependency('bar'));
+$factory = $container->register('Cux');
+$factory->registerConstructor(new k_wire_SharedDependency('bar'));
+
+In the above example, *Foo* and *Cux* will be created with the same instance of *Bar.*
+
+Default factory
+---------------
+To make things easier, it's not necessary to register a factory for a class, which has an empty constructor. So in the previous example, one could register *Foo* as follows:
+::
+$factory = $container->register('Foo');
+$factory->registerConstructor(new k_wire_SharedDependency('bar'));
+$factory->registerConstructor(new k_wire_SharedDependency('cux'));
+$factory->registerConstructor(new k_wire_SharedDependency('zip'));
+$factory->registerConstructor(new k_wire_SharedDependency('zap'));
+
+That is all, that is needed to be able to create an instance of *Foo.* Although, if you want, you are free to register each of the dependencies explicitly:
+::
+$container->register('Bar');
+$container->register('Cux');
+$container->register('Zip');
+$container->register('Zap');
+
+Transient dependencies
+----------------------
+So far we've covered *constant dependencies* and *shared dependencies*. However, sometimes a class may need a fresh instance of a given class, rather than share it with others. This is known as a *transient dependency.* You can register such a dependency like this:
+::
+$factory = $container->register('Foo');
+$factory->registerConstructor(new k_wire_TransientDependency('bar'));
+$factory = $container->register('Cux');
+$factory->registerConstructor(new k_wire_TransientDependency('bar'));
+
+In the above example, *Foo* and *Cux* will be created with different instances of *Bar.*
+
+Userland dependencies
+-----------------
+The main use for a container is to create shared instances. However, you may also use it for creating transient instances. Rather than having to write an ad hoc factory, you get the benefit of using the same familiar and tested interface. To create a transient instance (Eg. a new one for each time), you can call the method ``create()`` on  the container.
+
+Transient instances often require one or more unique dependencies, in addition to other dependencies. For example, a Article class, representing an article in a CMS, might need the article ID. You can create a factory, which requires userland arguments. These factories can only be called by invoking ``create()``. Assume the mentioned Article object looks like this:
+::
+class Article
+{
+  function __construct($databaseConnection, $articleId) {
+    // ...
+  }
+}
+
+It can be registered as follows:
+::
+$factory = $container->register('Foo');
+$factory->registerConstructor(new k_wire_SharedDependency('DatabaseConnection'));
+$factory->registerConstructor(new k_wire_UserDependency());
+
+And used:
+::
+$article42 = $container->create('Article', 42);
+
+Setter injection
+----------------
+While not something you are likely to need a lot, there can be times, where you need a recursive dependency. Eg. class A depends on B and B depends on A. Obviously, you can't pass the dependencies in the constructor, since that would require both instances to be created before the other.
+As a golden rule, recursive dependencies should be avoided; They are a sign of unnecesary complexity. However, if you need it for some reason, you can use late dependencies. This works by creating the instances, and the assign the dependencies afterwards.
+
+There are two variations of late dependencies; Setter injection and property injection. The former works by calling a setter-method, while the latter sets a property directly. To access the property directly, it must be declared public, and because of this, setter injection is usually the better choice of the two.
+
+
