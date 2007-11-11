@@ -63,7 +63,7 @@
   <span class="br0">&#125;</span>
 <span class="br0">&#125;</span></pre><p>Presumably, we may or may not need an instance. Since it&#039;s rather costly to create a connection, if it&#039;s never used, we set up a factory for creating it:</p>
 <pre class="php"><span class="re0">$container</span> = <span class="kw2">new</span> k_wire_Container<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-<span class="re0">$registry</span>-&gt;<span class="me1">registerConstructor</span><span class="br0">&#40;</span>
+<span class="re0">$container</span>-&gt;<span class="me1">registerConstructor</span><span class="br0">&#40;</span>
   <span class="st0">&quot;DatabaseConnection&quot;</span>,
   <span class="kw3">create_function</span><span class="br0">&#40;</span>
     <span class="st0">'$className, $args, $registry'</span>,

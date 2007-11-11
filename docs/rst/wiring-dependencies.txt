@@ -79,7 +79,7 @@ class DatabaseConnection
 Presumably, we may or may not need an instance. Since it's rather costly to create a connection, if it's never used, we set up a factory for creating it:
 ::
 $container = new k_wire_Container();
-$registry->registerConstructor(
+$container->registerConstructor(
   "DatabaseConnection",
   create_function(
     '$className, $args, $registry',

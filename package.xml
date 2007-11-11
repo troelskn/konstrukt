@@ -35,8 +35,8 @@ Design Goals
   <email>lsolesen@users.sourceforge.net</email>
   <active>yes</active>
  </helper>
- <date>2007-11-05</date>
- <time>21:30:22</time>
+ <date>2007-11-11</date>
+ <time>15:58:01</time>
  <version>
   <release>0.4.0</release>
   <api>0.4.0</api>
@@ -339,7 +339,7 @@ Design Goals
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <date>2007-11-05</date>
+   <date>2007-11-11</date>
    <license uri="http://www.gnu.org/licenses/lgpl.html">LGPL License</license>
    <notes>Initial release as a PEAR package.</notes>
   </release>
