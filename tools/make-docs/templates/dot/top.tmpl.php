@@ -1,5 +1,6 @@
 digraph G {
   rankdir = BT
+  overlap = compress
   node [
     shape = "record"
     style = "filled"

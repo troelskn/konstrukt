@@ -1,5 +1,8 @@
 <?php
-require_once '../includes/restructured.php';
+set_include_path(
+  get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/../includes/');
+
+require_once 'restructured.php';
 
 class Pepper_DocBlockLexer
 {
@@ -183,10 +186,12 @@ class Pepper_StreamWriter
 class Pepper_GraphVizWriter
 {
   protected $handle;
+  protected $binary;
   protected $buffer = "";
 
-  function __construct($handle) {
+  function __construct($handle, $binary = 'dot') {
     $this->handle = $handle;
+    $this->binary = $binary;
   }
 
   function write($data) {
@@ -208,7 +213,7 @@ class Pepper_GraphVizWriter
     $cwd = getcwd();
     $env = Array();
 
-    $process = proc_open('dot -T'.$format, $descriptorspec, $pipes, $cwd, $env);
+    $process = proc_open($this->binary.' -T'.$format, $descriptorspec, $pipes, $cwd, $env);
 
     if (is_resource($process)) {
        // $pipes now looks like this:
