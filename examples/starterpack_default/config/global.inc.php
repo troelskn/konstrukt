@@ -5,10 +5,10 @@ set_include_path(
   . PATH_SEPARATOR . dirname(dirname(__FILE__))
   . PATH_SEPARATOR . dirname(dirname(__FILE__)).'/lib');
 
-require_once 'konstrukt/incubator/lib/k2.inc.php';
+require_once 'konstrukt/trunk/lib/k.inc.php';
 require_once 'smarty/libs/Smarty.class.php';
 require_once dirname(__FILE__) . '/wiring.inc.php';
 
 date_default_timezone_set('Europe/Paris');
-set_error_handler('k2_exceptions_error_handler');
-spl_autoload_register('k2_autoload');
+set_error_handler('k_exceptions_error_handler');
+spl_autoload_register('k_autoload');

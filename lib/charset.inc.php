@@ -31,12 +31,12 @@ two problems, regarding charsets:
    * the httpresponse holds the content as utf-8, so each responsecharset should be able to convert
    * from this base
    */
-interface k2_charset_ResponseCharset {
+interface k_charset_ResponseCharset {
   function name();
   function encode($utf8_string);
 }
 
-class k2_charset_Utf8 implements k2_charset_ResponseCharset {
+class k_charset_Utf8 implements k_charset_ResponseCharset {
   /**
     * @return string
     */
@@ -52,7 +52,7 @@ class k2_charset_Utf8 implements k2_charset_ResponseCharset {
   }
 }
 
-class k2_charset_Latin1 implements k2_charset_ResponseCharset {
+class k_charset_Latin1 implements k_charset_ResponseCharset {
   function name() {
     return 'iso-8859-1';
   }
@@ -64,7 +64,7 @@ class k2_charset_Latin1 implements k2_charset_ResponseCharset {
 /**
  * A strategy for encoding/decoding charsets
  */
-interface k2_charset_CharsetStrategy {
+interface k_charset_CharsetStrategy {
   function decodeInput($input);
   function responseCharset();
   function isInternalUtf8();
@@ -78,15 +78,15 @@ interface k2_charset_CharsetStrategy {
  * You also need to make sure that all files (php and templates) are utf-8 encoded
  * If you use a database, make sure that the transfer charset is utf-8 (on mysql use: SET NAMES = 'utf8')
  */
-class k2_charset_Utf8CharsetStrategy implements k2_charset_CharsetStrategy {
+class k_charset_Utf8CharsetStrategy implements k_charset_CharsetStrategy {
   function decodeInput($input) {
     return $input;
   }
   /**
-    * @return k2_charset_Utf8
+    * @return k_charset_Utf8
     */
   function responseCharset() {
-    return new k2_charset_Utf8();
+    return new k_charset_Utf8();
   }
   /**
     * @return boolean
@@ -100,7 +100,7 @@ class k2_charset_Utf8CharsetStrategy implements k2_charset_CharsetStrategy {
  * Full latin1, throughout the application
  * While this is the native solution for PHP < 6, it isn't recommended for new applications. Use FauxUtf8 or preferably Utf8.
  */
-class k2_charset_Latin1CharsetStrategy implements k2_charset_CharsetStrategy {
+class k_charset_Latin1CharsetStrategy implements k_charset_CharsetStrategy {
   /**
     * @param array
     * @return array
@@ -109,7 +109,7 @@ class k2_charset_Latin1CharsetStrategy implements k2_charset_CharsetStrategy {
     return $input;
   }
   function responseCharset() {
-    return new k2_charset_Latin1();
+    return new k_charset_Latin1();
   }
   function isInternalUtf8() {
     return false;
@@ -123,7 +123,7 @@ class k2_charset_Latin1CharsetStrategy implements k2_charset_CharsetStrategy {
  * It expects everything within PHP (files and strings) to be latin1. This includes any data received from the database.
  * It will encode/decode the outside as UTF-8, so the page appears in UTF-8 for the client, even if it is limited to the latin1 subset.
  */
-class k2_charset_FauxUtf8CharsetStrategy implements k2_charset_CharsetStrategy {
+class k_charset_FauxUtf8CharsetStrategy implements k_charset_CharsetStrategy {
   function decodeInput($input) {
     if (is_array($input)) {
       $output = array();
@@ -135,7 +135,7 @@ class k2_charset_FauxUtf8CharsetStrategy implements k2_charset_CharsetStrategy {
     return utf8_decode($input);
   }
   function responseCharset() {
-    return new k2_charset_Utf8();
+    return new k_charset_Utf8();
   }
   function isInternalUtf8() {
     return false;

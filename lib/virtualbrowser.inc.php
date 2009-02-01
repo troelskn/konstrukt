@@ -1,8 +1,8 @@
 <?php
-require_once 'k2.inc.php';
+require_once 'k.inc.php';
 require_once 'simpletest/web_tester.php';
 
-class k2_VirtualSimpleBrowser extends SimpleBrowser {
+class k_VirtualSimpleBrowser extends SimpleBrowser {
   protected $root_class_name;
   protected $components;
   protected $charset_strategy;
@@ -12,20 +12,20 @@ class k2_VirtualSimpleBrowser extends SimpleBrowser {
     * @param ???
     * @return null
     */
-  function __construct($root_class_name, k2_ComponentCreator $components = null, k2_charset_CharsetStrategy $charset_strategy = null) {
+  function __construct($root_class_name, k_ComponentCreator $components = null, k_charset_CharsetStrategy $charset_strategy = null) {
     $this->root_class_name = $root_class_name;
     $this->components = $components;
     $this->charset_strategy = $charset_strategy;
     parent::__construct();
   }
   /**
-    * @return k2_VirtualSimpleUserAgent
+    * @return k_VirtualSimpleUserAgent
     */
   protected function createUserAgent() {
-    return new k2_VirtualSimpleUserAgent($this->root_class_name, $this->components, $this->charset_strategy);
+    return new k_VirtualSimpleUserAgent($this->root_class_name, $this->components, $this->charset_strategy);
   }
 }
-class k2_SimpleOutputAccess implements k2_adapter_OutputAccess {
+class k_SimpleOutputAccess implements k_adapter_OutputAccess {
   protected $headers = array();
   protected $content = "";
   /**
@@ -52,14 +52,14 @@ class k2_SimpleOutputAccess implements k2_adapter_OutputAccess {
     * @param SimpleUrl
     * @param array
     * @param string
-    * @return k2_ActingAsSimpleHttpResponse
+    * @return k_ActingAsSimpleHttpResponse
     */
   function toSimpleHttpResponse($url, $data = array(), $method = 'GET') {
-    return new k2_ActingAsSimpleHttpResponse($url, $data, $this->headers, $this->content, $method);
+    return new k_ActingAsSimpleHttpResponse($url, $data, $this->headers, $this->content, $method);
   }
 }
 
-class k2_ActingAsSimpleHttpResponse {
+class k_ActingAsSimpleHttpResponse {
   protected $url;
   protected $method = "GET";
   protected $encoding;
@@ -139,7 +139,7 @@ class k2_ActingAsSimpleHttpResponse {
   }
 }
 
-class k2_VirtualSimpleUserAgent {
+class k_VirtualSimpleUserAgent {
   protected $cookie_access;
   protected $session_access;
   protected $charset_strategy;
@@ -153,11 +153,11 @@ class k2_VirtualSimpleUserAgent {
     * @param ???
     * @return null
     */
-  function __construct($root_class_name, k2_ComponentCreator $components = null, k2_charset_CharsetStrategy $charset_strategy = null) {
-    $this->cookie_access = new k2_adapter_MockCookieAccess('', array());
-    $this->session_access = new k2_adapter_MockSessionAccess($this->cookie_access);
-    $this->components = $components ? $components : new k2_DefaultComponentCreator();
-    $this->charset_strategy = $charset_strategy ? $charset_strategy : new k2_charset_Utf8CharsetStrategy();
+  function __construct($root_class_name, k_ComponentCreator $components = null, k_charset_CharsetStrategy $charset_strategy = null) {
+    $this->cookie_access = new k_adapter_MockCookieAccess('', array());
+    $this->session_access = new k_adapter_MockSessionAccess($this->cookie_access);
+    $this->components = $components ? $components : new k_DefaultComponentCreator();
+    $this->charset_strategy = $charset_strategy ? $charset_strategy : new k_charset_Utf8CharsetStrategy();
     $this->root_class_name = $root_class_name;
     if (!$root_class_name) {
       throw new Exception("root_class_name not specified");
@@ -165,8 +165,8 @@ class k2_VirtualSimpleUserAgent {
     $this->servername = 'localhost';
   }
   function restart($date = false) {
-    $this->cookie_access = new k2_adapter_MockCookieAccess('', array());
-    $this->session_access = new k2_adapter_MockSessionAccess($this->cookie_access);
+    $this->cookie_access = new k_adapter_MockCookieAccess('', array());
+    $this->session_access = new k_adapter_MockSessionAccess($this->cookie_access);
   }
   /**
     * @param bool
@@ -185,7 +185,7 @@ class k2_VirtualSimpleUserAgent {
   /**
     * @param SimpleUrl
     * @param SimpleEncoding
-    * @return k2_ActingAsSimpleHttpResponse
+    * @return k_ActingAsSimpleHttpResponse
     */
   protected function fetch(SimpleUrl $url, SimpleEncoding $parameters) {
     // extract primitives from SimpleTest abstractions
@@ -198,27 +198,27 @@ class k2_VirtualSimpleUserAgent {
       $data[$pair->getKey()] = $pair->getValue();
     }
     if (!in_array($url->getHost(), array("", $this->servername))) {
-      return new k2_ActingAsSimpleHttpResponse($url, $data, array("HTTP/1.1 502"), "External URL requested: " . $url->asString(), $method);
+      return new k_ActingAsSimpleHttpResponse($url, $data, array("HTTP/1.1 502"), "External URL requested: " . $url->asString(), $method);
     }
     // set up a mocked environment
     $server = array(
       'SERVER_NAME' => $this->servername,
       'REQUEST_METHOD' => $method,
       'REQUEST_URI' => $url_path);
-    $superglobals = new k2_adapter_MockGlobalsAccess($url_query, $data, $server);
-    $response = k2()
-      ->setContext(new k2_HttpRequest("", null, new k2_DefaultIdentityLoader(), $superglobals, $this->cookie_access, $this->session_access))
+    $superglobals = new k_adapter_MockGlobalsAccess($url_query, $data, $server);
+    $response = k()
+      ->setContext(new k_HttpRequest("", null, new k_DefaultIdentityLoader(), $superglobals, $this->cookie_access, $this->session_access))
       ->setComponentCreator($this->components)
       ->setCharsetStrategy($this->charset_strategy)
       ->run($this->root_class_name);
-    $output = new k2_SimpleOutputAccess();
+    $output = new k_SimpleOutputAccess();
     $response->out($output);
     return $output->toSimpleHttpResponse($url, $data, $method);
   }
   /**
     * @param SimpleUrl
     * @param SimpleEncoding
-    * @return k2_ActingAsSimpleHttpResponse
+    * @return k_ActingAsSimpleHttpResponse
     */
   function fetchResponse($url, $encoding) {
     if ($encoding->getMethod() != 'POST') {
@@ -239,7 +239,7 @@ class k2_VirtualSimpleUserAgent {
   /**
     * @param SimpleUrl
     * @param SimpleEncoding
-    * @return k2_ActingAsSimpleHttpResponse
+    * @return k_ActingAsSimpleHttpResponse
     */
   protected function fetchWhileRedirected($url, $encoding) {
     $redirects = 0;

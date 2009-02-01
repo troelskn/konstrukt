@@ -4,11 +4,11 @@ if (realpath($_SERVER['PHP_SELF']) == __FILE__) {
   require_once 'simpletest/autorun.php';
 }
 require_once dirname(__FILE__) . '/../../config/global.inc.php';
-require_once 'konstrukt/incubator/lib/virtualbrowser.inc.php';
+require_once 'konstrukt/trunk/lib/virtualbrowser.inc.php';
 
 class WebTestOfRoot extends WebTestCase {
   function createBrowser() {
-    return new k2_VirtualSimpleBrowser('components_Root', new k2_PhemtoAdapter(create_phemto_container()));
+    return new k_VirtualSimpleBrowser('components_Root', new k_PhemtoAdapter(create_phemto_container()));
   }
   function createInvoker() {
     return new SimpleInvoker($this);

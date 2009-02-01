@@ -5,4 +5,4 @@ You can copy the contents to a new location, to create a new web application. To
 This setup is a minimal configuration, having only Konstrukt as a runtime dependency. If you need a more complete environment, you should take a look at `starterpack` instead.
 
 The following dependencies are required:
-  Konstrukt, version 2 (https://konstrukt.googlecode.com/svn/incubator)
+  Konstrukt, version 2 (https://konstrukt.googlecode.com/svn/trunk)

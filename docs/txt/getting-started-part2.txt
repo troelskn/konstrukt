@@ -4,31 +4,31 @@ For this tutorial we presume that you have completed the first tutorial, since i
 
 Negotiating the Content-Type
 ----------------------------
-Most of the time a web application will emit HTML. That's the fabric of which the web is made. Once in a while though, we might have to generate other types of response. In these cases, we clearly don't want the output to get wrapped in the regular document rendering. For that we need an abnormal response. We have already seen one kind of abnormal response, with the `k2_NotFound`, but this time we need a more specific kind. We'll extend the contact component with the capacity to render as a [vcard](http://en.wikipedia.org/wiki/VCard).
+Most of the time a web application will emit HTML. That's the fabric of which the web is made. Once in a while though, we might have to generate other types of response. In these cases, we clearly don't want the output to get wrapped in the regular document rendering. For that we need an abnormal response. We have already seen one kind of abnormal response, with the `k_NotFound`, but this time we need a more specific kind. We'll extend the contact component with the capacity to render as a [vcard](http://en.wikipedia.org/wiki/VCard).
 
 To supply a ressource as a different content-type, we can use Konstrukts built-in support for content-negotiation, which is an often under-utilised feature of the http protocol. To get this, we need to edit the "show" component, so that the `GET()` method can fork out to either the html or the vcard handler. We could do so mnually in the `GET()` method, but there are generic hooks available for this purpose. After a revision of the component, we end up with this:
 
 ..php
 <?php
-class components_contacts_Show extends k2_Component {
+class components_contacts_Show extends k_Component {
   function renderHtml() {
     global $contacts;
     $contact = $contacts->fetchByName($this->name());
     if (!$contact) {
-      throw new k2_NotFound();
+      throw new k_NotFound();
     }
     $this->document->setTitle($contact->full_name());
-    $t = new k2_Template("templates/contacts-show.tpl.php");
+    $t = new k_Template("templates/contacts-show.tpl.php");
     return $t->render($this, array('contact' => $contact));
   }
   function renderVcard() {
     global $contacts;
     $contact = $contacts->fetchByName($this->name());
     if (!$contact) {
-      throw new k2_NotFound();
+      throw new k_NotFound();
     }
-    $t = new k2_Template("templates/contacts-show-vcard.tpl.php");
-    $response = new k2_HttpResponse();
+    $t = new k_Template("templates/contacts-show-vcard.tpl.php");
+    $response = new k_HttpResponse();
     $response->setContent($t->render($this, array('contact' => $contact)));
     $response->setContentType('text/x-vcard');
     throw $response;
@@ -58,23 +58,23 @@ As you may have noted above, there is some duplication between the two render fu
 
 ..php
 <?php
-class components_contacts_Show extends k2_Component {
+class components_contacts_Show extends k_Component {
   function dispatch() {
     global $contacts;
     $contact = $contacts->fetchByName($this->name());
     if (!$contact) {
-      throw new k2_NotFound();
+      throw new k_NotFound();
     }
     return parent::dispatch();
   }
   function renderHtml() {
     $this->document->setTitle($this->contact->full_name());
-    $t = new k2_Template("templates/contacts-show.tpl.php");
+    $t = new k_Template("templates/contacts-show.tpl.php");
     return $t->render($this, array('contact' => $this->contact));
   }
   function renderVcard() {
-    $t = new k2_Template("templates/contacts-show-vcard.tpl.php");
-    $response = new k2_HttpResponse();
+    $t = new k_Template("templates/contacts-show-vcard.tpl.php");
+    $response = new k_HttpResponse();
     $response->setContent($t->render($this, array('contact' => $this->contact)));
     $response->setContentType('text/x-vcard');
     throw $response;
@@ -95,10 +95,10 @@ To continue from our running example, the first thing we need is to render a htm
 
 ..php
 <?php
-class components_contacts_Show extends k2_Component {
+class components_contacts_Show extends k_Component {
   function renderEdit() {
     $this->document->setTitle("Edit " . $this->contact->full_name());
-    $t = new k2_Template("templates/contacts-show-edit.tpl.php");
+    $t = new k_Template("templates/contacts-show-edit.tpl.php");
     return $t->render($this, array('contact' => $this->contact));
   }
   ...
@@ -141,10 +141,10 @@ Now that we have the rendering of a form i place, we still need to process the P
 
 ..php
 <?php
-class components_contacts_Show extends k2_Component {
+class components_contacts_Show extends k_Component {
   function POST() {
     if ($this->process()) {
-      throw new k2_SeeOther($this->url(';'));
+      throw new k_SeeOther($this->url(';'));
     }
     return $this->GET();
   }

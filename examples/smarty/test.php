@@ -13,7 +13,7 @@ class TestOfExampleSmarty extends WebTestCase {
     return new SimpleInvoker($this);
   }
   function createBrowser() {
-    return new k2_VirtualSimpleBrowser('HelloComponent');
+    return new k_VirtualSimpleBrowser('HelloComponent');
   }
   function test_root() {
     $this->assertTrue($this->get('/'));

@@ -1,7 +1,7 @@
 <?php
-require_once '../../lib/k2.inc.php';
+require_once '../../lib/k.inc.php';
 
-class Root extends k2_Component {
+class Root extends k_Component {
   protected function map($name) {
     if ($name == "hello") {
       return 'hellocontroller';
@@ -15,12 +15,12 @@ class Root extends k2_Component {
   }
 }
 
-class HelloController extends k2_Component {
+class HelloController extends k_Component {
   function GET() {
     return "Hello World";
   }
 }
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) == __FILE__) {
-  k2()->run('Root')->out();
+  k()->run('Root')->out();
 }

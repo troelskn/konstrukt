@@ -1,7 +1,7 @@
 <?php
-class components_Root extends k2_Component {
+class components_Root extends k_Component {
   function dispatch() {
-    $t = new k2_Template("templates/document.tpl.php");
+    $t = new k_Template("templates/document.tpl.php");
     return
       $t->render(
         $this,
@@ -13,7 +13,7 @@ class components_Root extends k2_Component {
           'onload' => $this->document->onload()));
   }
   function GET() {
-    $t = new k2_Template("templates/root.tpl.php");
+    $t = new k_Template("templates/root.tpl.php");
     return $t->render($this);
   }
 }

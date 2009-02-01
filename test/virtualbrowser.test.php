@@ -2,13 +2,13 @@
 error_reporting(E_ALL | E_STRICT);
 
 // You need to have simpletest in your include_path
-require_once '../lib/k2.inc.php';
+require_once '../lib/k.inc.php';
 require_once '../lib/virtualbrowser.inc.php';
 if (realpath($_SERVER['PHP_SELF']) == __FILE__) {
   require_once 'simpletest/autorun.php';
 }
 
-class test_LoginForm extends k2_Component {
+class test_LoginForm extends k_Component {
   function execute() {
     $this->url_state->init("destination", "http://www.example.org");
     return parent::execute();
@@ -18,7 +18,7 @@ class test_LoginForm extends k2_Component {
   }
   function POST() {
     if ($this->body('name') == 'Yoda' && $this->body('password') == 'TopNinja33') {
-      throw new k2_SeeOther($this->query('destination'));
+      throw new k_SeeOther($this->query('destination'));
     }
     return $this->renderForm('You have failed');
   }
@@ -40,7 +40,7 @@ class test_LoginForm extends k2_Component {
   }
 }
 
-class test_StatefulPage extends k2_Component {
+class test_StatefulPage extends k_Component {
   function execute() {
     if ($this->query('setval')) {
       $this->session()->set('slot', $this->query('setval'));
@@ -57,7 +57,7 @@ class test_StatefulPage extends k2_Component {
 
 class TestOfVirtualBrowser extends WebTestCase {
   function createBrowser() {
-    return new k2_VirtualSimpleBrowser('test_LoginForm');
+    return new k_VirtualSimpleBrowser('test_LoginForm');
   }
 
   function test_requesting() {
@@ -79,7 +79,7 @@ class TestOfVirtualBrowser extends WebTestCase {
 
 class TestOfVirtualBrowserSession extends WebTestCase {
   function createBrowser() {
-    return new k2_VirtualSimpleBrowser('test_StatefulPage');
+    return new k_VirtualSimpleBrowser('test_StatefulPage');
   }
 
   function test_requesting() {

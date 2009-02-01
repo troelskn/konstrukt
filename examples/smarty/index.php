@@ -1,9 +1,9 @@
 <?php
-require_once '../../lib/k2.inc.php';
+require_once '../../lib/k.inc.php';
 require_once 'smarty/libs/Smarty.class.php';
 date_default_timezone_set('Europe/Paris');
 
-class HelloComponent extends k2_Component {
+class HelloComponent extends k_Component {
   function GET() {
     $smarty = new Smarty();
     $smarty->compile_check = true;
@@ -27,5 +27,5 @@ class HelloComponent extends k2_Component {
 }
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) == __FILE__) {
-  k2()->run('HelloComponent')->out();
+  k()->run('HelloComponent')->out();
 }

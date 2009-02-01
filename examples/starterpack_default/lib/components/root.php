@@ -1,5 +1,5 @@
 <?php
-class components_Root extends k2_Component {
+class components_Root extends k_Component {
   protected $templates;
   function __construct(TemplateFactory $templates) {
     $this->templates = $templates;

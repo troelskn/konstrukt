@@ -7,7 +7,7 @@ require_once 'includes/pepper.php';
 require_once 'phemto/phemto.php';
 $discoverer = new Pepper_Discoverer();
 
-$discoverer->readFile('lib/k2.inc.php');
+$discoverer->readFile('lib/k.inc.php');
 $discoverer->readFile('lib/adapter.inc.php');
 $discoverer->readFile('lib/charset.inc.php');
 

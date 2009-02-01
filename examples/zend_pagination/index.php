@@ -1,5 +1,5 @@
 <?php
-require_once '../../lib/k2.inc.php';
+require_once '../../lib/k.inc.php';
 
 // You must have ZendFramework on your path
 require_once 'Zend/Paginator.php';
@@ -12,7 +12,7 @@ require_once 'dummy_collection.inc.php';
  * For this example, A dummy is used as the model, but you would likely replace it with a
  * lazy-loading wrapper, that queries the underlying database for the required items.
  */
-class ZfPaginationPage extends k2_Component {
+class ZfPaginationPage extends k_Component {
   protected $template = 'list.tpl.php';
   protected $paginator;
   protected $collection;
@@ -44,7 +44,7 @@ class ZfPaginationPage extends k2_Component {
     return $this->paginator;
   }
   function GET() {
-    $t = new k2_Template('templates/' . $this->template);
+    $t = new k_Template('templates/' . $this->template);
     return $t->render(
       $this,
       array(
@@ -57,5 +57,5 @@ class ZfPaginationPage extends k2_Component {
 }
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) == __FILE__) {
-  k2()->run('ZfPaginationPage')->out();
+  k()->run('ZfPaginationPage')->out();
 }

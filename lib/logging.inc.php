@@ -3,12 +3,12 @@
  * Collects dispatch trace and debug information to present a debug output.
  * It's a bunch of nasty, hard coded HTML, but it works and it's self-contained.
  */
-class k2_logging_WebDebugger implements k2_DebugListener {
+class k_logging_WebDebugger implements k_DebugListener {
   protected $route = array();
   protected $messages = array();
   protected $dumper;
   function __construct() {
-    $this->dumper = new k2_logging_HtmlDumper(new k2_logging_XrayVision());
+    $this->dumper = new k_logging_HtmlDumper(new k_logging_XrayVision());
   }
   function logException(Exception $ex) {}
   function logDispatch($component, $name, $next) {
@@ -90,9 +90,9 @@ class k2_logging_WebDebugger implements k2_DebugListener {
       '</div>'
       ;
   }
-  function decorate(k2_HttpResponse $response) {
+  function decorate(k_HttpResponse $response) {
     if ($response->status() >= 300 && $response->status() < 400) {
-      return new k2_HttpResponse(200, $this->render($response, true));
+      return new k_HttpResponse(200, $this->render($response, true));
     }
     if ($response->contentType() == 'text/html') {
       $html = $response->content();
@@ -110,7 +110,7 @@ class k2_logging_WebDebugger implements k2_DebugListener {
  * Exports variable information, including private/protected variables and with recursion-protection.
  * Since this is built upon PHP serialization functionality, unserializable objects may cause trouble.
  */
-class k2_logging_XrayVision {
+class k_logging_XrayVision {
   protected $id;
   function export($object) {
     $this->id = 1;
@@ -216,7 +216,7 @@ class k2_logging_XrayVision {
 
 /**
  */
-class k2_logging_LogDebugger implements k2_DebugListener {
+class k_logging_LogDebugger implements k_DebugListener {
   protected $file_handle;
   protected $dumper;
   /**
@@ -225,7 +225,7 @@ class k2_logging_LogDebugger implements k2_DebugListener {
     */
   function __construct($filename) {
     $this->file_handle = fopen($filename, 'at');
-    $this->dumper = new k2_logging_SexpDumper(new k2_logging_XrayVision());
+    $this->dumper = new k_logging_SexpDumper(new k_logging_XrayVision());
     date_default_timezone_set(@date_default_timezone_get());
     $this->write(sprintf("(log \"%s\")\n", date("Y-m-d H:i:s")));
   }
@@ -249,7 +249,7 @@ class k2_logging_LogDebugger implements k2_DebugListener {
       $this->renderMessage(
         array('file' => $stacktrace[0]['file'], 'line' => $stacktrace[0]['line'], 'dump' => $this->dumper->dump($mixed))));
   }
-  function decorate(k2_HttpResponse $response) {
+  function decorate(k_HttpResponse $response) {
     $this->write($this->renderResponse($response));
     return $response;
   }
@@ -297,10 +297,10 @@ class k2_logging_LogDebugger implements k2_DebugListener {
   }
 }
 
-abstract class k2_logging_DataDumper {
+abstract class k_logging_DataDumper {
   protected $reflector;
   /**
-    * @param k2_logging_XrayVision
+    * @param k_logging_XrayVision
     * @return null
     */
   function __construct($reflector) {
@@ -343,7 +343,7 @@ abstract class k2_logging_DataDumper {
 /**
  * Generates a HTML formatted dump
  */
-class k2_logging_HtmlDumper extends k2_logging_DataDumper {
+class k_logging_HtmlDumper extends k_logging_DataDumper {
   protected function _object($var) {
     $html =  '<table style="width:100%;border:2px solid #f90;border-spacing:0 0" id="konstrukt-debug-symbol-id-' . htmlspecialchars($var['id']) . '">' . "\n";
     $html .= '<caption style="font-weight:bold;text-align:left">object (' . htmlspecialchars($var['class']) . ' : #' . htmlspecialchars($var['id']) . ')</caption>' . "\n";
@@ -396,7 +396,7 @@ class k2_logging_HtmlDumper extends k2_logging_DataDumper {
 /**
  * Generates dump formatted as s-expressions
  */
-class k2_logging_SexpDumper extends k2_logging_DataDumper {
+class k_logging_SexpDumper extends k_logging_DataDumper {
   protected function indent($str) {
     $str = str_replace("\n", "\n  ", $str);
     if (substr($str, -3) === "\n  ") {

@@ -23,7 +23,7 @@ class TestOfDummyCollection extends UnitTestCase {
 
 class TestOfExampleZendPagination extends WebTestCase {
   function createBrowser() {
-    return new k2_VirtualSimpleBrowser('ZfPaginationPage');
+    return new k_VirtualSimpleBrowser('ZfPaginationPage');
   }
   function getDocument() {
     $doc = new DomDocument();

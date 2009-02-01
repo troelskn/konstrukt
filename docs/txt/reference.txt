@@ -12,7 +12,7 @@ Troels Knak-Nielsen, January 2009, troelskn@gmail.com
 component essentials
 --------------------
 
-A component is a class that extends from `k2_Component`. Its purpose is to handle a request or delegate control to anothe3r component, that can handle it. This is much similar to how the Apache web server is structured. The way a component is addressed is through the URL path. Each path segment is mapped to a component. The special thing about Konstrukt in this respect, is that the exact mapping is determined at runtime. Each component is fully tasked with choosen the next component in the chain. This is a very powerful concept, but can also be slightly hard to comprehend at first. As a newcomer you may therefore find the [dispatch logging](debugging) useful.
+A component is a class that extends from `k_Component`. Its purpose is to handle a request or delegate control to anothe3r component, that can handle it. This is much similar to how the Apache web server is structured. The way a component is addressed is through the URL path. Each path segment is mapped to a component. The special thing about Konstrukt in this respect, is that the exact mapping is determined at runtime. Each component is fully tasked with choosen the next component in the chain. This is a very powerful concept, but can also be slightly hard to comprehend at first. As a newcomer you may therefore find the [dispatch logging](debugging) useful.
 
 ###dispatch life-cycle
 
@@ -93,7 +93,7 @@ It's the context that specifies a namespace for its subcomponents, and it works 
 
 Sessions are a very powerful feature for maintaining state in a web application. Unfortunately it's often overused. While there are cases where it's the best pick, you should generally try to use some other means of maintaining state, if at all possible. That said, Konstrukt provides access to PHPs session mechanism, through a wrapper.
 
-Each component has a method `session()` that can be called in two ways. Either you provide an argument (Which should be a string), and you'll get the value of a session variable by that name back (or null, if it's not defined). Alternatively you can call it without any arguments, in which cas you'll the an object back of the type `k2_adapter_SessionAccess`. It has methods for getting/setting session variables and other session-related functions.
+Each component has a method `session()` that can be called in two ways. Either you provide an argument (Which should be a string), and you'll get the value of a session variable by that name back (or null, if it's not defined). Alternatively you can call it without any arguments, in which cas you'll the an object back of the type `k_adapter_SessionAccess`. It has methods for getting/setting session variables and other session-related functions.
 
 Note that you don't need to worry about calling `session_start()`, since this is done automatically by the wrapper.
 
@@ -101,11 +101,11 @@ Note that you don't need to worry about calling `session_start()`, since this is
 
 Cookies is a mixed client/server side way of maintaning state. Is has a number of limitations which makes it a less popular choice, but it can still be useful in certain cases. You can access cookies through a wrapper in Konstrukt.
 
-The cookie wrapper works just as the session wrapper. Each component has a method `cookie()` that can be called with a parameter to retrieve the value of a cookie by that name, or without any arguments to get an object back of the type `k2_adapter_CookieAccess`.
+The cookie wrapper works just as the session wrapper. Each component has a method `cookie()` that can be called with a parameter to retrieve the value of a cookie by that name, or without any arguments to get an object back of the type `k_adapter_CookieAccess`.
 
 ###file uploads
 
-In PHP files uploaded with a form are accessible through `$_FILLES`. Inside a component, you can access the same information through the method `file()`. You can either pass a parameter to get back a specific file or call it without any arguments to get a hashmap of all files. A file is wrapped in an object of the type `k2_adapter_UploadedFile`, which helps to abstract direct access to the filesystem away. As a side effect it also has a simpler interface than PHPs native handling of file uploads. To save an uploaded file, just call `writeTo($path_destination)` with the destination as argument.
+In PHP files uploaded with a form are accessible through `$_FILLES`. Inside a component, you can access the same information through the method `file()`. You can either pass a parameter to get back a specific file or call it without any arguments to get a hashmap of all files. A file is wrapped in an object of the type `k_adapter_UploadedFile`, which helps to abstract direct access to the filesystem away. As a side effect it also has a simpler interface than PHPs native handling of file uploads. To save an uploaded file, just call `writeTo($path_destination)` with the destination as argument.
 
 Note that you need to go through the [regular hoops to get file uploads working](http://www.php.net/features.file-upload.post-method.php). Most importantly you need to set the `enctype="multipart/form-data"` property on your form tag.
 
@@ -134,7 +134,7 @@ If a component needs to maintain view-related state, you have a limited set of o
 Urlstate parameters is specified, along with their initial value, by implementing the `url_init` in your component. For example, to the following specifies a single parameter "foo". If no input is present for it, it has the value "bar":
 
 ..php
-class MyStatefulComponent extends k2_component {
+class MyStatefulComponent extends k_component {
   protected $url_init = array('foo' => "bar");
 }
 
@@ -150,15 +150,15 @@ A few objects are shared amongst all components.
 
 ###identity
 
-The identity object is an object represeting the current user. Every component can access the identity by calling the access `identity()`. The default implementation is `k2_Anonymous`.
+The identity object is an object represeting the current user. Every component can access the identity by calling the access `identity()`. The default implementation is `k_Anonymous`.
 
-The identity is loaded from an `k2_DefaultIdentityLoader`, that can be configured with the bootstrap. An identity-loader is a simple factory, that gets passed the top-level context, and is expected to return an instance of `k2_Identity`. The usual use case is to load a user-object from the database or an authentication system.
+The identity is loaded from an `k_DefaultIdentityLoader`, that can be configured with the bootstrap. An identity-loader is a simple factory, that gets passed the top-level context, and is expected to return an instance of `k_Identity`. The usual use case is to load a user-object from the database or an authentication system.
 
 ###document
 
-The document is an instance of `k2_Document`, and contains values that are global to the HTML document, such as title, css includes etc. A component can access the document via the `document()` method.
+The document is an instance of `k_Document`, and contains values that are global to the HTML document, such as title, css includes etc. A component can access the document via the `document()` method.
 
-The default document has accessors for setting the title, adding external javascript and css files to `<head>`, and adding javascript code to run on page load. This is a fairly limited number of properties. If you need more, you could subclass `k2_Document` and set your own implementation in the bootstrap. It is recommended to keep such properties as specific as possible, to prevent that the object becomes a dumping ground for global variables.
+The default document has accessors for setting the title, adding external javascript and css files to `<head>`, and adding javascript code to run on page load. This is a fairly limited number of properties. If you need more, you could subclass `k_Document` and set your own implementation in the bootstrap. It is recommended to keep such properties as specific as possible, to prevent that the object becomes a dumping ground for global variables.
 
 abnormal responses
 ------------------
@@ -173,15 +173,15 @@ There are two kinds of abnormal responses, for different levels of abstraction/c
 
 A httpresponse is the most finegrained/least abstract kind of abnormal response. It gives you full control over the http-level output sent back to the client, including headers and status codes. You should use this for serving non-html content-types.
 
-In addition to the generic `k2_Httpresponse`, there are three specialised variations that should be used for redirects:
+In addition to the generic `k_Httpresponse`, there are three specialised variations that should be used for redirects:
 
-`k2_MovedPermanently`
+`k_MovedPermanently`
 : Use this if the URL has changed (Eg. a page has been renamed).
 
-`k2_SeeOther`
+`k_SeeOther`
 : Use this type of redirect specifically for redirecting after POST.
 
-`k2_TemporaryRedirect`
+`k_TemporaryRedirect`
 : Use this type of redirect if the destination changes from request to request, or if you want the client to keep using the requested URI in the future.
 
 ###metaresponse
@@ -190,19 +190,19 @@ A metaresponse is a more abstract form of response. While you could just use a h
 
 The currently supported metaresponses are:
 
-`k2_Forbidden`
+`k_Forbidden`
 : Raise this if the user doesn't have access to the requested resource.
 
-`k2_PageNotFound`
+`k_PageNotFound`
 : Raise this if the requested resource couldn't be found.
 
-`k2_MethodNotAllowed`
+`k_MethodNotAllowed`
 : Raise this if resource doesn't support the requested HTTP method.
 
-`k2_NotImplemented`
+`k_NotImplemented`
 : This is roughly the HTTP equivalent to a "todo"
 
-A metaresponse is associated with a componentname. For example, `k2_Forbidden` resolves to `k2_DefaultForbiddenComponent`. To get a customised handler for these types of responses, you can let your [component creator](#component-creation) return a custom component instead of the defaults.
+A metaresponse is associated with a componentname. For example, `k_Forbidden` resolves to `k_DefaultForbiddenComponent`. To get a customised handler for these types of responses, you can let your [component creator](#component-creation) return a custom component instead of the defaults.
 
 templates
 ---------
@@ -211,7 +211,7 @@ Components usually return a html string. How they are rendered is largely left u
 
 ###php-templates
 
-To use the default template engine, you should instantiate and object of `k2_Template`. The interface is simple; You pass a path to a php template. Calling `render()` will include the file inside a buffer and return the output. The calling component must pass a reference to itself to the template. This is to allow the template to access variables it might need. You should add methods on your component to provide the variables that your template might need.
+To use the default template engine, you should instantiate and object of `k_Template`. The interface is simple; You pass a path to a php template. Calling `render()` will include the file inside a buffer and return the output. The calling component must pass a reference to itself to the template. This is to allow the template to access variables it might need. You should add methods on your component to provide the variables that your template might need.
 
 The template binds a few global functions to make it easier for the template to call certain common features with a simple syntax. These are:
 
@@ -229,7 +229,7 @@ In the [dispatch process](#dispatch-map-forward), a component may delegate contr
 
 ###di containers
 
-The intended use for a component creator, is to allow the use of a [dependency injection container](http://c2.com/cgi/wiki?DependencyInjection) for creation of components. The base class for components (`k2_component`) doesn't have a constructor defined, which allows you free control over this for your components. This is practical because di containers often use the constructor to provide dependencies. By default, Konstrukt doesn't provide a di container, but it comes with bindings for [Phemto](https://phemto.svn.sourceforge.net/svnroot/phemto/trunk), and it's very simple to write adapters for other containers.
+The intended use for a component creator, is to allow the use of a [dependency injection container](http://c2.com/cgi/wiki?DependencyInjection) for creation of components. The base class for components (`k_component`) doesn't have a constructor defined, which allows you free control over this for your components. This is practical because di containers often use the constructor to provide dependencies. By default, Konstrukt doesn't provide a di container, but it comes with bindings for [Phemto](https://phemto.svn.sourceforge.net/svnroot/phemto/trunk), and it's very simple to write adapters for other containers.
 
 ###createComponent
 

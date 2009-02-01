@@ -1,7 +1,7 @@
 <?php
-require_once '../../lib/k2.inc.php';
+require_once '../../lib/k.inc.php';
 
-class RegistrationForm extends k2_Component {
+class RegistrationForm extends k_Component {
   protected $failures = array();
   function map($name) {
     if ($name == 'thanks') {
@@ -11,7 +11,7 @@ class RegistrationForm extends k2_Component {
   function POST() {
     if ($this->validate()) {
       // do stuff with data here
-      throw new k2_SeeOther($this->url('thanks', array('flare' => 'You have been registered .. or something')));
+      throw new k_SeeOther($this->url('thanks', array('flare' => 'You have been registered .. or something')));
     }
     return $this->GET();
   }
@@ -74,12 +74,12 @@ class RegistrationForm extends k2_Component {
   }
 }
 
-class Thanks extends k2_Component {
+class Thanks extends k_Component {
   function GET() {
     return sprintf("<p>%s</p>", htmlspecialchars($this->query('flare')));
   }
 }
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) == __FILE__) {
-  k2()->run('RegistrationForm')->out();
+  k()->run('RegistrationForm')->out();
 }

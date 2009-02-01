@@ -1,5 +1,5 @@
 <?php
-class test_CircularComponent extends k2_Component {
+class test_CircularComponent extends k_Component {
   function map($name) {
     return 'test_CircularComponent';
   }
@@ -12,13 +12,13 @@ class test_CircularComponent extends k2_Component {
   }
 }
 
-class test_ExposedComponent extends k2_Component {
+class test_ExposedComponent extends k_Component {
   function getUrlState() {
     return $this->url_state;
   }
 }
 
-class k2_adapter_DummyOutputAccess implements k2_adapter_OutputAccess {
+class k_adapter_DummyOutputAccess implements k_adapter_OutputAccess {
   public $http_response_code = 200;
   public $headers = array();
   public $body = "";
@@ -37,7 +37,7 @@ class k2_adapter_DummyOutputAccess implements k2_adapter_OutputAccess {
   }
 }
 
-class k2_TestDebugListener implements k2_DebugListener {
+class k_TestDebugListener implements k_DebugListener {
   public $exceptions = array();
   public $dump = array();
   public $route = array();
@@ -50,7 +50,7 @@ class k2_TestDebugListener implements k2_DebugListener {
   function log($mixed) {
     $this->dump[] = $mixed;
   }
-  function decorate(k2_HttpResponse $response) {
+  function decorate(k_HttpResponse $response) {
     return $response;
   }
 }

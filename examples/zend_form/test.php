@@ -10,7 +10,7 @@ require_once 'index.php';
 
 class TestOfExampleZendForm extends WebTestCase {
   function createBrowser() {
-    return new k2_VirtualSimpleBrowser('ZfRegistrationForm');
+    return new k_VirtualSimpleBrowser('ZfRegistrationForm');
   }
   function test_root_is_accessible() {
     $this->assertTrue($this->get('/'));

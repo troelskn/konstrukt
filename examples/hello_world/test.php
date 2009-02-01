@@ -10,7 +10,7 @@ require_once 'index.php';
 
 class TestOfExampleHelloWorld extends WebTestCase {
   function createBrowser() {
-    return new k2_VirtualSimpleBrowser('Root');
+    return new k_VirtualSimpleBrowser('Root');
   }
   function test_root() {
     $this->assertTrue($this->get('/'));

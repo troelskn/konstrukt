@@ -1,13 +1,13 @@
 <?php
 
 // A low-level container for abstracting away http-output
-interface k2_adapter_OutputAccess {
+interface k_adapter_OutputAccess {
   function header($string, $replace = true, $http_response_code = null);
   function write($bytes);
   function endSession();
 }
 
-class k2_adapter_DefaultOutputAccess implements k2_adapter_OutputAccess {
+class k_adapter_DefaultOutputAccess implements k_adapter_OutputAccess {
   function header($string, $replace = true, $http_response_code = null) {
     if ($http_response_code === null) {
       header($string, $replace);
@@ -26,7 +26,7 @@ class k2_adapter_DefaultOutputAccess implements k2_adapter_OutputAccess {
 }
 
 // A low-level container for abstracting away global input variables
-interface k2_adapter_GlobalsAccess {
+interface k_adapter_GlobalsAccess {
   function query();
   function body();
   function server();
@@ -36,17 +36,17 @@ interface k2_adapter_GlobalsAccess {
 }
 
 // The default implementation, which undoes magic-quotes, if present
-class k2_adapter_SafeGlobalsAccess implements k2_adapter_GlobalsAccess {
-  /** @var k2_charset_CharsetStrategy */
+class k_adapter_SafeGlobalsAccess implements k_adapter_GlobalsAccess {
+  /** @var k_charset_CharsetStrategy */
   protected $charset;
   /** @var boolean */
   protected $magic_quotes_gpc;
   /**
-    * @param k2_charset_Latin1CharsetStrategy
+    * @param k_charset_Latin1CharsetStrategy
     * @param bool
     * @return null
     */
-  function __construct(k2_charset_CharsetStrategy $charset, $magic_quotes_gpc = null) {
+  function __construct(k_charset_CharsetStrategy $charset, $magic_quotes_gpc = null) {
     $this->charset = $charset;
     $this->magic_quotes_gpc = $magic_quotes_gpc === null ? get_magic_quotes_gpc() : $magic_quotes_gpc;
   }
@@ -127,14 +127,14 @@ class k2_adapter_SafeGlobalsAccess implements k2_adapter_GlobalsAccess {
 }
 
 // Lowercases all keys
-class k2_adapter_LowerKeyAdapter implements k2_adapter_GlobalsAccess {
-  /** @var k2_adapter_GlobalsAccess */
+class k_adapter_LowerKeyAdapter implements k_adapter_GlobalsAccess {
+  /** @var k_adapter_GlobalsAccess */
   protected $global_access;
   /**
-    * @param k2_adapter_GlobalsAccess
+    * @param k_adapter_GlobalsAccess
     * @return null
     */
-  function __construct(k2_adapter_GlobalsAccess $global_access) {
+  function __construct(k_adapter_GlobalsAccess $global_access) {
     $this->global_access = $global_access;
   }
   /**
@@ -187,7 +187,7 @@ class k2_adapter_LowerKeyAdapter implements k2_adapter_GlobalsAccess {
 }
 
 // low-level container for abstracting away access to cookies
-interface k2_adapter_CookieAccess {
+interface k_adapter_CookieAccess {
   function __construct($domain, $raw);
   function has($key);
   function get($key, $default = null);
@@ -195,7 +195,7 @@ interface k2_adapter_CookieAccess {
   function all();
 }
 
-class k2_adapter_DefaultCookieAccess implements k2_adapter_CookieAccess {
+class k_adapter_DefaultCookieAccess implements k_adapter_CookieAccess {
   /** @var string */
   protected $domain;
   /** @var string */
@@ -230,7 +230,7 @@ class k2_adapter_DefaultCookieAccess implements k2_adapter_CookieAccess {
 }
 
 // low-level container for abstracting away access to session
-interface k2_adapter_SessionAccess {
+interface k_adapter_SessionAccess {
   function has($key);
   function get($key, $default = null);
   function set($key, $value);
@@ -240,14 +240,14 @@ interface k2_adapter_SessionAccess {
   function regenerateId();
 }
 
-class k2_adapter_DefaultSessionAccess implements k2_adapter_SessionAccess {
-  /** @var k2_adapter_CookieAccess */
+class k_adapter_DefaultSessionAccess implements k_adapter_SessionAccess {
+  /** @var k_adapter_CookieAccess */
   protected $cookie_access;
   /**
-    * @param k2_adapter_DefaultCookieAccess
+    * @param k_adapter_DefaultCookieAccess
     * @return null
     */
-  function __construct(k2_adapter_CookieAccess $cookie_access) {
+  function __construct(k_adapter_CookieAccess $cookie_access) {
     $this->cookie_access = $cookie_access;
   }
   protected function autoStart() {
@@ -292,17 +292,17 @@ class k2_adapter_DefaultSessionAccess implements k2_adapter_SessionAccess {
   }
 }
 
-class k2_adapter_MockSessionAccess implements k2_adapter_SessionAccess {
-  /** @var k2_adapter_CookieAccess */
+class k_adapter_MockSessionAccess implements k_adapter_SessionAccess {
+  /** @var k_adapter_CookieAccess */
   protected $cookie_access;
   /** @var array */
   protected $raw = array();
   /**
-    * @param k2_adapter_MockCookieAccess
+    * @param k_adapter_MockCookieAccess
     * @param ???
     * @return null
     */
-  function __construct(k2_adapter_CookieAccess $cookie_access, $raw = array()) {
+  function __construct(k_adapter_CookieAccess $cookie_access, $raw = array()) {
     $this->cookie_access = $cookie_access;
     $this->raw = $raw;
   }
@@ -346,7 +346,7 @@ class k2_adapter_MockSessionAccess implements k2_adapter_SessionAccess {
 }
 
 // Used during testing
-class k2_adapter_MockGlobalsAccess implements k2_adapter_GlobalsAccess {
+class k_adapter_MockGlobalsAccess implements k_adapter_GlobalsAccess {
   /** @var array */
   public $query;
   /** @var array */
@@ -414,7 +414,7 @@ class k2_adapter_MockGlobalsAccess implements k2_adapter_GlobalsAccess {
 }
 
 // For testing
-class k2_adapter_MockCookieAccess extends k2_adapter_DefaultCookieAccess {
+class k_adapter_MockCookieAccess extends k_adapter_DefaultCookieAccess {
   function set($key, $value, $expire = 0, $secure = false, $httponly = false) {
     if ($value === null) {
       unset($this->raw[$key]);
@@ -425,12 +425,12 @@ class k2_adapter_MockCookieAccess extends k2_adapter_DefaultCookieAccess {
 }
 
 // Interface for writing uploaded files to filesystem
-interface k2_adapter_UploadedFileAccess {
+interface k_adapter_UploadedFileAccess {
   function copy($tmp_name, $path_destination);
 }
 
 // Default implementation
-class k2_adapter_DefaultUploadedFileAccess implements k2_adapter_UploadedFileAccess {
+class k_adapter_DefaultUploadedFileAccess implements k_adapter_UploadedFileAccess {
   function copy($tmp_name, $path_destination) {
     $this->ensureDirectory(dirname($path_destination));
     if (is_uploaded_file($tmp_name)) {
@@ -453,7 +453,7 @@ class k2_adapter_DefaultUploadedFileAccess implements k2_adapter_UploadedFileAcc
 }
 
 // For testing
-class k2_adapter_MockUploadedFileAccess implements k2_adapter_UploadedFileAccess {
+class k_adapter_MockUploadedFileAccess implements k_adapter_UploadedFileAccess {
   public $actions = array();
   function copy($tmp_name, $path_destination) {
     $this->actions[] = array($tmp_name, $path_destination);
@@ -461,14 +461,14 @@ class k2_adapter_MockUploadedFileAccess implements k2_adapter_UploadedFileAccess
 }
 
 // Wrapper around an uploaded file
-class k2_adapter_UploadedFile {
+class k_adapter_UploadedFile {
   protected $key;
   protected $name;
   protected $tmp_name;
   protected $size;
   protected $type;
   protected $file_access;
-  function __construct($file_data, $key, k2_adapter_UploadedFileAccess $file_access) {
+  function __construct($file_data, $key, k_adapter_UploadedFileAccess $file_access) {
     $this->key = $key;
     $this->name = $file_data['name'];
     $this->tmp_name = $file_data['tmp_name'];

@@ -15,12 +15,12 @@ require_once 'logging.inc.php';
 
 /**
  * A factory for creating components on-the-fly.
- * A ComponentCreator can create new instances of k2_Component.
+ * A ComponentCreator can create new instances of k_Component.
  * If you use a DI container, you should write an adapter that implements this interface
  */
-interface k2_ComponentCreator {
-  function setDebugger(k2_DebugListener $debugger);
-  function create($class_name, k2_Context $context, $namespace = "");
+interface k_ComponentCreator {
+  function setDebugger(k_DebugListener $debugger);
+  function create($class_name, k_Context $context, $namespace = "");
 }
 
 /**
@@ -28,36 +28,36 @@ interface k2_ComponentCreator {
  * You can use this, for very simple applications or if you prefer a global
  * mechanism for dependencies (Such as Singleton).
  */
-class k2_DefaultComponentCreator implements k2_ComponentCreator {
-  /** @var k2_DebugListener */
+class k_DefaultComponentCreator implements k_ComponentCreator {
+  /** @var k_DebugListener */
   protected $debugger;
-  /** @var k2_Document */
+  /** @var k_Document */
   protected $document;
   /**
-    * @param k2_Document
+    * @param k_Document
     * @return null
     */
   function __construct($document = null) {
-    $this->document = $document ? $document : new k2_Document();
-    $this->setDebugger(new k2_MultiDebugListener());
+    $this->document = $document ? $document : new k_Document();
+    $this->setDebugger(new k_MultiDebugListener());
   }
   /**
     * @param mixed
     * @return null
     */
-  function setDebugger(k2_DebugListener $debugger) {
+  function setDebugger(k_DebugListener $debugger) {
     $this->debugger = $debugger;
   }
   /**
     * @param string
-    * @param k2_Context
+    * @param k_Context
     * @param string
-    * @return k2_Component
+    * @return k_Component
     */
-  function create($class_name, k2_Context $context, $namespace = "") {
+  function create($class_name, k_Context $context, $namespace = "") {
     $component = $this->instantiate($class_name);
     $component->setContext($context);
-    $component->setUrlState(new k2_UrlState($context, $namespace));
+    $component->setUrlState(new k_UrlState($context, $namespace));
     $component->setDocument($this->document);
     $component->setComponentCreator($this);
     $component->setDebugger($this->debugger);
@@ -65,32 +65,32 @@ class k2_DefaultComponentCreator implements k2_ComponentCreator {
   }
   /**
     * @param string
-    * @return k2_Component
+    * @return k_Component
     */
   protected function instantiate($class_name) {
     return new $class_name();
   }
 }
 
-interface k2_DebugListener {
+interface k_DebugListener {
   function logException(Exception $ex);
   function logDispatch($component, $name, $next);
   function log($mixed);
-  function decorate(k2_HttpResponse $response);
+  function decorate(k_HttpResponse $response);
 }
 
-class k2_VoidDebugListener implements k2_DebugListener {
+class k_VoidDebugListener implements k_DebugListener {
   function logException(Exception $ex) {}
   function logDispatch($component, $name, $next) {}
   function log($mixed) {}
-  function decorate(k2_HttpResponse $response) {
+  function decorate(k_HttpResponse $response) {
     return $response;
   }
 }
 
-class k2_MultiDebugListener implements k2_DebugListener {
+class k_MultiDebugListener implements k_DebugListener {
   protected $listeners = array();
-  function add(k2_DebugListener $listener) {
+  function add(k_DebugListener $listener) {
     $this->listeners[] = $listener;
   }
   function logException(Exception $ex) {
@@ -99,7 +99,7 @@ class k2_MultiDebugListener implements k2_DebugListener {
     }
   }
   /**
-    * @param k2_Component
+    * @param k_Component
     * @param string
     * @param string
     * @return null
@@ -115,10 +115,10 @@ class k2_MultiDebugListener implements k2_DebugListener {
     }
   }
   /**
-    * @param k2_HttpResponse
-    * @return k2_HttpResponse
+    * @param k_HttpResponse
+    * @return k_HttpResponse
     */
-  function decorate(k2_HttpResponse $response) {
+  function decorate(k_HttpResponse $response) {
     foreach ($this->listeners as $listener) {
       $response = $listener->decorate($response);
     }
@@ -131,9 +131,9 @@ class k2_MultiDebugListener implements k2_DebugListener {
  * You can use this for legacy applications, that are tied to k_Registry.
  * usage:
  *     $registry = new k_Registry();
- *     k2_run('Root', new k2_HttpRequest(), new k2_RegistryComponentCreator($registry))->out();
+ *     k_run('Root', new k_HttpRequest(), new k_RegistryComponentCreator($registry))->out();
  */
-class k2_RegistryComponentCreator extends k2_DefaultComponentCreator {
+class k_RegistryComponentCreator extends k_DefaultComponentCreator {
   protected $registry;
   function __construct($registry) {
     parent::__construct();
@@ -147,7 +147,7 @@ class k2_RegistryComponentCreator extends k2_DefaultComponentCreator {
 /**
  * Adapter for using the Phemto dependency injection container for creating components
  */
-class k2_PhemtoAdapter extends k2_DefaultComponentCreator {
+class k_PhemtoAdapter extends k_DefaultComponentCreator {
   /** @var Phemto */
   protected $injector;
   /**
@@ -160,7 +160,7 @@ class k2_PhemtoAdapter extends k2_DefaultComponentCreator {
   }
   /**
     * @param string
-    * @return k2_Component
+    * @return k_Component
     */
   protected function instantiate($class_name) {
     return $this->injector->create($class_name);
@@ -170,7 +170,7 @@ class k2_PhemtoAdapter extends k2_DefaultComponentCreator {
 /**
  * representation of the applications' user
  */
-interface k2_Identity {
+interface k_Identity {
   function user();
   function anonymous();
 }
@@ -178,7 +178,7 @@ interface k2_Identity {
 /**
  * default implementation ... doesn't do much
  */
-class k2_Anonymous implements k2_Identity {
+class k_Anonymous implements k_Identity {
   function user() {
     return "";
   }
@@ -190,25 +190,25 @@ class k2_Anonymous implements k2_Identity {
 /**
  * a factory for recognising and loading the users identity
  */
-interface k2_IdentityLoader {
-  function load(k2_Context $context);
+interface k_IdentityLoader {
+  function load(k_Context $context);
 }
 
 /**
- * a default implementation, which always returns k2_Anonymous
+ * a default implementation, which always returns k_Anonymous
  */
-class k2_DefaultIdentityLoader implements k2_IdentityLoader {
-  function load(k2_Context $context) {
-    return new k2_Anonymous();
+class k_DefaultIdentityLoader implements k_IdentityLoader {
+  function load(k_Context $context) {
+    return new k_Anonymous();
   }
 }
 
 /**
  * a context provides a full encapsulation of global variables, for any sub-components
  * a context is a very central interface of Konstrukt.
- * the most important direct implementations are k2_HttpRequest and k2_Component
+ * the most important direct implementations are k_HttpRequest and k_Component
  */
-interface k2_Context {
+interface k_Context {
   function query($key = null, $default = null);
   function body($key = null, $default = null);
   function header($key = null, $default = null);
@@ -226,7 +226,7 @@ interface k2_Context {
 /**
  * usually the top-level context ... provides access to the http-protocol
  */
-class k2_HttpRequest implements k2_Context {
+class k_HttpRequest implements k_Context {
   /** @var string */
   protected $href_base;
   /** @var string */
@@ -241,25 +241,25 @@ class k2_HttpRequest implements k2_Context {
   protected $files;
   /** @var array */
   protected $headers;
-  /** @var k2_adapter_CookieAccess */
+  /** @var k_adapter_CookieAccess */
   protected $cookie_access;
-  /** @var k2_adapter_SessionAccess */
+  /** @var k_adapter_SessionAccess */
   protected $session_access;
-  /** @var k2_IdentityLoader */
+  /** @var k_IdentityLoader */
   protected $identity_loader;
-  /** @var k2_Identity */
+  /** @var k_Identity */
   protected $identity;
-  /** @var k2_ContentTypeNegotiator */
+  /** @var k_ContentTypeNegotiator */
   protected $content_type_negotiator;
   /**
     * @param string
     * @param string
-    * @param k2_DefaultIdentityLoader
-    * @param k2_adapter_MockGlobalsAccess
-    * @param k2_adapter_MockCookieAccess
-    * @param k2_adapter_MockSessionAccess
+    * @param k_DefaultIdentityLoader
+    * @param k_adapter_MockGlobalsAccess
+    * @param k_adapter_MockCookieAccess
+    * @param k_adapter_MockSessionAccess
     */
-  function __construct($href_base = null, $request_uri = null, k2_IdentityLoader $identity_loader = null, k2_adapter_GlobalsAccess $superglobals = null, k2_adapter_CookieAccess $cookie_access = null, k2_adapter_SessionAccess $session_access = null, k2_adapter_UploadedFileAccess $file_access = null) {
+  function __construct($href_base = null, $request_uri = null, k_IdentityLoader $identity_loader = null, k_adapter_GlobalsAccess $superglobals = null, k_adapter_CookieAccess $cookie_access = null, k_adapter_SessionAccess $session_access = null, k_adapter_UploadedFileAccess $file_access = null) {
     if (preg_match('~/$~', $href_base)) {
       throw new Exception("href_base may _not_ have trailing slash");
     }
@@ -267,23 +267,23 @@ class k2_HttpRequest implements k2_Context {
       throw new Exception("href_base may _not_ include hostname");
     }
     if (!$superglobals) {
-      $superglobals = new k2_adapter_SafeGlobalsAccess(new k2_charset_Utf8CharsetStrategy());
+      $superglobals = new k_adapter_SafeGlobalsAccess(new k_charset_Utf8CharsetStrategy());
     }
     if (!$file_access) {
-      $file_access = new k2_adapter_DefaultUploadedFileAccess();
+      $file_access = new k_adapter_DefaultUploadedFileAccess();
     }
-    $superglobals = new k2_adapter_LowerKeyAdapter($superglobals);
+    $superglobals = new k_adapter_LowerKeyAdapter($superglobals);
     $this->query = $superglobals->query();
     $this->body = $superglobals->body();
     $this->server = $superglobals->server();
     $this->files = array();
     foreach ($superglobals->files() as $key => $file_info) {
-      $this->files[$key] = new k2_adapter_UploadedFile($file_info, $key, $file_access);
+      $this->files[$key] = new k_adapter_UploadedFile($file_info, $key, $file_access);
     }
     $this->headers = $superglobals->headers();
-    $this->cookie_access = $cookie_access ? $cookie_access : new k2_adapter_DefaultCookieAccess($this->server['server_name'], $superglobals->cookie());
-    $this->session_access = $session_access ? $session_access : new k2_adapter_DefaultSessionAccess($this->cookie_access);
-    $this->identity_loader = $identity_loader ? $identity_loader : new k2_DefaultIdentityLoader();
+    $this->cookie_access = $cookie_access ? $cookie_access : new k_adapter_DefaultCookieAccess($this->server['server_name'], $superglobals->cookie());
+    $this->session_access = $session_access ? $session_access : new k_adapter_DefaultSessionAccess($this->cookie_access);
+    $this->identity_loader = $identity_loader ? $identity_loader : new k_DefaultIdentityLoader();
     $this->href_base = $href_base === null ? preg_replace('~(.*)/.*~', '$1', $this->server['script_name']) : $href_base;
     $this->subspace =
       preg_replace(  // remove root
@@ -291,7 +291,7 @@ class k2_HttpRequest implements k2_Context {
         preg_replace( // remove trailing query-string
           '~([?]{1}.*)$~', '',
           $request_uri === null ? $this->server['request_uri'] : $request_uri));
-    $this->content_type_negotiator = new k2_ContentTypeNegotiator($this->header('accept'));
+    $this->content_type_negotiator = new k_ContentTypeNegotiator($this->header('accept'));
   }
   /**
     * @param string
@@ -373,7 +373,7 @@ class k2_HttpRequest implements k2_Context {
     return strtolower($this->server['request_method']);
   }
   /**
-    * @return k2_Identity
+    * @return k_Identity
     */
   function identity() {
     if (!isset($this->identity)) {
@@ -422,7 +422,7 @@ class k2_HttpRequest implements k2_Context {
 /**
  * Encapsulates logic for comparing against the Accept HTTP-header
  */
-class k2_ContentTypeNegotiator {
+class k_ContentTypeNegotiator {
   /** @var array */
   protected $types;
   /**
@@ -505,7 +505,7 @@ class k2_ContentTypeNegotiator {
  * you can add you own subclass and use that instead. In that case, you should follow the
  * same convention of explicit getters/setters, rather than using public properties etc.
  */
-class k2_Document {
+class k_Document {
   /** @var string */
   protected $title = "No Title";
   /** @var array */
@@ -546,7 +546,7 @@ class k2_Document {
 /**
  * Exception is raised when trying to change an immutable property.
  */
-class k2_PropertyImmutableException extends Exception {
+class k_PropertyImmutableException extends Exception {
   /** @var string */
   protected $message = 'Tried to change immutable property after initial assignment';
 }
@@ -556,10 +556,10 @@ class k2_PropertyImmutableException extends Exception {
  * each component should be completely isolated from its surrounding, only
  * depending on its parent context
  */
-abstract class k2_Component implements k2_Context {
-  /** @var k2_Context */
+abstract class k_Component implements k_Context {
+  /** @var k_Context */
   protected $context;
-  /** @var k2_UrlState */
+  /** @var k_UrlState */
   protected $url_state;
   /**
    * UrlState, will be initialised with these values, upon creation.
@@ -586,11 +586,11 @@ abstract class k2_Component implements k2_Context {
     'application/pdf;pdf' => 'renderPdf',
     'image/svg+xml;svg' => 'renderSvg',
   );
-  /** @var k2_ComponentCreator */
+  /** @var k_ComponentCreator */
   protected $component_creator;
-  /** @var k2_Document */
+  /** @var k_Document */
   protected $document;
-  /** @var k2_DebugListener */
+  /** @var k_DebugListener */
   protected $debugger;
   /**
    * Log something to the debugger.
@@ -599,22 +599,22 @@ abstract class k2_Component implements k2_Context {
     $this->debugger->log($mixed);
   }
   /**
-    * @param k2_Context
+    * @param k_Context
     * @return null
     */
-  function setContext(k2_Context $context) {
+  function setContext(k_Context $context) {
     if ($this->context !== null) {
-      throw new k2_PropertyImmutableException();
+      throw new k_PropertyImmutableException();
     }
     $this->context = $context;
   }
   /**
-    * @param k2_UrlState
+    * @param k_UrlState
     * @return null
     */
-  function setUrlState(k2_UrlState $url_state) {
+  function setUrlState(k_UrlState $url_state) {
     if ($this->url_state !== null) {
-      throw new k2_PropertyImmutableException();
+      throw new k_PropertyImmutableException();
     }
     $this->url_state = $url_state;
     foreach ($this->url_init as $key => $value) {
@@ -622,30 +622,30 @@ abstract class k2_Component implements k2_Context {
     }
   }
   /**
-    * @param k2_DefaultComponentCreator
+    * @param k_DefaultComponentCreator
     * @return null
     */
-  function setComponentCreator(k2_ComponentCreator $component_creator) {
+  function setComponentCreator(k_ComponentCreator $component_creator) {
     if ($this->component_creator !== null) {
-      throw new k2_PropertyImmutableException();
+      throw new k_PropertyImmutableException();
     }
     $this->component_creator = $component_creator;
   }
   /**
-    * @param k2_Document
+    * @param k_Document
     * @return null
     */
-  function setDocument(k2_Document $document) {
+  function setDocument(k_Document $document) {
     if ($this->document !== null) {
-      throw new k2_PropertyImmutableException();
+      throw new k_PropertyImmutableException();
     }
     $this->document = $document;
   }
   /**
-    * @param k2_DebugListener
+    * @param k_DebugListener
     * @return null
     */
-  function setDebugger(k2_DebugListener $debugger) {
+  function setDebugger(k_DebugListener $debugger) {
     $this->debugger = $debugger;
   }
   /**
@@ -770,7 +770,7 @@ abstract class k2_Component implements k2_Context {
   /**
     * @param string
     * @param string
-    * @return k2_Component
+    * @return k_Component
     */
   protected function createComponent($class_name, $namespace) {
     return $this->component_creator->create($class_name, $this, $namespace);
@@ -784,7 +784,7 @@ abstract class k2_Component implements k2_Context {
     if ($next) {
       $class_name = $this->map($next);
       if (!$class_name) {
-        throw new k2_PageNotFound();
+        throw new k_PageNotFound();
       }
       return $this->forward($class_name);
     }
@@ -797,7 +797,7 @@ abstract class k2_Component implements k2_Context {
   function execute() {
     $method = $this->method();
     if (!in_array($method, array('head','get','post','put','delete'))) {
-      throw new k2_MethodNotAllowed();
+      throw new k_MethodNotAllowed();
     }
     return $this->{$method}();
   }
@@ -814,27 +814,27 @@ abstract class k2_Component implements k2_Context {
     if (isset($accept[$content_type])) {
       return $this->{$accept[$content_type]}();
     }
-    throw new k2_NotImplemented();
+    throw new k_NotImplemented();
   }
   function POST() {
-    throw new k2_NotImplemented();
+    throw new k_NotImplemented();
   }
   function HEAD() {
-    throw new k2_NotImplemented();
+    throw new k_NotImplemented();
   }
   function PUT() {
-    throw new k2_NotImplemented();
+    throw new k_NotImplemented();
   }
   function DELETE() {
-    throw new k2_NotImplemented();
+    throw new k_NotImplemented();
   }
 }
 
 /**
  * Used for persisting state over the query-string, and for namespacing query-string parameters
  */
-class k2_UrlState {
-  /** @var k2_Context */
+class k_UrlState {
+  /** @var k_Context */
   protected $context;
   /** @var string */
   protected $namespace;
@@ -843,11 +843,11 @@ class k2_UrlState {
   /** @var array */
   protected $default_values = array();
   /**
-    * @param k2_Context
+    * @param k_Context
     * @param string
     * @return null
     */
-  function __construct(k2_Context $context, $namespace = "") {
+  function __construct(k_Context $context, $namespace = "") {
     $this->context = $context;
     $this->namespace = $namespace;
   }
@@ -902,7 +902,7 @@ class k2_UrlState {
  * a utility class. this is a very simple template engine. essentially, it's just
  * a wrapper around include, using output buffering to grab and return the output.
  */
-class k2_Template {
+class k_Template {
   /** @var string */
   protected $path;
   /**
@@ -1041,7 +1041,7 @@ class k2_Template {
  * You may raise a HttpResponse to break the default rendering chain. A good example would be in
  * cases where you want to redirect. In this case, you should use the dedicated subclass though.
  */
-class k2_HttpResponse extends Exception {
+class k_HttpResponse extends Exception {
   /** @var string */
   protected $protocol = "HTTP/1.1";
   /** @var integer */
@@ -1052,7 +1052,7 @@ class k2_HttpResponse extends Exception {
   protected $headers = array();
   /** @var string */
   protected $content_type = 'text/html';
-  /** @var k2_charset_ResponseCharset */
+  /** @var k_charset_ResponseCharset */
   protected $charset;
   /**
    * @param   $status           The HTTP status code of this response
@@ -1062,7 +1062,7 @@ class k2_HttpResponse extends Exception {
   function __construct($status = 200, $content = "", $input_is_utf8 = false) {
     $this->status = $status;
     $this->content = $input_is_utf8 ? $content : utf8_encode($content);
-    $this->charset = new k2_charset_Utf8();
+    $this->charset = new k_charset_Utf8();
   }
   function content() {
     return $this->content;
@@ -1080,10 +1080,10 @@ class k2_HttpResponse extends Exception {
     return $this->content_type = $content_type;
   }
   /**
-    * @param k2_charset_Utf8
-    * @return k2_charset_Utf8
+    * @param k_charset_Utf8
+    * @return k_charset_Utf8
     */
-  function setCharset(k2_charset_ResponseCharset $charset) {
+  function setCharset(k_charset_ResponseCharset $charset) {
     return $this->charset = $charset;
   }
   function status() {
@@ -1111,10 +1111,10 @@ class k2_HttpResponse extends Exception {
     return $this->headers[$key] = $value;
   }
   /**
-    * @param k2_adapter_OutputAccess
+    * @param k_adapter_OutputAccess
     * @return null
     */
-  protected function sendStatus(k2_adapter_OutputAccess $output) {
+  protected function sendStatus(k_adapter_OutputAccess $output) {
     switch ($this->status) {
       case 400 :  $statusmsg = "Bad Request";
             break;
@@ -1147,10 +1147,10 @@ class k2_HttpResponse extends Exception {
     $output->header($this->protocol . " " . $this->status . ($statusmsg ? " " . $statusmsg : ""), true, $this->status);
   }
   /**
-    * @param k2_adapter_OutputAccess
+    * @param k_adapter_OutputAccess
     * @return null
     */
-  protected function sendHeaders(k2_adapter_OutputAccess $output) {
+  protected function sendHeaders(k_adapter_OutputAccess $output) {
     if (isset($this->content_type)) {
       $output->header("Content-Type: " . $this->contentType() . "; charset=" . $this->encoding());
     }
@@ -1166,19 +1166,19 @@ class k2_HttpResponse extends Exception {
     }
   }
   /**
-    * @param k2_adapter_OutputAccess
+    * @param k_adapter_OutputAccess
     * @return null
     */
-  protected function sendBody(k2_adapter_OutputAccess $output) {
+  protected function sendBody(k_adapter_OutputAccess $output) {
     $output->write($this->charset->encode($this->content));
   }
   /**
-    * @param k2_adapter_OutputAccess
+    * @param k_adapter_OutputAccess
     * @return null
     */
-  function out(k2_adapter_OutputAccess $output = null) {
+  function out(k_adapter_OutputAccess $output = null) {
     if (!$output) {
-      $output = new k2_adapter_DefaultOutputAccess();
+      $output = new k_adapter_DefaultOutputAccess();
     }
     $output->endSession();
     $this->sendStatus($output);
@@ -1186,7 +1186,7 @@ class k2_HttpResponse extends Exception {
     $this->sendBody($output);
   }
   function __toString() {
-    throw new Exception("k2_HttpResponse to String conversion");
+    throw new Exception("k_HttpResponse to String conversion");
   }
 }
 
@@ -1195,7 +1195,7 @@ class k2_HttpResponse extends Exception {
  * This would typically be an error-condition.
  * In the simplest invocation, a metaresponse maps directly to a component, which renders a generic error.
  */
-abstract class k2_MetaResponse extends Exception {
+abstract class k_MetaResponse extends Exception {
   abstract function componentName();
 }
 
@@ -1203,7 +1203,7 @@ abstract class k2_MetaResponse extends Exception {
  * Issues a http redirect of type "301 Moved Permanently"
  * Use this if the URL has changed (Eg. a page has been renamed)
  */
-class k2_MovedPermanently extends k2_HttpResponse {
+class k_MovedPermanently extends k_HttpResponse {
   function __construct($url) {
     parent::__construct(301);
     $this->setHeader("Location", $url);
@@ -1214,7 +1214,7 @@ class k2_MovedPermanently extends k2_HttpResponse {
  * Issues a http redirect of type "303 See Other"
  * Use this type of redirect for redirecting after POST
  */
-class k2_SeeOther extends k2_HttpResponse {
+class k_SeeOther extends k_HttpResponse {
   /**
     * @param string
     * @return null
@@ -1232,7 +1232,7 @@ class k2_SeeOther extends k2_HttpResponse {
  * This is a rare type of redirect - If in doubt, you probably should
  * use either of "See Other" or "Moved Permanently"
  */
-class k2_TemporaryRedirect extends k2_HttpResponse {
+class k_TemporaryRedirect extends k_HttpResponse {
   function __construct($url) {
     parent::__construct(307);
     $this->setHeader("Location", $url);
@@ -1242,34 +1242,34 @@ class k2_TemporaryRedirect extends k2_HttpResponse {
 /**
  * Raise this if the user doesn't have access to the requested resource.
  */
-class k2_Forbidden extends k2_MetaResponse {
+class k_Forbidden extends k_MetaResponse {
   /** @var string */
   protected $message = 'The requested page is forbidden';
   function componentName() {
-    return 'k2_DefaultForbiddenComponent';
+    return 'k_DefaultForbiddenComponent';
   }
 }
 
 /**
  * Raise this if the requested resource couldn't be found.
  */
-class k2_PageNotFound extends k2_MetaResponse {
+class k_PageNotFound extends k_MetaResponse {
   /** @var string */
   protected $message = 'The requested page was not found';
   function componentName() {
-    return 'k2_DefaultPageNotFoundComponent';
+    return 'k_DefaultPageNotFoundComponent';
   }
 }
 
 /**
  * Raise this if resource doesn't support the requested HTTP method.
- * @see k2_NotImplemented
+ * @see k_NotImplemented
  */
-class k2_MethodNotAllowed extends k2_MetaResponse {
+class k_MethodNotAllowed extends k_MetaResponse {
   /** @var string */
   protected $message = 'The request HTTP method is not supported by the handling component';
   function componentName() {
-    return 'k2_DefaultMethodNotAllowedComponent';
+    return 'k_DefaultMethodNotAllowedComponent';
   }
 }
 
@@ -1277,89 +1277,89 @@ class k2_MethodNotAllowed extends k2_MetaResponse {
  * Raise this if the request isn't yet implemented.
  * This is roughly the HTTP equivalent to a "todo"
  */
-class k2_NotImplemented extends k2_MetaResponse {
+class k_NotImplemented extends k_MetaResponse {
   /** @var string */
   protected $message = 'The server does not support the functionality required to fulfill the request';
   function componentName() {
-    return 'k2_DefaultNotImplementedComponent';
+    return 'k_DefaultNotImplementedComponent';
   }
 }
 
 /**
- * @see k2_Forbidden
+ * @see k_Forbidden
  */
-class k2_DefaultForbiddenComponent extends k2_Component {
+class k_DefaultForbiddenComponent extends k_Component {
   function dispatch() {
-    throw new k2_HttpResponse(403);
+    throw new k_HttpResponse(403);
   }
 }
 
 /**
- * @see k2_PageNotFound
+ * @see k_PageNotFound
  */
-class k2_DefaultPageNotFoundComponent extends k2_Component {
+class k_DefaultPageNotFoundComponent extends k_Component {
   function dispatch() {
-    throw new k2_HttpResponse(404);
+    throw new k_HttpResponse(404);
   }
 }
 
 /**
- * @see k2_MethodNotAllowed
+ * @see k_MethodNotAllowed
  */
-class k2_DefaultMethodNotAllowedComponent extends k2_Component {
+class k_DefaultMethodNotAllowedComponent extends k_Component {
   function dispatch() {
-    throw new k2_HttpResponse(405);
+    throw new k_HttpResponse(405);
   }
 }
 
 /**
- * @see k2_NotImplemented
+ * @see k_NotImplemented
  */
-class k2_DefaultNotImplementedComponent extends k2_Component {
+class k_DefaultNotImplementedComponent extends k_Component {
   function dispatch() {
-    throw new k2_HttpResponse(501);
+    throw new k_HttpResponse(501);
   }
 }
 
 /**
  * Creates an application bootstrap.
- * @return k2_Bootstrap
+ * @return k_Bootstrap
  */
-function k2() {
-  return new k2_Bootstrap();
+function k() {
+  return new k_Bootstrap();
 }
 
 /**
  * Application bootstrap.
  */
-class k2_Bootstrap {
-  /** @var k2_HttpRequest */
+class k_Bootstrap {
+  /** @var k_HttpRequest */
   protected $http_request;
-  /** @var k2_ComponentCreator */
+  /** @var k_ComponentCreator */
   protected $components;
-  /** @var k2_charset_CharsetStrategy */
+  /** @var k_charset_CharsetStrategy */
   protected $charset_strategy;
   /** @var boolean */
   protected $is_debug = false;
   /** @var string */
   protected $log_filename = null;
-  /** @var k2_IdentityLoader */
+  /** @var k_IdentityLoader */
   protected $identity_loader;
-  /** @var k2_adapter_GlobalsAccess */
+  /** @var k_adapter_GlobalsAccess */
   protected $globals_access;
   /**
    * Serves a http request, given a root component.
-   * @param $root_class_name   string   The classname of an instance of k2_Component
-   * @return k2_HttpResponse
+   * @param $root_class_name   string   The classname of an instance of k_Component
+   * @return k_HttpResponse
    */
   function run($root_class_name) {
-    $debugger = new k2_MultiDebugListener();
+    $debugger = new k_MultiDebugListener();
     $this->components()->setDebugger($debugger);
     if ($this->is_debug) {
-      $debugger->add(new k2_logging_WebDebugger());
+      $debugger->add(new k_logging_WebDebugger());
     }
     if ($this->log_filename) {
-      $debugger->add(new k2_logging_LogDebugger($this->log_filename));
+      $debugger->add(new k_logging_LogDebugger($this->log_filename));
     }
     try {
       return $debugger->decorate($this->dispatchRoot($root_class_name));
@@ -1375,38 +1375,38 @@ class k2_Bootstrap {
         try {
           $root = $this->components()->create($class_name, $this->context());
           $content = $root->dispatch();
-          $response = new k2_HttpResponse(200, $content, $this->charsetStrategy()->isInternalUtf8());
+          $response = new k_HttpResponse(200, $content, $this->charsetStrategy()->isInternalUtf8());
           $response->setCharset($this->charsetStrategy()->responseCharset());
           return $response;
-        } catch (k2_MetaResponse $ex) {
+        } catch (k_MetaResponse $ex) {
           $class_name = $ex->componentName();
         }
       }
-    } catch (k2_HttpResponse $ex) {
+    } catch (k_HttpResponse $ex) {
       return $ex;
     }
   }
   /**
-    * @param k2_HttpRequest
-    * @return k2_Bootstrap
+    * @param k_HttpRequest
+    * @return k_Bootstrap
     */
-  function setContext(k2_Context $http_request) {
+  function setContext(k_Context $http_request) {
     $this->http_request = $http_request;
     return $this;
   }
   /**
-    * @param k2_DefaultComponentCreator
-    * @return k2_Bootstrap
+    * @param k_DefaultComponentCreator
+    * @return k_Bootstrap
     */
-  function setComponentCreator(k2_ComponentCreator $components) {
+  function setComponentCreator(k_ComponentCreator $components) {
     $this->components = $components;
     return $this;
   }
   /**
-    * @param k2_charset_Utf8CharsetStrategy
-    * @return k2_Bootstrap
+    * @param k_charset_Utf8CharsetStrategy
+    * @return k_Bootstrap
     */
-  function setCharsetStrategy(k2_charset_CharsetStrategy $charset_strategy) {
+  function setCharsetStrategy(k_charset_CharsetStrategy $charset_strategy) {
     $this->charset_strategy = $charset_strategy;
     return $this;
   }
@@ -1419,47 +1419,47 @@ class k2_Bootstrap {
     return $this;
   }
   /**
-    * @return k2_HttpRequest
+    * @return k_HttpRequest
     */
   protected function context() {
     if (!isset($this->http_request)) {
-      $this->http_request = new k2_HttpRequest(null, null, $this->identityLoader(), $this->globalsAccess());
+      $this->http_request = new k_HttpRequest(null, null, $this->identityLoader(), $this->globalsAccess());
     }
     return $this->http_request;
   }
   /**
-    * @return k2_DefaultComponentCreator
+    * @return k_DefaultComponentCreator
     */
   protected function components() {
     if (!isset($this->components)) {
-      $this->components = new k2_DefaultComponentCreator();
+      $this->components = new k_DefaultComponentCreator();
     }
     return $this->components;
   }
   /**
-    * @return k2_charset_Utf8CharsetStrategy
+    * @return k_charset_Utf8CharsetStrategy
     */
   protected function charsetStrategy() {
     if (!isset($this->charset_strategy)) {
-      $this->charset_strategy = new k2_charset_Utf8CharsetStrategy();
+      $this->charset_strategy = new k_charset_Utf8CharsetStrategy();
     }
     return $this->charset_strategy;
   }
   protected function identityLoader() {
     if (!isset($this->identity_loader)) {
-      $this->identity_loader = new k2_DefaultIdentityLoader();
+      $this->identity_loader = new k_DefaultIdentityLoader();
     }
     return $this->identity_loader;
   }
   protected function globalsAccess() {
     if (!isset($this->globals_access)) {
-      $this->globals_access = new k2_adapter_SafeGlobalsAccess($this->charsetStrategy());
+      $this->globals_access = new k_adapter_SafeGlobalsAccess($this->charsetStrategy());
     }
     return $this->globals_access;
   }
 }
 
-function k2_search_include_path($filename) {
+function k_search_include_path($filename) {
   if (is_file($filename)) {
     return $filename;
   }
@@ -1475,14 +1475,14 @@ function k2_search_include_path($filename) {
   return false;
 }
 
-function k2_autoload($classname) {
+function k_autoload($classname) {
   $filename = str_replace('_', '/', strtolower($classname)).'.php';
-  if (k2_search_include_path($filename)) {
+  if (k_search_include_path($filename)) {
     require_once($filename);
   }
 }
 
-function k2_exceptions_error_handler($severity, $message, $filename, $lineno) {
+function k_exceptions_error_handler($severity, $message, $filename, $lineno) {
   if (error_reporting() == 0) {
     return;
   }

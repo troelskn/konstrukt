@@ -7,17 +7,17 @@ if (realpath($_SERVER['PHP_SELF']) == __FILE__) {
   require_once 'simpletest/autorun.php';
 }
 
-require_once '../lib/k2.inc.php';
+require_once '../lib/k.inc.php';
 require_once 'support/mocks.inc.php';
 
 
 class TestOfLogging extends UnitTestCase {
 
   function test_trace_listener() {
-    $debugger = new k2_TestDebugListener();
-    $glob = new k2_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
-    $http = new k2_HttpRequest('/web2.0', '/web2.0/foo/bar/cux', new k2_DefaultIdentityLoader(), $glob);
-    $components = new k2_DefaultComponentCreator();
+    $debugger = new k_TestDebugListener();
+    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
+    $http = new k_HttpRequest('/web2.0', '/web2.0/foo/bar/cux', new k_DefaultIdentityLoader(), $glob);
+    $components = new k_DefaultComponentCreator();
     $components->setDebugger($debugger);
     $root = $components->create('test_CircularComponent', $http);
     $result = $root->dispatch();
@@ -40,10 +40,10 @@ class TestOfLogfileLogger extends UnitTestCase {
 
   function test_filebased_logger_writes_to_file_when_logging() {
     $GLOBALS['log'] = "";
-    $debugger = new k2_logging_LogDebugger('var://log');
-    $glob = new k2_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
-    $http = new k2_HttpRequest('/web2.0', '/web2.0/foo/bar/cux', new k2_DefaultIdentityLoader(), $glob);
-    $components = new k2_DefaultComponentCreator();
+    $debugger = new k_logging_LogDebugger('var://log');
+    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
+    $http = new k_HttpRequest('/web2.0', '/web2.0/foo/bar/cux', new k_DefaultIdentityLoader(), $glob);
+    $components = new k_DefaultComponentCreator();
     $components->setDebugger($debugger);
     $root = $components->create('test_CircularComponent', $http);
     $result = $root->dispatch();

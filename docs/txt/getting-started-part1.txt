@@ -138,11 +138,11 @@ Now that our prerequisites are in place, let's get back to the components. As yo
 
 ..php
 <?php
-class components_contacts_List extends k2_Component {
+class components_contacts_List extends k_Component {
   function GET() {
     global $contacts;
     $this->document->setTitle("Contacts");
-    $t = new k2_Template("templates/contacts-list.tpl.php");
+    $t = new k_Template("templates/contacts-list.tpl.php");
     return $t->render(
       $this,
       array(
@@ -152,7 +152,7 @@ class components_contacts_List extends k2_Component {
 
 This is a rather simple component. It implements the function `GET()`, which corresponds to a http GET request. You can also implement handlers for other http methods, such as POST, but GET is by far the most common.
 
-As you can see, we're referring the global variable `$contacts`, which we created in `global.inc.php`. Net we create a template instance and assign all contacts to it, before rendering it to a string an dreturning the result. A `k2_Template` is a very simple wrapper around `include` -- It just returns the output as a string.
+As you can see, we're referring the global variable `$contacts`, which we created in `global.inc.php`. Net we create a template instance and assign all contacts to it, before rendering it to a string an dreturning the result. A `k_Template` is a very simple wrapper around `include` -- It just returns the output as a string.
 
 Obviously we also need a template, so save the following into `/var/www/foo/lib/templates/contacts-list.tpl.php`:
 
@@ -168,7 +168,7 @@ Our component is now capable of rendering contacts from the database. Before tha
 
 ..php
 <?php
-class components_Root extends k2_Component {
+class components_Root extends k_Component {
   function map($name) {
     if ($name == 'contacts') {
       return 'components_contacts_List';
@@ -183,13 +183,13 @@ If this doesn't work, you may have Apache configured wrong. You need to enable `
 
 Contextual forwards
 -------------------
-We can now get a list of the available contacts, but we still need a page that can display them in full. As you may have noticed, I used the function `url` inside the previous template. This is just shorthand for the components `url` method. `k2_Template` takes care of the delegation. The `url` method generates a url that points to a place *relative to the current component*. So inside of `components_contacts_List`, you will get urls like `http://localhost/foo/www/contacts/jabba`. Right now, clicking one of theese links won't give us any usable result. So let's make sure it does.
+We can now get a list of the available contacts, but we still need a page that can display them in full. As you may have noticed, I used the function `url` inside the previous template. This is just shorthand for the components `url` method. `k_Template` takes care of the delegation. The `url` method generates a url that points to a place *relative to the current component*. So inside of `components_contacts_List`, you will get urls like `http://localhost/foo/www/contacts/jabba`. Right now, clicking one of theese links won't give us any usable result. So let's make sure it does.
 
 First, we modify the `components_contacts_List` component to allow forwarding:
 
 ..php
 <?php
-class components_contacts_List extends k2_Component {
+class components_contacts_List extends k_Component {
   function map($name) {
     return 'components_contacts_Show';
   }
@@ -199,22 +199,22 @@ Note how `components_contact_Show` is used, regardless of what the name is. Now 
 
 ..php
 <?php
-class components_contacts_Show extends k2_Component {
+class components_contacts_Show extends k_Component {
   function GET() {
     global $contacts;
     $contact = $contacts->fetchByName($this->name());
     if (!$contact) {
-      throw new k2_NotFound();
+      throw new k_NotFound();
     }
     $this->document->setTitle($contact->full_name());
-    $t = new k2_Template("templates/contacts-show.tpl.php");
+    $t = new k_Template("templates/contacts-show.tpl.php");
     return $t->render($this, array('contact' => $contact));
   }
 }
 
 There are two new things to note about this component. The first is that we use the `name()` method to access the url path-name. This is the name that the context used to identify this component with. We use this to select the relevant contact from the database.
 
-The next thing is that we throw an exception if the contact isn't found. Konstrukt defines a couple of specific exceptions, that map to a particular meaning in the http protocol. For example, `k2_NotFound` will emit a 404 Page Not Found. The use of exceptions for breaking off the regular rendering pipeline makes it possible to encapsulate the effects of components.
+The next thing is that we throw an exception if the contact isn't found. Konstrukt defines a couple of specific exceptions, that map to a particular meaning in the http protocol. For example, `k_NotFound` will emit a 404 Page Not Found. The use of exceptions for breaking off the regular rendering pipeline makes it possible to encapsulate the effects of components.
 
 To complete the picture, we need a template to match our component. Save this as `/var/www/foo/templates/contacts-show.tpl.php`:
 

@@ -10,7 +10,7 @@ require_once 'index.php';
 
 class TestOfExampleForm extends WebTestCase {
   function createBrowser() {
-    return new k2_VirtualSimpleBrowser('RegistrationForm');
+    return new k_VirtualSimpleBrowser('RegistrationForm');
   }
   function test_root_is_accessible() {
     $this->assertTrue($this->get('/'));

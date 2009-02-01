@@ -7,7 +7,7 @@ if (realpath($_SERVER['PHP_SELF']) == __FILE__) {
   require_once 'simpletest/autorun.php';
 }
 
-require_once '../lib/k2.inc.php';
+require_once '../lib/k.inc.php';
 require_once 'support/mocks.inc.php';
 
 class TestOfGlobalsAccess extends UnitTestCase {
@@ -19,21 +19,21 @@ class TestOfGlobalsAccess extends UnitTestCase {
     $_GET = $this->GET;
   }
   function test_undo_magic_quotes_if_present() {
-    $g = new k2_adapter_SafeGlobalsAccess(new k2_charset_Latin1CharsetStrategy(), true);
+    $g = new k_adapter_SafeGlobalsAccess(new k_charset_Latin1CharsetStrategy(), true);
     $_GET = array(
       'name' => "O\\'Reilly"
     );
     $this->assertEqual($g->query(), array('name' => "O'Reilly"));
   }
   function test_doesnt_undo_magic_quotes_if_not_present() {
-    $g = new k2_adapter_SafeGlobalsAccess(new k2_charset_Latin1CharsetStrategy(), false);
+    $g = new k_adapter_SafeGlobalsAccess(new k_charset_Latin1CharsetStrategy(), false);
     $_GET = array(
       'name' => "O\\'Reilly"
     );
     $this->assertEqual($g->query(), array('name' => "O\\'Reilly"));
   }
   function test_unmagic_on_deep_array_doesnt_crash_runtime() {
-    $g = new k2_adapter_SafeGlobalsAccess(new k2_charset_Latin1CharsetStrategy(), true);
+    $g = new k_adapter_SafeGlobalsAccess(new k_charset_Latin1CharsetStrategy(), true);
     eval("\$_GET = " . str_repeat("array(", 1024) . "\"O\\\\'Reilly\"" . str_repeat(")", 1024) . ";");
     $g->query(); // Note: A failing test will produce a Fatal Error and halt the suite
   }
@@ -50,8 +50,8 @@ class TestOfFileUpload extends UnitTestCase {
         'error' => 0,
       )
     );
-    $glob = new k2_adapter_MockGlobalsAccess(array(), array(), array('server_name' => 'localhost', 'script_name' => '', 'request_uri' => ''), array(), array(), $files);
-    $http = new k2_HttpRequest(null, null, new k2_DefaultIdentityLoader(), $glob);
+    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('server_name' => 'localhost', 'script_name' => '', 'request_uri' => ''), array(), array(), $files);
+    $http = new k_HttpRequest(null, null, new k_DefaultIdentityLoader(), $glob);
     $files = $http->file();
     $this->assertTrue(is_array($files));
     $file = $http->file('userfile');
@@ -103,7 +103,7 @@ class TestOfFileUpload extends UnitTestCase {
         )
       )
     );
-    $g = new k2_adapter_SafeGlobalsAccess(new k2_charset_Latin1CharsetStrategy(), true);
+    $g = new k_adapter_SafeGlobalsAccess(new k_charset_Latin1CharsetStrategy(), true);
     $normalized = $g->normalizeFiles($files);
     $this->assertEqual($expected, $normalized);
   }
@@ -117,9 +117,9 @@ class TestOfFileUpload extends UnitTestCase {
         'error' => 0,
       )
     );
-    $glob = new k2_adapter_MockGlobalsAccess(array(), array(), array('server_name' => 'localhost', 'script_name' => '', 'request_uri' => ''), array(), array(), $files);
-    $file_access = new k2_adapter_MockUploadedFileAccess();
-    $http = new k2_HttpRequest(null, null, new k2_DefaultIdentityLoader(), $glob, null, null, $file_access);
+    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('server_name' => 'localhost', 'script_name' => '', 'request_uri' => ''), array(), array(), $files);
+    $file_access = new k_adapter_MockUploadedFileAccess();
+    $http = new k_HttpRequest(null, null, new k_DefaultIdentityLoader(), $glob, null, null, $file_access);
     $http->file('userfile')->writeTo('/dev/null');
     $this->assertEqual(array(array('tmp85937457', '/dev/null')), $file_access->actions);
   }
@@ -128,15 +128,15 @@ class TestOfFileUpload extends UnitTestCase {
 class TestOfDispatching extends UnitTestCase {
 
   function test_root_gives_request_uri_as_subspace() {
-    $glob = new k2_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
-    $http = new k2_HttpRequest('', '/foo/bar', new k2_DefaultIdentityLoader(), $glob);
+    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
+    $http = new k_HttpRequest('', '/foo/bar', new k_DefaultIdentityLoader(), $glob);
     $this->assertEqual($http->subspace(), "/foo/bar");
   }
 
   function test_first_component_has_root_subspace() {
-    $glob = new k2_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
-    $http = new k2_HttpRequest('', '/foo/bar', new k2_DefaultIdentityLoader(), $glob);
-    $components = new k2_DefaultComponentCreator();
+    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
+    $http = new k_HttpRequest('', '/foo/bar', new k_DefaultIdentityLoader(), $glob);
+    $components = new k_DefaultComponentCreator();
     $root = $components->create('test_CircularComponent', $http);
     $this->assertEqual($root->subspace(), "foo/bar");
   }
@@ -164,15 +164,15 @@ Dispatching:
   url: '/web2.0/foo/bar/cux'
 Executing
 ";
-    $glob = new k2_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
-    $http = new k2_HttpRequest('/web2.0', '/web2.0/foo/bar/cux', new k2_DefaultIdentityLoader(), $glob);
-    $components = new k2_DefaultComponentCreator();
+    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
+    $http = new k_HttpRequest('/web2.0', '/web2.0/foo/bar/cux', new k_DefaultIdentityLoader(), $glob);
+    $components = new k_DefaultComponentCreator();
     $root = $components->create('test_CircularComponent', $http);
     $result = $root->dispatch();
     $this->assertEqual($result, $expected);
 
-    $http = new k2_HttpRequest('/web2.0', '/web2.0/foo/bar/cux/', new k2_DefaultIdentityLoader(), $glob);
-    $components = new k2_DefaultComponentCreator();
+    $http = new k_HttpRequest('/web2.0', '/web2.0/foo/bar/cux/', new k_DefaultIdentityLoader(), $glob);
+    $components = new k_DefaultComponentCreator();
     $root = $components->create('test_CircularComponent', $http);
     $result = $root->dispatch();
     $this->assertEqual($result, $expected);
@@ -196,9 +196,9 @@ Dispatching:
   url: '/web2.0/foo;ninja/bar'
 Executing
 ";
-    $glob = new k2_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
-    $http = new k2_HttpRequest('/web2.0', '/foo;ninja/bar', new k2_DefaultIdentityLoader(), $glob);
-    $components = new k2_DefaultComponentCreator();
+    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
+    $http = new k_HttpRequest('/web2.0', '/foo;ninja/bar', new k_DefaultIdentityLoader(), $glob);
+    $components = new k_DefaultComponentCreator();
     $root = $components->create('test_CircularComponent', $http);
     $result = $root->dispatch();
     $this->assertEqual($result, $expected);
@@ -209,13 +209,13 @@ Executing
 class TestOfUrlGeneration extends UnitTestCase {
 
   function createHttp($href_base, $request_uri) {
-    $glob = new k2_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'example.org'));
-    return new k2_HttpRequest($href_base, $request_uri, new k2_DefaultIdentityLoader(), $glob);
+    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'example.org'));
+    return new k_HttpRequest($href_base, $request_uri, new k_DefaultIdentityLoader(), $glob);
   }
 
   function test_url_state_param_propagates_over_url() {
     $http = $this->createHttp('', '/foo/bar');
-    $components = new k2_DefaultComponentCreator();
+    $components = new k_DefaultComponentCreator();
     $root = $components->create('test_ExposedComponent', $http);
     $root->getUrlState()->set('foo', 'bar');
     $this->assertEqual($root->url('', array('zip' => 'zap')), "/?foo=bar&zip=zap");
@@ -223,14 +223,14 @@ class TestOfUrlGeneration extends UnitTestCase {
 
   function test_getting_unset_stateful_parameter_defaults_to_null() {
     $http = $this->createHttp('', '/foo/bar');
-    $components = new k2_DefaultComponentCreator();
+    $components = new k_DefaultComponentCreator();
     $root = $components->create('test_ExposedComponent', $http);
     $this->assertNull($root->getUrlState()->get('foo'));
   }
 
   function test_url_state_param_set_to_default_value_doesnt_propagate() {
     $http = $this->createHttp('', '/foo/bar');
-    $components = new k2_DefaultComponentCreator();
+    $components = new k_DefaultComponentCreator();
     $root = $components->create('test_ExposedComponent', $http);
     $root->getUrlState()->init('foo', 'bar');
     $root->getUrlState()->set('foo', 'bar');
@@ -239,7 +239,7 @@ class TestOfUrlGeneration extends UnitTestCase {
 
   function test_create_href() {
     $http = $this->createHttp('', '/foo/bar');
-    $components = new k2_DefaultComponentCreator();
+    $components = new k_DefaultComponentCreator();
     $root = $components->create('test_CircularComponent', $http);
     $first = $components->create('test_CircularComponent', $root);
     $second = $components->create('test_CircularComponent', $first);
@@ -260,7 +260,7 @@ class TestOfUrlGeneration extends UnitTestCase {
      * for the root-node.
      */
     $http = $this->createHttp('/foo', '/foo/bar');
-    $components = new k2_DefaultComponentCreator();
+    $components = new k_DefaultComponentCreator();
     $root = $components->create('test_CircularComponent', $http);
     $first = $components->create('test_CircularComponent', $root);
     $this->assertEqual($root->url(), "/foo/");
@@ -269,14 +269,14 @@ class TestOfUrlGeneration extends UnitTestCase {
 
   // Bug reported by Ander Ekdahl
   function test_when_script_name_is_slash_href_base_should_be_slash() {
-    $glob = new k2_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'example.org', 'SCRIPT_NAME' => '/', 'REQUEST_URI' => '/'));
-    $http = new k2_HttpRequest(null, null, new k2_DefaultIdentityLoader(), $glob);
+    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'example.org', 'SCRIPT_NAME' => '/', 'REQUEST_URI' => '/'));
+    $http = new k_HttpRequest(null, null, new k_DefaultIdentityLoader(), $glob);
     $this->assertEqual('/', $http->url());
   }
 
   function test_when_specifying_a_subtype_it_replaces_the_current() {
     $http = $this->createHttp('/foo', '/foo/bar;text');
-    $components = new k2_DefaultComponentCreator();
+    $components = new k_DefaultComponentCreator();
     $root = $components->create('test_CircularComponent', $http);
     $first = $components->create('test_CircularComponent', $root);
     $this->assertEqual($first->url(";xml"), "/foo/bar;xml");
@@ -284,7 +284,7 @@ class TestOfUrlGeneration extends UnitTestCase {
 
   function test_an_subtype_is_removed() {
     $http = $this->createHttp('/foo', '/foo/bar;text');
-    $components = new k2_DefaultComponentCreator();
+    $components = new k_DefaultComponentCreator();
     $root = $components->create('test_CircularComponent', $http);
     $first = $components->create('test_CircularComponent', $root);
     $this->assertEqual($first->url(";"), "/foo/bar");
@@ -292,19 +292,19 @@ class TestOfUrlGeneration extends UnitTestCase {
 
   function test_passing_array_as_first_argument_joins_segments() {
     $http = $this->createHttp('', '');
-    $components = new k2_DefaultComponentCreator();
+    $components = new k_DefaultComponentCreator();
     $this->assertEqual($http->url(array('foo', 'bar')), "foo/bar");
   }
 
   function test_passing_array_as_first_argument_encodes_segments() {
     $http = $this->createHttp('', '');
-    $components = new k2_DefaultComponentCreator();
+    $components = new k_DefaultComponentCreator();
     $this->assertEqual($http->url(array("bl\xC3\xA5b\xC3\xA6rgr\xC3\xB8d", 'bar')), "bl%C3%A5b%C3%A6rgr%C3%B8d/bar");
   }
 
   function test_passing_array_as_first_argument_doesnt_encode_semicolons() {
     $http = $this->createHttp('', '');
-    $components = new k2_DefaultComponentCreator();
+    $components = new k_DefaultComponentCreator();
     $this->assertEqual($http->url(array("banjo;html")), "banjo;html");
   }
 
@@ -312,8 +312,8 @@ class TestOfUrlGeneration extends UnitTestCase {
 
 class TestOfHttpRequest extends UnitTestCase {
   function createHttp($headers) {
-    $glob = new k2_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'example.org'), $headers);
-    return new k2_HttpRequest('', '', new k2_DefaultIdentityLoader(), $glob);
+    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'example.org'), $headers);
+    return new k_HttpRequest('', '', new k_DefaultIdentityLoader(), $glob);
   }
 
   function test_negotiate_returns_first_match_from_accept_header() {
@@ -354,8 +354,8 @@ class TestOfHttpRequest extends UnitTestCase {
 
 class TestOfHttpResponse extends UnitTestCase {
   function test_404_response_should_output_custom_content_if_any() {
-    $output = new k2_adapter_DummyOutputAccess();
-    $response = new k2_HttpResponse(404, "I didn't find it");
+    $output = new k_adapter_DummyOutputAccess();
+    $response = new k_HttpResponse(404, "I didn't find it");
     $response->out($output);
     $this->assertEqual(404, $output->http_response_code);
     $this->assertEqual("I didn't find it", $output->body);
