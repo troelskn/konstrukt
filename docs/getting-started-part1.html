@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+	<title>Getting Started Part1</title>
+  <link rel="stylesheet" type="text/css" href="documentation.css" />
+</head>
+<body>
+<h1 id="a-30-minute-walk-through">A 30 minute walk-through</h1>
+
+<p>This tutorial aims to walk you through the basics of writing web applications with Konstrukt.</p>
+
+<h2 id="what-is-a-component">What is a component</h2>
+
+<p>In Konstrukt an application consists of objects called components. These are the basic building blocks. A component combines several responsibilities into a single logical entity. The most obvious aspect of a component is its ability to render itself into HTML.</p>
+
+<p>A proper component does not communicate directly with its environment. Instead of invoking various global functions, it gets all its input from its context. A context can be another component or it can be a http request, so components are hierarchical. This hierarchy is constructed at runtime, based on the incoming requests path. We'll go more in depth with this later, but usually in a url such as <code>http://example.org/foo/bar</code>, there will be three components involved; A root component, one to handle <code>foo</code> and one to handle <code>bar</code>.</p>
+
+<h2 id="creating-a-new-project">Creating a new project</h2>
+
+<p>For this tutorial we'll create a very simple application. Konstrukt doesn't strictly enforce any particular directory layout, but to provide a starting point, you can take a copy of the folder <code>examples/starterpack_light</code> from the distribution of Konstrukt. Assuming that your web root is at <code>/var/www</code>, copy the directory <code>examples/starterpack_light</code> to <code>/var/www/foo</code> for our application "foo". For a real application, you'd probably want to mount the application on its own virtualhost, but this is a quick way to get started and it's trivial to move the application later on.</p>
+
+<p><code>starterpack_light</code> is a basic setup, which contains a simple directory structure, and other things that you need to begin a web application. There is also a more complete setup at <code>starterpack_default</code>, which is recommended for new applications; The reason we're using the minimal setup in this tutorial, is to keep external dependencies low.</p>
+
+<p>The starterpack contains several folders. For now, we'll just concern our selves with two of them; <code>www</code> which should be the web root of your site and <code>lib</code> which should contain the classes of your application. Once you're set up, the <code>www</code> folder isn't used much.</p>
+
+<p>You can now open your browser and go to <code>http://localhost/foo/www</code> and verify that everything is in order. The following message should meet you if everything is running correctly :</p>
+
+<div class="nostyle">  <h1>Root</h1>
+  <p>This page is intentionally left blank</p></div>
+
+<p>This is the output of the root components <code>GET()</code> function. If you open the file <code>/var/www/foo/lib/components/root.php</code>, you'll see that it renders the output with the use of a basic template. If you'd rather use a different template engine (Or perhaps none at all), you are free to change this. All that matters is that the <code>GET()</code> method returns a string - How it's generated is of no concern for Konstrukt.</p>
+
+<h2 id="the-model-layer">The model layer</h2>
+
+<p>So now that we have the installation running, let's get to work with out application. To keep things simple, we'll just create an application that can display contacts from a database. I know it's boring, but we have to start some where.</p>
+
+<p>Konstrukt explicitly avoids any model layer components, to leave it as open ended as possible. For this tutorial, we'll just use a very simple model component. Save the following as <code>/var/www/foo/lib/contactsgateway.php</code>:</p>
+
+<pre class="php"><span class="kw2">&lt;?php</span>
+<span class="kw2">class</span> ContactsGateway <span class="br0">&#123;</span>
+  <span class="kw2">protected</span> <span class="re0">$db</span>;
+  <span class="kw2">function</span> __construct<span class="br0">&#40;</span>PDO <span class="re0">$db</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="re0">$this</span>-&gt;<span class="me1">db</span> = <span class="re0">$db</span>;
+  <span class="br0">&#125;</span>
+  <span class="kw2">function</span> save<span class="br0">&#40;</span><span class="re0">$contact</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="re0">$statement</span> = <span class="re0">$this</span>-&gt;<span class="me1">db</span>-&gt;<span class="me1">prepare</span><span class="br0">&#40;</span>
+    <span class="st0">&quot;update contacts set
+       first_name = :first_name,
+       last_name = :last_name,
+       email = :email
+     where short_name = :short_name&quot;</span><span class="br0">&#41;</span>;
+    <span class="re0">$statement</span>-&gt;<span class="me1">execute</span><span class="br0">&#40;</span>
+      <span class="kw3">array</span><span class="br0">&#40;</span>
+        <span class="st0">':first_name'</span> =&gt; <span class="re0">$contact</span>-&gt;<span class="me1">last_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span>,
+        <span class="st0">':last_name'</span> =&gt; <span class="re0">$contact</span>-&gt;<span class="me1">last_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span>,
+        <span class="st0">':email'</span> =&gt; <span class="re0">$contact</span>-&gt;<span class="me1">email</span><span class="br0">&#40;</span><span class="br0">&#41;</span>,
+        <span class="st0">':short_name'</span> =&gt; <span class="re0">$contact</span>-&gt;<span class="me1">short_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span>
+  <span class="kw2">function</span> fetchByName<span class="br0">&#40;</span><span class="re0">$short_name</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="re0">$statement</span> = <span class="re0">$this</span>-&gt;<span class="me1">db</span>-&gt;<span class="me1">prepare</span><span class="br0">&#40;</span><span class="st0">&quot;select * from contacts where short_name = :short_name&quot;</span><span class="br0">&#41;</span>;
+    <span class="re0">$statement</span>-&gt;<span class="me1">execute</span><span class="br0">&#40;</span><span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">':short_name'</span> =&gt; <span class="re0">$short_name</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    <span class="kw1">return</span> <span class="kw2">new</span> Contact<span class="br0">&#40;</span><span class="re0">$statement</span>-&gt;<span class="me1">fetch</span><span class="br0">&#40;</span>PDO::<span class="me2">FETCH_ASSOC</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span>
+  <span class="kw2">function</span> all<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="re0">$statement</span> = <span class="re0">$this</span>-&gt;<span class="me1">db</span>-&gt;<span class="me1">prepare</span><span class="br0">&#40;</span><span class="st0">&quot;select * from contacts&quot;</span><span class="br0">&#41;</span>;
+    <span class="re0">$statement</span>-&gt;<span class="me1">execute</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    <span class="re0">$result</span> = <span class="kw3">array</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    <span class="kw1">foreach</span> <span class="br0">&#40;</span><span class="re0">$statement</span> <span class="kw1">as</span> <span class="re0">$row</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+      <span class="re0">$result</span><span class="br0">&#91;</span><span class="br0">&#93;</span> = <span class="kw2">new</span> Contact<span class="br0">&#40;</span><span class="re0">$row</span><span class="br0">&#41;</span>;
+    <span class="br0">&#125;</span>
+    <span class="kw1">return</span> <span class="re0">$result</span>;
+  <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre>
+
+<p>And this as <code>/var/www/foo/lib/contact.php</code>:</p>
+
+<pre class="php"><span class="kw2">&lt;?php</span>
+<span class="kw2">class</span> Contact <span class="br0">&#123;</span>
+  <span class="kw2">protected</span> <span class="re0">$row</span>;
+  <span class="kw2">function</span> __construct<span class="br0">&#40;</span><span class="re0">$row</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="re0">$this</span>-&gt;<span class="me1">row</span> = <span class="re0">$row</span>;
+  <span class="br0">&#125;</span>
+  <span class="kw2">function</span> full_name<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="kw1">return</span> <span class="re0">$this</span>-&gt;<span class="me1">first_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span> . <span class="st0">&quot; &quot;</span> . <span class="re0">$this</span>-&gt;<span class="me1">last_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span>
+  <span class="kw2">function</span> short_name<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="kw1">return</span> <span class="re0">$this</span>-&gt;<span class="me1">row</span><span class="br0">&#91;</span><span class="st0">'short_name'</span><span class="br0">&#93;</span>;
+  <span class="br0">&#125;</span>
+  <span class="kw2">function</span> first_name<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="kw1">return</span> <span class="re0">$this</span>-&gt;<span class="me1">row</span><span class="br0">&#91;</span><span class="st0">'first_name'</span><span class="br0">&#93;</span>;
+  <span class="br0">&#125;</span>
+  <span class="kw2">function</span> last_name<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="kw1">return</span> <span class="re0">$this</span>-&gt;<span class="me1">row</span><span class="br0">&#91;</span><span class="st0">'last_name'</span><span class="br0">&#93;</span>;
+  <span class="br0">&#125;</span>
+  <span class="kw2">function</span> email<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="kw1">return</span> <span class="re0">$this</span>-&gt;<span class="me1">row</span><span class="br0">&#91;</span><span class="st0">'email'</span><span class="br0">&#93;</span>;
+  <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre>
+
+<p>To use our model component, we need a database. Since SqLite is standard with most php installations, and it's the simplest database to install, I'll assume that, but this simple example should work equally well with MySql or any other sql database for the matter.</p>
+
+<p>Log in to sqlite and create our database at <code>/var/www/foo/var/database.sqlite</code>:</p>
+
+<pre class="sql"><span style="color: #993333; font-weight: bold;">CREATE</span> <span style="color: #993333; font-weight: bold;">TABLE</span> contacts <span style="color: #66cc66;">&#40;</span>
+  id SERIAL,
+  short_name VARCHAR<span style="color: #66cc66;">&#40;</span><span style="color: #cc66cc;">100</span><span style="color: #66cc66;">&#41;</span> <span style="color: #993333; font-weight: bold;">NOT</span> <span style="color: #993333; font-weight: bold;">NULL</span>,
+  first_name VARCHAR<span style="color: #66cc66;">&#40;</span><span style="color: #cc66cc;">100</span><span style="color: #66cc66;">&#41;</span> <span style="color: #993333; font-weight: bold;">NOT</span> <span style="color: #993333; font-weight: bold;">NULL</span>,
+  last_name VARCHAR<span style="color: #66cc66;">&#40;</span><span style="color: #cc66cc;">100</span><span style="color: #66cc66;">&#41;</span> <span style="color: #993333; font-weight: bold;">NOT</span> <span style="color: #993333; font-weight: bold;">NULL</span>,
+  email VARCHAR<span style="color: #66cc66;">&#40;</span><span style="color: #cc66cc;">100</span><span style="color: #66cc66;">&#41;</span> <span style="color: #993333; font-weight: bold;">NOT</span> <span style="color: #993333; font-weight: bold;">NULL</span>,
+  <span style="color: #993333; font-weight: bold;">UNIQUE</span> <span style="color: #66cc66;">&#40;</span>short_name<span style="color: #66cc66;">&#41;</span>
+<span style="color: #66cc66;">&#41;</span>;
+<span style="color: #993333; font-weight: bold;">INSERT</span> <span style="color: #993333; font-weight: bold;">INTO</span> contacts <span style="color: #66cc66;">&#40;</span>short_name, first_name, last_name, email<span style="color: #66cc66;">&#41;</span>
+  <span style="color: #993333; font-weight: bold;">VALUES</span> <span style="color: #66cc66;">&#40;</span>
+    <span style="color: #ff0000;">&quot;jabba&quot;</span>,
+    <span style="color: #ff0000;">&quot;Jabba&quot;</span>,
+    <span style="color: #ff0000;">&quot;the Hutt&quot;</span>,
+    <span style="color: #ff0000;">&quot;jabba@tatooine.com&quot;</span><span style="color: #66cc66;">&#41;</span>;
+<span style="color: #993333; font-weight: bold;">INSERT</span> <span style="color: #993333; font-weight: bold;">INTO</span> contacts <span style="color: #66cc66;">&#40;</span>short_name, first_name, last_name, email<span style="color: #66cc66;">&#41;</span>
+  <span style="color: #993333; font-weight: bold;">VALUES</span> <span style="color: #66cc66;">&#40;</span>
+    <span style="color: #ff0000;">&quot;jar-jar&quot;</span>,
+    <span style="color: #ff0000;">&quot;Jar Jar&quot;</span>,
+    <span style="color: #ff0000;">&quot;Binks&quot;</span>,
+    <span style="color: #ff0000;">&quot;jarjar@naboo.com&quot;</span><span style="color: #66cc66;">&#41;</span>;</pre>
+
+<p>Contrary to commonly accepted practise, we'll create a global database link, that we can use throughout the application. This is obviously not something you should do in a real application, but to avoid stealing focus, we'll do it none the less. Open up <code>config/global.inc.php</code> and add the following lines:</p>
+
+<pre class="php"><span class="re0">$db</span> = <span class="kw2">new</span> PDO<span class="br0">&#40;</span><span class="st0">&quot;sqlite:&quot;</span> . <span class="kw3">dirname</span><span class="br0">&#40;</span><span class="kw3">dirname</span><span class="br0">&#40;</span><span class="kw2">__FILE__</span><span class="br0">&#41;</span><span class="br0">&#41;</span> . <span class="st0">&quot;/var/database.sqlite&quot;</span><span class="br0">&#41;</span>;
+<span class="re0">$db</span>-&gt;<span class="me1">setAttribute</span><span class="br0">&#40;</span>PDO::<span class="me2">ATTR_ERRMODE</span>, PDO::<span class="me2">ERRMODE_EXCEPTION</span><span class="br0">&#41;</span>;
+<span class="re0">$contacts</span> = <span class="kw2">new</span> ContactsGateway<span class="br0">&#40;</span><span class="re0">$db</span><span class="br0">&#41;</span>;</pre>
+
+<p class="note">Note: You need to have sqlite and pdo installed on your system. Theese are two separate extensions. If you get the error message "PDOException: could not find driver", it means that you have pdo, but not pdo_sqlite. On debian based systems, yhe package to install is <code>php5-sqlite</code>.</p>
+
+<p class="note">Note: SQLite version 2 and 3 are not directly compatible. If you get an error message saying "file is encrypted or is not a database", you probably created the database with version 2, while the php extension is version 3. From the commandline use the tool <code>sqlite3</code>, rather than <code>sqlite</code>.</p>
+
+<h2 id="adding-a-component-finally">Adding a component, finally</h2>
+
+<p>Now that our prerequisites are in place, let's get back to the components. As you probably remember, our application currently just handles a request to <code>/foo/www</code> (The root). Since we want it to display contacts, let's add a component for that. Save the following into <code>/var/www/foo/lib/components/contacts/list.php</code>:</p>
+
+<pre class="php"><span class="kw2">&lt;?php</span>
+<span class="kw2">class</span> components_contacts_List <span class="kw2">extends</span> k2_Component <span class="br0">&#123;</span>
+  <span class="kw2">function</span> GET<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="kw3">global</span> <span class="re0">$contacts</span>;
+    <span class="re0">$this</span>-&gt;<span class="me1">document</span>-&gt;<span class="me1">setTitle</span><span class="br0">&#40;</span><span class="st0">&quot;Contacts&quot;</span><span class="br0">&#41;</span>;
+    <span class="re0">$t</span> = <span class="kw2">new</span> k2_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-list.tpl.php&quot;</span><span class="br0">&#41;</span>;
+    <span class="kw1">return</span> <span class="re0">$t</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span>
+      <span class="re0">$this</span>,
+      <span class="kw3">array</span><span class="br0">&#40;</span>
+        <span class="st0">'contacts'</span> =&gt; <span class="re0">$contacts</span>-&gt;<span class="me1">all</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre>
+
+<p>This is a rather simple component. It implements the function <code>GET()</code>, which corresponds to a http GET request. You can also implement handlers for other http methods, such as POST, but GET is by far the most common.</p>
+
+<p>As you can see, we're referring the global variable <code>$contacts</code>, which we created in <code>global.inc.php</code>. Net we create a template instance and assign all contacts to it, before rendering it to a string an dreturning the result. A <code>k2_Template</code> is a very simple wrapper around <code>include</code> -- It just returns the output as a string.</p>
+
+<p>Obviously we also need a template, so save the following into <code>/var/www/foo/lib/templates/contacts-list.tpl.php</code>:</p>
+
+<pre class="php">&lt;h2&gt;Contacts&lt;/h2&gt;
+&lt;ul&gt;
+<span class="kw2">&lt;?php</span> <span class="kw1">foreach</span> <span class="br0">&#40;</span><span class="re0">$contacts</span> <span class="kw1">as</span> <span class="re0">$contact</span><span class="br0">&#41;</span>: <span class="kw2">?&gt;</span>
+  &lt;li&gt;&lt;a href=<span class="st0">&quot;&lt;?php e(url($contact-&gt;short_name())); ?&gt;&quot;</span>&gt;&lt;?php e<span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">full_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; ?&gt;&lt;/a&gt;&lt;/li&gt;
+<span class="kw2">&lt;?php</span> <span class="kw1">endforeach</span>; <span class="kw2">?&gt;</span>
+&lt;/ul&gt;</pre>
+
+<p>Our component is now capable of rendering contacts from the database. Before that can happen though, we need to map a url to the new component. We want a url like <code>/foo/www/contacts</code>, so for that we'll open up the previous component -- The root. Add the following lines to <code>/var/www/foo/lib/components/root.php</code>:</p>
+
+<pre class="php"><span class="kw2">&lt;?php</span>
+<span class="kw2">class</span> components_Root <span class="kw2">extends</span> k2_Component <span class="br0">&#123;</span>
+  <span class="kw2">function</span> map<span class="br0">&#40;</span><span class="re0">$name</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="kw1">if</span> <span class="br0">&#40;</span><span class="re0">$name</span> == <span class="st0">'contacts'</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+      <span class="kw1">return</span> <span class="st0">'components_contacts_List'</span>;
+    <span class="br0">&#125;</span>
+  <span class="br0">&#125;</span>
+...</pre>
+
+<p>This tells the root component to forward the name <code>contacts</code> to our new component. You should now be able to navigate to <code>http://localhost/foo/www/contacts</code> and see a list of contacts. A rather short list, that is.</p>
+
+<p class="note">Note: If this doesn't work, you may have Apache configured wrong. You need to enable <code>mod_rewrite</code>, and to allow local configuration in <code>.htaccess</code> files. You can find help for this on our friendly forum.</p>
+
+<h2 id="contextual-forwards">Contextual forwards</h2>
+
+<p>We can now get a list of the available contacts, but we still need a page that can display them in full. As you may have noticed, I used the function <code>url</code> inside the previous template. This is just shorthand for the components <code>url</code> method. <code>k2_Template</code> takes care of the delegation. The <code>url</code> method generates a url that points to a place <em>relative to the current component</em>. So inside of <code>components_contacts_List</code>, you will get urls like <code>http://localhost/foo/www/contacts/jabba</code>. Right now, clicking one of theese links won't give us any usable result. So let's make sure it does.</p>
+
+<p>First, we modify the <code>components_contacts_List</code> component to allow forwarding:</p>
+
+<pre class="php"><span class="kw2">&lt;?php</span>
+<span class="kw2">class</span> components_contacts_List <span class="kw2">extends</span> k2_Component <span class="br0">&#123;</span>
+  <span class="kw2">function</span> map<span class="br0">&#40;</span><span class="re0">$name</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="kw1">return</span> <span class="st0">'components_contacts_Show'</span>;
+  <span class="br0">&#125;</span>
+...</pre>
+
+<p>Note how <code>components_contact_Show</code> is used, regardless of what the name is. Now we need to create the newly referred component. Save this as <code>/var/www/foo/lib/components/contacts/show.php</code>:</p>
+
+<pre class="php"><span class="kw2">&lt;?php</span>
+<span class="kw2">class</span> components_contacts_Show <span class="kw2">extends</span> k2_Component <span class="br0">&#123;</span>
+  <span class="kw2">function</span> GET<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="kw3">global</span> <span class="re0">$contacts</span>;
+    <span class="re0">$contact</span> = <span class="re0">$contacts</span>-&gt;<span class="me1">fetchByName</span><span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    <span class="kw1">if</span> <span class="br0">&#40;</span>!<span class="re0">$contact</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+      <span class="kw1">throw</span> <span class="kw2">new</span> k2_NotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    <span class="br0">&#125;</span>
+    <span class="re0">$this</span>-&gt;<span class="me1">document</span>-&gt;<span class="me1">setTitle</span><span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">full_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    <span class="re0">$t</span> = <span class="kw2">new</span> k2_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show.tpl.php&quot;</span><span class="br0">&#41;</span>;
+    <span class="kw1">return</span> <span class="re0">$t</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="re0">$this</span>, <span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">'contact'</span> =&gt; <span class="re0">$contact</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre>
+
+<p>There are two new things to note about this component. The first is that we use the <code>name()</code> method to access the url path-name. This is the name that the context used to identify this component with. We use this to select the relevant contact from the database.</p>
+
+<p>The next thing is that we throw an exception if the contact isn't found. Konstrukt defines a couple of specific exceptions, that map to a particular meaning in the http protocol. For example, <code>k2_NotFound</code> will emit a 404 Page Not Found. The use of exceptions for breaking off the regular rendering pipeline makes it possible to encapsulate the effects of components.</p>
+
+<p>To complete the picture, we need a template to match our component. Save this as <code>/var/www/foo/templates/contacts-show.tpl.php</code>:</p>
+
+<pre class="php">&lt;h2&gt;&lt;?php e<span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">short_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; ?&gt;&lt;/h2&gt;
+&lt;dl&gt;
+  &lt;dt&gt;First Name&lt;/dt&gt;
+  &lt;dd&gt;&lt;?php e<span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">first_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; ?&gt;&lt;/dd&gt;
+  &lt;dt&gt;Last Name&lt;/dt&gt;
+  &lt;dd&gt;&lt;?php e<span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">last_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; ?&gt;&lt;/dd&gt;
+  &lt;dt&gt;Email&lt;/dt&gt;
+  &lt;dd&gt;&lt;?php e<span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">email</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; ?&gt;&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;p&gt;&lt;a href=<span class="st0">&quot;&lt;?php e(url(&quot;</span>..<span class="st0">&quot;)); ?&gt;&quot;</span>&gt;Back to index&lt;/a&gt;&lt;/p&gt;</pre>
+
+<p>With this, we can now display our contact. Go on and click one of those links from the listing.</p>
+
+<p>And that concludes our session for today.</p>
+</body>
+</html>

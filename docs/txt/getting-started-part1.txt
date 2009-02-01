@@ -1,0 +1,236 @@
+A 30 minute walk-through
+========================
+This tutorial aims to walk you through the basics of writing web applications with Konstrukt.
+
+What is a component
+--------------------
+In Konstrukt an application consists of objects called components. These are the basic building blocks. A component combines several responsibilities into a single logical entity. The most obvious aspect of a component is its ability to render itself into HTML.
+
+A proper component does not communicate directly with its environment. Instead of invoking various global functions, it gets all its input from its context. A context can be another component or it can be a http request, so components are hierarchical. This hierarchy is constructed at runtime, based on the incoming requests path. We'll go more in depth with this later, but usually in a url such as `http://example.org/foo/bar`, there will be three components involved; A root component, one to handle `foo` and one to handle `bar`.
+
+Creating a new project
+----------------------
+For this tutorial we'll create a very simple application. Konstrukt doesn't strictly enforce any particular directory layout, but to provide a starting point, you can take a copy of the folder `examples/starterpack_light` from the distribution of Konstrukt. Assuming that your web root is at `/var/www`, copy the directory `examples/starterpack_light` to `/var/www/foo` for our application "foo". For a real application, you'd probably want to mount the application on its own virtualhost, but this is a quick way to get started and it's trivial to move the application later on.
+
+`starterpack_light` is a basic setup, which contains a simple directory structure, and other things that you need to begin a web application. There is also a more complete setup at `starterpack_default`, which is recommended for new applications; The reason we're using the minimal setup in this tutorial, is to keep external dependencies low.
+
+The starterpack contains several folders. For now, we'll just concern our selves with two of them; `www` which should be the web root of your site and `lib` which should contain the classes of your application. Once you're set up, the `www` folder isn't used much.
+
+You can now open your browser and go to `http://localhost/foo/www` and verify that everything is in order. The following message should meet you if everything is running correctly :
+
+..raw
+  <h1>Root</h1>
+  <p>This page is intentionally left blank</p>
+
+This is the output of the root components `GET()` function. If you open the file `/var/www/foo/lib/components/root.php`, you'll see that it renders the output with the use of a basic template. If you'd rather use a different template engine (Or perhaps none at all), you are free to change this. All that matters is that the `GET()` method returns a string - How it's generated is of no concern for Konstrukt.
+
+The model layer
+---------------
+So now that we have the installation running, let's get to work with out application. To keep things simple, we'll just create an application that can display contacts from a database. I know it's boring, but we have to start some where.
+
+Konstrukt explicitly avoids any model layer components, to leave it as open ended as possible. For this tutorial, we'll just use a very simple model component. Save the following as `/var/www/foo/lib/contactsgateway.php`:
+
+..php
+<?php
+class ContactsGateway {
+  protected $db;
+  function __construct(PDO $db) {
+    $this->db = $db;
+  }
+  function save($contact) {
+    $statement = $this->db->prepare(
+    "update contacts set
+       first_name = :first_name,
+       last_name = :last_name,
+       email = :email
+     where short_name = :short_name");
+    $statement->execute(
+      array(
+        ':first_name' => $contact->last_name(),
+        ':last_name' => $contact->last_name(),
+        ':email' => $contact->email(),
+        ':short_name' => $contact->short_name()));
+  }
+  function fetchByName($short_name) {
+    $statement = $this->db->prepare("select * from contacts where short_name = :short_name");
+    $statement->execute(array(':short_name' => $short_name));
+    return new Contact($statement->fetch(PDO::FETCH_ASSOC));
+  }
+  function all() {
+    $statement = $this->db->prepare("select * from contacts");
+    $statement->execute();
+    $result = array();
+    foreach ($statement as $row) {
+      $result[] = new Contact($row);
+    }
+    return $result;
+  }
+}
+
+And this as `/var/www/foo/lib/contact.php`:
+
+..php
+<?php
+class Contact {
+  protected $row;
+  function __construct($row) {
+    $this->row = $row;
+  }
+  function full_name() {
+    return $this->first_name() . " " . $this->last_name();
+  }
+  function short_name() {
+    return $this->row['short_name'];
+  }
+  function first_name() {
+    return $this->row['first_name'];
+  }
+  function last_name() {
+    return $this->row['last_name'];
+  }
+  function email() {
+    return $this->row['email'];
+  }
+}
+
+To use our model component, we need a database. Since SqLite is standard with most php installations, and it's the simplest database to install, I'll assume that, but this simple example should work equally well with MySql or any other sql database for the matter.
+
+Log in to sqlite and create our database at `/var/www/foo/var/database.sqlite`:
+
+..sql
+CREATE TABLE contacts (
+  id SERIAL,
+  short_name VARCHAR(100) NOT NULL,
+  first_name VARCHAR(100) NOT NULL,
+  last_name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  UNIQUE (short_name)
+);
+INSERT INTO contacts (short_name, first_name, last_name, email)
+  VALUES (
+    "jabba",
+    "Jabba",
+    "the Hutt",
+    "jabba@tatooine.com");
+INSERT INTO contacts (short_name, first_name, last_name, email)
+  VALUES (
+    "jar-jar",
+    "Jar Jar",
+    "Binks",
+    "jarjar@naboo.com");
+
+Contrary to commonly accepted practise, we'll create a global database link, that we can use throughout the application. This is obviously not something you should do in a real application, but to avoid stealing focus, we'll do it none the less. Open up `config/global.inc.php` and add the following lines:
+
+..php
+$db = new PDO("sqlite:" . dirname(dirname(__FILE__)) . "/var/database.sqlite");
+$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$contacts = new ContactsGateway($db);
+
+..note
+You need to have sqlite and pdo installed on your system. Theese are two separate extensions. If you get the error message "PDOException: could not find driver", it means that you have pdo, but not pdo_sqlite. On debian based systems, yhe package to install is `php5-sqlite`.
+
+..note
+SQLite version 2 and 3 are not directly compatible. If you get an error message saying "file is encrypted or is not a database", you probably created the database with version 2, while the php extension is version 3. From the commandline use the tool `sqlite3`, rather than `sqlite`.
+
+Adding a component, finally
+---------------------------
+Now that our prerequisites are in place, let's get back to the components. As you probably remember, our application currently just handles a request to `/foo/www` (The root). Since we want it to display contacts, let's add a component for that. Save the following into `/var/www/foo/lib/components/contacts/list.php`:
+
+..php
+<?php
+class components_contacts_List extends k2_Component {
+  function GET() {
+    global $contacts;
+    $this->document->setTitle("Contacts");
+    $t = new k2_Template("templates/contacts-list.tpl.php");
+    return $t->render(
+      $this,
+      array(
+        'contacts' => $contacts->all()));
+  }
+}
+
+This is a rather simple component. It implements the function `GET()`, which corresponds to a http GET request. You can also implement handlers for other http methods, such as POST, but GET is by far the most common.
+
+As you can see, we're referring the global variable `$contacts`, which we created in `global.inc.php`. Net we create a template instance and assign all contacts to it, before rendering it to a string an dreturning the result. A `k2_Template` is a very simple wrapper around `include` -- It just returns the output as a string.
+
+Obviously we also need a template, so save the following into `/var/www/foo/lib/templates/contacts-list.tpl.php`:
+
+..php
+<h2>Contacts</h2>
+<ul>
+<?php foreach ($contacts as $contact): ?>
+  <li><a href="<?php e(url($contact->short_name())); ?>"><?php e($contact->full_name()); ?></a></li>
+<?php endforeach; ?>
+</ul>
+
+Our component is now capable of rendering contacts from the database. Before that can happen though, we need to map a url to the new component. We want a url like `/foo/www/contacts`, so for that we'll open up the previous component -- The root. Add the following lines to `/var/www/foo/lib/components/root.php`:
+
+..php
+<?php
+class components_Root extends k2_Component {
+  function map($name) {
+    if ($name == 'contacts') {
+      return 'components_contacts_List';
+    }
+  }
+...
+
+This tells the root component to forward the name `contacts` to our new component. You should now be able to navigate to `http://localhost/foo/www/contacts` and see a list of contacts. A rather short list, that is.
+
+..note
+If this doesn't work, you may have Apache configured wrong. You need to enable `mod_rewrite`, and to allow local configuration in `.htaccess` files. You can find help for this on our friendly forum.
+
+Contextual forwards
+-------------------
+We can now get a list of the available contacts, but we still need a page that can display them in full. As you may have noticed, I used the function `url` inside the previous template. This is just shorthand for the components `url` method. `k2_Template` takes care of the delegation. The `url` method generates a url that points to a place *relative to the current component*. So inside of `components_contacts_List`, you will get urls like `http://localhost/foo/www/contacts/jabba`. Right now, clicking one of theese links won't give us any usable result. So let's make sure it does.
+
+First, we modify the `components_contacts_List` component to allow forwarding:
+
+..php
+<?php
+class components_contacts_List extends k2_Component {
+  function map($name) {
+    return 'components_contacts_Show';
+  }
+...
+
+Note how `components_contact_Show` is used, regardless of what the name is. Now we need to create the newly referred component. Save this as `/var/www/foo/lib/components/contacts/show.php`:
+
+..php
+<?php
+class components_contacts_Show extends k2_Component {
+  function GET() {
+    global $contacts;
+    $contact = $contacts->fetchByName($this->name());
+    if (!$contact) {
+      throw new k2_NotFound();
+    }
+    $this->document->setTitle($contact->full_name());
+    $t = new k2_Template("templates/contacts-show.tpl.php");
+    return $t->render($this, array('contact' => $contact));
+  }
+}
+
+There are two new things to note about this component. The first is that we use the `name()` method to access the url path-name. This is the name that the context used to identify this component with. We use this to select the relevant contact from the database.
+
+The next thing is that we throw an exception if the contact isn't found. Konstrukt defines a couple of specific exceptions, that map to a particular meaning in the http protocol. For example, `k2_NotFound` will emit a 404 Page Not Found. The use of exceptions for breaking off the regular rendering pipeline makes it possible to encapsulate the effects of components.
+
+To complete the picture, we need a template to match our component. Save this as `/var/www/foo/templates/contacts-show.tpl.php`:
+
+..php
+<h2><?php e($contact->short_name()); ?></h2>
+<dl>
+  <dt>First Name</dt>
+  <dd><?php e($contact->first_name()); ?></dd>
+  <dt>Last Name</dt>
+  <dd><?php e($contact->last_name()); ?></dd>
+  <dt>Email</dt>
+  <dd><?php e($contact->email()); ?></dd>
+</dl>
+<p><a href="<?php e(url("..")); ?>">Back to index</a></p>
+
+With this, we can now display our contact. Go on and click one of those links from the listing.
+
+And that concludes our session for today.
+

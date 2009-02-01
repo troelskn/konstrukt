@@ -1,0 +1,6324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+  <title>API documentation for Konstrukt</title>
+<style type="text/css">
+body {
+	font-family: georgia, "bitstream vera serif", "Times New Roman", serif;
+  line-height: 150%;
+  color : #666;
+	background-color : #fff;
+	margin : 0;
+	padding : 1em 4em;
+}
+h1, h2, h3, h4 {
+  line-height: 150%;
+}
+code, pre {
+/*  font-family: "lucidia console", "courier";*/
+}
+pre {
+  line-height: 125%;
+}
+
+h1 { 2em; }
+h2 { 1.5em; }
+h3 { 1.25em; }
+h4 { 1em; }
+
+h1 {
+  color : #0c0;
+}
+h2 em.modifier,
+h4 em.modifier {
+  color : #aaa;
+}
+a {
+  color : #2aaaff;
+  text-decoration : none;
+  border-bottom : 1px solid #ccc;
+}
+a:hover {
+  color : red;
+  border-bottom : 1px solid red;
+}
+div.class {
+  border-bottom : 1px dotted #666;
+  margin-top : 1em;
+  margin-bottom : 1em;
+}
+div.properties,
+div.methods {
+  padding-left : 2em;
+}
+div.docblock {
+  padding-left : 1em;
+  margin-top : 1em;
+  margin-bottom : 1em;
+}
+p.todo {
+  color : red;
+}
+span.tooltip {
+  cursor : help;
+}
+code.block {
+  display : block;
+  white-space: pre;
+}
+div.deprecated h4,
+div.deprecated div.docblock {
+  text-decoration: line-through
+}
+</style>
+</head>
+<body>
+
+<h1>API documentation for Konstrukt</h1><div class="class">
+<h2 id="class-k2_componentcreator">
+  <em>interface</em>
+  <a href="#class-k2_componentcreator">k2_ComponentCreator</a>
+</h2>
+
+<div class="docblock">
+  <p>A factory for creating components on-the-fly.
+A ComponentCreator can create new instances of k2_Component.
+If you use a DI container, you should write an adapter that implements this interface</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_componentcreator-method-setdebugger">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  setDebugger(<em><a href="#class-k2_debuglistener"
+>k2_DebugListener</a>
+
+$debugger</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_componentcreator-method-create">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  create(<em><span class="modifier">mixed</span>
+
+$class_name, <a href="#class-k2_context"
+>k2_Context</a>
+
+$context [ , <span class="modifier">mixed</span>
+
+$namespace ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_defaultcomponentcreator">
+  <em>class</em>
+  <a href="#class-k2_defaultcomponentcreator">k2_DefaultComponentCreator</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_componentcreator">k2_ComponentCreator</a></h3>
+
+<div class="docblock">
+  <p>A simple implementation, which doesn&#039;t handle any dependencies.
+You can use this, for very simple applications or if you prefer a global
+mechanism for dependencies (Such as Singleton).</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_defaultcomponentcreator-property-debugger">
+  <em class="modifier">protected</em>
+
+
+  $debugger
+  : <em class="modifier"><a href="#class-k2_debuglistener">k2_DebugListener</a></em>
+
+</h4>
+
+
+  <h4 id="class-k2_defaultcomponentcreator-property-document">
+  <em class="modifier">protected</em>
+
+
+  $document
+  : <em class="modifier"><a href="#class-k2_document">k2_Document</a></em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_defaultcomponentcreator-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em> [ <span class="modifier">mixed</span>
+
+$document ] </em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_defaultcomponentcreator-method-setdebugger">
+
+  <em class="modifier">public</em>
+
+
+  setDebugger(<em><a href="#class-k2_debuglistener"
+>k2_DebugListener</a>
+
+$debugger</em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_defaultcomponentcreator-method-create">
+
+  <em class="modifier">public</em>
+
+
+  create(<em><span class="modifier">mixed</span>
+
+$class_name, <a href="#class-k2_context"
+>k2_Context</a>
+
+$context [ , <span class="modifier">mixed</span>
+
+$namespace ] </em>)
+
+  : <em class="modifier"><a href="#class-k2_component">k2_Component</a></em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_defaultcomponentcreator-method-instantiate">
+
+  <em class="modifier">protected</em>
+
+
+  instantiate(<em><span class="modifier">mixed</span>
+
+$class_name</em>)
+
+  : <em class="modifier"><a href="#class-k2_component">k2_Component</a></em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_debuglistener">
+  <em>interface</em>
+  <a href="#class-k2_debuglistener">k2_DebugListener</a>
+</h2>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_debuglistener-method-logexception">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  logException(<em><a href="#class-exception"
+>Exception</a>
+
+$ex</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_debuglistener-method-logdispatch">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  logDispatch(<em><span class="modifier">mixed</span>
+
+$component, <span class="modifier">mixed</span>
+
+$name, <span class="modifier">mixed</span>
+
+$next</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_debuglistener-method-log">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  log(<em><span class="modifier">mixed</span>
+
+$mixed</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_debuglistener-method-decorate">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  decorate(<em><a href="#class-k2_httpresponse"
+>k2_HttpResponse</a>
+
+$response</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_voiddebuglistener">
+  <em>class</em>
+  <a href="#class-k2_voiddebuglistener">k2_VoidDebugListener</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_debuglistener">k2_DebugListener</a></h3>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_voiddebuglistener-method-logexception">
+
+  <em class="modifier">public</em>
+
+
+  logException(<em><a href="#class-exception"
+>Exception</a>
+
+$ex</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_voiddebuglistener-method-logdispatch">
+
+  <em class="modifier">public</em>
+
+
+  logDispatch(<em><span class="modifier">mixed</span>
+
+$component, <span class="modifier">mixed</span>
+
+$name, <span class="modifier">mixed</span>
+
+$next</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_voiddebuglistener-method-log">
+
+  <em class="modifier">public</em>
+
+
+  log(<em><span class="modifier">mixed</span>
+
+$mixed</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_voiddebuglistener-method-decorate">
+
+  <em class="modifier">public</em>
+
+
+  decorate(<em><a href="#class-k2_httpresponse"
+>k2_HttpResponse</a>
+
+$response</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_multidebuglistener">
+  <em>class</em>
+  <a href="#class-k2_multidebuglistener">k2_MultiDebugListener</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_debuglistener">k2_DebugListener</a></h3>
+
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_multidebuglistener-property-listeners">
+  <em class="modifier">protected</em>
+
+
+  $listeners
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_multidebuglistener-method-add">
+
+  <em class="modifier">public</em>
+
+
+  add(<em><a href="#class-k2_debuglistener"
+>k2_DebugListener</a>
+
+$listener</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_multidebuglistener-method-logexception">
+
+  <em class="modifier">public</em>
+
+
+  logException(<em><a href="#class-exception"
+>Exception</a>
+
+$ex</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_multidebuglistener-method-logdispatch">
+
+  <em class="modifier">public</em>
+
+
+  logDispatch(<em><span class="modifier">mixed</span>
+
+$component, <span class="modifier">mixed</span>
+
+$name, <span class="modifier">mixed</span>
+
+$next</em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_multidebuglistener-method-log">
+
+  <em class="modifier">public</em>
+
+
+  log(<em><span class="modifier">mixed</span>
+
+$mixed</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_multidebuglistener-method-decorate">
+
+  <em class="modifier">public</em>
+
+
+  decorate(<em><a href="#class-k2_httpresponse"
+>k2_HttpResponse</a>
+
+$response</em>)
+
+  : <em class="modifier"><a href="#class-k2_httpresponse">k2_HttpResponse</a></em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_registrycomponentcreator">
+  <em>class</em>
+  <a href="#class-k2_registrycomponentcreator">k2_RegistryComponentCreator</a>
+
+  <em>extends</em>
+  <a href="#class-k2_defaultcomponentcreator">k2_DefaultComponentCreator</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_componentcreator">k2_ComponentCreator</a></h3>
+
+<div class="docblock">
+  <p>For registry-style component wiring.
+You can use this for legacy applications, that are tied to k_Registry.
+usage:
+    $registry = new k_Registry();
+    k2_run(&#039;Root&#039;, new k2_HttpRequest(), new k2_RegistryComponentCreator($registry))-&gt;out();</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_registrycomponentcreator-property-registry">
+  <em class="modifier">protected</em>
+
+
+  $registry
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_registrycomponentcreator-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$registry</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_registrycomponentcreator-method-instantiate">
+
+  <em class="modifier">protected</em>
+
+
+  instantiate(<em><span class="modifier">mixed</span>
+
+$class_name</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_phemtoadapter">
+  <em>class</em>
+  <a href="#class-k2_phemtoadapter">k2_PhemtoAdapter</a>
+
+  <em>extends</em>
+  <a href="#class-k2_defaultcomponentcreator">k2_DefaultComponentCreator</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_componentcreator">k2_ComponentCreator</a></h3>
+
+<div class="docblock">
+  <p>Adapter for using the Phemto dependency injection container for creating components</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_phemtoadapter-property-injector">
+  <em class="modifier">protected</em>
+
+
+  $injector
+  : <em class="modifier"><a href="#class-phemto">Phemto</a></em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_phemtoadapter-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><a href="#class-phemto"
+>Phemto</a>
+
+$injector</em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_phemtoadapter-method-instantiate">
+
+  <em class="modifier">protected</em>
+
+
+  instantiate(<em><span class="modifier">mixed</span>
+
+$class_name</em>)
+
+  : <em class="modifier"><a href="#class-k2_component">k2_Component</a></em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_identity">
+  <em>interface</em>
+  <a href="#class-k2_identity">k2_Identity</a>
+</h2>
+
+<div class="docblock">
+  <p>representation of the applications&#039; user</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_identity-method-user">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  user()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_identity-method-anonymous">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  anonymous()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_anonymous">
+  <em>class</em>
+  <a href="#class-k2_anonymous">k2_Anonymous</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_identity">k2_Identity</a></h3>
+
+<div class="docblock">
+  <p>default implementation ... doesn&#039;t do much</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_anonymous-method-user">
+
+  <em class="modifier">public</em>
+
+
+  user()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_anonymous-method-anonymous">
+
+  <em class="modifier">public</em>
+
+
+  anonymous()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_identityloader">
+  <em>interface</em>
+  <a href="#class-k2_identityloader">k2_IdentityLoader</a>
+</h2>
+
+<div class="docblock">
+  <p>a factory for recognising and loading the users identity</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_identityloader-method-load">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  load(<em><a href="#class-k2_context"
+>k2_Context</a>
+
+$context</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_defaultidentityloader">
+  <em>class</em>
+  <a href="#class-k2_defaultidentityloader">k2_DefaultIdentityLoader</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_identityloader">k2_IdentityLoader</a></h3>
+
+<div class="docblock">
+  <p>a default implementation, which always returns k2_Anonymous</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_defaultidentityloader-method-load">
+
+  <em class="modifier">public</em>
+
+
+  load(<em><a href="#class-k2_context"
+>k2_Context</a>
+
+$context</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_context">
+  <em>interface</em>
+  <a href="#class-k2_context">k2_Context</a>
+</h2>
+
+<div class="docblock">
+  <p>a context provides a full encapsulation of global variables, for any sub-components
+a context is a very central interface of Konstrukt.
+the most important direct implementations are k2_HttpRequest and k2_Component</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_context-method-query">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  query(<em> [ <span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_context-method-body">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  body(<em> [ <span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_context-method-header">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  header(<em> [ <span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_context-method-cookie">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  cookie(<em> [ <span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_context-method-session">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  session(<em> [ <span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_context-method-file">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  file(<em> [ <span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_context-method-method">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  method()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_context-method-identity">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  identity()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_context-method-url">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  url(<em> [ <span class="modifier">mixed</span>
+
+$path [ , <span class="modifier">mixed</span>
+
+$params ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_context-method-subspace">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  subspace()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_context-method-negotiatecontenttype">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  negotiateContentType(<em> [ <span class="modifier">mixed</span>
+
+$candidates ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_httprequest">
+  <em>class</em>
+  <a href="#class-k2_httprequest">k2_HttpRequest</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_context">k2_Context</a></h3>
+
+<div class="docblock">
+  <p>usually the top-level context ... provides access to the http-protocol</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_httprequest-property-href_base">
+  <em class="modifier">protected</em>
+
+
+  $href_base
+  : <em class="modifier">string</em>
+
+</h4>
+
+
+  <h4 id="class-k2_httprequest-property-subspace">
+  <em class="modifier">protected</em>
+
+
+  $subspace
+  : <em class="modifier">string</em>
+
+</h4>
+
+
+  <h4 id="class-k2_httprequest-property-query">
+  <em class="modifier">protected</em>
+
+
+  $query
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+  <h4 id="class-k2_httprequest-property-body">
+  <em class="modifier">protected</em>
+
+
+  $body
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+  <h4 id="class-k2_httprequest-property-server">
+  <em class="modifier">protected</em>
+
+
+  $server
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+  <h4 id="class-k2_httprequest-property-files">
+  <em class="modifier">protected</em>
+
+
+  $files
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+  <h4 id="class-k2_httprequest-property-headers">
+  <em class="modifier">protected</em>
+
+
+  $headers
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+  <h4 id="class-k2_httprequest-property-cookie_access">
+  <em class="modifier">protected</em>
+
+
+  $cookie_access
+  : <em class="modifier"><a href="#class-k2_adapter_cookieaccess">k2_adapter_CookieAccess</a></em>
+
+</h4>
+
+
+  <h4 id="class-k2_httprequest-property-session_access">
+  <em class="modifier">protected</em>
+
+
+  $session_access
+  : <em class="modifier"><a href="#class-k2_adapter_sessionaccess">k2_adapter_SessionAccess</a></em>
+
+</h4>
+
+
+  <h4 id="class-k2_httprequest-property-identity_loader">
+  <em class="modifier">protected</em>
+
+
+  $identity_loader
+  : <em class="modifier"><a href="#class-k2_identityloader">k2_IdentityLoader</a></em>
+
+</h4>
+
+
+  <h4 id="class-k2_httprequest-property-identity">
+  <em class="modifier">protected</em>
+
+
+  $identity
+  : <em class="modifier"><a href="#class-k2_identity">k2_Identity</a></em>
+
+</h4>
+
+
+  <h4 id="class-k2_httprequest-property-content_type_negotiator">
+  <em class="modifier">protected</em>
+
+
+  $content_type_negotiator
+  : <em class="modifier"><a href="#class-k2_contenttypenegotiator">k2_ContentTypeNegotiator</a></em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_httprequest-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em> [ <span class="modifier">mixed</span>
+
+$href_base [ , <span class="modifier">mixed</span>
+
+$request_uri [ , <a href="#class-k2_identityloader"
+>k2_IdentityLoader</a>
+
+$identity_loader [ , <a href="#class-k2_adapter_globalsaccess"
+>k2_adapter_GlobalsAccess</a>
+
+$superglobals [ , <a href="#class-k2_adapter_cookieaccess"
+>k2_adapter_CookieAccess</a>
+
+$cookie_access [ , <a href="#class-k2_adapter_sessionaccess"
+>k2_adapter_SessionAccess</a>
+
+$session_access [ , <a href="#class-k2_adapter_uploadedfileaccess"
+>k2_adapter_UploadedFileAccess</a>
+
+$file_access ]  ]  ]  ]  ]  ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httprequest-method-query">
+
+  <em class="modifier">public</em>
+
+
+  query(<em> [ <span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ]  ] </em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httprequest-method-body">
+
+  <em class="modifier">public</em>
+
+
+  body(<em> [ <span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ]  ] </em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httprequest-method-header">
+
+  <em class="modifier">public</em>
+
+
+  header(<em> [ <span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ]  ] </em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httprequest-method-cookie">
+
+  <em class="modifier">public</em>
+
+
+  cookie(<em> [ <span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httprequest-method-session">
+
+  <em class="modifier">public</em>
+
+
+  session(<em> [ <span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ]  ] </em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httprequest-method-file">
+
+  <em class="modifier">public</em>
+
+
+  file(<em> [ <span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httprequest-method-method">
+
+  <em class="modifier">public</em>
+
+
+  method()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Gives back the HTTP-method</p>
+</div>
+
+
+  
+
+<h4 id="class-k2_httprequest-method-identity">
+
+  <em class="modifier">public</em>
+
+
+  identity()
+
+  : <em class="modifier"><a href="#class-k2_identity">k2_Identity</a></em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httprequest-method-url">
+
+  <em class="modifier">public</em>
+
+
+  url(<em> [ <span class="modifier">mixed</span>
+
+$path [ , <span class="modifier">mixed</span>
+
+$params ]  ] </em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Generates a URL relative to this component</p>
+</div>
+
+
+  
+
+<h4 id="class-k2_httprequest-method-subspace">
+
+  <em class="modifier">public</em>
+
+
+  subspace()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httprequest-method-negotiatecontenttype">
+
+  <em class="modifier">public</em>
+
+
+  negotiateContentType(<em> [ <span class="modifier">mixed</span>
+
+$candidates [ , <span class="modifier">mixed</span>
+
+$user_override ]  ] </em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_contenttypenegotiator">
+  <em>class</em>
+  <a href="#class-k2_contenttypenegotiator">k2_ContentTypeNegotiator</a>
+</h2>
+
+<div class="docblock">
+  <p>Encapsulates logic for comparing against the Accept HTTP-header</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_contenttypenegotiator-property-types">
+  <em class="modifier">protected</em>
+
+
+  $types
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_contenttypenegotiator-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em> [ <span class="modifier">mixed</span>
+
+$accept ] </em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_contenttypenegotiator-method-parse">
+
+  <em class="modifier">public</em>
+
+
+  parse(<em><span class="modifier">mixed</span>
+
+$input</em>)
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_contenttypenegotiator-method-parsetype">
+
+  <em class="modifier">public</em>
+
+
+  parseType(<em><span class="modifier">mixed</span>
+
+$tuple</em>)
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_contenttypenegotiator-method-_sortbyq">
+
+  <em class="modifier">public</em>
+
+
+  _sortByQ(<em><span class="modifier">mixed</span>
+
+$a, <span class="modifier">mixed</span>
+
+$b</em>)
+
+  : <em class="modifier">integer</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_contenttypenegotiator-method-compare">
+
+  <em class="modifier">public</em>
+
+
+  compare(<em><span class="modifier">mixed</span>
+
+$a, <span class="modifier">mixed</span>
+
+$b</em>)
+
+  : <em class="modifier">boolean</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_contenttypenegotiator-method-match">
+
+  <em class="modifier">public</em>
+
+
+  match(<em> [ <span class="modifier">mixed</span>
+
+$candidates [ , <span class="modifier">mixed</span>
+
+$user_override ]  ] </em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_document">
+  <em>class</em>
+  <a href="#class-k2_document">k2_Document</a>
+</h2>
+
+<div class="docblock">
+  <p>The document is a container for properties of the HTML-document.
+The default implementation (this) is rather limited. If you have more specific needs,
+you can add you own subclass and use that instead. In that case, you should follow the
+same convention of explicit getters/setters, rather than using public properties etc.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_document-property-title">
+  <em class="modifier">protected</em>
+
+
+  $title
+  : <em class="modifier">string</em>
+
+</h4>
+
+
+  <h4 id="class-k2_document-property-scripts">
+  <em class="modifier">protected</em>
+
+
+  $scripts
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+  <h4 id="class-k2_document-property-styles">
+  <em class="modifier">protected</em>
+
+
+  $styles
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+  <h4 id="class-k2_document-property-onload">
+  <em class="modifier">protected</em>
+
+
+  $onload
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_document-method-title">
+
+  <em class="modifier">public</em>
+
+
+  title()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_document-method-settitle">
+
+  <em class="modifier">public</em>
+
+
+  setTitle(<em><span class="modifier">mixed</span>
+
+$title</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_document-method-scripts">
+
+  <em class="modifier">public</em>
+
+
+  scripts()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_document-method-addscript">
+
+  <em class="modifier">public</em>
+
+
+  addScript(<em><span class="modifier">mixed</span>
+
+$script</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_document-method-styles">
+
+  <em class="modifier">public</em>
+
+
+  styles()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_document-method-addstyle">
+
+  <em class="modifier">public</em>
+
+
+  addStyle(<em><span class="modifier">mixed</span>
+
+$style</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_document-method-onload">
+
+  <em class="modifier">public</em>
+
+
+  onload()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_document-method-addonload">
+
+  <em class="modifier">public</em>
+
+
+  addOnload(<em><span class="modifier">mixed</span>
+
+$onload</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_document-method-__set">
+
+  <em class="modifier">public</em>
+
+
+  __set(<em><span class="modifier">mixed</span>
+
+$name, <span class="modifier">mixed</span>
+
+$value</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_propertyimmutableexception">
+  <em>class</em>
+  <a href="#class-k2_propertyimmutableexception">k2_PropertyImmutableException</a>
+
+  <em>extends</em>
+  <a href="#class-exception">Exception</a>
+</h2>
+
+<div class="docblock">
+  <p>Exception is raised when trying to change an immutable property.</p>
+</div>
+
+
+</div><div class="class">
+<h2 id="class-k2_component">
+  <em class="modifier">abstract</em>
+
+  <em>class</em>
+  <a href="#class-k2_component">k2_Component</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_context">k2_Context</a></h3>
+
+<div class="docblock">
+  <p>a component is the baseclass for all userland components
+each component should be completely isolated from its surrounding, only
+depending on its parent context</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_component-property-context">
+  <em class="modifier">protected</em>
+
+
+  $context
+  : <em class="modifier"><a href="#class-k2_context">k2_Context</a></em>
+
+</h4>
+
+
+  <h4 id="class-k2_component-property-url_state">
+  <em class="modifier">protected</em>
+
+
+  $url_state
+  : <em class="modifier"><a href="#class-k2_urlstate">k2_UrlState</a></em>
+
+</h4>
+
+
+  <h4 id="class-k2_component-property-url_init">
+  <em class="modifier">protected</em>
+
+
+  $url_init
+  : <em class="modifier">array</em>
+
+</h4>
+
+<div class="docblock">
+  <p>UrlState, will be initialised with these values, upon creation.</p>
+</div>
+
+  <h4 id="class-k2_component-property-renderers">
+  <em class="modifier">protected</em>
+
+
+  $renderers
+  : <em class="modifier">array</em>
+
+</h4>
+
+<div class="docblock">
+  <p>Mapping to GET handlers. If you need to support exotic content-types, you can add to this array.
+Note: Theese are just a random selection that I thought might be useful .. you can override in the concrete component, to supply your own.
+See also http://rest.blueoxen.net/cgi-bin/wiki.pl?WhichContentType</p>
+</div>
+
+  <h4 id="class-k2_component-property-component_creator">
+  <em class="modifier">protected</em>
+
+
+  $component_creator
+  : <em class="modifier"><a href="#class-k2_componentcreator">k2_ComponentCreator</a></em>
+
+</h4>
+
+
+  <h4 id="class-k2_component-property-document">
+  <em class="modifier">protected</em>
+
+
+  $document
+  : <em class="modifier"><a href="#class-k2_document">k2_Document</a></em>
+
+</h4>
+
+
+  <h4 id="class-k2_component-property-debugger">
+  <em class="modifier">protected</em>
+
+
+  $debugger
+  : <em class="modifier"><a href="#class-k2_debuglistener">k2_DebugListener</a></em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_component-method-debug">
+
+  <em class="modifier">protected</em>
+
+
+  debug(<em><span class="modifier">mixed</span>
+
+$mixed</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Log something to the debugger.</p>
+</div>
+
+
+  
+
+<h4 id="class-k2_component-method-setcontext">
+
+  <em class="modifier">public</em>
+
+
+  setContext(<em><a href="#class-k2_context"
+>k2_Context</a>
+
+$context</em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-seturlstate">
+
+  <em class="modifier">public</em>
+
+
+  setUrlState(<em><a href="#class-k2_urlstate"
+>k2_UrlState</a>
+
+$url_state</em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-setcomponentcreator">
+
+  <em class="modifier">public</em>
+
+
+  setComponentCreator(<em><a href="#class-k2_componentcreator"
+>k2_ComponentCreator</a>
+
+$component_creator</em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-setdocument">
+
+  <em class="modifier">public</em>
+
+
+  setDocument(<em><a href="#class-k2_document"
+>k2_Document</a>
+
+$document</em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-setdebugger">
+
+  <em class="modifier">public</em>
+
+
+  setDebugger(<em><a href="#class-k2_debuglistener"
+>k2_DebugListener</a>
+
+$debugger</em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-query">
+
+  <em class="modifier">public</em>
+
+
+  query(<em> [ <span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ]  ] </em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-body">
+
+  <em class="modifier">public</em>
+
+
+  body(<em> [ <span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ]  ] </em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-header">
+
+  <em class="modifier">public</em>
+
+
+  header(<em> [ <span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-cookie">
+
+  <em class="modifier">public</em>
+
+
+  cookie(<em> [ <span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-session">
+
+  <em class="modifier">public</em>
+
+
+  session(<em> [ <span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ]  ] </em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-file">
+
+  <em class="modifier">public</em>
+
+
+  file(<em> [ <span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-method">
+
+  <em class="modifier">public</em>
+
+
+  method()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-identity">
+
+  <em class="modifier">public</em>
+
+
+  identity()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-url">
+
+  <em class="modifier">public</em>
+
+
+  url(<em> [ <span class="modifier">mixed</span>
+
+$path [ , <span class="modifier">mixed</span>
+
+$params ]  ] </em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-subspace">
+
+  <em class="modifier">public</em>
+
+
+  subspace()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-negotiatecontenttype">
+
+  <em class="modifier">public</em>
+
+
+  negotiateContentType(<em> [ <span class="modifier">mixed</span>
+
+$candidates [ , <span class="modifier">mixed</span>
+
+$user_override ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-segment">
+
+  <em class="modifier">protected</em>
+
+
+  segment()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>The full path segment for this components representation.</p>
+</div>
+
+
+  
+
+<h4 id="class-k2_component-method-name">
+
+  <em class="modifier">protected</em>
+
+
+  name()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>The name part of the uri segment.</p>
+</div>
+
+
+  
+
+<h4 id="class-k2_component-method-subtype">
+
+  <em class="modifier">protected</em>
+
+
+  subtype()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-next">
+
+  <em class="modifier">protected</em>
+
+
+  next()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-forward">
+
+  <em class="modifier">protected</em>
+
+
+  forward(<em><span class="modifier">mixed</span>
+
+$class_name [ , <span class="modifier">mixed</span>
+
+$namespace ] </em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-createcomponent">
+
+  <em class="modifier">protected</em>
+
+
+  createComponent(<em><span class="modifier">mixed</span>
+
+$class_name, <span class="modifier">mixed</span>
+
+$namespace</em>)
+
+  : <em class="modifier"><a href="#class-k2_component">k2_Component</a></em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-dispatch">
+
+  <em class="modifier">public</em>
+
+
+  dispatch()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-map">
+
+  <em class="modifier">protected</em>
+
+
+  map(<em><span class="modifier">mixed</span>
+
+$name</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-execute">
+
+  <em class="modifier">public</em>
+
+
+  execute()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-get">
+
+  <em class="modifier">public</em>
+
+
+  GET()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-post">
+
+  <em class="modifier">public</em>
+
+
+  POST()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-head">
+
+  <em class="modifier">public</em>
+
+
+  HEAD()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-put">
+
+  <em class="modifier">public</em>
+
+
+  PUT()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_component-method-delete">
+
+  <em class="modifier">public</em>
+
+
+  DELETE()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_urlstate">
+  <em>class</em>
+  <a href="#class-k2_urlstate">k2_UrlState</a>
+</h2>
+
+<div class="docblock">
+  <p>Used for persisting state over the query-string, and for namespacing query-string parameters</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_urlstate-property-context">
+  <em class="modifier">protected</em>
+
+
+  $context
+  : <em class="modifier"><a href="#class-k2_context">k2_Context</a></em>
+
+</h4>
+
+
+  <h4 id="class-k2_urlstate-property-namespace">
+  <em class="modifier">protected</em>
+
+
+  $namespace
+  : <em class="modifier">string</em>
+
+</h4>
+
+
+  <h4 id="class-k2_urlstate-property-state">
+  <em class="modifier">protected</em>
+
+
+  $state
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+  <h4 id="class-k2_urlstate-property-default_values">
+  <em class="modifier">protected</em>
+
+
+  $default_values
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_urlstate-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><a href="#class-k2_context"
+>k2_Context</a>
+
+$context [ , <span class="modifier">mixed</span>
+
+$namespace ] </em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_urlstate-method-init">
+
+  <em class="modifier">public</em>
+
+
+  init(<em><span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ] </em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_urlstate-method-has">
+
+  <em class="modifier">public</em>
+
+
+  has(<em><span class="modifier">mixed</span>
+
+$key</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_urlstate-method-get">
+
+  <em class="modifier">public</em>
+
+
+  get(<em><span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ] </em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_urlstate-method-set">
+
+  <em class="modifier">public</em>
+
+
+  set(<em><span class="modifier">mixed</span>
+
+$key, <span class="modifier">mixed</span>
+
+$value</em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_urlstate-method-merge">
+
+  <em class="modifier">public</em>
+
+
+  merge(<em> [ <span class="modifier">mixed</span>
+
+$params ] </em>)
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_template">
+  <em>class</em>
+  <a href="#class-k2_template">k2_Template</a>
+</h2>
+
+<div class="docblock">
+  <p>a utility class. this is a very simple template engine. essentially, it&#039;s just
+a wrapper around include, using output buffering to grab and return the output.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_template-property-path">
+  <em class="modifier">protected</em>
+
+
+  $path
+  : <em class="modifier">string</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_template-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$path</em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_template-method-output">
+
+  <em class="modifier">public</em>
+
+
+  output(<em><span class="modifier">mixed</span>
+
+$str</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_template-method-render">
+
+  <em class="modifier">public</em>
+
+
+  render(<em><span class="modifier">mixed</span>
+
+$context</em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_template-method-searchincludepath">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">protected</em>
+
+
+  SearchIncludePath(<em><span class="modifier">mixed</span>
+
+$filename</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Searches the include-path for a filename.
+Returns the absolute path (realpath) if found or FALSE</p>
+</div>
+
+
+  
+
+<h4 id="class-k2_template-method-installglobals">
+
+  <em class="modifier">static</em>,
+
+  <em class="modifier">protected</em>
+
+
+  InstallGlobals()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Installs global functions</p>
+</div>
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_httpresponse">
+  <em>class</em>
+  <a href="#class-k2_httpresponse">k2_HttpResponse</a>
+
+  <em>extends</em>
+  <a href="#class-exception">Exception</a>
+</h2>
+
+<div class="docblock">
+  <p>Embodies a http response.
+You may raise a HttpResponse to break the default rendering chain. A good example would be in
+cases where you want to redirect. In this case, you should use the dedicated subclass though.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_httpresponse-property-protocol">
+  <em class="modifier">protected</em>
+
+
+  $protocol
+  : <em class="modifier">string</em>
+
+</h4>
+
+
+  <h4 id="class-k2_httpresponse-property-status">
+  <em class="modifier">protected</em>
+
+
+  $status
+  : <em class="modifier">integer</em>
+
+</h4>
+
+
+  <h4 id="class-k2_httpresponse-property-content">
+  <em class="modifier">protected</em>
+
+
+  $content
+  : <em class="modifier">string</em>
+
+</h4>
+
+
+  <h4 id="class-k2_httpresponse-property-headers">
+  <em class="modifier">protected</em>
+
+
+  $headers
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+  <h4 id="class-k2_httpresponse-property-content_type">
+  <em class="modifier">protected</em>
+
+
+  $content_type
+  : <em class="modifier">string</em>
+
+</h4>
+
+
+  <h4 id="class-k2_httpresponse-property-charset">
+  <em class="modifier">protected</em>
+
+
+  $charset
+  : <em class="modifier"><a href="#class-k2_charset_responsecharset">k2_charset_ResponseCharset</a></em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_httpresponse-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em> [ <span class="modifier">mixed</span>
+
+$status [ , <span class="modifier">mixed</span>
+
+$content [ , <span class="modifier">mixed</span>
+
+$input_is_utf8 ]  ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httpresponse-method-content">
+
+  <em class="modifier">public</em>
+
+
+  content()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httpresponse-method-setcontent">
+
+  <em class="modifier">public</em>
+
+
+  setContent(<em><span class="modifier">mixed</span>
+
+$content</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httpresponse-method-contenttype">
+
+  <em class="modifier">public</em>
+
+
+  contentType()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httpresponse-method-setcontenttype">
+
+  <em class="modifier">public</em>
+
+
+  setContentType(<em><span class="modifier">mixed</span>
+
+$content_type</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httpresponse-method-setcharset">
+
+  <em class="modifier">public</em>
+
+
+  setCharset(<em><a href="#class-k2_charset_responsecharset"
+>k2_charset_ResponseCharset</a>
+
+$charset</em>)
+
+  : <em class="modifier"><a href="#class-k2_charset_utf8">k2_charset_Utf8</a></em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httpresponse-method-status">
+
+  <em class="modifier">public</em>
+
+
+  status()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httpresponse-method-encoding">
+
+  <em class="modifier">public</em>
+
+
+  encoding()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httpresponse-method-headers">
+
+  <em class="modifier">public</em>
+
+
+  headers()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httpresponse-method-setheader">
+
+  <em class="modifier">public</em>
+
+
+  setHeader(<em><span class="modifier">mixed</span>
+
+$key, <span class="modifier">mixed</span>
+
+$value</em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httpresponse-method-sendstatus">
+
+  <em class="modifier">protected</em>
+
+
+  sendStatus(<em><a href="#class-k2_adapter_outputaccess"
+>k2_adapter_OutputAccess</a>
+
+$output</em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httpresponse-method-sendheaders">
+
+  <em class="modifier">protected</em>
+
+
+  sendHeaders(<em><a href="#class-k2_adapter_outputaccess"
+>k2_adapter_OutputAccess</a>
+
+$output</em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httpresponse-method-sendbody">
+
+  <em class="modifier">protected</em>
+
+
+  sendBody(<em><a href="#class-k2_adapter_outputaccess"
+>k2_adapter_OutputAccess</a>
+
+$output</em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httpresponse-method-out">
+
+  <em class="modifier">public</em>
+
+
+  out(<em> [ <a href="#class-k2_adapter_outputaccess"
+>k2_adapter_OutputAccess</a>
+
+$output ] </em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_httpresponse-method-__tostring">
+
+  <em class="modifier">public</em>
+
+
+  __toString()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_metaresponse">
+  <em class="modifier">abstract</em>
+
+  <em>class</em>
+  <a href="#class-k2_metaresponse">k2_MetaResponse</a>
+
+  <em>extends</em>
+  <a href="#class-exception">Exception</a>
+</h2>
+
+<div class="docblock">
+  <p>A metaresponse represents an abstract event in the application, which needs alternate handling.
+This would typically be an error-condition.
+In the simplest invocation, a metaresponse maps directly to a component, which renders a generic error.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_metaresponse-method-componentname">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  componentName()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_movedpermanently">
+  <em>class</em>
+  <a href="#class-k2_movedpermanently">k2_MovedPermanently</a>
+
+  <em>extends</em>
+  <a href="#class-k2_httpresponse">k2_HttpResponse</a>
+</h2>
+
+<div class="docblock">
+  <p>Issues a http redirect of type &quot;301 Moved Permanently&quot;
+Use this if the URL has changed (Eg. a page has been renamed)</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_movedpermanently-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$url</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_seeother">
+  <em>class</em>
+  <a href="#class-k2_seeother">k2_SeeOther</a>
+
+  <em>extends</em>
+  <a href="#class-k2_httpresponse">k2_HttpResponse</a>
+</h2>
+
+<div class="docblock">
+  <p>Issues a http redirect of type &quot;303 See Other&quot;
+Use this type of redirect for redirecting after POST</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_seeother-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$url</em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_temporaryredirect">
+  <em>class</em>
+  <a href="#class-k2_temporaryredirect">k2_TemporaryRedirect</a>
+
+  <em>extends</em>
+  <a href="#class-k2_httpresponse">k2_HttpResponse</a>
+</h2>
+
+<div class="docblock">
+  <p>Issues a http redirect of type &quot;307 Temporary Redirect&quot;
+Use this type of redirect if the destination changes from request to request, or
+if you want the client to keep using the requested URI in the future.
+This is a rare type of redirect - If in doubt, you probably should
+use either of &quot;See Other&quot; or &quot;Moved Permanently&quot;</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_temporaryredirect-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$url</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_forbidden">
+  <em>class</em>
+  <a href="#class-k2_forbidden">k2_Forbidden</a>
+
+  <em>extends</em>
+  <a href="#class-k2_metaresponse">k2_MetaResponse</a>
+</h2>
+
+<div class="docblock">
+  <p>Raise this if the user doesn&#039;t have access to the requested resource.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_forbidden-method-componentname">
+
+  <em class="modifier">public</em>
+
+
+  componentName()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_pagenotfound">
+  <em>class</em>
+  <a href="#class-k2_pagenotfound">k2_PageNotFound</a>
+
+  <em>extends</em>
+  <a href="#class-k2_metaresponse">k2_MetaResponse</a>
+</h2>
+
+<div class="docblock">
+  <p>Raise this if the requested resource couldn&#039;t be found.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_pagenotfound-method-componentname">
+
+  <em class="modifier">public</em>
+
+
+  componentName()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_methodnotallowed">
+  <em>class</em>
+  <a href="#class-k2_methodnotallowed">k2_MethodNotAllowed</a>
+
+  <em>extends</em>
+  <a href="#class-k2_metaresponse">k2_MetaResponse</a>
+</h2>
+
+<div class="docblock">
+  <p>Raise this if resource doesn&#039;t support the requested HTTP method.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_methodnotallowed-method-componentname">
+
+  <em class="modifier">public</em>
+
+
+  componentName()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_notimplemented">
+  <em>class</em>
+  <a href="#class-k2_notimplemented">k2_NotImplemented</a>
+
+  <em>extends</em>
+  <a href="#class-k2_metaresponse">k2_MetaResponse</a>
+</h2>
+
+<div class="docblock">
+  <p>Raise this if the request isn&#039;t yet implemented.
+This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_notimplemented-method-componentname">
+
+  <em class="modifier">public</em>
+
+
+  componentName()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_defaultforbiddencomponent">
+  <em>class</em>
+  <a href="#class-k2_defaultforbiddencomponent">k2_DefaultForbiddenComponent</a>
+
+  <em>extends</em>
+  <a href="#class-k2_component">k2_Component</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_context">k2_Context</a></h3>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_defaultforbiddencomponent-method-dispatch">
+
+  <em class="modifier">public</em>
+
+
+  dispatch()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_defaultpagenotfoundcomponent">
+  <em>class</em>
+  <a href="#class-k2_defaultpagenotfoundcomponent">k2_DefaultPageNotFoundComponent</a>
+
+  <em>extends</em>
+  <a href="#class-k2_component">k2_Component</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_context">k2_Context</a></h3>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_defaultpagenotfoundcomponent-method-dispatch">
+
+  <em class="modifier">public</em>
+
+
+  dispatch()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_defaultmethodnotallowedcomponent">
+  <em>class</em>
+  <a href="#class-k2_defaultmethodnotallowedcomponent">k2_DefaultMethodNotAllowedComponent</a>
+
+  <em>extends</em>
+  <a href="#class-k2_component">k2_Component</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_context">k2_Context</a></h3>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_defaultmethodnotallowedcomponent-method-dispatch">
+
+  <em class="modifier">public</em>
+
+
+  dispatch()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_defaultnotimplementedcomponent">
+  <em>class</em>
+  <a href="#class-k2_defaultnotimplementedcomponent">k2_DefaultNotImplementedComponent</a>
+
+  <em>extends</em>
+  <a href="#class-k2_component">k2_Component</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_context">k2_Context</a></h3>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_defaultnotimplementedcomponent-method-dispatch">
+
+  <em class="modifier">public</em>
+
+
+  dispatch()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_bootstrap">
+  <em>class</em>
+  <a href="#class-k2_bootstrap">k2_Bootstrap</a>
+</h2>
+
+<div class="docblock">
+  <p>Application bootstrap.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_bootstrap-property-http_request">
+  <em class="modifier">protected</em>
+
+
+  $http_request
+  : <em class="modifier"><a href="#class-k2_httprequest">k2_HttpRequest</a></em>
+
+</h4>
+
+
+  <h4 id="class-k2_bootstrap-property-components">
+  <em class="modifier">protected</em>
+
+
+  $components
+  : <em class="modifier"><a href="#class-k2_componentcreator">k2_ComponentCreator</a></em>
+
+</h4>
+
+
+  <h4 id="class-k2_bootstrap-property-charset_strategy">
+  <em class="modifier">protected</em>
+
+
+  $charset_strategy
+  : <em class="modifier"><a href="#class-k2_charset_charsetstrategy">k2_charset_CharsetStrategy</a></em>
+
+</h4>
+
+
+  <h4 id="class-k2_bootstrap-property-is_debug">
+  <em class="modifier">protected</em>
+
+
+  $is_debug
+  : <em class="modifier">boolean</em>
+
+</h4>
+
+
+  <h4 id="class-k2_bootstrap-property-log_filename">
+  <em class="modifier">protected</em>
+
+
+  $log_filename
+  : <em class="modifier">string</em>
+
+</h4>
+
+
+  <h4 id="class-k2_bootstrap-property-identity_loader">
+  <em class="modifier">protected</em>
+
+
+  $identity_loader
+  : <em class="modifier"><a href="#class-k2_identityloader">k2_IdentityLoader</a></em>
+
+</h4>
+
+
+  <h4 id="class-k2_bootstrap-property-globals_access">
+  <em class="modifier">protected</em>
+
+
+  $globals_access
+  : <em class="modifier"><a href="#class-k2_adapter_globalsaccess">k2_adapter_GlobalsAccess</a></em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_bootstrap-method-run">
+
+  <em class="modifier">public</em>
+
+
+  run(<em><span class="modifier">mixed</span>
+
+$root_class_name</em>)
+
+  : <em class="modifier"><a href="#class-k2_httpresponse">k2_HttpResponse</a></em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Serves a http request, given a root component.</p>
+</div>
+
+
+  
+
+<h4 id="class-k2_bootstrap-method-dispatchroot">
+
+  <em class="modifier">protected</em>
+
+
+  dispatchRoot(<em><span class="modifier">mixed</span>
+
+$root_class_name</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_bootstrap-method-setcontext">
+
+  <em class="modifier">public</em>
+
+
+  setContext(<em><a href="#class-k2_context"
+>k2_Context</a>
+
+$http_request</em>)
+
+  : <em class="modifier"><a href="#class-k2_bootstrap">k2_Bootstrap</a></em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_bootstrap-method-setcomponentcreator">
+
+  <em class="modifier">public</em>
+
+
+  setComponentCreator(<em><a href="#class-k2_componentcreator"
+>k2_ComponentCreator</a>
+
+$components</em>)
+
+  : <em class="modifier"><a href="#class-k2_bootstrap">k2_Bootstrap</a></em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_bootstrap-method-setcharsetstrategy">
+
+  <em class="modifier">public</em>
+
+
+  setCharsetStrategy(<em><a href="#class-k2_charset_charsetstrategy"
+>k2_charset_CharsetStrategy</a>
+
+$charset_strategy</em>)
+
+  : <em class="modifier"><a href="#class-k2_bootstrap">k2_Bootstrap</a></em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_bootstrap-method-setdebug">
+
+  <em class="modifier">public</em>
+
+
+  setDebug(<em> [ <span class="modifier">mixed</span>
+
+$is_debug ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_bootstrap-method-setlog">
+
+  <em class="modifier">public</em>
+
+
+  setLog(<em><span class="modifier">mixed</span>
+
+$filename</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_bootstrap-method-context">
+
+  <em class="modifier">protected</em>
+
+
+  context()
+
+  : <em class="modifier"><a href="#class-k2_httprequest">k2_HttpRequest</a></em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_bootstrap-method-components">
+
+  <em class="modifier">protected</em>
+
+
+  components()
+
+  : <em class="modifier"><a href="#class-k2_defaultcomponentcreator">k2_DefaultComponentCreator</a></em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_bootstrap-method-charsetstrategy">
+
+  <em class="modifier">protected</em>
+
+
+  charsetStrategy()
+
+  : <em class="modifier"><a href="#class-k2_charset_utf8charsetstrategy">k2_charset_Utf8CharsetStrategy</a></em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_bootstrap-method-identityloader">
+
+  <em class="modifier">protected</em>
+
+
+  identityLoader()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_bootstrap-method-globalsaccess">
+
+  <em class="modifier">protected</em>
+
+
+  globalsAccess()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_adapter_outputaccess">
+  <em>interface</em>
+  <a href="#class-k2_adapter_outputaccess">k2_adapter_OutputAccess</a>
+</h2>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_adapter_outputaccess-method-header">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  header(<em><span class="modifier">mixed</span>
+
+$string [ , <span class="modifier">mixed</span>
+
+$replace [ , <span class="modifier">mixed</span>
+
+$http_response_code ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_outputaccess-method-write">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  write(<em><span class="modifier">mixed</span>
+
+$bytes</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_outputaccess-method-endsession">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  endSession()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_adapter_defaultoutputaccess">
+  <em>class</em>
+  <a href="#class-k2_adapter_defaultoutputaccess">k2_adapter_DefaultOutputAccess</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_adapter_outputaccess">k2_adapter_OutputAccess</a></h3>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_adapter_defaultoutputaccess-method-header">
+
+  <em class="modifier">public</em>
+
+
+  header(<em><span class="modifier">mixed</span>
+
+$string [ , <span class="modifier">mixed</span>
+
+$replace [ , <span class="modifier">mixed</span>
+
+$http_response_code ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_defaultoutputaccess-method-write">
+
+  <em class="modifier">public</em>
+
+
+  write(<em><span class="modifier">mixed</span>
+
+$bytes</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_defaultoutputaccess-method-endsession">
+
+  <em class="modifier">public</em>
+
+
+  endSession()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_adapter_globalsaccess">
+  <em>interface</em>
+  <a href="#class-k2_adapter_globalsaccess">k2_adapter_GlobalsAccess</a>
+</h2>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_adapter_globalsaccess-method-query">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  query()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_globalsaccess-method-body">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  body()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_globalsaccess-method-server">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  server()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_globalsaccess-method-files">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  files()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_globalsaccess-method-cookie">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  cookie()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_globalsaccess-method-headers">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  headers()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_adapter_safeglobalsaccess">
+  <em>class</em>
+  <a href="#class-k2_adapter_safeglobalsaccess">k2_adapter_SafeGlobalsAccess</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_adapter_globalsaccess">k2_adapter_GlobalsAccess</a></h3>
+
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_adapter_safeglobalsaccess-property-charset">
+  <em class="modifier">protected</em>
+
+
+  $charset
+  : <em class="modifier"><a href="#class-k2_charset_charsetstrategy">k2_charset_CharsetStrategy</a></em>
+
+</h4>
+
+
+  <h4 id="class-k2_adapter_safeglobalsaccess-property-magic_quotes_gpc">
+  <em class="modifier">protected</em>
+
+
+  $magic_quotes_gpc
+  : <em class="modifier">boolean</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_adapter_safeglobalsaccess-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><a href="#class-k2_charset_charsetstrategy"
+>k2_charset_CharsetStrategy</a>
+
+$charset [ , <span class="modifier">mixed</span>
+
+$magic_quotes_gpc ] </em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_safeglobalsaccess-method-query">
+
+  <em class="modifier">public</em>
+
+
+  query()
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_safeglobalsaccess-method-body">
+
+  <em class="modifier">public</em>
+
+
+  body()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_safeglobalsaccess-method-server">
+
+  <em class="modifier">public</em>
+
+
+  server()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_safeglobalsaccess-method-files">
+
+  <em class="modifier">public</em>
+
+
+  files()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_safeglobalsaccess-method-normalizefiles">
+
+  <em class="modifier">public</em>
+
+
+  normalizeFiles(<em><span class="modifier">mixed</span>
+
+$files</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_safeglobalsaccess-method-cookie">
+
+  <em class="modifier">public</em>
+
+
+  cookie()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_safeglobalsaccess-method-headers">
+
+  <em class="modifier">public</em>
+
+
+  headers()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_safeglobalsaccess-method-unmagic">
+
+  <em class="modifier">protected</em>
+
+
+  unMagic(<em><span class="modifier">mixed</span>
+
+$input</em>)
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_adapter_lowerkeyadapter">
+  <em>class</em>
+  <a href="#class-k2_adapter_lowerkeyadapter">k2_adapter_LowerKeyAdapter</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_adapter_globalsaccess">k2_adapter_GlobalsAccess</a></h3>
+
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_adapter_lowerkeyadapter-property-global_access">
+  <em class="modifier">protected</em>
+
+
+  $global_access
+  : <em class="modifier"><a href="#class-k2_adapter_globalsaccess">k2_adapter_GlobalsAccess</a></em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_adapter_lowerkeyadapter-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><a href="#class-k2_adapter_globalsaccess"
+>k2_adapter_GlobalsAccess</a>
+
+$global_access</em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_lowerkeyadapter-method-query">
+
+  <em class="modifier">public</em>
+
+
+  query()
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_lowerkeyadapter-method-body">
+
+  <em class="modifier">public</em>
+
+
+  body()
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_lowerkeyadapter-method-server">
+
+  <em class="modifier">public</em>
+
+
+  server()
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_lowerkeyadapter-method-files">
+
+  <em class="modifier">public</em>
+
+
+  files()
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_lowerkeyadapter-method-cookie">
+
+  <em class="modifier">public</em>
+
+
+  cookie()
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_lowerkeyadapter-method-headers">
+
+  <em class="modifier">public</em>
+
+
+  headers()
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_lowerkeyadapter-method-lowerkeys">
+
+  <em class="modifier">protected</em>
+
+
+  lowerKeys(<em><span class="modifier">mixed</span>
+
+$input</em>)
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_adapter_cookieaccess">
+  <em>interface</em>
+  <a href="#class-k2_adapter_cookieaccess">k2_adapter_CookieAccess</a>
+</h2>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_adapter_cookieaccess-method-__construct">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$domain, <span class="modifier">mixed</span>
+
+$raw</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_cookieaccess-method-has">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  has(<em><span class="modifier">mixed</span>
+
+$key</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_cookieaccess-method-get">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  get(<em><span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_cookieaccess-method-set">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  set(<em><span class="modifier">mixed</span>
+
+$key, <span class="modifier">mixed</span>
+
+$value [ , <span class="modifier">mixed</span>
+
+$expire [ , <span class="modifier">mixed</span>
+
+$secure [ , <span class="modifier">mixed</span>
+
+$httponly ]  ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_cookieaccess-method-all">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  all()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_adapter_defaultcookieaccess">
+  <em>class</em>
+  <a href="#class-k2_adapter_defaultcookieaccess">k2_adapter_DefaultCookieAccess</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_adapter_cookieaccess">k2_adapter_CookieAccess</a></h3>
+
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_adapter_defaultcookieaccess-property-domain">
+  <em class="modifier">protected</em>
+
+
+  $domain
+  : <em class="modifier">string</em>
+
+</h4>
+
+
+  <h4 id="class-k2_adapter_defaultcookieaccess-property-raw">
+  <em class="modifier">protected</em>
+
+
+  $raw
+  : <em class="modifier">string</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_adapter_defaultcookieaccess-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$domain, <span class="modifier">mixed</span>
+
+$raw</em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_defaultcookieaccess-method-has">
+
+  <em class="modifier">public</em>
+
+
+  has(<em><span class="modifier">mixed</span>
+
+$key</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_defaultcookieaccess-method-get">
+
+  <em class="modifier">public</em>
+
+
+  get(<em><span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_defaultcookieaccess-method-set">
+
+  <em class="modifier">public</em>
+
+
+  set(<em><span class="modifier">mixed</span>
+
+$key, <span class="modifier">mixed</span>
+
+$value [ , <span class="modifier">mixed</span>
+
+$expire [ , <span class="modifier">mixed</span>
+
+$secure [ , <span class="modifier">mixed</span>
+
+$httponly ]  ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_defaultcookieaccess-method-all">
+
+  <em class="modifier">public</em>
+
+
+  all()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_adapter_sessionaccess">
+  <em>interface</em>
+  <a href="#class-k2_adapter_sessionaccess">k2_adapter_SessionAccess</a>
+</h2>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_adapter_sessionaccess-method-has">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  has(<em><span class="modifier">mixed</span>
+
+$key</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_sessionaccess-method-get">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  get(<em><span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_sessionaccess-method-set">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  set(<em><span class="modifier">mixed</span>
+
+$key, <span class="modifier">mixed</span>
+
+$value</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_sessionaccess-method-close">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  close()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_sessionaccess-method-destroy">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  destroy()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_sessionaccess-method-sessionid">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  sessionId()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_sessionaccess-method-regenerateid">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  regenerateId()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_adapter_defaultsessionaccess">
+  <em>class</em>
+  <a href="#class-k2_adapter_defaultsessionaccess">k2_adapter_DefaultSessionAccess</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_adapter_sessionaccess">k2_adapter_SessionAccess</a></h3>
+
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_adapter_defaultsessionaccess-property-cookie_access">
+  <em class="modifier">protected</em>
+
+
+  $cookie_access
+  : <em class="modifier"><a href="#class-k2_adapter_cookieaccess">k2_adapter_CookieAccess</a></em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_adapter_defaultsessionaccess-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><a href="#class-k2_adapter_cookieaccess"
+>k2_adapter_CookieAccess</a>
+
+$cookie_access</em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_defaultsessionaccess-method-autostart">
+
+  <em class="modifier">protected</em>
+
+
+  autoStart()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_defaultsessionaccess-method-has">
+
+  <em class="modifier">public</em>
+
+
+  has(<em><span class="modifier">mixed</span>
+
+$key</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_defaultsessionaccess-method-get">
+
+  <em class="modifier">public</em>
+
+
+  get(<em><span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_defaultsessionaccess-method-set">
+
+  <em class="modifier">public</em>
+
+
+  set(<em><span class="modifier">mixed</span>
+
+$key, <span class="modifier">mixed</span>
+
+$value</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_defaultsessionaccess-method-close">
+
+  <em class="modifier">public</em>
+
+
+  close()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_defaultsessionaccess-method-destroy">
+
+  <em class="modifier">public</em>
+
+
+  destroy()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_defaultsessionaccess-method-sessionid">
+
+  <em class="modifier">public</em>
+
+
+  sessionId()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_defaultsessionaccess-method-regenerateid">
+
+  <em class="modifier">public</em>
+
+
+  regenerateId()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_adapter_mocksessionaccess">
+  <em>class</em>
+  <a href="#class-k2_adapter_mocksessionaccess">k2_adapter_MockSessionAccess</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_adapter_sessionaccess">k2_adapter_SessionAccess</a></h3>
+
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_adapter_mocksessionaccess-property-cookie_access">
+  <em class="modifier">protected</em>
+
+
+  $cookie_access
+  : <em class="modifier"><a href="#class-k2_adapter_cookieaccess">k2_adapter_CookieAccess</a></em>
+
+</h4>
+
+
+  <h4 id="class-k2_adapter_mocksessionaccess-property-raw">
+  <em class="modifier">protected</em>
+
+
+  $raw
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_adapter_mocksessionaccess-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><a href="#class-k2_adapter_cookieaccess"
+>k2_adapter_CookieAccess</a>
+
+$cookie_access [ , <span class="modifier">mixed</span>
+
+$raw ] </em>)
+
+  : <em class="modifier">null</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_mocksessionaccess-method-has">
+
+  <em class="modifier">public</em>
+
+
+  has(<em><span class="modifier">mixed</span>
+
+$key</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_mocksessionaccess-method-get">
+
+  <em class="modifier">public</em>
+
+
+  get(<em><span class="modifier">mixed</span>
+
+$key [ , <span class="modifier">mixed</span>
+
+$default ] </em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_mocksessionaccess-method-set">
+
+  <em class="modifier">public</em>
+
+
+  set(<em><span class="modifier">mixed</span>
+
+$key, <span class="modifier">mixed</span>
+
+$value</em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_mocksessionaccess-method-close">
+
+  <em class="modifier">public</em>
+
+
+  close()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_mocksessionaccess-method-destroy">
+
+  <em class="modifier">public</em>
+
+
+  destroy()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_mocksessionaccess-method-sessionid">
+
+  <em class="modifier">public</em>
+
+
+  sessionId()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_mocksessionaccess-method-regenerateid">
+
+  <em class="modifier">public</em>
+
+
+  regenerateId()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_adapter_mockglobalsaccess">
+  <em>class</em>
+  <a href="#class-k2_adapter_mockglobalsaccess">k2_adapter_MockGlobalsAccess</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_adapter_globalsaccess">k2_adapter_GlobalsAccess</a></h3>
+
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_adapter_mockglobalsaccess-property-query">
+  <em class="modifier">public</em>
+
+
+  $query
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+  <h4 id="class-k2_adapter_mockglobalsaccess-property-body">
+  <em class="modifier">public</em>
+
+
+  $body
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+  <h4 id="class-k2_adapter_mockglobalsaccess-property-server">
+  <em class="modifier">public</em>
+
+
+  $server
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+  <h4 id="class-k2_adapter_mockglobalsaccess-property-headers">
+  <em class="modifier">public</em>
+
+
+  $headers
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+  <h4 id="class-k2_adapter_mockglobalsaccess-property-cookie">
+  <em class="modifier">public</em>
+
+
+  $cookie
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+  <h4 id="class-k2_adapter_mockglobalsaccess-property-files">
+  <em class="modifier">public</em>
+
+
+  $files
+  : <em class="modifier">array</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_adapter_mockglobalsaccess-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em> [ <span class="modifier">mixed</span>
+
+$query [ , <span class="modifier">mixed</span>
+
+$body [ , <span class="modifier">mixed</span>
+
+$server [ , <span class="modifier">mixed</span>
+
+$headers [ , <span class="modifier">mixed</span>
+
+$cookie [ , <span class="modifier">mixed</span>
+
+$files ]  ]  ]  ]  ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_mockglobalsaccess-method-query">
+
+  <em class="modifier">public</em>
+
+
+  query()
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_mockglobalsaccess-method-body">
+
+  <em class="modifier">public</em>
+
+
+  body()
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_mockglobalsaccess-method-server">
+
+  <em class="modifier">public</em>
+
+
+  server()
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_mockglobalsaccess-method-headers">
+
+  <em class="modifier">public</em>
+
+
+  headers()
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_mockglobalsaccess-method-files">
+
+  <em class="modifier">public</em>
+
+
+  files()
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_mockglobalsaccess-method-cookie">
+
+  <em class="modifier">public</em>
+
+
+  cookie()
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_adapter_mockcookieaccess">
+  <em>class</em>
+  <a href="#class-k2_adapter_mockcookieaccess">k2_adapter_MockCookieAccess</a>
+
+  <em>extends</em>
+  <a href="#class-k2_adapter_defaultcookieaccess">k2_adapter_DefaultCookieAccess</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_adapter_cookieaccess">k2_adapter_CookieAccess</a></h3>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_adapter_mockcookieaccess-method-set">
+
+  <em class="modifier">public</em>
+
+
+  set(<em><span class="modifier">mixed</span>
+
+$key, <span class="modifier">mixed</span>
+
+$value [ , <span class="modifier">mixed</span>
+
+$expire [ , <span class="modifier">mixed</span>
+
+$secure [ , <span class="modifier">mixed</span>
+
+$httponly ]  ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_adapter_uploadedfileaccess">
+  <em>interface</em>
+  <a href="#class-k2_adapter_uploadedfileaccess">k2_adapter_UploadedFileAccess</a>
+</h2>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_adapter_uploadedfileaccess-method-copy">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  copy(<em><span class="modifier">mixed</span>
+
+$tmp_name, <span class="modifier">mixed</span>
+
+$path_destination</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_adapter_defaultuploadedfileaccess">
+  <em>class</em>
+  <a href="#class-k2_adapter_defaultuploadedfileaccess">k2_adapter_DefaultUploadedFileAccess</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_adapter_uploadedfileaccess">k2_adapter_UploadedFileAccess</a></h3>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_adapter_defaultuploadedfileaccess-method-copy">
+
+  <em class="modifier">public</em>
+
+
+  copy(<em><span class="modifier">mixed</span>
+
+$tmp_name, <span class="modifier">mixed</span>
+
+$path_destination</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_defaultuploadedfileaccess-method-mkdir">
+
+  <em class="modifier">protected</em>
+
+
+  mkdir(<em><span class="modifier">mixed</span>
+
+$path</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_defaultuploadedfileaccess-method-ensuredirectory">
+
+  <em class="modifier">protected</em>
+
+
+  ensureDirectory(<em><span class="modifier">mixed</span>
+
+$dir</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_adapter_mockuploadedfileaccess">
+  <em>class</em>
+  <a href="#class-k2_adapter_mockuploadedfileaccess">k2_adapter_MockUploadedFileAccess</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_adapter_uploadedfileaccess">k2_adapter_UploadedFileAccess</a></h3>
+
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_adapter_mockuploadedfileaccess-property-actions">
+  <em class="modifier">public</em>
+
+
+  $actions
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_adapter_mockuploadedfileaccess-method-copy">
+
+  <em class="modifier">public</em>
+
+
+  copy(<em><span class="modifier">mixed</span>
+
+$tmp_name, <span class="modifier">mixed</span>
+
+$path_destination</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_adapter_uploadedfile">
+  <em>class</em>
+  <a href="#class-k2_adapter_uploadedfile">k2_adapter_UploadedFile</a>
+</h2>
+
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k2_adapter_uploadedfile-property-key">
+  <em class="modifier">protected</em>
+
+
+  $key
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k2_adapter_uploadedfile-property-name">
+  <em class="modifier">protected</em>
+
+
+  $name
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k2_adapter_uploadedfile-property-tmp_name">
+  <em class="modifier">protected</em>
+
+
+  $tmp_name
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k2_adapter_uploadedfile-property-size">
+  <em class="modifier">protected</em>
+
+
+  $size
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k2_adapter_uploadedfile-property-type">
+  <em class="modifier">protected</em>
+
+
+  $type
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+  <h4 id="class-k2_adapter_uploadedfile-property-file_access">
+  <em class="modifier">protected</em>
+
+
+  $file_access
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_adapter_uploadedfile-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$file_data, <span class="modifier">mixed</span>
+
+$key, <a href="#class-k2_adapter_uploadedfileaccess"
+>k2_adapter_UploadedFileAccess</a>
+
+$file_access</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_uploadedfile-method-__serialize">
+
+  <em class="modifier">public</em>
+
+
+  __serialize()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_uploadedfile-method-key">
+
+  <em class="modifier">public</em>
+
+
+  key()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_uploadedfile-method-name">
+
+  <em class="modifier">public</em>
+
+
+  name()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_uploadedfile-method-type">
+
+  <em class="modifier">public</em>
+
+
+  type()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_uploadedfile-method-size">
+
+  <em class="modifier">public</em>
+
+
+  size()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_adapter_uploadedfile-method-writeto">
+
+  <em class="modifier">public</em>
+
+
+  writeTo(<em><span class="modifier">mixed</span>
+
+$path_destination</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_charset_responsecharset">
+  <em>interface</em>
+  <a href="#class-k2_charset_responsecharset">k2_charset_ResponseCharset</a>
+</h2>
+
+<div class="docblock">
+  <p>A responsecharset governs how the response is sent back to the client.
+the httpresponse holds the content as utf-8, so each responsecharset should be able to convert
+from this base</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_charset_responsecharset-method-name">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  name()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_charset_responsecharset-method-encode">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  encode(<em><span class="modifier">mixed</span>
+
+$utf8_string</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_charset_utf8">
+  <em>class</em>
+  <a href="#class-k2_charset_utf8">k2_charset_Utf8</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_charset_responsecharset">k2_charset_ResponseCharset</a></h3>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_charset_utf8-method-name">
+
+  <em class="modifier">public</em>
+
+
+  name()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_charset_utf8-method-encode">
+
+  <em class="modifier">public</em>
+
+
+  encode(<em><span class="modifier">mixed</span>
+
+$utf8_string</em>)
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_charset_latin1">
+  <em>class</em>
+  <a href="#class-k2_charset_latin1">k2_charset_Latin1</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_charset_responsecharset">k2_charset_ResponseCharset</a></h3>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_charset_latin1-method-name">
+
+  <em class="modifier">public</em>
+
+
+  name()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_charset_latin1-method-encode">
+
+  <em class="modifier">public</em>
+
+
+  encode(<em><span class="modifier">mixed</span>
+
+$utf8_string</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_charset_charsetstrategy">
+  <em>interface</em>
+  <a href="#class-k2_charset_charsetstrategy">k2_charset_CharsetStrategy</a>
+</h2>
+
+<div class="docblock">
+  <p>A strategy for encoding/decoding charsets</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_charset_charsetstrategy-method-decodeinput">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  decodeInput(<em><span class="modifier">mixed</span>
+
+$input</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_charset_charsetstrategy-method-responsecharset">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  responseCharset()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_charset_charsetstrategy-method-isinternalutf8">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  isInternalUtf8()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_charset_utf8charsetstrategy">
+  <em>class</em>
+  <a href="#class-k2_charset_utf8charsetstrategy">k2_charset_Utf8CharsetStrategy</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_charset_charsetstrategy">k2_charset_CharsetStrategy</a></h3>
+
+<div class="docblock">
+  <p>Full UTF-8
+This is the preferred configuration
+If you&#039;re using PHP &lt; 6
+You should use the [mb-string extension](http://docs.php.net/manual/en/mbstring.overload.php) to replace the built-ins. This is not crucial, but a good idea none the less.
+You also need to make sure that all files (php and templates) are utf-8 encoded
+If you use a database, make sure that the transfer charset is utf-8 (on mysql use: SET NAMES = &#039;utf8&#039;)</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_charset_utf8charsetstrategy-method-decodeinput">
+
+  <em class="modifier">public</em>
+
+
+  decodeInput(<em><span class="modifier">mixed</span>
+
+$input</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_charset_utf8charsetstrategy-method-responsecharset">
+
+  <em class="modifier">public</em>
+
+
+  responseCharset()
+
+  : <em class="modifier"><a href="#class-k2_charset_utf8">k2_charset_Utf8</a></em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_charset_utf8charsetstrategy-method-isinternalutf8">
+
+  <em class="modifier">public</em>
+
+
+  isInternalUtf8()
+
+  : <em class="modifier">boolean</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_charset_latin1charsetstrategy">
+  <em>class</em>
+  <a href="#class-k2_charset_latin1charsetstrategy">k2_charset_Latin1CharsetStrategy</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_charset_charsetstrategy">k2_charset_CharsetStrategy</a></h3>
+
+<div class="docblock">
+  <p>Full latin1, throughout the application
+While this is the native solution for PHP &lt; 6, it isn&#039;t recommended for new applications. Use FauxUtf8 or preferably Utf8.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_charset_latin1charsetstrategy-method-decodeinput">
+
+  <em class="modifier">public</em>
+
+
+  decodeInput(<em><span class="modifier">mixed</span>
+
+$input</em>)
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_charset_latin1charsetstrategy-method-responsecharset">
+
+  <em class="modifier">public</em>
+
+
+  responseCharset()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_charset_latin1charsetstrategy-method-isinternalutf8">
+
+  <em class="modifier">public</em>
+
+
+  isInternalUtf8()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k2_charset_fauxutf8charsetstrategy">
+  <em>class</em>
+  <a href="#class-k2_charset_fauxutf8charsetstrategy">k2_charset_FauxUtf8CharsetStrategy</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k2_charset_charsetstrategy">k2_charset_CharsetStrategy</a></h3>
+
+<div class="docblock">
+  <p>All input/output as UTF-8, but latin1 on the inside
+This was the default charset handling of Konstrukt v. 1 - It is now deprecated in favour of full UTF-8
+It offers few benefits over a simple latin1 strategy, but forms a lowest dommon denominator when using Ajax (javascript defaults to UTF-8)
+It expects everything within PHP (files and strings) to be latin1. This includes any data received from the database.
+It will encode/decode the outside as UTF-8, so the page appears in UTF-8 for the client, even if it is limited to the latin1 subset.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k2_charset_fauxutf8charsetstrategy-method-decodeinput">
+
+  <em class="modifier">public</em>
+
+
+  decodeInput(<em><span class="modifier">mixed</span>
+
+$input</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_charset_fauxutf8charsetstrategy-method-responsecharset">
+
+  <em class="modifier">public</em>
+
+
+  responseCharset()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k2_charset_fauxutf8charsetstrategy-method-isinternalutf8">
+
+  <em class="modifier">public</em>
+
+
+  isInternalUtf8()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div></body>
+</html>

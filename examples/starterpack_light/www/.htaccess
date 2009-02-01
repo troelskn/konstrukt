@@ -1,0 +1,24 @@
+# Apache configuration file for Konstrukt application
+
+# These lines enables logging of errors to /log/error.log
+php_value error_log              "../log/error.log"
+php_value log_errors             on
+php_value html_errors            off
+
+# For a production site, enable the following two lines
+# php_value display_startup_errors off
+# php_value display_errors         off
+
+# These settings routes all traffic, except concrete files, to the dispatcher
+Options FollowSymLinks Indexes
+DirectoryIndex index.php
+
+RewriteEngine on
+
+RewriteCond %{REQUEST_FILENAME}  -d
+RewriteRule  ^.*$  -  [L]
+
+RewriteCond %{REQUEST_FILENAME}  -f
+RewriteRule  ^.*$  -  [L]
+
+RewriteRule ^.*$	index.php [L]
