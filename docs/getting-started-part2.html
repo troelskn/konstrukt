@@ -5,36 +5,37 @@
   <link rel="stylesheet" type="text/css" href="documentation.css" />
 </head>
 <body>
+
 <h1 id="second-tutorial">Second tutorial</h1>
 
 <p>For this tutorial we presume that you have completed the first tutorial, since it builds on the code produced from that.</p>
 
 <h2 id="negotiating-the-content-type">Negotiating the Content-Type</h2>
 
-<p>Most of the time a web application will emit HTML. That's the fabric of which the web is made. Once in a while though, we might have to generate other types of response. In these cases, we clearly don't want the output to get wrapped in the regular document rendering. For that we need an abnormal response. We have already seen one kind of abnormal response, with the <code>k2_NotFound</code>, but this time we need a more specific kind. We'll extend the contact component with the capacity to render as a <a href="http://en.wikipedia.org/wiki/VCard">vcard</a>.</p>
+<p>Most of the time a web application will emit HTML. That's the fabric of which the web is made. Once in a while though, we might have to generate other types of response. In these cases, we clearly don't want the output to get wrapped in the regular document rendering. For that we need an abnormal response. We have already seen one kind of abnormal response, with the <code>k_NotFound</code>, but this time we need a more specific kind. We'll extend the contact component with the capacity to render as a <a href="http://en.wikipedia.org/wiki/VCard">vcard</a>.</p>
 
 <p>To supply a ressource as a different content-type, we can use Konstrukts built-in support for content-negotiation, which is an often under-utilised feature of the http protocol. To get this, we need to edit the "show" component, so that the <code>GET()</code> method can fork out to either the html or the vcard handler. We could do so mnually in the <code>GET()</code> method, but there are generic hooks available for this purpose. After a revision of the component, we end up with this:</p>
 
 <pre class="php"><span class="kw2">&lt;?php</span>
-<span class="kw2">class</span> components_contacts_Show <span class="kw2">extends</span> k2_Component <span class="br0">&#123;</span>
+<span class="kw2">class</span> components_contacts_Show <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
   <span class="kw2">function</span> renderHtml<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="kw3">global</span> <span class="re0">$contacts</span>;
     <span class="re0">$contact</span> = <span class="re0">$contacts</span>-&gt;<span class="me1">fetchByName</span><span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     <span class="kw1">if</span> <span class="br0">&#40;</span>!<span class="re0">$contact</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">throw</span> <span class="kw2">new</span> k2_NotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+      <span class="kw1">throw</span> <span class="kw2">new</span> k_NotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
     <span class="br0">&#125;</span>
     <span class="re0">$this</span>-&gt;<span class="me1">document</span>-&gt;<span class="me1">setTitle</span><span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">full_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    <span class="re0">$t</span> = <span class="kw2">new</span> k2_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show.tpl.php&quot;</span><span class="br0">&#41;</span>;
+    <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show.tpl.php&quot;</span><span class="br0">&#41;</span>;
     <span class="kw1">return</span> <span class="re0">$t</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="re0">$this</span>, <span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">'contact'</span> =&gt; <span class="re0">$contact</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>
   <span class="kw2">function</span> renderVcard<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="kw3">global</span> <span class="re0">$contacts</span>;
     <span class="re0">$contact</span> = <span class="re0">$contacts</span>-&gt;<span class="me1">fetchByName</span><span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     <span class="kw1">if</span> <span class="br0">&#40;</span>!<span class="re0">$contact</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">throw</span> <span class="kw2">new</span> k2_NotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+      <span class="kw1">throw</span> <span class="kw2">new</span> k_NotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
     <span class="br0">&#125;</span>
-    <span class="re0">$t</span> = <span class="kw2">new</span> k2_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show-vcard.tpl.php&quot;</span><span class="br0">&#41;</span>;
-    <span class="re0">$response</span> = <span class="kw2">new</span> k2_HttpResponse<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show-vcard.tpl.php&quot;</span><span class="br0">&#41;</span>;
+    <span class="re0">$response</span> = <span class="kw2">new</span> k_HttpResponse<span class="br0">&#40;</span><span class="br0">&#41;</span>;
     <span class="re0">$response</span>-&gt;<span class="me1">setContent</span><span class="br0">&#40;</span><span class="re0">$t</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="re0">$this</span>, <span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">'contact'</span> =&gt; <span class="re0">$contact</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     <span class="re0">$response</span>-&gt;<span class="me1">setContentType</span><span class="br0">&#40;</span><span class="st0">'text/x-vcard'</span><span class="br0">&#41;</span>;
     <span class="kw1">throw</span> <span class="re0">$response</span>;
@@ -62,23 +63,23 @@ REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class=
 <p>As you may have noted above, there is some duplication between the two render functions. We can reduce this by moving part of it up into a more general handler on the component. In this case the top-level (<code>dispatch()</code>) would fit:</p>
 
 <pre class="php"><span class="kw2">&lt;?php</span>
-<span class="kw2">class</span> components_contacts_Show <span class="kw2">extends</span> k2_Component <span class="br0">&#123;</span>
+<span class="kw2">class</span> components_contacts_Show <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
   <span class="kw2">function</span> dispatch<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="kw3">global</span> <span class="re0">$contacts</span>;
     <span class="re0">$contact</span> = <span class="re0">$contacts</span>-&gt;<span class="me1">fetchByName</span><span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     <span class="kw1">if</span> <span class="br0">&#40;</span>!<span class="re0">$contact</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">throw</span> <span class="kw2">new</span> k2_NotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+      <span class="kw1">throw</span> <span class="kw2">new</span> k_NotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
     <span class="br0">&#125;</span>
     <span class="kw1">return</span> <span class="kw2">parent</span>::<span class="me2">dispatch</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>
   <span class="kw2">function</span> renderHtml<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="re0">$this</span>-&gt;<span class="me1">document</span>-&gt;<span class="me1">setTitle</span><span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">contact</span>-&gt;<span class="me1">full_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    <span class="re0">$t</span> = <span class="kw2">new</span> k2_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show.tpl.php&quot;</span><span class="br0">&#41;</span>;
+    <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show.tpl.php&quot;</span><span class="br0">&#41;</span>;
     <span class="kw1">return</span> <span class="re0">$t</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="re0">$this</span>, <span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">'contact'</span> =&gt; <span class="re0">$this</span>-&gt;<span class="me1">contact</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>
   <span class="kw2">function</span> renderVcard<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="re0">$t</span> = <span class="kw2">new</span> k2_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show-vcard.tpl.php&quot;</span><span class="br0">&#41;</span>;
-    <span class="re0">$response</span> = <span class="kw2">new</span> k2_HttpResponse<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show-vcard.tpl.php&quot;</span><span class="br0">&#41;</span>;
+    <span class="re0">$response</span> = <span class="kw2">new</span> k_HttpResponse<span class="br0">&#40;</span><span class="br0">&#41;</span>;
     <span class="re0">$response</span>-&gt;<span class="me1">setContent</span><span class="br0">&#40;</span><span class="re0">$t</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="re0">$this</span>, <span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">'contact'</span> =&gt; <span class="re0">$this</span>-&gt;<span class="me1">contact</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     <span class="re0">$response</span>-&gt;<span class="me1">setContentType</span><span class="br0">&#40;</span><span class="st0">'text/x-vcard'</span><span class="br0">&#41;</span>;
     <span class="kw1">throw</span> <span class="re0">$response</span>;
@@ -98,10 +99,10 @@ REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class=
 <p>To continue from our running example, the first thing we need is to render a html form for editing a contact. A form can be seen as an alternative rendering of a resource, and for this there is a special content-type reserved. Add the following to out 'show' component:</p>
 
 <pre class="php"><span class="kw2">&lt;?php</span>
-<span class="kw2">class</span> components_contacts_Show <span class="kw2">extends</span> k2_Component <span class="br0">&#123;</span>
+<span class="kw2">class</span> components_contacts_Show <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
   <span class="kw2">function</span> renderEdit<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="re0">$this</span>-&gt;<span class="me1">document</span>-&gt;<span class="me1">setTitle</span><span class="br0">&#40;</span><span class="st0">&quot;Edit &quot;</span> . <span class="re0">$this</span>-&gt;<span class="me1">contact</span>-&gt;<span class="me1">full_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    <span class="re0">$t</span> = <span class="kw2">new</span> k2_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show-edit.tpl.php&quot;</span><span class="br0">&#41;</span>;
+    <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show-edit.tpl.php&quot;</span><span class="br0">&#41;</span>;
     <span class="kw1">return</span> <span class="re0">$t</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="re0">$this</span>, <span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">'contact'</span> =&gt; <span class="re0">$this</span>-&gt;<span class="me1">contact</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>
   ...</pre>
@@ -142,10 +143,10 @@ REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class=
 <p>Now that we have the rendering of a form i place, we still need to process the POST request it will generate. Time to add yet another method to our component:</p>
 
 <pre class="php"><span class="kw2">&lt;?php</span>
-<span class="kw2">class</span> components_contacts_Show <span class="kw2">extends</span> k2_Component <span class="br0">&#123;</span>
+<span class="kw2">class</span> components_contacts_Show <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
   <span class="kw2">function</span> POST<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="kw1">if</span> <span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">process</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">throw</span> <span class="kw2">new</span> k2_SeeOther<span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">url</span><span class="br0">&#40;</span><span class="st0">';'</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+      <span class="kw1">throw</span> <span class="kw2">new</span> k_SeeOther<span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">url</span><span class="br0">&#40;</span><span class="st0">';'</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     <span class="br0">&#125;</span>
     <span class="kw1">return</span> <span class="re0">$this</span>-&gt;<span class="me1">GET</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>

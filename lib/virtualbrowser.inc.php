@@ -25,6 +25,7 @@ class k_VirtualSimpleBrowser extends SimpleBrowser {
     return new k_VirtualSimpleUserAgent($this->root_class_name, $this->components, $this->charset_strategy);
   }
 }
+
 class k_SimpleOutputAccess implements k_adapter_OutputAccess {
   protected $headers = array();
   protected $content = "";

@@ -5,6 +5,7 @@
   <link rel="stylesheet" type="text/css" href="documentation.css" />
 </head>
 <body>
+
 <h1 id="a-30-minute-walk-through">A 30 minute walk-through</h1>
 
 <p>This tutorial aims to walk you through the basics of writing web applications with Konstrukt.</p>
@@ -137,11 +138,11 @@
 <p>Now that our prerequisites are in place, let's get back to the components. As you probably remember, our application currently just handles a request to <code>/foo/www</code> (The root). Since we want it to display contacts, let's add a component for that. Save the following into <code>/var/www/foo/lib/components/contacts/list.php</code>:</p>
 
 <pre class="php"><span class="kw2">&lt;?php</span>
-<span class="kw2">class</span> components_contacts_List <span class="kw2">extends</span> k2_Component <span class="br0">&#123;</span>
+<span class="kw2">class</span> components_contacts_List <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
   <span class="kw2">function</span> GET<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="kw3">global</span> <span class="re0">$contacts</span>;
     <span class="re0">$this</span>-&gt;<span class="me1">document</span>-&gt;<span class="me1">setTitle</span><span class="br0">&#40;</span><span class="st0">&quot;Contacts&quot;</span><span class="br0">&#41;</span>;
-    <span class="re0">$t</span> = <span class="kw2">new</span> k2_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-list.tpl.php&quot;</span><span class="br0">&#41;</span>;
+    <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-list.tpl.php&quot;</span><span class="br0">&#41;</span>;
     <span class="kw1">return</span> <span class="re0">$t</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span>
       <span class="re0">$this</span>,
       <span class="kw3">array</span><span class="br0">&#40;</span>
@@ -151,7 +152,7 @@
 
 <p>This is a rather simple component. It implements the function <code>GET()</code>, which corresponds to a http GET request. You can also implement handlers for other http methods, such as POST, but GET is by far the most common.</p>
 
-<p>As you can see, we're referring the global variable <code>$contacts</code>, which we created in <code>global.inc.php</code>. Net we create a template instance and assign all contacts to it, before rendering it to a string an dreturning the result. A <code>k2_Template</code> is a very simple wrapper around <code>include</code> -- It just returns the output as a string.</p>
+<p>As you can see, we're referring the global variable <code>$contacts</code>, which we created in <code>global.inc.php</code>. Net we create a template instance and assign all contacts to it, before rendering it to a string an dreturning the result. A <code>k_Template</code> is a very simple wrapper around <code>include</code> -- It just returns the output as a string.</p>
 
 <p>Obviously we also need a template, so save the following into <code>/var/www/foo/lib/templates/contacts-list.tpl.php</code>:</p>
 
@@ -165,7 +166,7 @@
 <p>Our component is now capable of rendering contacts from the database. Before that can happen though, we need to map a url to the new component. We want a url like <code>/foo/www/contacts</code>, so for that we'll open up the previous component -- The root. Add the following lines to <code>/var/www/foo/lib/components/root.php</code>:</p>
 
 <pre class="php"><span class="kw2">&lt;?php</span>
-<span class="kw2">class</span> components_Root <span class="kw2">extends</span> k2_Component <span class="br0">&#123;</span>
+<span class="kw2">class</span> components_Root <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
   <span class="kw2">function</span> map<span class="br0">&#40;</span><span class="re0">$name</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="kw1">if</span> <span class="br0">&#40;</span><span class="re0">$name</span> == <span class="st0">'contacts'</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
       <span class="kw1">return</span> <span class="st0">'components_contacts_List'</span>;
@@ -179,12 +180,12 @@
 
 <h2 id="contextual-forwards">Contextual forwards</h2>
 
-<p>We can now get a list of the available contacts, but we still need a page that can display them in full. As you may have noticed, I used the function <code>url</code> inside the previous template. This is just shorthand for the components <code>url</code> method. <code>k2_Template</code> takes care of the delegation. The <code>url</code> method generates a url that points to a place <em>relative to the current component</em>. So inside of <code>components_contacts_List</code>, you will get urls like <code>http://localhost/foo/www/contacts/jabba</code>. Right now, clicking one of theese links won't give us any usable result. So let's make sure it does.</p>
+<p>We can now get a list of the available contacts, but we still need a page that can display them in full. As you may have noticed, I used the function <code>url</code> inside the previous template. This is just shorthand for the components <code>url</code> method. <code>k_Template</code> takes care of the delegation. The <code>url</code> method generates a url that points to a place <em>relative to the current component</em>. So inside of <code>components_contacts_List</code>, you will get urls like <code>http://localhost/foo/www/contacts/jabba</code>. Right now, clicking one of theese links won't give us any usable result. So let's make sure it does.</p>
 
 <p>First, we modify the <code>components_contacts_List</code> component to allow forwarding:</p>
 
 <pre class="php"><span class="kw2">&lt;?php</span>
-<span class="kw2">class</span> components_contacts_List <span class="kw2">extends</span> k2_Component <span class="br0">&#123;</span>
+<span class="kw2">class</span> components_contacts_List <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
   <span class="kw2">function</span> map<span class="br0">&#40;</span><span class="re0">$name</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="kw1">return</span> <span class="st0">'components_contacts_Show'</span>;
   <span class="br0">&#125;</span>
@@ -193,22 +194,22 @@
 <p>Note how <code>components_contact_Show</code> is used, regardless of what the name is. Now we need to create the newly referred component. Save this as <code>/var/www/foo/lib/components/contacts/show.php</code>:</p>
 
 <pre class="php"><span class="kw2">&lt;?php</span>
-<span class="kw2">class</span> components_contacts_Show <span class="kw2">extends</span> k2_Component <span class="br0">&#123;</span>
+<span class="kw2">class</span> components_contacts_Show <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
   <span class="kw2">function</span> GET<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="kw3">global</span> <span class="re0">$contacts</span>;
     <span class="re0">$contact</span> = <span class="re0">$contacts</span>-&gt;<span class="me1">fetchByName</span><span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     <span class="kw1">if</span> <span class="br0">&#40;</span>!<span class="re0">$contact</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">throw</span> <span class="kw2">new</span> k2_NotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+      <span class="kw1">throw</span> <span class="kw2">new</span> k_NotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
     <span class="br0">&#125;</span>
     <span class="re0">$this</span>-&gt;<span class="me1">document</span>-&gt;<span class="me1">setTitle</span><span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">full_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    <span class="re0">$t</span> = <span class="kw2">new</span> k2_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show.tpl.php&quot;</span><span class="br0">&#41;</span>;
+    <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show.tpl.php&quot;</span><span class="br0">&#41;</span>;
     <span class="kw1">return</span> <span class="re0">$t</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="re0">$this</span>, <span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">'contact'</span> =&gt; <span class="re0">$contact</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>
 <span class="br0">&#125;</span></pre>
 
 <p>There are two new things to note about this component. The first is that we use the <code>name()</code> method to access the url path-name. This is the name that the context used to identify this component with. We use this to select the relevant contact from the database.</p>
 
-<p>The next thing is that we throw an exception if the contact isn't found. Konstrukt defines a couple of specific exceptions, that map to a particular meaning in the http protocol. For example, <code>k2_NotFound</code> will emit a 404 Page Not Found. The use of exceptions for breaking off the regular rendering pipeline makes it possible to encapsulate the effects of components.</p>
+<p>The next thing is that we throw an exception if the contact isn't found. Konstrukt defines a couple of specific exceptions, that map to a particular meaning in the http protocol. For example, <code>k_NotFound</code> will emit a 404 Page Not Found. The use of exceptions for breaking off the regular rendering pipeline makes it possible to encapsulate the effects of components.</p>
 
 <p>To complete the picture, we need a template to match our component. Save this as <code>/var/www/foo/templates/contacts-show.tpl.php</code>:</p>
 

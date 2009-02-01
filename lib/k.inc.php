@@ -1,14 +1,4 @@
 <?php
-  /**
-    todo:
-      api-level documentation
-      update narrative documentation
-    maybe:
-      FirePhp integration?
-      fileupload abstraction?
-
-  */
-
 require_once 'adapter.inc.php';
 require_once 'charset.inc.php';
 require_once 'logging.inc.php';
@@ -19,7 +9,19 @@ require_once 'logging.inc.php';
  * If you use a DI container, you should write an adapter that implements this interface
  */
 interface k_ComponentCreator {
+  /**
+    * Sets the debugger to use.
+    * @param k_DebugListener
+    * @return void
+    */
   function setDebugger(k_DebugListener $debugger);
+  /**
+    * Creates a new instance of the requested class.
+    * @param string
+    * @param k_Context
+    * @param string
+    * @return k_Component
+    */
   function create($class_name, k_Context $context, $namespace = "");
 }
 
@@ -35,20 +37,22 @@ class k_DefaultComponentCreator implements k_ComponentCreator {
   protected $document;
   /**
     * @param k_Document
-    * @return null
+    * @return void
     */
   function __construct($document = null) {
     $this->document = $document ? $document : new k_Document();
     $this->setDebugger(new k_MultiDebugListener());
   }
   /**
-    * @param mixed
-    * @return null
+    * Sets the debugger to use.
+    * @param k_DebugListener
+    * @return void
     */
   function setDebugger(k_DebugListener $debugger) {
     $this->debugger = $debugger;
   }
   /**
+    * Creates a new instance of the requested class.
     * @param string
     * @param k_Context
     * @param string
@@ -72,13 +76,40 @@ class k_DefaultComponentCreator implements k_ComponentCreator {
   }
 }
 
+/**
+ * A debuglistener is an object that can receive various events and send
+ * them to some place for further inspection.
+ */
 interface k_DebugListener {
+  /**
+    * @param Exception
+    * @return void
+    */
   function logException(Exception $ex);
+  /**
+    * @param k_Component
+    * @param string
+    * @param string
+    * @return void
+    */
   function logDispatch($component, $name, $next);
+  /**
+    * @param mixed
+    * @return void
+    */
   function log($mixed);
+  /**
+    * Allows the debugger to change the HttpResponse before output.
+    * This is used to inject a debugbar into the response. It is perhaps not the most elegant solution, but it works.
+    * @param k_HttpResponse
+    * @return k_HttpResponse
+    */
   function decorate(k_HttpResponse $response);
 }
 
+/**
+ * A dummy implementation of k_DebugListener, which does nothing.
+ */
 class k_VoidDebugListener implements k_DebugListener {
   function logException(Exception $ex) {}
   function logDispatch($component, $name, $next) {}
@@ -88,6 +119,9 @@ class k_VoidDebugListener implements k_DebugListener {
   }
 }
 
+/**
+ * Decorator that allowsmultiple k_DebugListener objects to receive the same events.
+ */
 class k_MultiDebugListener implements k_DebugListener {
   protected $listeners = array();
   function add(k_DebugListener $listener) {
@@ -102,7 +136,7 @@ class k_MultiDebugListener implements k_DebugListener {
     * @param k_Component
     * @param string
     * @param string
-    * @return null
+    * @return void
     */
   function logDispatch($component, $name, $next) {
     foreach ($this->listeners as $listener) {
@@ -130,6 +164,7 @@ class k_MultiDebugListener implements k_DebugListener {
  * For registry-style component wiring.
  * You can use this for legacy applications, that are tied to k_Registry.
  * usage:
+ *
  *     $registry = new k_Registry();
  *     k_run('Root', new k_HttpRequest(), new k_RegistryComponentCreator($registry))->out();
  */
@@ -145,14 +180,16 @@ class k_RegistryComponentCreator extends k_DefaultComponentCreator {
 }
 
 /**
- * Adapter for using the Phemto dependency injection container for creating components
+ * Adapter for using the Phemto dependency injection container for creating components.
+ * This relies on the current (under development) implementation of Phemto, available from:
+ * https://phemto.svn.sourceforge.net/svnroot/phemto/trunk
  */
 class k_PhemtoAdapter extends k_DefaultComponentCreator {
   /** @var Phemto */
   protected $injector;
   /**
     * @param Phemto
-    * @return null
+    * @return void
     */
   function __construct(Phemto $injector) {
     parent::__construct();
@@ -168,15 +205,41 @@ class k_PhemtoAdapter extends k_DefaultComponentCreator {
 }
 
 /**
- * representation of the applications' user
+ * Representation of the applications' user
  */
 interface k_Identity {
+  /**
+   * Return the username
+   */
   function user();
+  /**
+   * Return true if the user is anonymous (not authenticated)
+   */
   function anonymous();
 }
 
 /**
- * default implementation ... doesn't do much
+ * A factory for recognising and loading the users identity
+ */
+interface k_IdentityLoader {
+  /**
+   * Using the context as input, the identityloader should find and return a userobject.
+   * @return k_Identity
+   */
+  function load(k_Context $context);
+}
+
+/**
+ * A default implementation, which always returns k_Anonymous
+ */
+class k_DefaultIdentityLoader implements k_IdentityLoader {
+  function load(k_Context $context) {
+    return new k_Anonymous();
+  }
+}
+
+/**
+ * Default implementation of k_Identity ... doesn't do much
  */
 class k_Anonymous implements k_Identity {
   function user() {
@@ -188,25 +251,8 @@ class k_Anonymous implements k_Identity {
 }
 
 /**
- * a factory for recognising and loading the users identity
- */
-interface k_IdentityLoader {
-  function load(k_Context $context);
-}
-
-/**
- * a default implementation, which always returns k_Anonymous
- */
-class k_DefaultIdentityLoader implements k_IdentityLoader {
-  function load(k_Context $context) {
-    return new k_Anonymous();
-  }
-}
-
-/**
- * a context provides a full encapsulation of global variables, for any sub-components
- * a context is a very central interface of Konstrukt.
- * the most important direct implementations are k_HttpRequest and k_Component
+ * A context provides a full encapsulation of global variables, for any sub-components
+ * The most important direct implementations are k_HttpRequest and k_Component
  */
 interface k_Context {
   function query($key = null, $default = null);
@@ -219,12 +265,11 @@ interface k_Context {
   function identity();
   function url($path = "", $params = array());
   function subspace();
-  //function negotiateLanguage($candidates = array());
   function negotiateContentType($candidates = array());
 }
 
 /**
- * usually the top-level context ... provides access to the http-protocol
+ * Usually the top-level context ... provides access to the http-protocol
  */
 class k_HttpRequest implements k_Context {
   /** @var string */
@@ -427,7 +472,7 @@ class k_ContentTypeNegotiator {
   protected $types;
   /**
     * @param string
-    * @return null
+    * @return oid
     */
   function __construct($accept = "") {
     $this->types = $this->parse($accept);
@@ -552,8 +597,8 @@ class k_PropertyImmutableException extends Exception {
 }
 
 /**
- * a component is the baseclass for all userland components
- * each component should be completely isolated from its surrounding, only
+ * A component is the baseclass for all userland components
+ * Each component should be completely isolated from its surrounding, only
  * depending on its parent context
  */
 abstract class k_Component implements k_Context {
@@ -600,7 +645,7 @@ abstract class k_Component implements k_Context {
   }
   /**
     * @param k_Context
-    * @return null
+    * @return void
     */
   function setContext(k_Context $context) {
     if ($this->context !== null) {
@@ -610,7 +655,7 @@ abstract class k_Component implements k_Context {
   }
   /**
     * @param k_UrlState
-    * @return null
+    * @return void
     */
   function setUrlState(k_UrlState $url_state) {
     if ($this->url_state !== null) {
@@ -622,8 +667,8 @@ abstract class k_Component implements k_Context {
     }
   }
   /**
-    * @param k_DefaultComponentCreator
-    * @return null
+    * @param k_ComponentCreator
+    * @return void
     */
   function setComponentCreator(k_ComponentCreator $component_creator) {
     if ($this->component_creator !== null) {
@@ -633,7 +678,7 @@ abstract class k_Component implements k_Context {
   }
   /**
     * @param k_Document
-    * @return null
+    * @return void
     */
   function setDocument(k_Document $document) {
     if ($this->document !== null) {
@@ -643,7 +688,7 @@ abstract class k_Component implements k_Context {
   }
   /**
     * @param k_DebugListener
-    * @return null
+    * @return void
     */
   function setDebugger(k_DebugListener $debugger) {
     $this->debugger = $debugger;
@@ -651,7 +696,7 @@ abstract class k_Component implements k_Context {
   /**
     * @param string
     * @param mixed   The default value to return, if the value doesn't exist
-    * @return null
+    * @return string
     */
   function query($key = null, $default = null) {
     return $this->url_state->get($key, $default);
@@ -845,7 +890,7 @@ class k_UrlState {
   /**
     * @param k_Context
     * @param string
-    * @return null
+    * @return void
     */
   function __construct(k_Context $context, $namespace = "") {
     $this->context = $context;
@@ -854,7 +899,7 @@ class k_UrlState {
   /**
     * @param string
     * @param string
-    * @return null
+    * @return void
     */
   function init($key, $default = "") {
     $this->state[$this->namespace . $key] = $this->context->query($this->namespace . $key, (string) $default);
@@ -874,7 +919,7 @@ class k_UrlState {
   /**
     * @param string
     * @param string
-    * @return null
+    * @return void
     */
   function set($key, $value) {
     $this->state[$this->namespace . $key] = (string) $value;
@@ -899,7 +944,7 @@ class k_UrlState {
 }
 
 /**
- * a utility class. this is a very simple template engine. essentially, it's just
+ * A utility class. This is a very simple template engine - Essentially, it's just
  * a wrapper around include, using output buffering to grab and return the output.
  */
 class k_Template {
@@ -907,7 +952,7 @@ class k_Template {
   protected $path;
   /**
     * @param string
-    * @return null
+    * @return void
     */
   function __construct($path) {
     $this->path = $path;
@@ -916,8 +961,8 @@ class k_Template {
     echo htmlspecialchars($str);
   }
   /**
-    * @param test_MockContext
-    * @return null
+    * @param k_Context
+    * @return string
     */
   function render($context /*, $model = array() */) {
     self::InstallGlobals();
@@ -1112,7 +1157,7 @@ class k_HttpResponse extends Exception {
   }
   /**
     * @param k_adapter_OutputAccess
-    * @return null
+    * @return void
     */
   protected function sendStatus(k_adapter_OutputAccess $output) {
     switch ($this->status) {
@@ -1148,7 +1193,7 @@ class k_HttpResponse extends Exception {
   }
   /**
     * @param k_adapter_OutputAccess
-    * @return null
+    * @return void
     */
   protected function sendHeaders(k_adapter_OutputAccess $output) {
     if (isset($this->content_type)) {
@@ -1167,14 +1212,14 @@ class k_HttpResponse extends Exception {
   }
   /**
     * @param k_adapter_OutputAccess
-    * @return null
+    * @return void
     */
   protected function sendBody(k_adapter_OutputAccess $output) {
     $output->write($this->charset->encode($this->content));
   }
   /**
     * @param k_adapter_OutputAccess
-    * @return null
+    * @return void
     */
   function out(k_adapter_OutputAccess $output = null) {
     if (!$output) {
@@ -1217,7 +1262,7 @@ class k_MovedPermanently extends k_HttpResponse {
 class k_SeeOther extends k_HttpResponse {
   /**
     * @param string
-    * @return null
+    * @return void
     */
   function __construct($url) {
     parent::__construct(303);
@@ -1343,12 +1388,14 @@ class k_Bootstrap {
   protected $is_debug = false;
   /** @var string */
   protected $log_filename = null;
+  /** @var string */
+  protected $href_base = null;
   /** @var k_IdentityLoader */
   protected $identity_loader;
   /** @var k_adapter_GlobalsAccess */
   protected $globals_access;
   /**
-   * Serves a http request, given a root component.
+   * Serves a http request, given a root component name.
    * @param $root_class_name   string   The classname of an instance of k_Component
    * @return k_HttpResponse
    */
@@ -1387,7 +1434,8 @@ class k_Bootstrap {
     }
   }
   /**
-    * @param k_HttpRequest
+    * Sets the context to use. Usually, this is an instance of k_HttpRequest.
+    * @param k_Context
     * @return k_Bootstrap
     */
   function setContext(k_Context $http_request) {
@@ -1395,7 +1443,8 @@ class k_Bootstrap {
     return $this;
   }
   /**
-    * @param k_DefaultComponentCreator
+    * Sets the componentcreator to use.
+    * @param k_ComponentCreator
     * @return k_Bootstrap
     */
   function setComponentCreator(k_ComponentCreator $components) {
@@ -1403,32 +1452,52 @@ class k_Bootstrap {
     return $this;
   }
   /**
-    * @param k_charset_Utf8CharsetStrategy
+    * Set the charsetstrategy.
+    * @param k_charset_CharsetStrategy
     * @return k_Bootstrap
     */
   function setCharsetStrategy(k_charset_CharsetStrategy $charset_strategy) {
     $this->charset_strategy = $charset_strategy;
     return $this;
   }
+  /**
+    * Enable/disable the in-browser debug-bar.
+    * @param boolean
+    * @return k_Bootstrap
+    */
   function setDebug($is_debug = true) {
     $this->is_debug = !! $is_debug;
     return $this;
   }
+  /**
+    * Specifies a filename to log debug information to.
+    * @param string
+    * @return k_Bootstrap
+    */
   function setLog($filename) {
     $this->log_filename = $filename;
     return $this;
   }
   /**
-    * @return k_HttpRequest
+    * Sets the base href, if the application isn't mounted at the web root.
+    * @param string
+    * @return k_Bootstrap
+    */
+  function setHrefBase($href_base) {
+    $this->href_base = $href_base;
+    return $this;
+  }
+  /**
+    * @return k_Context
     */
   protected function context() {
     if (!isset($this->http_request)) {
-      $this->http_request = new k_HttpRequest(null, null, $this->identityLoader(), $this->globalsAccess());
+      $this->http_request = new k_HttpRequest($this->href_base, null, $this->identityLoader(), $this->globalsAccess());
     }
     return $this->http_request;
   }
   /**
-    * @return k_DefaultComponentCreator
+    * @return k_ComponentCreator
     */
   protected function components() {
     if (!isset($this->components)) {
@@ -1437,7 +1506,7 @@ class k_Bootstrap {
     return $this->components;
   }
   /**
-    * @return k_charset_Utf8CharsetStrategy
+    * @return k_charset_CharsetStrategy
     */
   protected function charsetStrategy() {
     if (!isset($this->charset_strategy)) {
@@ -1445,12 +1514,18 @@ class k_Bootstrap {
     }
     return $this->charset_strategy;
   }
+  /**
+    * @return k_IdentityLoader
+    */
   protected function identityLoader() {
     if (!isset($this->identity_loader)) {
       $this->identity_loader = new k_DefaultIdentityLoader();
     }
     return $this->identity_loader;
   }
+  /**
+    * @return k_adapter_GlobalsAccess
+    */
   protected function globalsAccess() {
     if (!isset($this->globals_access)) {
       $this->globals_access = new k_adapter_SafeGlobalsAccess($this->charsetStrategy());
@@ -1459,6 +1534,10 @@ class k_Bootstrap {
   }
 }
 
+/**
+ * Resolves a filename according to the includepath.
+ * Returns on the first match or false if no match is found.
+ */
 function k_search_include_path($filename) {
   if (is_file($filename)) {
     return $filename;
@@ -1475,6 +1554,9 @@ function k_search_include_path($filename) {
   return false;
 }
 
+/**
+ * A simple autoloader.
+ */
 function k_autoload($classname) {
   $filename = str_replace('_', '/', strtolower($classname)).'.php';
   if (k_search_include_path($filename)) {
@@ -1482,6 +1564,10 @@ function k_autoload($classname) {
   }
 }
 
+/**
+ * An error-handler which converts all errors (regardless of level) into exceptions.
+ * It respects error_reporting settings.
+ */
 function k_exceptions_error_handler($severity, $message, $filename, $lineno) {
   if (error_reporting() == 0) {
     return;

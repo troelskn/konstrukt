@@ -76,14 +76,14 @@ div.deprecated div.docblock {
 <body>
 
 <h1>API documentation for Konstrukt</h1><div class="class">
-<h2 id="class-k2_componentcreator">
+<h2 id="class-k_componentcreator">
   <em>interface</em>
-  <a href="#class-k2_componentcreator">k2_ComponentCreator</a>
+  <a href="#class-k_componentcreator">k_ComponentCreator</a>
 </h2>
 
 <div class="docblock">
   <p>A factory for creating components on-the-fly.
-A ComponentCreator can create new instances of k2_Component.
+A ComponentCreator can create new instances of k_Component.
 If you use a DI container, you should write an adapter that implements this interface</p>
 </div>
 
@@ -92,28 +92,31 @@ If you use a DI container, you should write an adapter that implements this inte
 <div class="methods">
   
 
-<h4 id="class-k2_componentcreator-method-setdebugger">
+<h4 id="class-k_componentcreator-method-setdebugger">
 
   <em class="modifier">abstract</em>,
 
   <em class="modifier">public</em>
 
 
-  setDebugger(<em><a href="#class-k2_debuglistener"
->k2_DebugListener</a>
+  setDebugger(<em><a href="#class-k_debuglistener"
+>k_DebugListener</a>
 
 $debugger</em>)
 
-  : <em class="modifier">mixed</em>
+  : <em class="modifier">void</em>
 
 
 </h4>
 
+<div class="docblock">
+  <p>Sets the debugger to use.</p>
+</div>
 
 
   
 
-<h4 id="class-k2_componentcreator-method-create">
+<h4 id="class-k_componentcreator-method-create">
 
   <em class="modifier">abstract</em>,
 
@@ -122,29 +125,32 @@ $debugger</em>)
 
   create(<em><span class="modifier">mixed</span>
 
-$class_name, <a href="#class-k2_context"
->k2_Context</a>
+$class_name, <a href="#class-k_context"
+>k_Context</a>
 
 $context [ , <span class="modifier">mixed</span>
 
 $namespace ] </em>)
 
-  : <em class="modifier">mixed</em>
+  : <em class="modifier"><a href="#class-k_component">k_Component</a></em>
 
 
 </h4>
 
+<div class="docblock">
+  <p>Creates a new instance of the requested class.</p>
+</div>
 
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_defaultcomponentcreator">
+<h2 id="class-k_defaultcomponentcreator">
   <em>class</em>
-  <a href="#class-k2_defaultcomponentcreator">k2_DefaultComponentCreator</a>
+  <a href="#class-k_defaultcomponentcreator">k_DefaultComponentCreator</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_componentcreator">k2_ComponentCreator</a></h3>
+  <a href="#class-k_componentcreator">k_ComponentCreator</a></h3>
 
 <div class="docblock">
   <p>A simple implementation, which doesn&#039;t handle any dependencies.
@@ -154,22 +160,22 @@ mechanism for dependencies (Such as Singleton).</p>
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_defaultcomponentcreator-property-debugger">
+  <h4 id="class-k_defaultcomponentcreator-property-debugger">
   <em class="modifier">protected</em>
 
 
   $debugger
-  : <em class="modifier"><a href="#class-k2_debuglistener">k2_DebugListener</a></em>
+  : <em class="modifier"><a href="#class-k_debuglistener">k_DebugListener</a></em>
 
 </h4>
 
 
-  <h4 id="class-k2_defaultcomponentcreator-property-document">
+  <h4 id="class-k_defaultcomponentcreator-property-document">
   <em class="modifier">protected</em>
 
 
   $document
-  : <em class="modifier"><a href="#class-k2_document">k2_Document</a></em>
+  : <em class="modifier"><a href="#class-k_document">k_Document</a></em>
 
 </h4>
 
@@ -180,7 +186,7 @@ mechanism for dependencies (Such as Singleton).</p>
 <div class="methods">
   
 
-<h4 id="class-k2_defaultcomponentcreator-method-__construct">
+<h4 id="class-k_defaultcomponentcreator-method-__construct">
 
   <em class="modifier">public</em>
 
@@ -189,7 +195,7 @@ mechanism for dependencies (Such as Singleton).</p>
 
 $document ] </em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">void</em>
 
 
 </h4>
@@ -198,49 +204,55 @@ $document ] </em>)
 
   
 
-<h4 id="class-k2_defaultcomponentcreator-method-setdebugger">
+<h4 id="class-k_defaultcomponentcreator-method-setdebugger">
 
   <em class="modifier">public</em>
 
 
-  setDebugger(<em><a href="#class-k2_debuglistener"
->k2_DebugListener</a>
+  setDebugger(<em><a href="#class-k_debuglistener"
+>k_DebugListener</a>
 
 $debugger</em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">void</em>
 
 
 </h4>
 
+<div class="docblock">
+  <p>Sets the debugger to use.</p>
+</div>
 
 
   
 
-<h4 id="class-k2_defaultcomponentcreator-method-create">
+<h4 id="class-k_defaultcomponentcreator-method-create">
 
   <em class="modifier">public</em>
 
 
   create(<em><span class="modifier">mixed</span>
 
-$class_name, <a href="#class-k2_context"
->k2_Context</a>
+$class_name, <a href="#class-k_context"
+>k_Context</a>
 
 $context [ , <span class="modifier">mixed</span>
 
 $namespace ] </em>)
 
-  : <em class="modifier"><a href="#class-k2_component">k2_Component</a></em>
+  : <em class="modifier"><a href="#class-k_component">k_Component</a></em>
 
 
 </h4>
 
+<div class="docblock">
+  <p>Creates a new instance of the requested class.</p>
+</div>
 
 
   
 
-<h4 id="class-k2_defaultcomponentcreator-method-instantiate">
+<h4 id="class-k_defaultcomponentcreator-method-instantiate">
 
   <em class="modifier">protected</em>
 
@@ -249,7 +261,7 @@ $namespace ] </em>)
 
 $class_name</em>)
 
-  : <em class="modifier"><a href="#class-k2_component">k2_Component</a></em>
+  : <em class="modifier"><a href="#class-k_component">k_Component</a></em>
 
 
 </h4>
@@ -258,20 +270,129 @@ $class_name</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_debuglistener">
+<h2 id="class-k_debuglistener">
   <em>interface</em>
-  <a href="#class-k2_debuglistener">k2_DebugListener</a>
+  <a href="#class-k_debuglistener">k_DebugListener</a>
 </h2>
 
+<div class="docblock">
+  <p>A debuglistener is an object that can receive various events and send
+them to some place for further inspection.</p>
+</div>
 
 
 <h3>methods</h3>
 <div class="methods">
   
 
-<h4 id="class-k2_debuglistener-method-logexception">
+<h4 id="class-k_debuglistener-method-logexception">
 
   <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  logException(<em><a href="#class-exception"
+>Exception</a>
+
+$ex</em>)
+
+  : <em class="modifier">void</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_debuglistener-method-logdispatch">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  logDispatch(<em><span class="modifier">mixed</span>
+
+$component, <span class="modifier">mixed</span>
+
+$name, <span class="modifier">mixed</span>
+
+$next</em>)
+
+  : <em class="modifier">void</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_debuglistener-method-log">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  log(<em><span class="modifier">mixed</span>
+
+$mixed</em>)
+
+  : <em class="modifier">void</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_debuglistener-method-decorate">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  decorate(<em><a href="#class-k_httpresponse"
+>k_HttpResponse</a>
+
+$response</em>)
+
+  : <em class="modifier"><a href="#class-k_httpresponse">k_HttpResponse</a></em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Allows the debugger to change the HttpResponse before output.
+This is used to inject a debugbar into the response. It is perhaps not the most elegant solution, but it works.</p>
+</div>
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_voiddebuglistener">
+  <em>class</em>
+  <a href="#class-k_voiddebuglistener">k_VoidDebugListener</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_debuglistener">k_DebugListener</a></h3>
+
+<div class="docblock">
+  <p>A dummy implementation of k_DebugListener, which does nothing.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_voiddebuglistener-method-logexception">
 
   <em class="modifier">public</em>
 
@@ -290,9 +411,7 @@ $ex</em>)
 
   
 
-<h4 id="class-k2_debuglistener-method-logdispatch">
-
-  <em class="modifier">abstract</em>,
+<h4 id="class-k_voiddebuglistener-method-logdispatch">
 
   <em class="modifier">public</em>
 
@@ -314,9 +433,7 @@ $next</em>)
 
   
 
-<h4 id="class-k2_debuglistener-method-log">
-
-  <em class="modifier">abstract</em>,
+<h4 id="class-k_voiddebuglistener-method-log">
 
   <em class="modifier">public</em>
 
@@ -334,15 +451,13 @@ $mixed</em>)
 
   
 
-<h4 id="class-k2_debuglistener-method-decorate">
-
-  <em class="modifier">abstract</em>,
+<h4 id="class-k_voiddebuglistener-method-decorate">
 
   <em class="modifier">public</em>
 
 
-  decorate(<em><a href="#class-k2_httpresponse"
->k2_HttpResponse</a>
+  decorate(<em><a href="#class-k_httpresponse"
+>k_HttpResponse</a>
 
 $response</em>)
 
@@ -355,110 +470,21 @@ $response</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_voiddebuglistener">
+<h2 id="class-k_multidebuglistener">
   <em>class</em>
-  <a href="#class-k2_voiddebuglistener">k2_VoidDebugListener</a>
+  <a href="#class-k_multidebuglistener">k_MultiDebugListener</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_debuglistener">k2_DebugListener</a></h3>
+  <a href="#class-k_debuglistener">k_DebugListener</a></h3>
 
-
-
-<h3>methods</h3>
-<div class="methods">
-  
-
-<h4 id="class-k2_voiddebuglistener-method-logexception">
-
-  <em class="modifier">public</em>
-
-
-  logException(<em><a href="#class-exception"
->Exception</a>
-
-$ex</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k2_voiddebuglistener-method-logdispatch">
-
-  <em class="modifier">public</em>
-
-
-  logDispatch(<em><span class="modifier">mixed</span>
-
-$component, <span class="modifier">mixed</span>
-
-$name, <span class="modifier">mixed</span>
-
-$next</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k2_voiddebuglistener-method-log">
-
-  <em class="modifier">public</em>
-
-
-  log(<em><span class="modifier">mixed</span>
-
-$mixed</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k2_voiddebuglistener-method-decorate">
-
-  <em class="modifier">public</em>
-
-
-  decorate(<em><a href="#class-k2_httpresponse"
->k2_HttpResponse</a>
-
-$response</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
+<div class="docblock">
+  <p>Decorator that allowsmultiple k_DebugListener objects to receive the same events.</p>
 </div>
-</div><div class="class">
-<h2 id="class-k2_multidebuglistener">
-  <em>class</em>
-  <a href="#class-k2_multidebuglistener">k2_MultiDebugListener</a>
-</h2>
-<h3>
-  <em>implements</em>
-  <a href="#class-k2_debuglistener">k2_DebugListener</a></h3>
-
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_multidebuglistener-property-listeners">
+  <h4 id="class-k_multidebuglistener-property-listeners">
   <em class="modifier">protected</em>
 
 
@@ -474,13 +500,13 @@ $response</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_multidebuglistener-method-add">
+<h4 id="class-k_multidebuglistener-method-add">
 
   <em class="modifier">public</em>
 
 
-  add(<em><a href="#class-k2_debuglistener"
->k2_DebugListener</a>
+  add(<em><a href="#class-k_debuglistener"
+>k_DebugListener</a>
 
 $listener</em>)
 
@@ -493,7 +519,7 @@ $listener</em>)
 
   
 
-<h4 id="class-k2_multidebuglistener-method-logexception">
+<h4 id="class-k_multidebuglistener-method-logexception">
 
   <em class="modifier">public</em>
 
@@ -512,7 +538,7 @@ $ex</em>)
 
   
 
-<h4 id="class-k2_multidebuglistener-method-logdispatch">
+<h4 id="class-k_multidebuglistener-method-logdispatch">
 
   <em class="modifier">public</em>
 
@@ -534,7 +560,7 @@ $next</em>)
 
   
 
-<h4 id="class-k2_multidebuglistener-method-log">
+<h4 id="class-k_multidebuglistener-method-log">
 
   <em class="modifier">public</em>
 
@@ -552,17 +578,17 @@ $mixed</em>)
 
   
 
-<h4 id="class-k2_multidebuglistener-method-decorate">
+<h4 id="class-k_multidebuglistener-method-decorate">
 
   <em class="modifier">public</em>
 
 
-  decorate(<em><a href="#class-k2_httpresponse"
->k2_HttpResponse</a>
+  decorate(<em><a href="#class-k_httpresponse"
+>k_HttpResponse</a>
 
 $response</em>)
 
-  : <em class="modifier"><a href="#class-k2_httpresponse">k2_HttpResponse</a></em>
+  : <em class="modifier"><a href="#class-k_httpresponse">k_HttpResponse</a></em>
 
 
 </h4>
@@ -571,28 +597,28 @@ $response</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_registrycomponentcreator">
+<h2 id="class-k_registrycomponentcreator">
   <em>class</em>
-  <a href="#class-k2_registrycomponentcreator">k2_RegistryComponentCreator</a>
+  <a href="#class-k_registrycomponentcreator">k_RegistryComponentCreator</a>
 
   <em>extends</em>
-  <a href="#class-k2_defaultcomponentcreator">k2_DefaultComponentCreator</a>
+  <a href="#class-k_defaultcomponentcreator">k_DefaultComponentCreator</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_componentcreator">k2_ComponentCreator</a></h3>
+  <a href="#class-k_componentcreator">k_ComponentCreator</a></h3>
 
 <div class="docblock">
   <p>For registry-style component wiring.
 You can use this for legacy applications, that are tied to k_Registry.
 usage:
     $registry = new k_Registry();
-    k2_run(&#039;Root&#039;, new k2_HttpRequest(), new k2_RegistryComponentCreator($registry))-&gt;out();</p>
+    k_run(&#039;Root&#039;, new k_HttpRequest(), new k_RegistryComponentCreator($registry))-&gt;out();</p>
 </div>
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_registrycomponentcreator-property-registry">
+  <h4 id="class-k_registrycomponentcreator-property-registry">
   <em class="modifier">protected</em>
 
 
@@ -608,7 +634,7 @@ usage:
 <div class="methods">
   
 
-<h4 id="class-k2_registrycomponentcreator-method-__construct">
+<h4 id="class-k_registrycomponentcreator-method-__construct">
 
   <em class="modifier">public</em>
 
@@ -626,7 +652,7 @@ $registry</em>)
 
   
 
-<h4 id="class-k2_registrycomponentcreator-method-instantiate">
+<h4 id="class-k_registrycomponentcreator-method-instantiate">
 
   <em class="modifier">protected</em>
 
@@ -644,16 +670,16 @@ $class_name</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_phemtoadapter">
+<h2 id="class-k_phemtoadapter">
   <em>class</em>
-  <a href="#class-k2_phemtoadapter">k2_PhemtoAdapter</a>
+  <a href="#class-k_phemtoadapter">k_PhemtoAdapter</a>
 
   <em>extends</em>
-  <a href="#class-k2_defaultcomponentcreator">k2_DefaultComponentCreator</a>
+  <a href="#class-k_defaultcomponentcreator">k_DefaultComponentCreator</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_componentcreator">k2_ComponentCreator</a></h3>
+  <a href="#class-k_componentcreator">k_ComponentCreator</a></h3>
 
 <div class="docblock">
   <p>Adapter for using the Phemto dependency injection container for creating components</p>
@@ -661,7 +687,7 @@ $class_name</em>)
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_phemtoadapter-property-injector">
+  <h4 id="class-k_phemtoadapter-property-injector">
   <em class="modifier">protected</em>
 
 
@@ -677,7 +703,7 @@ $class_name</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_phemtoadapter-method-__construct">
+<h4 id="class-k_phemtoadapter-method-__construct">
 
   <em class="modifier">public</em>
 
@@ -696,7 +722,7 @@ $injector</em>)
 
   
 
-<h4 id="class-k2_phemtoadapter-method-instantiate">
+<h4 id="class-k_phemtoadapter-method-instantiate">
 
   <em class="modifier">protected</em>
 
@@ -705,7 +731,7 @@ $injector</em>)
 
 $class_name</em>)
 
-  : <em class="modifier"><a href="#class-k2_component">k2_Component</a></em>
+  : <em class="modifier"><a href="#class-k_component">k_Component</a></em>
 
 
 </h4>
@@ -714,13 +740,13 @@ $class_name</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_identity">
+<h2 id="class-k_identity">
   <em>interface</em>
-  <a href="#class-k2_identity">k2_Identity</a>
+  <a href="#class-k_identity">k_Identity</a>
 </h2>
 
 <div class="docblock">
-  <p>representation of the applications&#039; user</p>
+  <p>Representation of the applications&#039; user</p>
 </div>
 
 
@@ -728,9 +754,140 @@ $class_name</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_identity-method-user">
+<h4 id="class-k_identity-method-user">
 
   <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  user()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Return the username</p>
+</div>
+
+
+  
+
+<h4 id="class-k_identity-method-anonymous">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  anonymous()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Return true if the user is anonymous (not authenticated)</p>
+</div>
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_identityloader">
+  <em>interface</em>
+  <a href="#class-k_identityloader">k_IdentityLoader</a>
+</h2>
+
+<div class="docblock">
+  <p>A factory for recognising and loading the users identity</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_identityloader-method-load">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  load(<em><a href="#class-k_context"
+>k_Context</a>
+
+$context</em>)
+
+  : <em class="modifier"><a href="#class-k_identity">k_Identity</a></em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Using the context as input, the identityloader should find and return a userobject.</p>
+</div>
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_defaultidentityloader">
+  <em>class</em>
+  <a href="#class-k_defaultidentityloader">k_DefaultIdentityLoader</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_identityloader">k_IdentityLoader</a></h3>
+
+<div class="docblock">
+  <p>A default implementation, which always returns k_Anonymous</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_defaultidentityloader-method-load">
+
+  <em class="modifier">public</em>
+
+
+  load(<em><a href="#class-k_context"
+>k_Context</a>
+
+$context</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_anonymous">
+  <em>class</em>
+  <a href="#class-k_anonymous">k_Anonymous</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_identity">k_Identity</a></h3>
+
+<div class="docblock">
+  <p>Default implementation of k_Identity ... doesn&#039;t do much</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_anonymous-method-user">
 
   <em class="modifier">public</em>
 
@@ -746,9 +903,7 @@ $class_name</em>)
 
   
 
-<h4 id="class-k2_identity-method-anonymous">
-
-  <em class="modifier">abstract</em>,
+<h4 id="class-k_anonymous-method-anonymous">
 
   <em class="modifier">public</em>
 
@@ -764,62 +919,14 @@ $class_name</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_anonymous">
-  <em>class</em>
-  <a href="#class-k2_anonymous">k2_Anonymous</a>
-</h2>
-<h3>
-  <em>implements</em>
-  <a href="#class-k2_identity">k2_Identity</a></h3>
-
-<div class="docblock">
-  <p>default implementation ... doesn&#039;t do much</p>
-</div>
-
-
-<h3>methods</h3>
-<div class="methods">
-  
-
-<h4 id="class-k2_anonymous-method-user">
-
-  <em class="modifier">public</em>
-
-
-  user()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k2_anonymous-method-anonymous">
-
-  <em class="modifier">public</em>
-
-
-  anonymous()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-</div>
-</div><div class="class">
-<h2 id="class-k2_identityloader">
+<h2 id="class-k_context">
   <em>interface</em>
-  <a href="#class-k2_identityloader">k2_IdentityLoader</a>
+  <a href="#class-k_context">k_Context</a>
 </h2>
 
 <div class="docblock">
-  <p>a factory for recognising and loading the users identity</p>
+  <p>A context provides a full encapsulation of global variables, for any sub-components
+The most important direct implementations are k_HttpRequest and k_Component</p>
 </div>
 
 
@@ -827,80 +934,7 @@ $class_name</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_identityloader-method-load">
-
-  <em class="modifier">abstract</em>,
-
-  <em class="modifier">public</em>
-
-
-  load(<em><a href="#class-k2_context"
->k2_Context</a>
-
-$context</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-</div>
-</div><div class="class">
-<h2 id="class-k2_defaultidentityloader">
-  <em>class</em>
-  <a href="#class-k2_defaultidentityloader">k2_DefaultIdentityLoader</a>
-</h2>
-<h3>
-  <em>implements</em>
-  <a href="#class-k2_identityloader">k2_IdentityLoader</a></h3>
-
-<div class="docblock">
-  <p>a default implementation, which always returns k2_Anonymous</p>
-</div>
-
-
-<h3>methods</h3>
-<div class="methods">
-  
-
-<h4 id="class-k2_defaultidentityloader-method-load">
-
-  <em class="modifier">public</em>
-
-
-  load(<em><a href="#class-k2_context"
->k2_Context</a>
-
-$context</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-</div>
-</div><div class="class">
-<h2 id="class-k2_context">
-  <em>interface</em>
-  <a href="#class-k2_context">k2_Context</a>
-</h2>
-
-<div class="docblock">
-  <p>a context provides a full encapsulation of global variables, for any sub-components
-a context is a very central interface of Konstrukt.
-the most important direct implementations are k2_HttpRequest and k2_Component</p>
-</div>
-
-
-<h3>methods</h3>
-<div class="methods">
-  
-
-<h4 id="class-k2_context-method-query">
+<h4 id="class-k_context-method-query">
 
   <em class="modifier">abstract</em>,
 
@@ -922,7 +956,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_context-method-body">
+<h4 id="class-k_context-method-body">
 
   <em class="modifier">abstract</em>,
 
@@ -944,7 +978,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_context-method-header">
+<h4 id="class-k_context-method-header">
 
   <em class="modifier">abstract</em>,
 
@@ -966,7 +1000,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_context-method-cookie">
+<h4 id="class-k_context-method-cookie">
 
   <em class="modifier">abstract</em>,
 
@@ -988,7 +1022,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_context-method-session">
+<h4 id="class-k_context-method-session">
 
   <em class="modifier">abstract</em>,
 
@@ -1010,7 +1044,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_context-method-file">
+<h4 id="class-k_context-method-file">
 
   <em class="modifier">abstract</em>,
 
@@ -1032,7 +1066,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_context-method-method">
+<h4 id="class-k_context-method-method">
 
   <em class="modifier">abstract</em>,
 
@@ -1050,7 +1084,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_context-method-identity">
+<h4 id="class-k_context-method-identity">
 
   <em class="modifier">abstract</em>,
 
@@ -1068,7 +1102,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_context-method-url">
+<h4 id="class-k_context-method-url">
 
   <em class="modifier">abstract</em>,
 
@@ -1090,7 +1124,7 @@ $params ]  ] </em>)
 
   
 
-<h4 id="class-k2_context-method-subspace">
+<h4 id="class-k_context-method-subspace">
 
   <em class="modifier">abstract</em>,
 
@@ -1108,7 +1142,7 @@ $params ]  ] </em>)
 
   
 
-<h4 id="class-k2_context-method-negotiatecontenttype">
+<h4 id="class-k_context-method-negotiatecontenttype">
 
   <em class="modifier">abstract</em>,
 
@@ -1128,21 +1162,21 @@ $candidates ] </em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_httprequest">
+<h2 id="class-k_httprequest">
   <em>class</em>
-  <a href="#class-k2_httprequest">k2_HttpRequest</a>
+  <a href="#class-k_httprequest">k_HttpRequest</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_context">k2_Context</a></h3>
+  <a href="#class-k_context">k_Context</a></h3>
 
 <div class="docblock">
-  <p>usually the top-level context ... provides access to the http-protocol</p>
+  <p>Usually the top-level context ... provides access to the http-protocol</p>
 </div>
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_httprequest-property-href_base">
+  <h4 id="class-k_httprequest-property-href_base">
   <em class="modifier">protected</em>
 
 
@@ -1152,7 +1186,7 @@ $candidates ] </em>)
 </h4>
 
 
-  <h4 id="class-k2_httprequest-property-subspace">
+  <h4 id="class-k_httprequest-property-subspace">
   <em class="modifier">protected</em>
 
 
@@ -1162,7 +1196,7 @@ $candidates ] </em>)
 </h4>
 
 
-  <h4 id="class-k2_httprequest-property-query">
+  <h4 id="class-k_httprequest-property-query">
   <em class="modifier">protected</em>
 
 
@@ -1172,7 +1206,7 @@ $candidates ] </em>)
 </h4>
 
 
-  <h4 id="class-k2_httprequest-property-body">
+  <h4 id="class-k_httprequest-property-body">
   <em class="modifier">protected</em>
 
 
@@ -1182,7 +1216,7 @@ $candidates ] </em>)
 </h4>
 
 
-  <h4 id="class-k2_httprequest-property-server">
+  <h4 id="class-k_httprequest-property-server">
   <em class="modifier">protected</em>
 
 
@@ -1192,7 +1226,7 @@ $candidates ] </em>)
 </h4>
 
 
-  <h4 id="class-k2_httprequest-property-files">
+  <h4 id="class-k_httprequest-property-files">
   <em class="modifier">protected</em>
 
 
@@ -1202,7 +1236,7 @@ $candidates ] </em>)
 </h4>
 
 
-  <h4 id="class-k2_httprequest-property-headers">
+  <h4 id="class-k_httprequest-property-headers">
   <em class="modifier">protected</em>
 
 
@@ -1212,52 +1246,52 @@ $candidates ] </em>)
 </h4>
 
 
-  <h4 id="class-k2_httprequest-property-cookie_access">
+  <h4 id="class-k_httprequest-property-cookie_access">
   <em class="modifier">protected</em>
 
 
   $cookie_access
-  : <em class="modifier"><a href="#class-k2_adapter_cookieaccess">k2_adapter_CookieAccess</a></em>
+  : <em class="modifier"><a href="#class-k_adapter_cookieaccess">k_adapter_CookieAccess</a></em>
 
 </h4>
 
 
-  <h4 id="class-k2_httprequest-property-session_access">
+  <h4 id="class-k_httprequest-property-session_access">
   <em class="modifier">protected</em>
 
 
   $session_access
-  : <em class="modifier"><a href="#class-k2_adapter_sessionaccess">k2_adapter_SessionAccess</a></em>
+  : <em class="modifier"><a href="#class-k_adapter_sessionaccess">k_adapter_SessionAccess</a></em>
 
 </h4>
 
 
-  <h4 id="class-k2_httprequest-property-identity_loader">
+  <h4 id="class-k_httprequest-property-identity_loader">
   <em class="modifier">protected</em>
 
 
   $identity_loader
-  : <em class="modifier"><a href="#class-k2_identityloader">k2_IdentityLoader</a></em>
+  : <em class="modifier"><a href="#class-k_identityloader">k_IdentityLoader</a></em>
 
 </h4>
 
 
-  <h4 id="class-k2_httprequest-property-identity">
+  <h4 id="class-k_httprequest-property-identity">
   <em class="modifier">protected</em>
 
 
   $identity
-  : <em class="modifier"><a href="#class-k2_identity">k2_Identity</a></em>
+  : <em class="modifier"><a href="#class-k_identity">k_Identity</a></em>
 
 </h4>
 
 
-  <h4 id="class-k2_httprequest-property-content_type_negotiator">
+  <h4 id="class-k_httprequest-property-content_type_negotiator">
   <em class="modifier">protected</em>
 
 
   $content_type_negotiator
-  : <em class="modifier"><a href="#class-k2_contenttypenegotiator">k2_ContentTypeNegotiator</a></em>
+  : <em class="modifier"><a href="#class-k_contenttypenegotiator">k_ContentTypeNegotiator</a></em>
 
 </h4>
 
@@ -1268,7 +1302,7 @@ $candidates ] </em>)
 <div class="methods">
   
 
-<h4 id="class-k2_httprequest-method-__construct">
+<h4 id="class-k_httprequest-method-__construct">
 
   <em class="modifier">public</em>
 
@@ -1277,20 +1311,20 @@ $candidates ] </em>)
 
 $href_base [ , <span class="modifier">mixed</span>
 
-$request_uri [ , <a href="#class-k2_identityloader"
->k2_IdentityLoader</a>
+$request_uri [ , <a href="#class-k_identityloader"
+>k_IdentityLoader</a>
 
-$identity_loader [ , <a href="#class-k2_adapter_globalsaccess"
->k2_adapter_GlobalsAccess</a>
+$identity_loader [ , <a href="#class-k_adapter_globalsaccess"
+>k_adapter_GlobalsAccess</a>
 
-$superglobals [ , <a href="#class-k2_adapter_cookieaccess"
->k2_adapter_CookieAccess</a>
+$superglobals [ , <a href="#class-k_adapter_cookieaccess"
+>k_adapter_CookieAccess</a>
 
-$cookie_access [ , <a href="#class-k2_adapter_sessionaccess"
->k2_adapter_SessionAccess</a>
+$cookie_access [ , <a href="#class-k_adapter_sessionaccess"
+>k_adapter_SessionAccess</a>
 
-$session_access [ , <a href="#class-k2_adapter_uploadedfileaccess"
->k2_adapter_UploadedFileAccess</a>
+$session_access [ , <a href="#class-k_adapter_uploadedfileaccess"
+>k_adapter_UploadedFileAccess</a>
 
 $file_access ]  ]  ]  ]  ]  ]  ] </em>)
 
@@ -1303,7 +1337,7 @@ $file_access ]  ]  ]  ]  ]  ]  ] </em>)
 
   
 
-<h4 id="class-k2_httprequest-method-query">
+<h4 id="class-k_httprequest-method-query">
 
   <em class="modifier">public</em>
 
@@ -1323,7 +1357,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_httprequest-method-body">
+<h4 id="class-k_httprequest-method-body">
 
   <em class="modifier">public</em>
 
@@ -1343,7 +1377,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_httprequest-method-header">
+<h4 id="class-k_httprequest-method-header">
 
   <em class="modifier">public</em>
 
@@ -1363,7 +1397,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_httprequest-method-cookie">
+<h4 id="class-k_httprequest-method-cookie">
 
   <em class="modifier">public</em>
 
@@ -1383,7 +1417,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_httprequest-method-session">
+<h4 id="class-k_httprequest-method-session">
 
   <em class="modifier">public</em>
 
@@ -1403,7 +1437,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_httprequest-method-file">
+<h4 id="class-k_httprequest-method-file">
 
   <em class="modifier">public</em>
 
@@ -1423,7 +1457,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_httprequest-method-method">
+<h4 id="class-k_httprequest-method-method">
 
   <em class="modifier">public</em>
 
@@ -1442,14 +1476,14 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_httprequest-method-identity">
+<h4 id="class-k_httprequest-method-identity">
 
   <em class="modifier">public</em>
 
 
   identity()
 
-  : <em class="modifier"><a href="#class-k2_identity">k2_Identity</a></em>
+  : <em class="modifier"><a href="#class-k_identity">k_Identity</a></em>
 
 
 </h4>
@@ -1458,7 +1492,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_httprequest-method-url">
+<h4 id="class-k_httprequest-method-url">
 
   <em class="modifier">public</em>
 
@@ -1481,7 +1515,7 @@ $params ]  ] </em>)
 
   
 
-<h4 id="class-k2_httprequest-method-subspace">
+<h4 id="class-k_httprequest-method-subspace">
 
   <em class="modifier">public</em>
 
@@ -1497,7 +1531,7 @@ $params ]  ] </em>)
 
   
 
-<h4 id="class-k2_httprequest-method-negotiatecontenttype">
+<h4 id="class-k_httprequest-method-negotiatecontenttype">
 
   <em class="modifier">public</em>
 
@@ -1517,9 +1551,9 @@ $user_override ]  ] </em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_contenttypenegotiator">
+<h2 id="class-k_contenttypenegotiator">
   <em>class</em>
-  <a href="#class-k2_contenttypenegotiator">k2_ContentTypeNegotiator</a>
+  <a href="#class-k_contenttypenegotiator">k_ContentTypeNegotiator</a>
 </h2>
 
 <div class="docblock">
@@ -1528,7 +1562,7 @@ $user_override ]  ] </em>)
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_contenttypenegotiator-property-types">
+  <h4 id="class-k_contenttypenegotiator-property-types">
   <em class="modifier">protected</em>
 
 
@@ -1544,7 +1578,7 @@ $user_override ]  ] </em>)
 <div class="methods">
   
 
-<h4 id="class-k2_contenttypenegotiator-method-__construct">
+<h4 id="class-k_contenttypenegotiator-method-__construct">
 
   <em class="modifier">public</em>
 
@@ -1553,7 +1587,7 @@ $user_override ]  ] </em>)
 
 $accept ] </em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">oid</em>
 
 
 </h4>
@@ -1562,7 +1596,7 @@ $accept ] </em>)
 
   
 
-<h4 id="class-k2_contenttypenegotiator-method-parse">
+<h4 id="class-k_contenttypenegotiator-method-parse">
 
   <em class="modifier">public</em>
 
@@ -1580,7 +1614,7 @@ $input</em>)
 
   
 
-<h4 id="class-k2_contenttypenegotiator-method-parsetype">
+<h4 id="class-k_contenttypenegotiator-method-parsetype">
 
   <em class="modifier">public</em>
 
@@ -1598,7 +1632,7 @@ $tuple</em>)
 
   
 
-<h4 id="class-k2_contenttypenegotiator-method-_sortbyq">
+<h4 id="class-k_contenttypenegotiator-method-_sortbyq">
 
   <em class="modifier">public</em>
 
@@ -1618,7 +1652,7 @@ $b</em>)
 
   
 
-<h4 id="class-k2_contenttypenegotiator-method-compare">
+<h4 id="class-k_contenttypenegotiator-method-compare">
 
   <em class="modifier">public</em>
 
@@ -1638,7 +1672,7 @@ $b</em>)
 
   
 
-<h4 id="class-k2_contenttypenegotiator-method-match">
+<h4 id="class-k_contenttypenegotiator-method-match">
 
   <em class="modifier">public</em>
 
@@ -1658,9 +1692,9 @@ $user_override ]  ] </em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_document">
+<h2 id="class-k_document">
   <em>class</em>
-  <a href="#class-k2_document">k2_Document</a>
+  <a href="#class-k_document">k_Document</a>
 </h2>
 
 <div class="docblock">
@@ -1672,7 +1706,7 @@ same convention of explicit getters/setters, rather than using public properties
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_document-property-title">
+  <h4 id="class-k_document-property-title">
   <em class="modifier">protected</em>
 
 
@@ -1682,7 +1716,7 @@ same convention of explicit getters/setters, rather than using public properties
 </h4>
 
 
-  <h4 id="class-k2_document-property-scripts">
+  <h4 id="class-k_document-property-scripts">
   <em class="modifier">protected</em>
 
 
@@ -1692,7 +1726,7 @@ same convention of explicit getters/setters, rather than using public properties
 </h4>
 
 
-  <h4 id="class-k2_document-property-styles">
+  <h4 id="class-k_document-property-styles">
   <em class="modifier">protected</em>
 
 
@@ -1702,7 +1736,7 @@ same convention of explicit getters/setters, rather than using public properties
 </h4>
 
 
-  <h4 id="class-k2_document-property-onload">
+  <h4 id="class-k_document-property-onload">
   <em class="modifier">protected</em>
 
 
@@ -1718,7 +1752,7 @@ same convention of explicit getters/setters, rather than using public properties
 <div class="methods">
   
 
-<h4 id="class-k2_document-method-title">
+<h4 id="class-k_document-method-title">
 
   <em class="modifier">public</em>
 
@@ -1734,7 +1768,7 @@ same convention of explicit getters/setters, rather than using public properties
 
   
 
-<h4 id="class-k2_document-method-settitle">
+<h4 id="class-k_document-method-settitle">
 
   <em class="modifier">public</em>
 
@@ -1752,7 +1786,7 @@ $title</em>)
 
   
 
-<h4 id="class-k2_document-method-scripts">
+<h4 id="class-k_document-method-scripts">
 
   <em class="modifier">public</em>
 
@@ -1768,7 +1802,7 @@ $title</em>)
 
   
 
-<h4 id="class-k2_document-method-addscript">
+<h4 id="class-k_document-method-addscript">
 
   <em class="modifier">public</em>
 
@@ -1786,7 +1820,7 @@ $script</em>)
 
   
 
-<h4 id="class-k2_document-method-styles">
+<h4 id="class-k_document-method-styles">
 
   <em class="modifier">public</em>
 
@@ -1802,7 +1836,7 @@ $script</em>)
 
   
 
-<h4 id="class-k2_document-method-addstyle">
+<h4 id="class-k_document-method-addstyle">
 
   <em class="modifier">public</em>
 
@@ -1820,7 +1854,7 @@ $style</em>)
 
   
 
-<h4 id="class-k2_document-method-onload">
+<h4 id="class-k_document-method-onload">
 
   <em class="modifier">public</em>
 
@@ -1836,7 +1870,7 @@ $style</em>)
 
   
 
-<h4 id="class-k2_document-method-addonload">
+<h4 id="class-k_document-method-addonload">
 
   <em class="modifier">public</em>
 
@@ -1854,7 +1888,7 @@ $onload</em>)
 
   
 
-<h4 id="class-k2_document-method-__set">
+<h4 id="class-k_document-method-__set">
 
   <em class="modifier">public</em>
 
@@ -1874,9 +1908,9 @@ $value</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_propertyimmutableexception">
+<h2 id="class-k_propertyimmutableexception">
   <em>class</em>
-  <a href="#class-k2_propertyimmutableexception">k2_PropertyImmutableException</a>
+  <a href="#class-k_propertyimmutableexception">k_PropertyImmutableException</a>
 
   <em>extends</em>
   <a href="#class-exception">Exception</a>
@@ -1888,45 +1922,45 @@ $value</em>)
 
 
 </div><div class="class">
-<h2 id="class-k2_component">
+<h2 id="class-k_component">
   <em class="modifier">abstract</em>
 
   <em>class</em>
-  <a href="#class-k2_component">k2_Component</a>
+  <a href="#class-k_component">k_Component</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_context">k2_Context</a></h3>
+  <a href="#class-k_context">k_Context</a></h3>
 
 <div class="docblock">
-  <p>a component is the baseclass for all userland components
-each component should be completely isolated from its surrounding, only
+  <p>A component is the baseclass for all userland components
+Each component should be completely isolated from its surrounding, only
 depending on its parent context</p>
 </div>
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_component-property-context">
+  <h4 id="class-k_component-property-context">
   <em class="modifier">protected</em>
 
 
   $context
-  : <em class="modifier"><a href="#class-k2_context">k2_Context</a></em>
+  : <em class="modifier"><a href="#class-k_context">k_Context</a></em>
 
 </h4>
 
 
-  <h4 id="class-k2_component-property-url_state">
+  <h4 id="class-k_component-property-url_state">
   <em class="modifier">protected</em>
 
 
   $url_state
-  : <em class="modifier"><a href="#class-k2_urlstate">k2_UrlState</a></em>
+  : <em class="modifier"><a href="#class-k_urlstate">k_UrlState</a></em>
 
 </h4>
 
 
-  <h4 id="class-k2_component-property-url_init">
+  <h4 id="class-k_component-property-url_init">
   <em class="modifier">protected</em>
 
 
@@ -1939,7 +1973,7 @@ depending on its parent context</p>
   <p>UrlState, will be initialised with these values, upon creation.</p>
 </div>
 
-  <h4 id="class-k2_component-property-renderers">
+  <h4 id="class-k_component-property-renderers">
   <em class="modifier">protected</em>
 
 
@@ -1954,32 +1988,32 @@ Note: Theese are just a random selection that I thought might be useful .. you c
 See also http://rest.blueoxen.net/cgi-bin/wiki.pl?WhichContentType</p>
 </div>
 
-  <h4 id="class-k2_component-property-component_creator">
+  <h4 id="class-k_component-property-component_creator">
   <em class="modifier">protected</em>
 
 
   $component_creator
-  : <em class="modifier"><a href="#class-k2_componentcreator">k2_ComponentCreator</a></em>
+  : <em class="modifier"><a href="#class-k_componentcreator">k_ComponentCreator</a></em>
 
 </h4>
 
 
-  <h4 id="class-k2_component-property-document">
+  <h4 id="class-k_component-property-document">
   <em class="modifier">protected</em>
 
 
   $document
-  : <em class="modifier"><a href="#class-k2_document">k2_Document</a></em>
+  : <em class="modifier"><a href="#class-k_document">k_Document</a></em>
 
 </h4>
 
 
-  <h4 id="class-k2_component-property-debugger">
+  <h4 id="class-k_component-property-debugger">
   <em class="modifier">protected</em>
 
 
   $debugger
-  : <em class="modifier"><a href="#class-k2_debuglistener">k2_DebugListener</a></em>
+  : <em class="modifier"><a href="#class-k_debuglistener">k_DebugListener</a></em>
 
 </h4>
 
@@ -1990,7 +2024,7 @@ See also http://rest.blueoxen.net/cgi-bin/wiki.pl?WhichContentType</p>
 <div class="methods">
   
 
-<h4 id="class-k2_component-method-debug">
+<h4 id="class-k_component-method-debug">
 
   <em class="modifier">protected</em>
 
@@ -2011,17 +2045,17 @@ $mixed</em>)
 
   
 
-<h4 id="class-k2_component-method-setcontext">
+<h4 id="class-k_component-method-setcontext">
 
   <em class="modifier">public</em>
 
 
-  setContext(<em><a href="#class-k2_context"
->k2_Context</a>
+  setContext(<em><a href="#class-k_context"
+>k_Context</a>
 
 $context</em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">void</em>
 
 
 </h4>
@@ -2030,17 +2064,17 @@ $context</em>)
 
   
 
-<h4 id="class-k2_component-method-seturlstate">
+<h4 id="class-k_component-method-seturlstate">
 
   <em class="modifier">public</em>
 
 
-  setUrlState(<em><a href="#class-k2_urlstate"
->k2_UrlState</a>
+  setUrlState(<em><a href="#class-k_urlstate"
+>k_UrlState</a>
 
 $url_state</em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">void</em>
 
 
 </h4>
@@ -2049,17 +2083,17 @@ $url_state</em>)
 
   
 
-<h4 id="class-k2_component-method-setcomponentcreator">
+<h4 id="class-k_component-method-setcomponentcreator">
 
   <em class="modifier">public</em>
 
 
-  setComponentCreator(<em><a href="#class-k2_componentcreator"
->k2_ComponentCreator</a>
+  setComponentCreator(<em><a href="#class-k_componentcreator"
+>k_ComponentCreator</a>
 
 $component_creator</em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">void</em>
 
 
 </h4>
@@ -2068,17 +2102,17 @@ $component_creator</em>)
 
   
 
-<h4 id="class-k2_component-method-setdocument">
+<h4 id="class-k_component-method-setdocument">
 
   <em class="modifier">public</em>
 
 
-  setDocument(<em><a href="#class-k2_document"
->k2_Document</a>
+  setDocument(<em><a href="#class-k_document"
+>k_Document</a>
 
 $document</em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">void</em>
 
 
 </h4>
@@ -2087,17 +2121,17 @@ $document</em>)
 
   
 
-<h4 id="class-k2_component-method-setdebugger">
+<h4 id="class-k_component-method-setdebugger">
 
   <em class="modifier">public</em>
 
 
-  setDebugger(<em><a href="#class-k2_debuglistener"
->k2_DebugListener</a>
+  setDebugger(<em><a href="#class-k_debuglistener"
+>k_DebugListener</a>
 
 $debugger</em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">void</em>
 
 
 </h4>
@@ -2106,7 +2140,7 @@ $debugger</em>)
 
   
 
-<h4 id="class-k2_component-method-query">
+<h4 id="class-k_component-method-query">
 
   <em class="modifier">public</em>
 
@@ -2117,7 +2151,7 @@ $key [ , <span class="modifier">mixed</span>
 
 $default ]  ] </em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">string</em>
 
 
 </h4>
@@ -2126,7 +2160,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_component-method-body">
+<h4 id="class-k_component-method-body">
 
   <em class="modifier">public</em>
 
@@ -2146,7 +2180,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_component-method-header">
+<h4 id="class-k_component-method-header">
 
   <em class="modifier">public</em>
 
@@ -2166,7 +2200,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_component-method-cookie">
+<h4 id="class-k_component-method-cookie">
 
   <em class="modifier">public</em>
 
@@ -2186,7 +2220,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_component-method-session">
+<h4 id="class-k_component-method-session">
 
   <em class="modifier">public</em>
 
@@ -2206,7 +2240,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_component-method-file">
+<h4 id="class-k_component-method-file">
 
   <em class="modifier">public</em>
 
@@ -2226,7 +2260,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_component-method-method">
+<h4 id="class-k_component-method-method">
 
   <em class="modifier">public</em>
 
@@ -2242,7 +2276,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_component-method-identity">
+<h4 id="class-k_component-method-identity">
 
   <em class="modifier">public</em>
 
@@ -2258,7 +2292,7 @@ $default ]  ] </em>)
 
   
 
-<h4 id="class-k2_component-method-url">
+<h4 id="class-k_component-method-url">
 
   <em class="modifier">public</em>
 
@@ -2278,7 +2312,7 @@ $params ]  ] </em>)
 
   
 
-<h4 id="class-k2_component-method-subspace">
+<h4 id="class-k_component-method-subspace">
 
   <em class="modifier">public</em>
 
@@ -2294,7 +2328,7 @@ $params ]  ] </em>)
 
   
 
-<h4 id="class-k2_component-method-negotiatecontenttype">
+<h4 id="class-k_component-method-negotiatecontenttype">
 
   <em class="modifier">public</em>
 
@@ -2314,7 +2348,7 @@ $user_override ]  ] </em>)
 
   
 
-<h4 id="class-k2_component-method-segment">
+<h4 id="class-k_component-method-segment">
 
   <em class="modifier">protected</em>
 
@@ -2333,7 +2367,7 @@ $user_override ]  ] </em>)
 
   
 
-<h4 id="class-k2_component-method-name">
+<h4 id="class-k_component-method-name">
 
   <em class="modifier">protected</em>
 
@@ -2352,7 +2386,7 @@ $user_override ]  ] </em>)
 
   
 
-<h4 id="class-k2_component-method-subtype">
+<h4 id="class-k_component-method-subtype">
 
   <em class="modifier">protected</em>
 
@@ -2368,7 +2402,7 @@ $user_override ]  ] </em>)
 
   
 
-<h4 id="class-k2_component-method-next">
+<h4 id="class-k_component-method-next">
 
   <em class="modifier">protected</em>
 
@@ -2384,7 +2418,7 @@ $user_override ]  ] </em>)
 
   
 
-<h4 id="class-k2_component-method-forward">
+<h4 id="class-k_component-method-forward">
 
   <em class="modifier">protected</em>
 
@@ -2404,7 +2438,7 @@ $namespace ] </em>)
 
   
 
-<h4 id="class-k2_component-method-createcomponent">
+<h4 id="class-k_component-method-createcomponent">
 
   <em class="modifier">protected</em>
 
@@ -2415,7 +2449,7 @@ $class_name, <span class="modifier">mixed</span>
 
 $namespace</em>)
 
-  : <em class="modifier"><a href="#class-k2_component">k2_Component</a></em>
+  : <em class="modifier"><a href="#class-k_component">k_Component</a></em>
 
 
 </h4>
@@ -2424,7 +2458,7 @@ $namespace</em>)
 
   
 
-<h4 id="class-k2_component-method-dispatch">
+<h4 id="class-k_component-method-dispatch">
 
   <em class="modifier">public</em>
 
@@ -2440,7 +2474,7 @@ $namespace</em>)
 
   
 
-<h4 id="class-k2_component-method-map">
+<h4 id="class-k_component-method-map">
 
   <em class="modifier">protected</em>
 
@@ -2458,7 +2492,7 @@ $name</em>)
 
   
 
-<h4 id="class-k2_component-method-execute">
+<h4 id="class-k_component-method-execute">
 
   <em class="modifier">public</em>
 
@@ -2474,7 +2508,7 @@ $name</em>)
 
   
 
-<h4 id="class-k2_component-method-get">
+<h4 id="class-k_component-method-get">
 
   <em class="modifier">public</em>
 
@@ -2490,7 +2524,7 @@ $name</em>)
 
   
 
-<h4 id="class-k2_component-method-post">
+<h4 id="class-k_component-method-post">
 
   <em class="modifier">public</em>
 
@@ -2506,7 +2540,7 @@ $name</em>)
 
   
 
-<h4 id="class-k2_component-method-head">
+<h4 id="class-k_component-method-head">
 
   <em class="modifier">public</em>
 
@@ -2522,7 +2556,7 @@ $name</em>)
 
   
 
-<h4 id="class-k2_component-method-put">
+<h4 id="class-k_component-method-put">
 
   <em class="modifier">public</em>
 
@@ -2538,7 +2572,7 @@ $name</em>)
 
   
 
-<h4 id="class-k2_component-method-delete">
+<h4 id="class-k_component-method-delete">
 
   <em class="modifier">public</em>
 
@@ -2554,9 +2588,9 @@ $name</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_urlstate">
+<h2 id="class-k_urlstate">
   <em>class</em>
-  <a href="#class-k2_urlstate">k2_UrlState</a>
+  <a href="#class-k_urlstate">k_UrlState</a>
 </h2>
 
 <div class="docblock">
@@ -2565,17 +2599,17 @@ $name</em>)
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_urlstate-property-context">
+  <h4 id="class-k_urlstate-property-context">
   <em class="modifier">protected</em>
 
 
   $context
-  : <em class="modifier"><a href="#class-k2_context">k2_Context</a></em>
+  : <em class="modifier"><a href="#class-k_context">k_Context</a></em>
 
 </h4>
 
 
-  <h4 id="class-k2_urlstate-property-namespace">
+  <h4 id="class-k_urlstate-property-namespace">
   <em class="modifier">protected</em>
 
 
@@ -2585,7 +2619,7 @@ $name</em>)
 </h4>
 
 
-  <h4 id="class-k2_urlstate-property-state">
+  <h4 id="class-k_urlstate-property-state">
   <em class="modifier">protected</em>
 
 
@@ -2595,7 +2629,7 @@ $name</em>)
 </h4>
 
 
-  <h4 id="class-k2_urlstate-property-default_values">
+  <h4 id="class-k_urlstate-property-default_values">
   <em class="modifier">protected</em>
 
 
@@ -2611,13 +2645,13 @@ $name</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_urlstate-method-__construct">
+<h4 id="class-k_urlstate-method-__construct">
 
   <em class="modifier">public</em>
 
 
-  __construct(<em><a href="#class-k2_context"
->k2_Context</a>
+  __construct(<em><a href="#class-k_context"
+>k_Context</a>
 
 $context [ , <span class="modifier">mixed</span>
 
@@ -2632,7 +2666,7 @@ $namespace ] </em>)
 
   
 
-<h4 id="class-k2_urlstate-method-init">
+<h4 id="class-k_urlstate-method-init">
 
   <em class="modifier">public</em>
 
@@ -2652,7 +2686,7 @@ $default ] </em>)
 
   
 
-<h4 id="class-k2_urlstate-method-has">
+<h4 id="class-k_urlstate-method-has">
 
   <em class="modifier">public</em>
 
@@ -2670,7 +2704,7 @@ $key</em>)
 
   
 
-<h4 id="class-k2_urlstate-method-get">
+<h4 id="class-k_urlstate-method-get">
 
   <em class="modifier">public</em>
 
@@ -2690,7 +2724,7 @@ $default ] </em>)
 
   
 
-<h4 id="class-k2_urlstate-method-set">
+<h4 id="class-k_urlstate-method-set">
 
   <em class="modifier">public</em>
 
@@ -2710,7 +2744,7 @@ $value</em>)
 
   
 
-<h4 id="class-k2_urlstate-method-merge">
+<h4 id="class-k_urlstate-method-merge">
 
   <em class="modifier">public</em>
 
@@ -2728,19 +2762,19 @@ $params ] </em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_template">
+<h2 id="class-k_template">
   <em>class</em>
-  <a href="#class-k2_template">k2_Template</a>
+  <a href="#class-k_template">k_Template</a>
 </h2>
 
 <div class="docblock">
-  <p>a utility class. this is a very simple template engine. essentially, it&#039;s just
+  <p>A utility class. This is a very simple template engine - Essentially, it&#039;s just
 a wrapper around include, using output buffering to grab and return the output.</p>
 </div>
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_template-property-path">
+  <h4 id="class-k_template-property-path">
   <em class="modifier">protected</em>
 
 
@@ -2756,7 +2790,7 @@ a wrapper around include, using output buffering to grab and return the output.<
 <div class="methods">
   
 
-<h4 id="class-k2_template-method-__construct">
+<h4 id="class-k_template-method-__construct">
 
   <em class="modifier">public</em>
 
@@ -2765,7 +2799,7 @@ a wrapper around include, using output buffering to grab and return the output.<
 
 $path</em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">void</em>
 
 
 </h4>
@@ -2774,7 +2808,7 @@ $path</em>)
 
   
 
-<h4 id="class-k2_template-method-output">
+<h4 id="class-k_template-method-output">
 
   <em class="modifier">public</em>
 
@@ -2792,7 +2826,7 @@ $str</em>)
 
   
 
-<h4 id="class-k2_template-method-render">
+<h4 id="class-k_template-method-render">
 
   <em class="modifier">public</em>
 
@@ -2810,7 +2844,7 @@ $context</em>)
 
   
 
-<h4 id="class-k2_template-method-searchincludepath">
+<h4 id="class-k_template-method-searchincludepath">
 
   <em class="modifier">static</em>,
 
@@ -2834,7 +2868,7 @@ Returns the absolute path (realpath) if found or FALSE</p>
 
   
 
-<h4 id="class-k2_template-method-installglobals">
+<h4 id="class-k_template-method-installglobals">
 
   <em class="modifier">static</em>,
 
@@ -2855,9 +2889,9 @@ Returns the absolute path (realpath) if found or FALSE</p>
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_httpresponse">
+<h2 id="class-k_httpresponse">
   <em>class</em>
-  <a href="#class-k2_httpresponse">k2_HttpResponse</a>
+  <a href="#class-k_httpresponse">k_HttpResponse</a>
 
   <em>extends</em>
   <a href="#class-exception">Exception</a>
@@ -2871,7 +2905,7 @@ cases where you want to redirect. In this case, you should use the dedicated sub
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_httpresponse-property-protocol">
+  <h4 id="class-k_httpresponse-property-protocol">
   <em class="modifier">protected</em>
 
 
@@ -2881,7 +2915,7 @@ cases where you want to redirect. In this case, you should use the dedicated sub
 </h4>
 
 
-  <h4 id="class-k2_httpresponse-property-status">
+  <h4 id="class-k_httpresponse-property-status">
   <em class="modifier">protected</em>
 
 
@@ -2891,7 +2925,7 @@ cases where you want to redirect. In this case, you should use the dedicated sub
 </h4>
 
 
-  <h4 id="class-k2_httpresponse-property-content">
+  <h4 id="class-k_httpresponse-property-content">
   <em class="modifier">protected</em>
 
 
@@ -2901,7 +2935,7 @@ cases where you want to redirect. In this case, you should use the dedicated sub
 </h4>
 
 
-  <h4 id="class-k2_httpresponse-property-headers">
+  <h4 id="class-k_httpresponse-property-headers">
   <em class="modifier">protected</em>
 
 
@@ -2911,7 +2945,7 @@ cases where you want to redirect. In this case, you should use the dedicated sub
 </h4>
 
 
-  <h4 id="class-k2_httpresponse-property-content_type">
+  <h4 id="class-k_httpresponse-property-content_type">
   <em class="modifier">protected</em>
 
 
@@ -2921,12 +2955,12 @@ cases where you want to redirect. In this case, you should use the dedicated sub
 </h4>
 
 
-  <h4 id="class-k2_httpresponse-property-charset">
+  <h4 id="class-k_httpresponse-property-charset">
   <em class="modifier">protected</em>
 
 
   $charset
-  : <em class="modifier"><a href="#class-k2_charset_responsecharset">k2_charset_ResponseCharset</a></em>
+  : <em class="modifier"><a href="#class-k_charset_responsecharset">k_charset_ResponseCharset</a></em>
 
 </h4>
 
@@ -2937,7 +2971,7 @@ cases where you want to redirect. In this case, you should use the dedicated sub
 <div class="methods">
   
 
-<h4 id="class-k2_httpresponse-method-__construct">
+<h4 id="class-k_httpresponse-method-__construct">
 
   <em class="modifier">public</em>
 
@@ -2959,7 +2993,7 @@ $input_is_utf8 ]  ]  ] </em>)
 
   
 
-<h4 id="class-k2_httpresponse-method-content">
+<h4 id="class-k_httpresponse-method-content">
 
   <em class="modifier">public</em>
 
@@ -2975,7 +3009,7 @@ $input_is_utf8 ]  ]  ] </em>)
 
   
 
-<h4 id="class-k2_httpresponse-method-setcontent">
+<h4 id="class-k_httpresponse-method-setcontent">
 
   <em class="modifier">public</em>
 
@@ -2993,7 +3027,7 @@ $content</em>)
 
   
 
-<h4 id="class-k2_httpresponse-method-contenttype">
+<h4 id="class-k_httpresponse-method-contenttype">
 
   <em class="modifier">public</em>
 
@@ -3009,7 +3043,7 @@ $content</em>)
 
   
 
-<h4 id="class-k2_httpresponse-method-setcontenttype">
+<h4 id="class-k_httpresponse-method-setcontenttype">
 
   <em class="modifier">public</em>
 
@@ -3027,17 +3061,17 @@ $content_type</em>)
 
   
 
-<h4 id="class-k2_httpresponse-method-setcharset">
+<h4 id="class-k_httpresponse-method-setcharset">
 
   <em class="modifier">public</em>
 
 
-  setCharset(<em><a href="#class-k2_charset_responsecharset"
->k2_charset_ResponseCharset</a>
+  setCharset(<em><a href="#class-k_charset_responsecharset"
+>k_charset_ResponseCharset</a>
 
 $charset</em>)
 
-  : <em class="modifier"><a href="#class-k2_charset_utf8">k2_charset_Utf8</a></em>
+  : <em class="modifier"><a href="#class-k_charset_utf8">k_charset_Utf8</a></em>
 
 
 </h4>
@@ -3046,7 +3080,7 @@ $charset</em>)
 
   
 
-<h4 id="class-k2_httpresponse-method-status">
+<h4 id="class-k_httpresponse-method-status">
 
   <em class="modifier">public</em>
 
@@ -3062,7 +3096,7 @@ $charset</em>)
 
   
 
-<h4 id="class-k2_httpresponse-method-encoding">
+<h4 id="class-k_httpresponse-method-encoding">
 
   <em class="modifier">public</em>
 
@@ -3078,7 +3112,7 @@ $charset</em>)
 
   
 
-<h4 id="class-k2_httpresponse-method-headers">
+<h4 id="class-k_httpresponse-method-headers">
 
   <em class="modifier">public</em>
 
@@ -3094,7 +3128,7 @@ $charset</em>)
 
   
 
-<h4 id="class-k2_httpresponse-method-setheader">
+<h4 id="class-k_httpresponse-method-setheader">
 
   <em class="modifier">public</em>
 
@@ -3114,13 +3148,13 @@ $value</em>)
 
   
 
-<h4 id="class-k2_httpresponse-method-sendstatus">
+<h4 id="class-k_httpresponse-method-sendstatus">
 
   <em class="modifier">protected</em>
 
 
-  sendStatus(<em><a href="#class-k2_adapter_outputaccess"
->k2_adapter_OutputAccess</a>
+  sendStatus(<em><a href="#class-k_adapter_outputaccess"
+>k_adapter_OutputAccess</a>
 
 $output</em>)
 
@@ -3133,13 +3167,13 @@ $output</em>)
 
   
 
-<h4 id="class-k2_httpresponse-method-sendheaders">
+<h4 id="class-k_httpresponse-method-sendheaders">
 
   <em class="modifier">protected</em>
 
 
-  sendHeaders(<em><a href="#class-k2_adapter_outputaccess"
->k2_adapter_OutputAccess</a>
+  sendHeaders(<em><a href="#class-k_adapter_outputaccess"
+>k_adapter_OutputAccess</a>
 
 $output</em>)
 
@@ -3152,13 +3186,13 @@ $output</em>)
 
   
 
-<h4 id="class-k2_httpresponse-method-sendbody">
+<h4 id="class-k_httpresponse-method-sendbody">
 
   <em class="modifier">protected</em>
 
 
-  sendBody(<em><a href="#class-k2_adapter_outputaccess"
->k2_adapter_OutputAccess</a>
+  sendBody(<em><a href="#class-k_adapter_outputaccess"
+>k_adapter_OutputAccess</a>
 
 $output</em>)
 
@@ -3171,13 +3205,13 @@ $output</em>)
 
   
 
-<h4 id="class-k2_httpresponse-method-out">
+<h4 id="class-k_httpresponse-method-out">
 
   <em class="modifier">public</em>
 
 
-  out(<em> [ <a href="#class-k2_adapter_outputaccess"
->k2_adapter_OutputAccess</a>
+  out(<em> [ <a href="#class-k_adapter_outputaccess"
+>k_adapter_OutputAccess</a>
 
 $output ] </em>)
 
@@ -3190,7 +3224,7 @@ $output ] </em>)
 
   
 
-<h4 id="class-k2_httpresponse-method-__tostring">
+<h4 id="class-k_httpresponse-method-__tostring">
 
   <em class="modifier">public</em>
 
@@ -3206,11 +3240,11 @@ $output ] </em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_metaresponse">
+<h2 id="class-k_metaresponse">
   <em class="modifier">abstract</em>
 
   <em>class</em>
-  <a href="#class-k2_metaresponse">k2_MetaResponse</a>
+  <a href="#class-k_metaresponse">k_MetaResponse</a>
 
   <em>extends</em>
   <a href="#class-exception">Exception</a>
@@ -3227,7 +3261,7 @@ In the simplest invocation, a metaresponse maps directly to a component, which r
 <div class="methods">
   
 
-<h4 id="class-k2_metaresponse-method-componentname">
+<h4 id="class-k_metaresponse-method-componentname">
 
   <em class="modifier">abstract</em>,
 
@@ -3245,12 +3279,12 @@ In the simplest invocation, a metaresponse maps directly to a component, which r
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_movedpermanently">
+<h2 id="class-k_movedpermanently">
   <em>class</em>
-  <a href="#class-k2_movedpermanently">k2_MovedPermanently</a>
+  <a href="#class-k_movedpermanently">k_MovedPermanently</a>
 
   <em>extends</em>
-  <a href="#class-k2_httpresponse">k2_HttpResponse</a>
+  <a href="#class-k_httpresponse">k_HttpResponse</a>
 </h2>
 
 <div class="docblock">
@@ -3263,7 +3297,7 @@ Use this if the URL has changed (Eg. a page has been renamed)</p>
 <div class="methods">
   
 
-<h4 id="class-k2_movedpermanently-method-__construct">
+<h4 id="class-k_movedpermanently-method-__construct">
 
   <em class="modifier">public</em>
 
@@ -3281,12 +3315,12 @@ $url</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_seeother">
+<h2 id="class-k_seeother">
   <em>class</em>
-  <a href="#class-k2_seeother">k2_SeeOther</a>
+  <a href="#class-k_seeother">k_SeeOther</a>
 
   <em>extends</em>
-  <a href="#class-k2_httpresponse">k2_HttpResponse</a>
+  <a href="#class-k_httpresponse">k_HttpResponse</a>
 </h2>
 
 <div class="docblock">
@@ -3299,7 +3333,7 @@ Use this type of redirect for redirecting after POST</p>
 <div class="methods">
   
 
-<h4 id="class-k2_seeother-method-__construct">
+<h4 id="class-k_seeother-method-__construct">
 
   <em class="modifier">public</em>
 
@@ -3317,12 +3351,12 @@ $url</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_temporaryredirect">
+<h2 id="class-k_temporaryredirect">
   <em>class</em>
-  <a href="#class-k2_temporaryredirect">k2_TemporaryRedirect</a>
+  <a href="#class-k_temporaryredirect">k_TemporaryRedirect</a>
 
   <em>extends</em>
-  <a href="#class-k2_httpresponse">k2_HttpResponse</a>
+  <a href="#class-k_httpresponse">k_HttpResponse</a>
 </h2>
 
 <div class="docblock">
@@ -3338,7 +3372,7 @@ use either of &quot;See Other&quot; or &quot;Moved Permanently&quot;</p>
 <div class="methods">
   
 
-<h4 id="class-k2_temporaryredirect-method-__construct">
+<h4 id="class-k_temporaryredirect-method-__construct">
 
   <em class="modifier">public</em>
 
@@ -3356,12 +3390,12 @@ $url</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_forbidden">
+<h2 id="class-k_forbidden">
   <em>class</em>
-  <a href="#class-k2_forbidden">k2_Forbidden</a>
+  <a href="#class-k_forbidden">k_Forbidden</a>
 
   <em>extends</em>
-  <a href="#class-k2_metaresponse">k2_MetaResponse</a>
+  <a href="#class-k_metaresponse">k_MetaResponse</a>
 </h2>
 
 <div class="docblock">
@@ -3373,7 +3407,7 @@ $url</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_forbidden-method-componentname">
+<h4 id="class-k_forbidden-method-componentname">
 
   <em class="modifier">public</em>
 
@@ -3389,12 +3423,12 @@ $url</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_pagenotfound">
+<h2 id="class-k_pagenotfound">
   <em>class</em>
-  <a href="#class-k2_pagenotfound">k2_PageNotFound</a>
+  <a href="#class-k_pagenotfound">k_PageNotFound</a>
 
   <em>extends</em>
-  <a href="#class-k2_metaresponse">k2_MetaResponse</a>
+  <a href="#class-k_metaresponse">k_MetaResponse</a>
 </h2>
 
 <div class="docblock">
@@ -3406,7 +3440,7 @@ $url</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_pagenotfound-method-componentname">
+<h4 id="class-k_pagenotfound-method-componentname">
 
   <em class="modifier">public</em>
 
@@ -3422,12 +3456,12 @@ $url</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_methodnotallowed">
+<h2 id="class-k_methodnotallowed">
   <em>class</em>
-  <a href="#class-k2_methodnotallowed">k2_MethodNotAllowed</a>
+  <a href="#class-k_methodnotallowed">k_MethodNotAllowed</a>
 
   <em>extends</em>
-  <a href="#class-k2_metaresponse">k2_MetaResponse</a>
+  <a href="#class-k_metaresponse">k_MetaResponse</a>
 </h2>
 
 <div class="docblock">
@@ -3439,7 +3473,7 @@ $url</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_methodnotallowed-method-componentname">
+<h4 id="class-k_methodnotallowed-method-componentname">
 
   <em class="modifier">public</em>
 
@@ -3455,12 +3489,12 @@ $url</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_notimplemented">
+<h2 id="class-k_notimplemented">
   <em>class</em>
-  <a href="#class-k2_notimplemented">k2_NotImplemented</a>
+  <a href="#class-k_notimplemented">k_NotImplemented</a>
 
   <em>extends</em>
-  <a href="#class-k2_metaresponse">k2_MetaResponse</a>
+  <a href="#class-k_metaresponse">k_MetaResponse</a>
 </h2>
 
 <div class="docblock">
@@ -3473,7 +3507,7 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 <div class="methods">
   
 
-<h4 id="class-k2_notimplemented-method-componentname">
+<h4 id="class-k_notimplemented-method-componentname">
 
   <em class="modifier">public</em>
 
@@ -3489,16 +3523,16 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_defaultforbiddencomponent">
+<h2 id="class-k_defaultforbiddencomponent">
   <em>class</em>
-  <a href="#class-k2_defaultforbiddencomponent">k2_DefaultForbiddenComponent</a>
+  <a href="#class-k_defaultforbiddencomponent">k_DefaultForbiddenComponent</a>
 
   <em>extends</em>
-  <a href="#class-k2_component">k2_Component</a>
+  <a href="#class-k_component">k_Component</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_context">k2_Context</a></h3>
+  <a href="#class-k_context">k_Context</a></h3>
 
 
 
@@ -3506,7 +3540,7 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 <div class="methods">
   
 
-<h4 id="class-k2_defaultforbiddencomponent-method-dispatch">
+<h4 id="class-k_defaultforbiddencomponent-method-dispatch">
 
   <em class="modifier">public</em>
 
@@ -3522,16 +3556,16 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_defaultpagenotfoundcomponent">
+<h2 id="class-k_defaultpagenotfoundcomponent">
   <em>class</em>
-  <a href="#class-k2_defaultpagenotfoundcomponent">k2_DefaultPageNotFoundComponent</a>
+  <a href="#class-k_defaultpagenotfoundcomponent">k_DefaultPageNotFoundComponent</a>
 
   <em>extends</em>
-  <a href="#class-k2_component">k2_Component</a>
+  <a href="#class-k_component">k_Component</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_context">k2_Context</a></h3>
+  <a href="#class-k_context">k_Context</a></h3>
 
 
 
@@ -3539,7 +3573,7 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 <div class="methods">
   
 
-<h4 id="class-k2_defaultpagenotfoundcomponent-method-dispatch">
+<h4 id="class-k_defaultpagenotfoundcomponent-method-dispatch">
 
   <em class="modifier">public</em>
 
@@ -3555,16 +3589,16 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_defaultmethodnotallowedcomponent">
+<h2 id="class-k_defaultmethodnotallowedcomponent">
   <em>class</em>
-  <a href="#class-k2_defaultmethodnotallowedcomponent">k2_DefaultMethodNotAllowedComponent</a>
+  <a href="#class-k_defaultmethodnotallowedcomponent">k_DefaultMethodNotAllowedComponent</a>
 
   <em>extends</em>
-  <a href="#class-k2_component">k2_Component</a>
+  <a href="#class-k_component">k_Component</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_context">k2_Context</a></h3>
+  <a href="#class-k_context">k_Context</a></h3>
 
 
 
@@ -3572,7 +3606,7 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 <div class="methods">
   
 
-<h4 id="class-k2_defaultmethodnotallowedcomponent-method-dispatch">
+<h4 id="class-k_defaultmethodnotallowedcomponent-method-dispatch">
 
   <em class="modifier">public</em>
 
@@ -3588,16 +3622,16 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_defaultnotimplementedcomponent">
+<h2 id="class-k_defaultnotimplementedcomponent">
   <em>class</em>
-  <a href="#class-k2_defaultnotimplementedcomponent">k2_DefaultNotImplementedComponent</a>
+  <a href="#class-k_defaultnotimplementedcomponent">k_DefaultNotImplementedComponent</a>
 
   <em>extends</em>
-  <a href="#class-k2_component">k2_Component</a>
+  <a href="#class-k_component">k_Component</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_context">k2_Context</a></h3>
+  <a href="#class-k_context">k_Context</a></h3>
 
 
 
@@ -3605,7 +3639,7 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 <div class="methods">
   
 
-<h4 id="class-k2_defaultnotimplementedcomponent-method-dispatch">
+<h4 id="class-k_defaultnotimplementedcomponent-method-dispatch">
 
   <em class="modifier">public</em>
 
@@ -3621,9 +3655,9 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_bootstrap">
+<h2 id="class-k_bootstrap">
   <em>class</em>
-  <a href="#class-k2_bootstrap">k2_Bootstrap</a>
+  <a href="#class-k_bootstrap">k_Bootstrap</a>
 </h2>
 
 <div class="docblock">
@@ -3632,37 +3666,37 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_bootstrap-property-http_request">
+  <h4 id="class-k_bootstrap-property-http_request">
   <em class="modifier">protected</em>
 
 
   $http_request
-  : <em class="modifier"><a href="#class-k2_httprequest">k2_HttpRequest</a></em>
+  : <em class="modifier"><a href="#class-k_httprequest">k_HttpRequest</a></em>
 
 </h4>
 
 
-  <h4 id="class-k2_bootstrap-property-components">
+  <h4 id="class-k_bootstrap-property-components">
   <em class="modifier">protected</em>
 
 
   $components
-  : <em class="modifier"><a href="#class-k2_componentcreator">k2_ComponentCreator</a></em>
+  : <em class="modifier"><a href="#class-k_componentcreator">k_ComponentCreator</a></em>
 
 </h4>
 
 
-  <h4 id="class-k2_bootstrap-property-charset_strategy">
+  <h4 id="class-k_bootstrap-property-charset_strategy">
   <em class="modifier">protected</em>
 
 
   $charset_strategy
-  : <em class="modifier"><a href="#class-k2_charset_charsetstrategy">k2_charset_CharsetStrategy</a></em>
+  : <em class="modifier"><a href="#class-k_charset_charsetstrategy">k_charset_CharsetStrategy</a></em>
 
 </h4>
 
 
-  <h4 id="class-k2_bootstrap-property-is_debug">
+  <h4 id="class-k_bootstrap-property-is_debug">
   <em class="modifier">protected</em>
 
 
@@ -3672,7 +3706,7 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 </h4>
 
 
-  <h4 id="class-k2_bootstrap-property-log_filename">
+  <h4 id="class-k_bootstrap-property-log_filename">
   <em class="modifier">protected</em>
 
 
@@ -3682,22 +3716,32 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 </h4>
 
 
-  <h4 id="class-k2_bootstrap-property-identity_loader">
+  <h4 id="class-k_bootstrap-property-href_base">
   <em class="modifier">protected</em>
 
 
-  $identity_loader
-  : <em class="modifier"><a href="#class-k2_identityloader">k2_IdentityLoader</a></em>
+  $href_base
+  : <em class="modifier">string</em>
 
 </h4>
 
 
-  <h4 id="class-k2_bootstrap-property-globals_access">
+  <h4 id="class-k_bootstrap-property-identity_loader">
+  <em class="modifier">protected</em>
+
+
+  $identity_loader
+  : <em class="modifier"><a href="#class-k_identityloader">k_IdentityLoader</a></em>
+
+</h4>
+
+
+  <h4 id="class-k_bootstrap-property-globals_access">
   <em class="modifier">protected</em>
 
 
   $globals_access
-  : <em class="modifier"><a href="#class-k2_adapter_globalsaccess">k2_adapter_GlobalsAccess</a></em>
+  : <em class="modifier"><a href="#class-k_adapter_globalsaccess">k_adapter_GlobalsAccess</a></em>
 
 </h4>
 
@@ -3708,7 +3752,7 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 <div class="methods">
   
 
-<h4 id="class-k2_bootstrap-method-run">
+<h4 id="class-k_bootstrap-method-run">
 
   <em class="modifier">public</em>
 
@@ -3717,19 +3761,19 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 
 $root_class_name</em>)
 
-  : <em class="modifier"><a href="#class-k2_httpresponse">k2_HttpResponse</a></em>
+  : <em class="modifier"><a href="#class-k_httpresponse">k_HttpResponse</a></em>
 
 
 </h4>
 
 <div class="docblock">
-  <p>Serves a http request, given a root component.</p>
+  <p>Serves a http request, given a root component name.</p>
 </div>
 
 
   
 
-<h4 id="class-k2_bootstrap-method-dispatchroot">
+<h4 id="class-k_bootstrap-method-dispatchroot">
 
   <em class="modifier">protected</em>
 
@@ -3747,64 +3791,73 @@ $root_class_name</em>)
 
   
 
-<h4 id="class-k2_bootstrap-method-setcontext">
+<h4 id="class-k_bootstrap-method-setcontext">
 
   <em class="modifier">public</em>
 
 
-  setContext(<em><a href="#class-k2_context"
->k2_Context</a>
+  setContext(<em><a href="#class-k_context"
+>k_Context</a>
 
 $http_request</em>)
 
-  : <em class="modifier"><a href="#class-k2_bootstrap">k2_Bootstrap</a></em>
+  : <em class="modifier"><a href="#class-k_bootstrap">k_Bootstrap</a></em>
 
 
 </h4>
 
+<div class="docblock">
+  <p>Sets the context to use. Usually, this is an instance of k_HttpRequest.</p>
+</div>
 
 
   
 
-<h4 id="class-k2_bootstrap-method-setcomponentcreator">
+<h4 id="class-k_bootstrap-method-setcomponentcreator">
 
   <em class="modifier">public</em>
 
 
-  setComponentCreator(<em><a href="#class-k2_componentcreator"
->k2_ComponentCreator</a>
+  setComponentCreator(<em><a href="#class-k_componentcreator"
+>k_ComponentCreator</a>
 
 $components</em>)
 
-  : <em class="modifier"><a href="#class-k2_bootstrap">k2_Bootstrap</a></em>
+  : <em class="modifier"><a href="#class-k_bootstrap">k_Bootstrap</a></em>
 
 
 </h4>
 
+<div class="docblock">
+  <p>Sets the componentcreator to use.</p>
+</div>
 
 
   
 
-<h4 id="class-k2_bootstrap-method-setcharsetstrategy">
+<h4 id="class-k_bootstrap-method-setcharsetstrategy">
 
   <em class="modifier">public</em>
 
 
-  setCharsetStrategy(<em><a href="#class-k2_charset_charsetstrategy"
->k2_charset_CharsetStrategy</a>
+  setCharsetStrategy(<em><a href="#class-k_charset_charsetstrategy"
+>k_charset_CharsetStrategy</a>
 
 $charset_strategy</em>)
 
-  : <em class="modifier"><a href="#class-k2_bootstrap">k2_Bootstrap</a></em>
+  : <em class="modifier"><a href="#class-k_bootstrap">k_Bootstrap</a></em>
 
 
 </h4>
 
+<div class="docblock">
+  <p>Set the charsetstrategy.</p>
+</div>
 
 
   
 
-<h4 id="class-k2_bootstrap-method-setdebug">
+<h4 id="class-k_bootstrap-method-setdebug">
 
   <em class="modifier">public</em>
 
@@ -3813,16 +3866,19 @@ $charset_strategy</em>)
 
 $is_debug ] </em>)
 
-  : <em class="modifier">mixed</em>
+  : <em class="modifier"><a href="#class-k_bootstrap">k_Bootstrap</a></em>
 
 
 </h4>
 
+<div class="docblock">
+  <p>Enable/disable the in-browser debug-bar.</p>
+</div>
 
 
   
 
-<h4 id="class-k2_bootstrap-method-setlog">
+<h4 id="class-k_bootstrap-method-setlog">
 
   <em class="modifier">public</em>
 
@@ -3831,23 +3887,47 @@ $is_debug ] </em>)
 
 $filename</em>)
 
-  : <em class="modifier">mixed</em>
+  : <em class="modifier"><a href="#class-k_bootstrap">k_Bootstrap</a></em>
 
 
 </h4>
 
+<div class="docblock">
+  <p>Specifies a filename to log debug information to.</p>
+</div>
 
 
   
 
-<h4 id="class-k2_bootstrap-method-context">
+<h4 id="class-k_bootstrap-method-sethrefbase">
+
+  <em class="modifier">public</em>
+
+
+  setHrefBase(<em><span class="modifier">mixed</span>
+
+$href_base</em>)
+
+  : <em class="modifier"><a href="#class-k_bootstrap">k_Bootstrap</a></em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Sets the base href, if the application isn&#039;t mounted at the web root.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_bootstrap-method-context">
 
   <em class="modifier">protected</em>
 
 
   context()
 
-  : <em class="modifier"><a href="#class-k2_httprequest">k2_HttpRequest</a></em>
+  : <em class="modifier"><a href="#class-k_context">k_Context</a></em>
 
 
 </h4>
@@ -3856,14 +3936,14 @@ $filename</em>)
 
   
 
-<h4 id="class-k2_bootstrap-method-components">
+<h4 id="class-k_bootstrap-method-components">
 
   <em class="modifier">protected</em>
 
 
   components()
 
-  : <em class="modifier"><a href="#class-k2_defaultcomponentcreator">k2_DefaultComponentCreator</a></em>
+  : <em class="modifier"><a href="#class-k_componentcreator">k_ComponentCreator</a></em>
 
 
 </h4>
@@ -3872,14 +3952,14 @@ $filename</em>)
 
   
 
-<h4 id="class-k2_bootstrap-method-charsetstrategy">
+<h4 id="class-k_bootstrap-method-charsetstrategy">
 
   <em class="modifier">protected</em>
 
 
   charsetStrategy()
 
-  : <em class="modifier"><a href="#class-k2_charset_utf8charsetstrategy">k2_charset_Utf8CharsetStrategy</a></em>
+  : <em class="modifier"><a href="#class-k_charset_charsetstrategy">k_charset_CharsetStrategy</a></em>
 
 
 </h4>
@@ -3888,14 +3968,14 @@ $filename</em>)
 
   
 
-<h4 id="class-k2_bootstrap-method-identityloader">
+<h4 id="class-k_bootstrap-method-identityloader">
 
   <em class="modifier">protected</em>
 
 
   identityLoader()
 
-  : <em class="modifier">mixed</em>
+  : <em class="modifier"><a href="#class-k_identityloader">k_IdentityLoader</a></em>
 
 
 </h4>
@@ -3904,14 +3984,14 @@ $filename</em>)
 
   
 
-<h4 id="class-k2_bootstrap-method-globalsaccess">
+<h4 id="class-k_bootstrap-method-globalsaccess">
 
   <em class="modifier">protected</em>
 
 
   globalsAccess()
 
-  : <em class="modifier">mixed</em>
+  : <em class="modifier"><a href="#class-k_adapter_globalsaccess">k_adapter_GlobalsAccess</a></em>
 
 
 </h4>
@@ -3920,9 +4000,9 @@ $filename</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_adapter_outputaccess">
+<h2 id="class-k_adapter_outputaccess">
   <em>interface</em>
-  <a href="#class-k2_adapter_outputaccess">k2_adapter_OutputAccess</a>
+  <a href="#class-k_adapter_outputaccess">k_adapter_OutputAccess</a>
 </h2>
 
 
@@ -3931,7 +4011,7 @@ $filename</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_adapter_outputaccess-method-header">
+<h4 id="class-k_adapter_outputaccess-method-header">
 
   <em class="modifier">abstract</em>,
 
@@ -3955,7 +4035,7 @@ $http_response_code ]  ] </em>)
 
   
 
-<h4 id="class-k2_adapter_outputaccess-method-write">
+<h4 id="class-k_adapter_outputaccess-method-write">
 
   <em class="modifier">abstract</em>,
 
@@ -3975,7 +4055,7 @@ $bytes</em>)
 
   
 
-<h4 id="class-k2_adapter_outputaccess-method-endsession">
+<h4 id="class-k_adapter_outputaccess-method-endsession">
 
   <em class="modifier">abstract</em>,
 
@@ -3993,13 +4073,13 @@ $bytes</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_adapter_defaultoutputaccess">
+<h2 id="class-k_adapter_defaultoutputaccess">
   <em>class</em>
-  <a href="#class-k2_adapter_defaultoutputaccess">k2_adapter_DefaultOutputAccess</a>
+  <a href="#class-k_adapter_defaultoutputaccess">k_adapter_DefaultOutputAccess</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_adapter_outputaccess">k2_adapter_OutputAccess</a></h3>
+  <a href="#class-k_adapter_outputaccess">k_adapter_OutputAccess</a></h3>
 
 
 
@@ -4007,7 +4087,7 @@ $bytes</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_adapter_defaultoutputaccess-method-header">
+<h4 id="class-k_adapter_defaultoutputaccess-method-header">
 
   <em class="modifier">public</em>
 
@@ -4029,7 +4109,7 @@ $http_response_code ]  ] </em>)
 
   
 
-<h4 id="class-k2_adapter_defaultoutputaccess-method-write">
+<h4 id="class-k_adapter_defaultoutputaccess-method-write">
 
   <em class="modifier">public</em>
 
@@ -4047,7 +4127,7 @@ $bytes</em>)
 
   
 
-<h4 id="class-k2_adapter_defaultoutputaccess-method-endsession">
+<h4 id="class-k_adapter_defaultoutputaccess-method-endsession">
 
   <em class="modifier">public</em>
 
@@ -4063,9 +4143,9 @@ $bytes</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_adapter_globalsaccess">
+<h2 id="class-k_adapter_globalsaccess">
   <em>interface</em>
-  <a href="#class-k2_adapter_globalsaccess">k2_adapter_GlobalsAccess</a>
+  <a href="#class-k_adapter_globalsaccess">k_adapter_GlobalsAccess</a>
 </h2>
 
 
@@ -4074,7 +4154,7 @@ $bytes</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_adapter_globalsaccess-method-query">
+<h4 id="class-k_adapter_globalsaccess-method-query">
 
   <em class="modifier">abstract</em>,
 
@@ -4092,7 +4172,7 @@ $bytes</em>)
 
   
 
-<h4 id="class-k2_adapter_globalsaccess-method-body">
+<h4 id="class-k_adapter_globalsaccess-method-body">
 
   <em class="modifier">abstract</em>,
 
@@ -4110,7 +4190,7 @@ $bytes</em>)
 
   
 
-<h4 id="class-k2_adapter_globalsaccess-method-server">
+<h4 id="class-k_adapter_globalsaccess-method-server">
 
   <em class="modifier">abstract</em>,
 
@@ -4128,7 +4208,7 @@ $bytes</em>)
 
   
 
-<h4 id="class-k2_adapter_globalsaccess-method-files">
+<h4 id="class-k_adapter_globalsaccess-method-files">
 
   <em class="modifier">abstract</em>,
 
@@ -4146,7 +4226,7 @@ $bytes</em>)
 
   
 
-<h4 id="class-k2_adapter_globalsaccess-method-cookie">
+<h4 id="class-k_adapter_globalsaccess-method-cookie">
 
   <em class="modifier">abstract</em>,
 
@@ -4164,7 +4244,7 @@ $bytes</em>)
 
   
 
-<h4 id="class-k2_adapter_globalsaccess-method-headers">
+<h4 id="class-k_adapter_globalsaccess-method-headers">
 
   <em class="modifier">abstract</em>,
 
@@ -4182,28 +4262,28 @@ $bytes</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_adapter_safeglobalsaccess">
+<h2 id="class-k_adapter_safeglobalsaccess">
   <em>class</em>
-  <a href="#class-k2_adapter_safeglobalsaccess">k2_adapter_SafeGlobalsAccess</a>
+  <a href="#class-k_adapter_safeglobalsaccess">k_adapter_SafeGlobalsAccess</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_adapter_globalsaccess">k2_adapter_GlobalsAccess</a></h3>
+  <a href="#class-k_adapter_globalsaccess">k_adapter_GlobalsAccess</a></h3>
 
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_adapter_safeglobalsaccess-property-charset">
+  <h4 id="class-k_adapter_safeglobalsaccess-property-charset">
   <em class="modifier">protected</em>
 
 
   $charset
-  : <em class="modifier"><a href="#class-k2_charset_charsetstrategy">k2_charset_CharsetStrategy</a></em>
+  : <em class="modifier"><a href="#class-k_charset_charsetstrategy">k_charset_CharsetStrategy</a></em>
 
 </h4>
 
 
-  <h4 id="class-k2_adapter_safeglobalsaccess-property-magic_quotes_gpc">
+  <h4 id="class-k_adapter_safeglobalsaccess-property-magic_quotes_gpc">
   <em class="modifier">protected</em>
 
 
@@ -4219,13 +4299,13 @@ $bytes</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_adapter_safeglobalsaccess-method-__construct">
+<h4 id="class-k_adapter_safeglobalsaccess-method-__construct">
 
   <em class="modifier">public</em>
 
 
-  __construct(<em><a href="#class-k2_charset_charsetstrategy"
->k2_charset_CharsetStrategy</a>
+  __construct(<em><a href="#class-k_charset_charsetstrategy"
+>k_charset_CharsetStrategy</a>
 
 $charset [ , <span class="modifier">mixed</span>
 
@@ -4240,7 +4320,7 @@ $magic_quotes_gpc ] </em>)
 
   
 
-<h4 id="class-k2_adapter_safeglobalsaccess-method-query">
+<h4 id="class-k_adapter_safeglobalsaccess-method-query">
 
   <em class="modifier">public</em>
 
@@ -4256,7 +4336,7 @@ $magic_quotes_gpc ] </em>)
 
   
 
-<h4 id="class-k2_adapter_safeglobalsaccess-method-body">
+<h4 id="class-k_adapter_safeglobalsaccess-method-body">
 
   <em class="modifier">public</em>
 
@@ -4272,7 +4352,7 @@ $magic_quotes_gpc ] </em>)
 
   
 
-<h4 id="class-k2_adapter_safeglobalsaccess-method-server">
+<h4 id="class-k_adapter_safeglobalsaccess-method-server">
 
   <em class="modifier">public</em>
 
@@ -4288,7 +4368,7 @@ $magic_quotes_gpc ] </em>)
 
   
 
-<h4 id="class-k2_adapter_safeglobalsaccess-method-files">
+<h4 id="class-k_adapter_safeglobalsaccess-method-files">
 
   <em class="modifier">public</em>
 
@@ -4304,7 +4384,7 @@ $magic_quotes_gpc ] </em>)
 
   
 
-<h4 id="class-k2_adapter_safeglobalsaccess-method-normalizefiles">
+<h4 id="class-k_adapter_safeglobalsaccess-method-normalizefiles">
 
   <em class="modifier">public</em>
 
@@ -4322,7 +4402,7 @@ $files</em>)
 
   
 
-<h4 id="class-k2_adapter_safeglobalsaccess-method-cookie">
+<h4 id="class-k_adapter_safeglobalsaccess-method-cookie">
 
   <em class="modifier">public</em>
 
@@ -4338,7 +4418,7 @@ $files</em>)
 
   
 
-<h4 id="class-k2_adapter_safeglobalsaccess-method-headers">
+<h4 id="class-k_adapter_safeglobalsaccess-method-headers">
 
   <em class="modifier">public</em>
 
@@ -4354,7 +4434,7 @@ $files</em>)
 
   
 
-<h4 id="class-k2_adapter_safeglobalsaccess-method-unmagic">
+<h4 id="class-k_adapter_safeglobalsaccess-method-unmagic">
 
   <em class="modifier">protected</em>
 
@@ -4372,23 +4452,23 @@ $input</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_adapter_lowerkeyadapter">
+<h2 id="class-k_adapter_lowerkeyadapter">
   <em>class</em>
-  <a href="#class-k2_adapter_lowerkeyadapter">k2_adapter_LowerKeyAdapter</a>
+  <a href="#class-k_adapter_lowerkeyadapter">k_adapter_LowerKeyAdapter</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_adapter_globalsaccess">k2_adapter_GlobalsAccess</a></h3>
+  <a href="#class-k_adapter_globalsaccess">k_adapter_GlobalsAccess</a></h3>
 
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_adapter_lowerkeyadapter-property-global_access">
+  <h4 id="class-k_adapter_lowerkeyadapter-property-global_access">
   <em class="modifier">protected</em>
 
 
   $global_access
-  : <em class="modifier"><a href="#class-k2_adapter_globalsaccess">k2_adapter_GlobalsAccess</a></em>
+  : <em class="modifier"><a href="#class-k_adapter_globalsaccess">k_adapter_GlobalsAccess</a></em>
 
 </h4>
 
@@ -4399,13 +4479,13 @@ $input</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_adapter_lowerkeyadapter-method-__construct">
+<h4 id="class-k_adapter_lowerkeyadapter-method-__construct">
 
   <em class="modifier">public</em>
 
 
-  __construct(<em><a href="#class-k2_adapter_globalsaccess"
->k2_adapter_GlobalsAccess</a>
+  __construct(<em><a href="#class-k_adapter_globalsaccess"
+>k_adapter_GlobalsAccess</a>
 
 $global_access</em>)
 
@@ -4418,7 +4498,7 @@ $global_access</em>)
 
   
 
-<h4 id="class-k2_adapter_lowerkeyadapter-method-query">
+<h4 id="class-k_adapter_lowerkeyadapter-method-query">
 
   <em class="modifier">public</em>
 
@@ -4434,7 +4514,7 @@ $global_access</em>)
 
   
 
-<h4 id="class-k2_adapter_lowerkeyadapter-method-body">
+<h4 id="class-k_adapter_lowerkeyadapter-method-body">
 
   <em class="modifier">public</em>
 
@@ -4450,7 +4530,7 @@ $global_access</em>)
 
   
 
-<h4 id="class-k2_adapter_lowerkeyadapter-method-server">
+<h4 id="class-k_adapter_lowerkeyadapter-method-server">
 
   <em class="modifier">public</em>
 
@@ -4466,7 +4546,7 @@ $global_access</em>)
 
   
 
-<h4 id="class-k2_adapter_lowerkeyadapter-method-files">
+<h4 id="class-k_adapter_lowerkeyadapter-method-files">
 
   <em class="modifier">public</em>
 
@@ -4482,7 +4562,7 @@ $global_access</em>)
 
   
 
-<h4 id="class-k2_adapter_lowerkeyadapter-method-cookie">
+<h4 id="class-k_adapter_lowerkeyadapter-method-cookie">
 
   <em class="modifier">public</em>
 
@@ -4498,7 +4578,7 @@ $global_access</em>)
 
   
 
-<h4 id="class-k2_adapter_lowerkeyadapter-method-headers">
+<h4 id="class-k_adapter_lowerkeyadapter-method-headers">
 
   <em class="modifier">public</em>
 
@@ -4514,7 +4594,7 @@ $global_access</em>)
 
   
 
-<h4 id="class-k2_adapter_lowerkeyadapter-method-lowerkeys">
+<h4 id="class-k_adapter_lowerkeyadapter-method-lowerkeys">
 
   <em class="modifier">protected</em>
 
@@ -4532,9 +4612,9 @@ $input</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_adapter_cookieaccess">
+<h2 id="class-k_adapter_cookieaccess">
   <em>interface</em>
-  <a href="#class-k2_adapter_cookieaccess">k2_adapter_CookieAccess</a>
+  <a href="#class-k_adapter_cookieaccess">k_adapter_CookieAccess</a>
 </h2>
 
 
@@ -4543,7 +4623,7 @@ $input</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_adapter_cookieaccess-method-__construct">
+<h4 id="class-k_adapter_cookieaccess-method-__construct">
 
   <em class="modifier">abstract</em>,
 
@@ -4565,7 +4645,7 @@ $raw</em>)
 
   
 
-<h4 id="class-k2_adapter_cookieaccess-method-has">
+<h4 id="class-k_adapter_cookieaccess-method-has">
 
   <em class="modifier">abstract</em>,
 
@@ -4585,7 +4665,7 @@ $key</em>)
 
   
 
-<h4 id="class-k2_adapter_cookieaccess-method-get">
+<h4 id="class-k_adapter_cookieaccess-method-get">
 
   <em class="modifier">abstract</em>,
 
@@ -4607,7 +4687,7 @@ $default ] </em>)
 
   
 
-<h4 id="class-k2_adapter_cookieaccess-method-set">
+<h4 id="class-k_adapter_cookieaccess-method-set">
 
   <em class="modifier">abstract</em>,
 
@@ -4635,7 +4715,7 @@ $httponly ]  ]  ] </em>)
 
   
 
-<h4 id="class-k2_adapter_cookieaccess-method-all">
+<h4 id="class-k_adapter_cookieaccess-method-all">
 
   <em class="modifier">abstract</em>,
 
@@ -4653,18 +4733,18 @@ $httponly ]  ]  ] </em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_adapter_defaultcookieaccess">
+<h2 id="class-k_adapter_defaultcookieaccess">
   <em>class</em>
-  <a href="#class-k2_adapter_defaultcookieaccess">k2_adapter_DefaultCookieAccess</a>
+  <a href="#class-k_adapter_defaultcookieaccess">k_adapter_DefaultCookieAccess</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_adapter_cookieaccess">k2_adapter_CookieAccess</a></h3>
+  <a href="#class-k_adapter_cookieaccess">k_adapter_CookieAccess</a></h3>
 
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_adapter_defaultcookieaccess-property-domain">
+  <h4 id="class-k_adapter_defaultcookieaccess-property-domain">
   <em class="modifier">protected</em>
 
 
@@ -4674,7 +4754,7 @@ $httponly ]  ]  ] </em>)
 </h4>
 
 
-  <h4 id="class-k2_adapter_defaultcookieaccess-property-raw">
+  <h4 id="class-k_adapter_defaultcookieaccess-property-raw">
   <em class="modifier">protected</em>
 
 
@@ -4690,7 +4770,7 @@ $httponly ]  ]  ] </em>)
 <div class="methods">
   
 
-<h4 id="class-k2_adapter_defaultcookieaccess-method-__construct">
+<h4 id="class-k_adapter_defaultcookieaccess-method-__construct">
 
   <em class="modifier">public</em>
 
@@ -4710,7 +4790,7 @@ $raw</em>)
 
   
 
-<h4 id="class-k2_adapter_defaultcookieaccess-method-has">
+<h4 id="class-k_adapter_defaultcookieaccess-method-has">
 
   <em class="modifier">public</em>
 
@@ -4728,7 +4808,7 @@ $key</em>)
 
   
 
-<h4 id="class-k2_adapter_defaultcookieaccess-method-get">
+<h4 id="class-k_adapter_defaultcookieaccess-method-get">
 
   <em class="modifier">public</em>
 
@@ -4748,7 +4828,7 @@ $default ] </em>)
 
   
 
-<h4 id="class-k2_adapter_defaultcookieaccess-method-set">
+<h4 id="class-k_adapter_defaultcookieaccess-method-set">
 
   <em class="modifier">public</em>
 
@@ -4774,7 +4854,7 @@ $httponly ]  ]  ] </em>)
 
   
 
-<h4 id="class-k2_adapter_defaultcookieaccess-method-all">
+<h4 id="class-k_adapter_defaultcookieaccess-method-all">
 
   <em class="modifier">public</em>
 
@@ -4790,9 +4870,9 @@ $httponly ]  ]  ] </em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_adapter_sessionaccess">
+<h2 id="class-k_adapter_sessionaccess">
   <em>interface</em>
-  <a href="#class-k2_adapter_sessionaccess">k2_adapter_SessionAccess</a>
+  <a href="#class-k_adapter_sessionaccess">k_adapter_SessionAccess</a>
 </h2>
 
 
@@ -4801,7 +4881,7 @@ $httponly ]  ]  ] </em>)
 <div class="methods">
   
 
-<h4 id="class-k2_adapter_sessionaccess-method-has">
+<h4 id="class-k_adapter_sessionaccess-method-has">
 
   <em class="modifier">abstract</em>,
 
@@ -4821,7 +4901,7 @@ $key</em>)
 
   
 
-<h4 id="class-k2_adapter_sessionaccess-method-get">
+<h4 id="class-k_adapter_sessionaccess-method-get">
 
   <em class="modifier">abstract</em>,
 
@@ -4843,7 +4923,7 @@ $default ] </em>)
 
   
 
-<h4 id="class-k2_adapter_sessionaccess-method-set">
+<h4 id="class-k_adapter_sessionaccess-method-set">
 
   <em class="modifier">abstract</em>,
 
@@ -4865,7 +4945,7 @@ $value</em>)
 
   
 
-<h4 id="class-k2_adapter_sessionaccess-method-close">
+<h4 id="class-k_adapter_sessionaccess-method-close">
 
   <em class="modifier">abstract</em>,
 
@@ -4883,7 +4963,7 @@ $value</em>)
 
   
 
-<h4 id="class-k2_adapter_sessionaccess-method-destroy">
+<h4 id="class-k_adapter_sessionaccess-method-destroy">
 
   <em class="modifier">abstract</em>,
 
@@ -4901,7 +4981,7 @@ $value</em>)
 
   
 
-<h4 id="class-k2_adapter_sessionaccess-method-sessionid">
+<h4 id="class-k_adapter_sessionaccess-method-sessionid">
 
   <em class="modifier">abstract</em>,
 
@@ -4919,7 +4999,7 @@ $value</em>)
 
   
 
-<h4 id="class-k2_adapter_sessionaccess-method-regenerateid">
+<h4 id="class-k_adapter_sessionaccess-method-regenerateid">
 
   <em class="modifier">abstract</em>,
 
@@ -4937,23 +5017,23 @@ $value</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_adapter_defaultsessionaccess">
+<h2 id="class-k_adapter_defaultsessionaccess">
   <em>class</em>
-  <a href="#class-k2_adapter_defaultsessionaccess">k2_adapter_DefaultSessionAccess</a>
+  <a href="#class-k_adapter_defaultsessionaccess">k_adapter_DefaultSessionAccess</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_adapter_sessionaccess">k2_adapter_SessionAccess</a></h3>
+  <a href="#class-k_adapter_sessionaccess">k_adapter_SessionAccess</a></h3>
 
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_adapter_defaultsessionaccess-property-cookie_access">
+  <h4 id="class-k_adapter_defaultsessionaccess-property-cookie_access">
   <em class="modifier">protected</em>
 
 
   $cookie_access
-  : <em class="modifier"><a href="#class-k2_adapter_cookieaccess">k2_adapter_CookieAccess</a></em>
+  : <em class="modifier"><a href="#class-k_adapter_cookieaccess">k_adapter_CookieAccess</a></em>
 
 </h4>
 
@@ -4964,13 +5044,13 @@ $value</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_adapter_defaultsessionaccess-method-__construct">
+<h4 id="class-k_adapter_defaultsessionaccess-method-__construct">
 
   <em class="modifier">public</em>
 
 
-  __construct(<em><a href="#class-k2_adapter_cookieaccess"
->k2_adapter_CookieAccess</a>
+  __construct(<em><a href="#class-k_adapter_cookieaccess"
+>k_adapter_CookieAccess</a>
 
 $cookie_access</em>)
 
@@ -4983,7 +5063,7 @@ $cookie_access</em>)
 
   
 
-<h4 id="class-k2_adapter_defaultsessionaccess-method-autostart">
+<h4 id="class-k_adapter_defaultsessionaccess-method-autostart">
 
   <em class="modifier">protected</em>
 
@@ -4999,7 +5079,7 @@ $cookie_access</em>)
 
   
 
-<h4 id="class-k2_adapter_defaultsessionaccess-method-has">
+<h4 id="class-k_adapter_defaultsessionaccess-method-has">
 
   <em class="modifier">public</em>
 
@@ -5017,7 +5097,7 @@ $key</em>)
 
   
 
-<h4 id="class-k2_adapter_defaultsessionaccess-method-get">
+<h4 id="class-k_adapter_defaultsessionaccess-method-get">
 
   <em class="modifier">public</em>
 
@@ -5037,7 +5117,7 @@ $default ] </em>)
 
   
 
-<h4 id="class-k2_adapter_defaultsessionaccess-method-set">
+<h4 id="class-k_adapter_defaultsessionaccess-method-set">
 
   <em class="modifier">public</em>
 
@@ -5057,7 +5137,7 @@ $value</em>)
 
   
 
-<h4 id="class-k2_adapter_defaultsessionaccess-method-close">
+<h4 id="class-k_adapter_defaultsessionaccess-method-close">
 
   <em class="modifier">public</em>
 
@@ -5073,7 +5153,7 @@ $value</em>)
 
   
 
-<h4 id="class-k2_adapter_defaultsessionaccess-method-destroy">
+<h4 id="class-k_adapter_defaultsessionaccess-method-destroy">
 
   <em class="modifier">public</em>
 
@@ -5089,7 +5169,7 @@ $value</em>)
 
   
 
-<h4 id="class-k2_adapter_defaultsessionaccess-method-sessionid">
+<h4 id="class-k_adapter_defaultsessionaccess-method-sessionid">
 
   <em class="modifier">public</em>
 
@@ -5105,7 +5185,7 @@ $value</em>)
 
   
 
-<h4 id="class-k2_adapter_defaultsessionaccess-method-regenerateid">
+<h4 id="class-k_adapter_defaultsessionaccess-method-regenerateid">
 
   <em class="modifier">public</em>
 
@@ -5121,28 +5201,28 @@ $value</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_adapter_mocksessionaccess">
+<h2 id="class-k_adapter_mocksessionaccess">
   <em>class</em>
-  <a href="#class-k2_adapter_mocksessionaccess">k2_adapter_MockSessionAccess</a>
+  <a href="#class-k_adapter_mocksessionaccess">k_adapter_MockSessionAccess</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_adapter_sessionaccess">k2_adapter_SessionAccess</a></h3>
+  <a href="#class-k_adapter_sessionaccess">k_adapter_SessionAccess</a></h3>
 
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_adapter_mocksessionaccess-property-cookie_access">
+  <h4 id="class-k_adapter_mocksessionaccess-property-cookie_access">
   <em class="modifier">protected</em>
 
 
   $cookie_access
-  : <em class="modifier"><a href="#class-k2_adapter_cookieaccess">k2_adapter_CookieAccess</a></em>
+  : <em class="modifier"><a href="#class-k_adapter_cookieaccess">k_adapter_CookieAccess</a></em>
 
 </h4>
 
 
-  <h4 id="class-k2_adapter_mocksessionaccess-property-raw">
+  <h4 id="class-k_adapter_mocksessionaccess-property-raw">
   <em class="modifier">protected</em>
 
 
@@ -5158,13 +5238,13 @@ $value</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_adapter_mocksessionaccess-method-__construct">
+<h4 id="class-k_adapter_mocksessionaccess-method-__construct">
 
   <em class="modifier">public</em>
 
 
-  __construct(<em><a href="#class-k2_adapter_cookieaccess"
->k2_adapter_CookieAccess</a>
+  __construct(<em><a href="#class-k_adapter_cookieaccess"
+>k_adapter_CookieAccess</a>
 
 $cookie_access [ , <span class="modifier">mixed</span>
 
@@ -5179,7 +5259,7 @@ $raw ] </em>)
 
   
 
-<h4 id="class-k2_adapter_mocksessionaccess-method-has">
+<h4 id="class-k_adapter_mocksessionaccess-method-has">
 
   <em class="modifier">public</em>
 
@@ -5197,7 +5277,7 @@ $key</em>)
 
   
 
-<h4 id="class-k2_adapter_mocksessionaccess-method-get">
+<h4 id="class-k_adapter_mocksessionaccess-method-get">
 
   <em class="modifier">public</em>
 
@@ -5217,7 +5297,7 @@ $default ] </em>)
 
   
 
-<h4 id="class-k2_adapter_mocksessionaccess-method-set">
+<h4 id="class-k_adapter_mocksessionaccess-method-set">
 
   <em class="modifier">public</em>
 
@@ -5237,7 +5317,7 @@ $value</em>)
 
   
 
-<h4 id="class-k2_adapter_mocksessionaccess-method-close">
+<h4 id="class-k_adapter_mocksessionaccess-method-close">
 
   <em class="modifier">public</em>
 
@@ -5253,7 +5333,7 @@ $value</em>)
 
   
 
-<h4 id="class-k2_adapter_mocksessionaccess-method-destroy">
+<h4 id="class-k_adapter_mocksessionaccess-method-destroy">
 
   <em class="modifier">public</em>
 
@@ -5269,7 +5349,7 @@ $value</em>)
 
   
 
-<h4 id="class-k2_adapter_mocksessionaccess-method-sessionid">
+<h4 id="class-k_adapter_mocksessionaccess-method-sessionid">
 
   <em class="modifier">public</em>
 
@@ -5285,7 +5365,7 @@ $value</em>)
 
   
 
-<h4 id="class-k2_adapter_mocksessionaccess-method-regenerateid">
+<h4 id="class-k_adapter_mocksessionaccess-method-regenerateid">
 
   <em class="modifier">public</em>
 
@@ -5301,18 +5381,18 @@ $value</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_adapter_mockglobalsaccess">
+<h2 id="class-k_adapter_mockglobalsaccess">
   <em>class</em>
-  <a href="#class-k2_adapter_mockglobalsaccess">k2_adapter_MockGlobalsAccess</a>
+  <a href="#class-k_adapter_mockglobalsaccess">k_adapter_MockGlobalsAccess</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_adapter_globalsaccess">k2_adapter_GlobalsAccess</a></h3>
+  <a href="#class-k_adapter_globalsaccess">k_adapter_GlobalsAccess</a></h3>
 
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_adapter_mockglobalsaccess-property-query">
+  <h4 id="class-k_adapter_mockglobalsaccess-property-query">
   <em class="modifier">public</em>
 
 
@@ -5322,7 +5402,7 @@ $value</em>)
 </h4>
 
 
-  <h4 id="class-k2_adapter_mockglobalsaccess-property-body">
+  <h4 id="class-k_adapter_mockglobalsaccess-property-body">
   <em class="modifier">public</em>
 
 
@@ -5332,7 +5412,7 @@ $value</em>)
 </h4>
 
 
-  <h4 id="class-k2_adapter_mockglobalsaccess-property-server">
+  <h4 id="class-k_adapter_mockglobalsaccess-property-server">
   <em class="modifier">public</em>
 
 
@@ -5342,7 +5422,7 @@ $value</em>)
 </h4>
 
 
-  <h4 id="class-k2_adapter_mockglobalsaccess-property-headers">
+  <h4 id="class-k_adapter_mockglobalsaccess-property-headers">
   <em class="modifier">public</em>
 
 
@@ -5352,7 +5432,7 @@ $value</em>)
 </h4>
 
 
-  <h4 id="class-k2_adapter_mockglobalsaccess-property-cookie">
+  <h4 id="class-k_adapter_mockglobalsaccess-property-cookie">
   <em class="modifier">public</em>
 
 
@@ -5362,7 +5442,7 @@ $value</em>)
 </h4>
 
 
-  <h4 id="class-k2_adapter_mockglobalsaccess-property-files">
+  <h4 id="class-k_adapter_mockglobalsaccess-property-files">
   <em class="modifier">public</em>
 
 
@@ -5378,7 +5458,7 @@ $value</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_adapter_mockglobalsaccess-method-__construct">
+<h4 id="class-k_adapter_mockglobalsaccess-method-__construct">
 
   <em class="modifier">public</em>
 
@@ -5406,7 +5486,7 @@ $files ]  ]  ]  ]  ]  ] </em>)
 
   
 
-<h4 id="class-k2_adapter_mockglobalsaccess-method-query">
+<h4 id="class-k_adapter_mockglobalsaccess-method-query">
 
   <em class="modifier">public</em>
 
@@ -5422,7 +5502,7 @@ $files ]  ]  ]  ]  ]  ] </em>)
 
   
 
-<h4 id="class-k2_adapter_mockglobalsaccess-method-body">
+<h4 id="class-k_adapter_mockglobalsaccess-method-body">
 
   <em class="modifier">public</em>
 
@@ -5438,7 +5518,7 @@ $files ]  ]  ]  ]  ]  ] </em>)
 
   
 
-<h4 id="class-k2_adapter_mockglobalsaccess-method-server">
+<h4 id="class-k_adapter_mockglobalsaccess-method-server">
 
   <em class="modifier">public</em>
 
@@ -5454,7 +5534,7 @@ $files ]  ]  ]  ]  ]  ] </em>)
 
   
 
-<h4 id="class-k2_adapter_mockglobalsaccess-method-headers">
+<h4 id="class-k_adapter_mockglobalsaccess-method-headers">
 
   <em class="modifier">public</em>
 
@@ -5470,7 +5550,7 @@ $files ]  ]  ]  ]  ]  ] </em>)
 
   
 
-<h4 id="class-k2_adapter_mockglobalsaccess-method-files">
+<h4 id="class-k_adapter_mockglobalsaccess-method-files">
 
   <em class="modifier">public</em>
 
@@ -5486,7 +5566,7 @@ $files ]  ]  ]  ]  ]  ] </em>)
 
   
 
-<h4 id="class-k2_adapter_mockglobalsaccess-method-cookie">
+<h4 id="class-k_adapter_mockglobalsaccess-method-cookie">
 
   <em class="modifier">public</em>
 
@@ -5502,16 +5582,16 @@ $files ]  ]  ]  ]  ]  ] </em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_adapter_mockcookieaccess">
+<h2 id="class-k_adapter_mockcookieaccess">
   <em>class</em>
-  <a href="#class-k2_adapter_mockcookieaccess">k2_adapter_MockCookieAccess</a>
+  <a href="#class-k_adapter_mockcookieaccess">k_adapter_MockCookieAccess</a>
 
   <em>extends</em>
-  <a href="#class-k2_adapter_defaultcookieaccess">k2_adapter_DefaultCookieAccess</a>
+  <a href="#class-k_adapter_defaultcookieaccess">k_adapter_DefaultCookieAccess</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_adapter_cookieaccess">k2_adapter_CookieAccess</a></h3>
+  <a href="#class-k_adapter_cookieaccess">k_adapter_CookieAccess</a></h3>
 
 
 
@@ -5519,7 +5599,7 @@ $files ]  ]  ]  ]  ]  ] </em>)
 <div class="methods">
   
 
-<h4 id="class-k2_adapter_mockcookieaccess-method-set">
+<h4 id="class-k_adapter_mockcookieaccess-method-set">
 
   <em class="modifier">public</em>
 
@@ -5545,9 +5625,9 @@ $httponly ]  ]  ] </em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_adapter_uploadedfileaccess">
+<h2 id="class-k_adapter_uploadedfileaccess">
   <em>interface</em>
-  <a href="#class-k2_adapter_uploadedfileaccess">k2_adapter_UploadedFileAccess</a>
+  <a href="#class-k_adapter_uploadedfileaccess">k_adapter_UploadedFileAccess</a>
 </h2>
 
 
@@ -5556,7 +5636,7 @@ $httponly ]  ]  ] </em>)
 <div class="methods">
   
 
-<h4 id="class-k2_adapter_uploadedfileaccess-method-copy">
+<h4 id="class-k_adapter_uploadedfileaccess-method-copy">
 
   <em class="modifier">abstract</em>,
 
@@ -5578,13 +5658,13 @@ $path_destination</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_adapter_defaultuploadedfileaccess">
+<h2 id="class-k_adapter_defaultuploadedfileaccess">
   <em>class</em>
-  <a href="#class-k2_adapter_defaultuploadedfileaccess">k2_adapter_DefaultUploadedFileAccess</a>
+  <a href="#class-k_adapter_defaultuploadedfileaccess">k_adapter_DefaultUploadedFileAccess</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_adapter_uploadedfileaccess">k2_adapter_UploadedFileAccess</a></h3>
+  <a href="#class-k_adapter_uploadedfileaccess">k_adapter_UploadedFileAccess</a></h3>
 
 
 
@@ -5592,7 +5672,7 @@ $path_destination</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_adapter_defaultuploadedfileaccess-method-copy">
+<h4 id="class-k_adapter_defaultuploadedfileaccess-method-copy">
 
   <em class="modifier">public</em>
 
@@ -5612,7 +5692,7 @@ $path_destination</em>)
 
   
 
-<h4 id="class-k2_adapter_defaultuploadedfileaccess-method-mkdir">
+<h4 id="class-k_adapter_defaultuploadedfileaccess-method-mkdir">
 
   <em class="modifier">protected</em>
 
@@ -5630,7 +5710,7 @@ $path</em>)
 
   
 
-<h4 id="class-k2_adapter_defaultuploadedfileaccess-method-ensuredirectory">
+<h4 id="class-k_adapter_defaultuploadedfileaccess-method-ensuredirectory">
 
   <em class="modifier">protected</em>
 
@@ -5648,18 +5728,18 @@ $dir</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_adapter_mockuploadedfileaccess">
+<h2 id="class-k_adapter_mockuploadedfileaccess">
   <em>class</em>
-  <a href="#class-k2_adapter_mockuploadedfileaccess">k2_adapter_MockUploadedFileAccess</a>
+  <a href="#class-k_adapter_mockuploadedfileaccess">k_adapter_MockUploadedFileAccess</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_adapter_uploadedfileaccess">k2_adapter_UploadedFileAccess</a></h3>
+  <a href="#class-k_adapter_uploadedfileaccess">k_adapter_UploadedFileAccess</a></h3>
 
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_adapter_mockuploadedfileaccess-property-actions">
+  <h4 id="class-k_adapter_mockuploadedfileaccess-property-actions">
   <em class="modifier">public</em>
 
 
@@ -5675,7 +5755,7 @@ $dir</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_adapter_mockuploadedfileaccess-method-copy">
+<h4 id="class-k_adapter_mockuploadedfileaccess-method-copy">
 
   <em class="modifier">public</em>
 
@@ -5695,15 +5775,15 @@ $path_destination</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_adapter_uploadedfile">
+<h2 id="class-k_adapter_uploadedfile">
   <em>class</em>
-  <a href="#class-k2_adapter_uploadedfile">k2_adapter_UploadedFile</a>
+  <a href="#class-k_adapter_uploadedfile">k_adapter_UploadedFile</a>
 </h2>
 
 
 <h3>properties</h3>
 <div class="properties">
-  <h4 id="class-k2_adapter_uploadedfile-property-key">
+  <h4 id="class-k_adapter_uploadedfile-property-key">
   <em class="modifier">protected</em>
 
 
@@ -5713,7 +5793,7 @@ $path_destination</em>)
 </h4>
 
 
-  <h4 id="class-k2_adapter_uploadedfile-property-name">
+  <h4 id="class-k_adapter_uploadedfile-property-name">
   <em class="modifier">protected</em>
 
 
@@ -5723,7 +5803,7 @@ $path_destination</em>)
 </h4>
 
 
-  <h4 id="class-k2_adapter_uploadedfile-property-tmp_name">
+  <h4 id="class-k_adapter_uploadedfile-property-tmp_name">
   <em class="modifier">protected</em>
 
 
@@ -5733,7 +5813,7 @@ $path_destination</em>)
 </h4>
 
 
-  <h4 id="class-k2_adapter_uploadedfile-property-size">
+  <h4 id="class-k_adapter_uploadedfile-property-size">
   <em class="modifier">protected</em>
 
 
@@ -5743,7 +5823,7 @@ $path_destination</em>)
 </h4>
 
 
-  <h4 id="class-k2_adapter_uploadedfile-property-type">
+  <h4 id="class-k_adapter_uploadedfile-property-type">
   <em class="modifier">protected</em>
 
 
@@ -5753,7 +5833,7 @@ $path_destination</em>)
 </h4>
 
 
-  <h4 id="class-k2_adapter_uploadedfile-property-file_access">
+  <h4 id="class-k_adapter_uploadedfile-property-file_access">
   <em class="modifier">protected</em>
 
 
@@ -5769,7 +5849,7 @@ $path_destination</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_adapter_uploadedfile-method-__construct">
+<h4 id="class-k_adapter_uploadedfile-method-__construct">
 
   <em class="modifier">public</em>
 
@@ -5778,8 +5858,8 @@ $path_destination</em>)
 
 $file_data, <span class="modifier">mixed</span>
 
-$key, <a href="#class-k2_adapter_uploadedfileaccess"
->k2_adapter_UploadedFileAccess</a>
+$key, <a href="#class-k_adapter_uploadedfileaccess"
+>k_adapter_UploadedFileAccess</a>
 
 $file_access</em>)
 
@@ -5792,7 +5872,7 @@ $file_access</em>)
 
   
 
-<h4 id="class-k2_adapter_uploadedfile-method-__serialize">
+<h4 id="class-k_adapter_uploadedfile-method-__serialize">
 
   <em class="modifier">public</em>
 
@@ -5808,7 +5888,7 @@ $file_access</em>)
 
   
 
-<h4 id="class-k2_adapter_uploadedfile-method-key">
+<h4 id="class-k_adapter_uploadedfile-method-key">
 
   <em class="modifier">public</em>
 
@@ -5824,7 +5904,7 @@ $file_access</em>)
 
   
 
-<h4 id="class-k2_adapter_uploadedfile-method-name">
+<h4 id="class-k_adapter_uploadedfile-method-name">
 
   <em class="modifier">public</em>
 
@@ -5840,7 +5920,7 @@ $file_access</em>)
 
   
 
-<h4 id="class-k2_adapter_uploadedfile-method-type">
+<h4 id="class-k_adapter_uploadedfile-method-type">
 
   <em class="modifier">public</em>
 
@@ -5856,7 +5936,7 @@ $file_access</em>)
 
   
 
-<h4 id="class-k2_adapter_uploadedfile-method-size">
+<h4 id="class-k_adapter_uploadedfile-method-size">
 
   <em class="modifier">public</em>
 
@@ -5872,7 +5952,7 @@ $file_access</em>)
 
   
 
-<h4 id="class-k2_adapter_uploadedfile-method-writeto">
+<h4 id="class-k_adapter_uploadedfile-method-writeto">
 
   <em class="modifier">public</em>
 
@@ -5890,9 +5970,9 @@ $path_destination</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_charset_responsecharset">
+<h2 id="class-k_charset_responsecharset">
   <em>interface</em>
-  <a href="#class-k2_charset_responsecharset">k2_charset_ResponseCharset</a>
+  <a href="#class-k_charset_responsecharset">k_charset_ResponseCharset</a>
 </h2>
 
 <div class="docblock">
@@ -5906,7 +5986,7 @@ from this base</p>
 <div class="methods">
   
 
-<h4 id="class-k2_charset_responsecharset-method-name">
+<h4 id="class-k_charset_responsecharset-method-name">
 
   <em class="modifier">abstract</em>,
 
@@ -5924,7 +6004,7 @@ from this base</p>
 
   
 
-<h4 id="class-k2_charset_responsecharset-method-encode">
+<h4 id="class-k_charset_responsecharset-method-encode">
 
   <em class="modifier">abstract</em>,
 
@@ -5944,13 +6024,13 @@ $utf8_string</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_charset_utf8">
+<h2 id="class-k_charset_utf8">
   <em>class</em>
-  <a href="#class-k2_charset_utf8">k2_charset_Utf8</a>
+  <a href="#class-k_charset_utf8">k_charset_Utf8</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_charset_responsecharset">k2_charset_ResponseCharset</a></h3>
+  <a href="#class-k_charset_responsecharset">k_charset_ResponseCharset</a></h3>
 
 
 
@@ -5958,7 +6038,7 @@ $utf8_string</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_charset_utf8-method-name">
+<h4 id="class-k_charset_utf8-method-name">
 
   <em class="modifier">public</em>
 
@@ -5974,7 +6054,7 @@ $utf8_string</em>)
 
   
 
-<h4 id="class-k2_charset_utf8-method-encode">
+<h4 id="class-k_charset_utf8-method-encode">
 
   <em class="modifier">public</em>
 
@@ -5992,13 +6072,13 @@ $utf8_string</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_charset_latin1">
+<h2 id="class-k_charset_latin1">
   <em>class</em>
-  <a href="#class-k2_charset_latin1">k2_charset_Latin1</a>
+  <a href="#class-k_charset_latin1">k_charset_Latin1</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_charset_responsecharset">k2_charset_ResponseCharset</a></h3>
+  <a href="#class-k_charset_responsecharset">k_charset_ResponseCharset</a></h3>
 
 
 
@@ -6006,7 +6086,7 @@ $utf8_string</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_charset_latin1-method-name">
+<h4 id="class-k_charset_latin1-method-name">
 
   <em class="modifier">public</em>
 
@@ -6022,7 +6102,7 @@ $utf8_string</em>)
 
   
 
-<h4 id="class-k2_charset_latin1-method-encode">
+<h4 id="class-k_charset_latin1-method-encode">
 
   <em class="modifier">public</em>
 
@@ -6040,9 +6120,9 @@ $utf8_string</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_charset_charsetstrategy">
+<h2 id="class-k_charset_charsetstrategy">
   <em>interface</em>
-  <a href="#class-k2_charset_charsetstrategy">k2_charset_CharsetStrategy</a>
+  <a href="#class-k_charset_charsetstrategy">k_charset_CharsetStrategy</a>
 </h2>
 
 <div class="docblock">
@@ -6054,7 +6134,7 @@ $utf8_string</em>)
 <div class="methods">
   
 
-<h4 id="class-k2_charset_charsetstrategy-method-decodeinput">
+<h4 id="class-k_charset_charsetstrategy-method-decodeinput">
 
   <em class="modifier">abstract</em>,
 
@@ -6074,7 +6154,7 @@ $input</em>)
 
   
 
-<h4 id="class-k2_charset_charsetstrategy-method-responsecharset">
+<h4 id="class-k_charset_charsetstrategy-method-responsecharset">
 
   <em class="modifier">abstract</em>,
 
@@ -6092,7 +6172,7 @@ $input</em>)
 
   
 
-<h4 id="class-k2_charset_charsetstrategy-method-isinternalutf8">
+<h4 id="class-k_charset_charsetstrategy-method-isinternalutf8">
 
   <em class="modifier">abstract</em>,
 
@@ -6110,13 +6190,13 @@ $input</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_charset_utf8charsetstrategy">
+<h2 id="class-k_charset_utf8charsetstrategy">
   <em>class</em>
-  <a href="#class-k2_charset_utf8charsetstrategy">k2_charset_Utf8CharsetStrategy</a>
+  <a href="#class-k_charset_utf8charsetstrategy">k_charset_Utf8CharsetStrategy</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_charset_charsetstrategy">k2_charset_CharsetStrategy</a></h3>
+  <a href="#class-k_charset_charsetstrategy">k_charset_CharsetStrategy</a></h3>
 
 <div class="docblock">
   <p>Full UTF-8
@@ -6132,7 +6212,7 @@ If you use a database, make sure that the transfer charset is utf-8 (on mysql us
 <div class="methods">
   
 
-<h4 id="class-k2_charset_utf8charsetstrategy-method-decodeinput">
+<h4 id="class-k_charset_utf8charsetstrategy-method-decodeinput">
 
   <em class="modifier">public</em>
 
@@ -6150,14 +6230,14 @@ $input</em>)
 
   
 
-<h4 id="class-k2_charset_utf8charsetstrategy-method-responsecharset">
+<h4 id="class-k_charset_utf8charsetstrategy-method-responsecharset">
 
   <em class="modifier">public</em>
 
 
   responseCharset()
 
-  : <em class="modifier"><a href="#class-k2_charset_utf8">k2_charset_Utf8</a></em>
+  : <em class="modifier"><a href="#class-k_charset_utf8">k_charset_Utf8</a></em>
 
 
 </h4>
@@ -6166,7 +6246,7 @@ $input</em>)
 
   
 
-<h4 id="class-k2_charset_utf8charsetstrategy-method-isinternalutf8">
+<h4 id="class-k_charset_utf8charsetstrategy-method-isinternalutf8">
 
   <em class="modifier">public</em>
 
@@ -6182,13 +6262,13 @@ $input</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_charset_latin1charsetstrategy">
+<h2 id="class-k_charset_latin1charsetstrategy">
   <em>class</em>
-  <a href="#class-k2_charset_latin1charsetstrategy">k2_charset_Latin1CharsetStrategy</a>
+  <a href="#class-k_charset_latin1charsetstrategy">k_charset_Latin1CharsetStrategy</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_charset_charsetstrategy">k2_charset_CharsetStrategy</a></h3>
+  <a href="#class-k_charset_charsetstrategy">k_charset_CharsetStrategy</a></h3>
 
 <div class="docblock">
   <p>Full latin1, throughout the application
@@ -6200,7 +6280,7 @@ While this is the native solution for PHP &lt; 6, it isn&#039;t recommended for 
 <div class="methods">
   
 
-<h4 id="class-k2_charset_latin1charsetstrategy-method-decodeinput">
+<h4 id="class-k_charset_latin1charsetstrategy-method-decodeinput">
 
   <em class="modifier">public</em>
 
@@ -6218,7 +6298,7 @@ $input</em>)
 
   
 
-<h4 id="class-k2_charset_latin1charsetstrategy-method-responsecharset">
+<h4 id="class-k_charset_latin1charsetstrategy-method-responsecharset">
 
   <em class="modifier">public</em>
 
@@ -6234,7 +6314,7 @@ $input</em>)
 
   
 
-<h4 id="class-k2_charset_latin1charsetstrategy-method-isinternalutf8">
+<h4 id="class-k_charset_latin1charsetstrategy-method-isinternalutf8">
 
   <em class="modifier">public</em>
 
@@ -6250,13 +6330,13 @@ $input</em>)
 
 </div>
 </div><div class="class">
-<h2 id="class-k2_charset_fauxutf8charsetstrategy">
+<h2 id="class-k_charset_fauxutf8charsetstrategy">
   <em>class</em>
-  <a href="#class-k2_charset_fauxutf8charsetstrategy">k2_charset_FauxUtf8CharsetStrategy</a>
+  <a href="#class-k_charset_fauxutf8charsetstrategy">k_charset_FauxUtf8CharsetStrategy</a>
 </h2>
 <h3>
   <em>implements</em>
-  <a href="#class-k2_charset_charsetstrategy">k2_charset_CharsetStrategy</a></h3>
+  <a href="#class-k_charset_charsetstrategy">k_charset_CharsetStrategy</a></h3>
 
 <div class="docblock">
   <p>All input/output as UTF-8, but latin1 on the inside
@@ -6271,7 +6351,7 @@ It will encode/decode the outside as UTF-8, so the page appears in UTF-8 for the
 <div class="methods">
   
 
-<h4 id="class-k2_charset_fauxutf8charsetstrategy-method-decodeinput">
+<h4 id="class-k_charset_fauxutf8charsetstrategy-method-decodeinput">
 
   <em class="modifier">public</em>
 
@@ -6289,7 +6369,7 @@ $input</em>)
 
   
 
-<h4 id="class-k2_charset_fauxutf8charsetstrategy-method-responsecharset">
+<h4 id="class-k_charset_fauxutf8charsetstrategy-method-responsecharset">
 
   <em class="modifier">public</em>
 
@@ -6305,7 +6385,7 @@ $input</em>)
 
   
 
-<h4 id="class-k2_charset_fauxutf8charsetstrategy-method-isinternalutf8">
+<h4 id="class-k_charset_fauxutf8charsetstrategy-method-isinternalutf8">
 
   <em class="modifier">public</em>
 

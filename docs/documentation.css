@@ -24,7 +24,7 @@ h3 {
 	font-weight: normal;
 }
 code, pre {
-  font-family: "courier new", courier, monospace;
+  font-family: monospace, "courier new", courier, monospace;
   font-size: .8em;
 }
 pre {
@@ -70,15 +70,12 @@ p.note {
 	color : #000;
 }
 code {
-	font-weight: bold;
+  background-color : #eee;
 }
 pre {
   background-color : #eee;
-  border-color : #FFD42A;
-  border-style: solid;
-  border-width: 0px;
   padding: 1em;
-  color: #666666;
+  color: #666;
 }
 
 pre .kw1,
@@ -109,4 +106,15 @@ pre .co1 {
 }
 .illustration {
   text-align: center;
+}
+table {
+  border-collapse: collapse;
+}
+th, td {
+  border: 1px solid #eee;
+  padding: .25em 1em;
+}
+th {
+  padding: .5em 1em;
+  background-color: #eee;
 }

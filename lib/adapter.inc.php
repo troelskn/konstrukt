@@ -42,7 +42,7 @@ class k_adapter_SafeGlobalsAccess implements k_adapter_GlobalsAccess {
   /** @var boolean */
   protected $magic_quotes_gpc;
   /**
-    * @param k_charset_Latin1CharsetStrategy
+    * @param k_charset_CharsetStrategy
     * @param bool
     * @return null
     */

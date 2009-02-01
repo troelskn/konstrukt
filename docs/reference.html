@@ -5,7 +5,72 @@
   <link rel="stylesheet" type="text/css" href="documentation.css" />
 </head>
 <body>
+
 <h1 id="konstrukt-reference">Konstrukt Reference</h1>
+
+<p><ul id="table-of-contents">
+<li><a href="#konstrukt-reference">Konstrukt Reference</a><ul>
+<li><a href="#component-essentials">Component essentials</a><ul>
+<li><a href="#dispatch-life-cycle">Dispatch life-cycle</a></li>
+<li><a href="#dispatch-map-forward">dispatch, map, forward</a></li>
+<li><a href="#execute-get-post">execute, GET, POST</a></li>
+<li><a href="#renderers">Renderers</a></li>
+</ul>
+</li>
+<li><a href="#http-input">HTTP input</a><ul>
+<li><a href="#name-subtype-subspace">name, subtype, subspace</a></li>
+<li><a href="#query-body">query, body</a></li>
+<li><a href="#querystring-namespace">Querystring namespace</a></li>
+<li><a href="#session">Session</a></li>
+<li><a href="#cookies">Cookies</a></li>
+<li><a href="#file-uploads">File uploads</a></li>
+</ul>
+</li>
+<li><a href="#url-generation">Url generation</a><ul>
+<li><a href="#urlstate-parameters">Urlstate parameters</a></li>
+</ul>
+</li>
+<li><a href="#shared-objects">Shared objects</a><ul>
+<li><a href="#identity">Identity</a></li>
+<li><a href="#document">Document</a></li>
+</ul>
+</li>
+<li><a href="#abnormal-responses">Abnormal responses</a><ul>
+<li><a href="#http-response">Http response</a></li>
+<li><a href="#meta-response">Meta response</a></li>
+</ul>
+</li>
+<li><a href="#templates">Templates</a><ul>
+<li><a href="#php-templates">PHP-templates</a></li>
+</ul>
+</li>
+<li><a href="#component-creation">Component creation</a><ul>
+<li><a href="#di-containers">DI containers</a></li>
+<li><a href="#createcomponent">createComponent</a></li>
+</ul>
+</li>
+<li><a href="#encoding">Encoding</a><ul>
+<li><a href="#how-to-use-utf-8">How to use utf-8</a></li>
+<li><a href="#plan-b-legacy-applications">Plan b (legacy applications)</a></li>
+</ul>
+</li>
+<li><a href="#environment-setup">Environment/setup</a><ul>
+<li><a href="#file-layout">File layout</a></li>
+<li><a href="#static-content">Static content</a></li>
+<li><a href="#global-handlers">Global handlers</a></li>
+<li><a href="#naming-convention">Naming convention</a></li>
+<li><a href="#bootstrap">Bootstrap</a></li>
+</ul>
+</li>
+<li><a href="#debugging">Debugging</a><ul>
+<li><a href="#logs">Logs</a></li>
+<li><a href="#functional-testing">Functional testing</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
 
 <p>This document contains a description of the features of Konstrukt. For a more hands-on introduction, you should start out with <a href="getting-started-part1.html">getting started</a>.</p>
 
@@ -15,11 +80,11 @@
 
 <p>Troels Knak-Nielsen, January 2009, troelskn@gmail.com</p>
 
-<h2 id="component-essentials">component essentials</h2>
+<h2 id="component-essentials">Component essentials</h2>
 
-<p>A component is a class that extends from <code>k2_Component</code>. Its purpose is to handle a request or delegate control to anothe3r component, that can handle it. This is much similar to how the Apache web server is structured. The way a component is addressed is through the URL path. Each path segment is mapped to a component. The special thing about Konstrukt in this respect, is that the exact mapping is determined at runtime. Each component is fully tasked with choosen the next component in the chain. This is a very powerful concept, but can also be slightly hard to comprehend at first. As a newcomer you may therefore find the <a href="debugging">dispatch logging</a> useful.</p>
+<p>A component is a class that extends from <code>k_Component</code>. Its purpose is to handle a request or delegate control to anothe3r component, that can handle it. This is much similar to how the Apache web server is structured. The way a component is addressed is through the URL path. Each path segment is mapped to a component. The special thing about Konstrukt in this respect, is that the exact mapping is determined at runtime. Each component is fully tasked with choosen the next component in the chain. This is a very powerful concept, but can also be slightly hard to comprehend at first. As a newcomer you may therefore find the <a href="debugging">dispatch logging</a> useful.</p>
 
-<h3 id="dispatch-life-cycle">dispatch life-cycle</h3>
+<h3 id="dispatch-life-cycle">Dispatch life-cycle</h3>
 
 <p>A component is instantiated as an object before use. To allow for maximum flexibility in implementation, the constructor is not used for passing essential dependencies. These are instead passed immediately after creation through setters. Of these dependencies, the most important is the context, which will usually be another component instance.</p>
 
@@ -33,7 +98,7 @@
 
 <p>The <code>execute()</code> method is the first method invoked for the handling component. It is unusual to override this in concrete components, although there are cases for it. Since execute is invoked for any kind of HTTP-method, it is a good place to load model components that are identified by the url of the component. The default implementation of <code>execute()</code> inspects the HTTP-method and delegates control to one of <code>GET()</code>, <code>POST()</code>, <code>HEAD()</code>, <code>PUT()</code> or <code>DELETE()</code>. In most web applications, you will probably just concern your self with the first two, since theese are the only one widely supported by browsers. Luckily they are also the most important.</p>
 
-<h3 id="renderers">renderers</h3>
+<h3 id="renderers">Renderers</h3>
 
 <p>The <code>GET()</code> and <code>POST()</code> methods can be overridden, but it's now recommended that you don't override <code>GET()</code>. The default implementation of <code>GET()</code> will negotiate the content-type, and finally delegate control to a render method. So for most applications, you would implement <code>renderHtml()</code>. You can implement multiple renderers, and the negotiation will pick the best candidate. The naming of renderers corresponds to their content-type per the following chart:</p>
 
@@ -119,7 +184,7 @@
 
 <p>The return type of a renderer should either be a string (Which is expected to be a HTML fragment) or the method should throw a response. Remember to specify the content-type, if you're throwing a response to a non-HTML content-type.</p>
 
-<h2 id="http-input">http-input</h2>
+<h2 id="http-input">HTTP input</h2>
 
 <p>A component can access the various input that comes from a http-request. These are obtained through the <code>$context</code> object, rather than through a global place, which makes components very encasulated and -among other things - more testable.</p>
 
@@ -142,32 +207,32 @@
 <pre class="php">  <span class="re0">$this</span>-&gt;<span class="me1">query</span><span class="br0">&#40;</span><span class="br0">&#41;</span>; <span class="co1">// array('foo' =&gt; 'bar')</span>
   <span class="re0">$this</span>-&gt;<span class="me1">query</span><span class="br0">&#40;</span><span class="st0">'foo'</span><span class="br0">&#41;</span>; <span class="co1">// 'bar'</span></pre>
 
-<h3 id="querystring-namespace">querystring namespace</h3>
+<h3 id="querystring-namespace">Querystring namespace</h3>
 
 <p>Because the querystring is shared amongst every component, you can sometimes run into problems when you need to pass parameters to multiple components (Not exactly a common requirement, but it can happen). Components can use a namespace to protect the querystring in these cases.
 It's the context that specifies a namespace for its subcomponents, and it works completely transparent to the subcomponent. To create a component with a namespace, your <code>map()</code> method should return an array instead of a string, where the first element is the namespace and the second is the classname.</p>
 
-<h3 id="sessions">sessions</h3>
+<h3 id="session">Session</h3>
 
 <p>Sessions are a very powerful feature for maintaining state in a web application. Unfortunately it's often overused. While there are cases where it's the best pick, you should generally try to use some other means of maintaining state, if at all possible. That said, Konstrukt provides access to PHPs session mechanism, through a wrapper.</p>
 
-<p>Each component has a method <code>session()</code> that can be called in two ways. Either you provide an argument (Which should be a string), and you'll get the value of a session variable by that name back (or null, if it's not defined). Alternatively you can call it without any arguments, in which cas you'll the an object back of the type <code>k2_adapter_SessionAccess</code>. It has methods for getting/setting session variables and other session-related functions.</p>
+<p>Each component has a method <code>session()</code> that can be called in two ways. Either you provide an argument (Which should be a string), and you'll get the value of a session variable by that name back (or null, if it's not defined). Alternatively you can call it without any arguments, in which cas you'll the an object back of the type <code>k_adapter_SessionAccess</code>. It has methods for getting/setting session variables and other session-related functions.</p>
 
 <p>Note that you don't need to worry about calling <code>session_start()</code>, since this is done automatically by the wrapper.</p>
 
-<h3 id="cookies">cookies</h3>
+<h3 id="cookies">Cookies</h3>
 
 <p>Cookies is a mixed client/server side way of maintaning state. Is has a number of limitations which makes it a less popular choice, but it can still be useful in certain cases. You can access cookies through a wrapper in Konstrukt.</p>
 
-<p>The cookie wrapper works just as the session wrapper. Each component has a method <code>cookie()</code> that can be called with a parameter to retrieve the value of a cookie by that name, or without any arguments to get an object back of the type <code>k2_adapter_CookieAccess</code>.</p>
+<p>The cookie wrapper works just as the session wrapper. Each component has a method <code>cookie()</code> that can be called with a parameter to retrieve the value of a cookie by that name, or without any arguments to get an object back of the type <code>k_adapter_CookieAccess</code>.</p>
 
-<h3 id="file-uploads">file uploads</h3>
+<h3 id="file-uploads">File uploads</h3>
 
-<p>In PHP files uploaded with a form are accessible through <code>$_FILLES</code>. Inside a component, you can access the same information through the method <code>file()</code>. You can either pass a parameter to get back a specific file or call it without any arguments to get a hashmap of all files. A file is wrapped in an object of the type <code>k2_adapter_UploadedFile</code>, which helps to abstract direct access to the filesystem away. As a side effect it also has a simpler interface than PHPs native handling of file uploads. To save an uploaded file, just call <code>writeTo($path_destination)</code> with the destination as argument.</p>
+<p>In PHP files uploaded with a form are accessible through <code>$_FILLES</code>. Inside a component, you can access the same information through the method <code>file()</code>. You can either pass a parameter to get back a specific file or call it without any arguments to get a hashmap of all files. A file is wrapped in an object of the type <code>k_adapter_UploadedFile</code>, which helps to abstract direct access to the filesystem away. As a side effect it also has a simpler interface than PHPs native handling of file uploads. To save an uploaded file, just call <code>writeTo($path_destination)</code> with the destination as argument.</p>
 
 <p>Note that you need to go through the <a href="http://www.php.net/features.file-upload.post-method.php">regular hoops to get file uploads working</a>. Most importantly you need to set the <code>enctype="multipart/form-data"</code> property on your form tag.</p>
 
-<h2 id="url-generation">url generation</h2>
+<h2 id="url-generation">Url generation</h2>
 
 <p>All components are tightly coupled to a url. Components can parse (dispatch) urls, and they can also generate urls. To make your application as flexible as possible, it is recommended that you generate internal urls, using the <code>url()</code> method, rather than hardcoding them as strings. From within a component, you can call <code>url()</code> without any parameters to get a url pointing to the current component. As the first argument, you can pass a subspace, and as the second argument, you can pass a hash of query-string parameters. Eg.:</p>
 
@@ -181,13 +246,13 @@ It's the context that specifies a namespace for its subcomponents, and it works 
 
 <p class="note">Note:   Apache has a <a href="http://httpd.apache.org/docs/2.2/mod/core.html#allowencodedslashes">security feature</a> that disallows url path segments to contain an encoded slash. Thus, you should avoid names that contains slashes. In general, it is a good idea to stick to <code>a-z0-9_-</code> for url names.</p>
 
-<h3 id="urlstate-parameters">urlstate parameters</h3>
+<h3 id="urlstate-parameters">Urlstate parameters</h3>
 
 <p>If a component needs to maintain view-related state, you have a limited set of options. In essence, the choice is between propagating state over urls (client side state) or using a server side mechanism (eg. sessions). Cookies are also a solution, but it has most of the problems associated with session state, and even some of its own. Client side state is often the superior choice, but it is tedious to do by hand. Konstrukt has therefore a mechanism build in to support this. Viewstate can be propagated as querystring parameters, using the <code>urlstate</code> property of a component. Properties that are set on the urlstate will be automatically set on any urls for the component, unless explicitly overridden. A typical usecase is for searches and other data-views.</p>
 
 <p>Urlstate parameters is specified, along with their initial value, by implementing the <code>url_init</code> in your component. For example, to the following specifies a single parameter "foo". If no input is present for it, it has the value "bar":</p>
 
-<pre class="php"><span class="kw2">class</span> MyStatefulComponent <span class="kw2">extends</span> k2_component <span class="br0">&#123;</span>
+<pre class="php"><span class="kw2">class</span> MyStatefulComponent <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
   <span class="kw2">protected</span> <span class="re0">$url_init</span> = <span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">'foo'</span> =&gt; <span class="st0">&quot;bar&quot;</span><span class="br0">&#41;</span>;
 <span class="br0">&#125;</span></pre>
 
@@ -195,23 +260,23 @@ It's the context that specifies a namespace for its subcomponents, and it works 
 
 <pre class="php">  <span class="re0">$this</span>-&gt;<span class="me1">url_state</span>-&gt;<span class="me1">get</span><span class="br0">&#40;</span><span class="st0">'foo'</span><span class="br0">&#41;</span>; <span class="co1">// -&gt; &quot;quux&quot;</span></pre>
 
-<h2 id="shared-objects">shared objects</h2>
+<h2 id="shared-objects">Shared objects</h2>
 
 <p>A few objects are shared amongst all components.</p>
 
-<h3 id="identity">identity</h3>
+<h3 id="identity">Identity</h3>
 
-<p>The identity object is an object represeting the current user. Every component can access the identity by calling the access <code>identity()</code>. The default implementation is <code>k2_Anonymous</code>.</p>
+<p>The identity object is an object represeting the current user. Every component can access the identity by calling the access <code>identity()</code>. The default implementation is <code>k_Anonymous</code>.</p>
 
-<p>The identity is loaded from an <code>k2_DefaultIdentityLoader</code>, that can be configured with the bootstrap. An identity-loader is a simple factory, that gets passed the top-level context, and is expected to return an instance of <code>k2_Identity</code>. The usual use case is to load a user-object from the database or an authentication system.</p>
+<p>The identity is loaded from an <code>k_DefaultIdentityLoader</code>, that can be configured with the <a href="#bootstrap">bootstrap</a>. An identity-loader is a simple factory, that gets passed the top-level context, and is expected to return an instance of <code>k_Identity</code>. The usual use case is to load a user-object from the database or an authentication system.</p>
 
-<h3 id="document">document</h3>
+<h3 id="document">Document</h3>
 
-<p>The document is an instance of <code>k2_Document</code>, and contains values that are global to the HTML document, such as title, css includes etc. A component can access the document via the <code>document()</code> method.</p>
+<p>The document is an instance of <code>k_Document</code>, and contains values that are global to the HTML document, such as title, css includes etc. A component can access the document via the <code>document()</code> method.</p>
 
-<p>The default document has accessors for setting the title, adding external javascript and css files to <code>&lt;head&gt;</code>, and adding javascript code to run on page load. This is a fairly limited number of properties. If you need more, you could subclass <code>k2_Document</code> and set your own implementation in the bootstrap. It is recommended to keep such properties as specific as possible, to prevent that the object becomes a dumping ground for global variables.</p>
+<p>The default document has accessors for setting the title, adding external javascript and css files to <code>&lt;head&gt;</code>, and adding javascript code to run on page load. This is a fairly limited number of properties. If you need more, you could subclass <code>k_Document</code> and set your own implementation in the <a href="#bootstrap">bootstrap</a>. It is recommended to keep such properties as specific as possible, to prevent that the object becomes a dumping ground for global variables.</p>
 
-<h2 id="abnormal-responses">abnormal responses</h2>
+<h2 id="abnormal-responses">Abnormal responses</h2>
 
 <p>By default, components are expected to return a string of html, that can be a full or partial html document. This is the primary format of web applications, and therefore gets a special treatment over other formats. Sometimes though, you don't want the output to be embedded in the normal rendering mechanism or you need more finegrained control over the http response. This could be the case with alternative content-types, that shouldn't go in to the normal rendering chain, or it could be a redirect or an error code of some kind.</p>
 
@@ -219,83 +284,83 @@ It's the context that specifies a namespace for its subcomponents, and it works 
 
 <p>There are two kinds of abnormal responses, for different levels of abstraction/control.</p>
 
-<h3 id="httpresponse">httpresponse</h3>
+<h3 id="http-response">Http response</h3>
 
 <p>A httpresponse is the most finegrained/least abstract kind of abnormal response. It gives you full control over the http-level output sent back to the client, including headers and status codes. You should use this for serving non-html content-types.</p>
 
-<p>In addition to the generic <code>k2_Httpresponse</code>, there are three specialised variations that should be used for redirects:</p>
+<p>In addition to the generic <code>k_Httpresponse</code>, there are three specialised variations that should be used for redirects:</p>
 
 <dl>
-<dt><code>k2_MovedPermanently</code></dt>
+<dt><code>k_MovedPermanently</code></dt>
 <dd>Use this if the URL has changed (Eg. a page has been renamed).</dd>
 
-<dt><code>k2_SeeOther</code></dt>
+<dt><code>k_SeeOther</code></dt>
 <dd>Use this type of redirect specifically for redirecting after POST.</dd>
 
-<dt><code>k2_TemporaryRedirect</code></dt>
+<dt><code>k_TemporaryRedirect</code></dt>
 <dd>Use this type of redirect if the destination changes from request to request, or if you want the client to keep using the requested URI in the future.</dd>
 </dl>
 
-<h3 id="metaresponse">metaresponse</h3>
+<h3 id="meta-response">Meta response</h3>
 
 <p>A metaresponse is a more abstract form of response. While you could just use a httpresponse, you should try to use these for, if possible, since it makes your application more flexible. A metaresponse is transformed into a concrete httpresponse by the dispatcher. The primary benefit of using a metaresponse over a httpresponse, is that it gives you control over rendering of various error-pages. For example, rather than constructing a httpresponse with status 404, you should use the metaresponse NotFound. This makes it possible to have a customised page for all "not found" responses.</p>
 
 <p>The currently supported metaresponses are:</p>
 
 <dl>
-<dt><code>k2_Forbidden</code></dt>
+<dt><code>k_Forbidden</code></dt>
 <dd>Raise this if the user doesn't have access to the requested resource.</dd>
 
-<dt><code>k2_PageNotFound</code></dt>
+<dt><code>k_PageNotFound</code></dt>
 <dd>Raise this if the requested resource couldn't be found.</dd>
 
-<dt><code>k2_MethodNotAllowed</code></dt>
+<dt><code>k_MethodNotAllowed</code></dt>
 <dd>Raise this if resource doesn't support the requested HTTP method.</dd>
 
-<dt><code>k2_NotImplemented</code></dt>
+<dt><code>k_NotImplemented</code></dt>
 <dd>This is roughly the HTTP equivalent to a "todo"</dd>
 </dl>
 
-<p>A metaresponse is associated with a componentname. For example, <code>k2_Forbidden</code> resolves to <code>k2_DefaultForbiddenComponent</code>. To get a customised handler for these types of responses, you can let your <a href="#component-creation">component creator</a> return a custom component instead of the defaults.</p>
+<p>A metaresponse is associated with a componentname. For example, <code>k_Forbidden</code> resolves to <code>k_DefaultForbiddenComponent</code>. To get a customised handler for these types of responses, you can let your <a href="#component-creation">component creator</a> return a custom component instead of the defaults.</p>
 
-<h2 id="templates">templates</h2>
+<h2 id="templates">Templates</h2>
 
-<p>Components usually return a html string. How they are rendered is largely left up to the developer. A common practise is to use a template engine though. Konstrukt includes a very simple template engine, which just wraps a regular php script in an output buffer. This strategy of using php as a template language works fine as long as you have some control over the provider of templates. It does have some drawbacks though, so some people might prefer to use a real template engine. Konstrukt comes with an example of how to use the Smarty template engine, but it should be equally simple to use any other template engine.</p>
+<p>Components usually return a html string. How they are rendered is largely left up to the developer. A common practise is to use a template engine though. Konstrukt includes a very simple template engine, which just wraps a regular PHP script in an output buffer. This strategy of using PHP as a template language works fine as long as you have some control over the provider of templates. It does have some drawbacks though, so some people might prefer to use a real template engine. Konstrukt comes with an example of how to use the Smarty template engine, but it should be equally simple to use any other template engine.</p>
 
-<h3 id="php-templates">php-templates</h3>
+<h3 id="php-templates">PHP-templates</h3>
 
-<p>To use the default template engine, you should instantiate and object of <code>k2_Template</code>. The interface is simple; You pass a path to a php template. Calling <code>render()</code> will include the file inside a buffer and return the output. The calling component must pass a reference to itself to the template. This is to allow the template to access variables it might need. You should add methods on your component to provide the variables that your template might need.</p>
+<p>To use the default template engine, you should instantiate and object of <code>k_Template</code>. The interface is simple; You pass a path to a PHP template. Calling <code>render()</code> will include the file inside a buffer and return the output. The calling component must pass a reference to itself to the template. This is to allow the template to access variables it might need. You should add methods on your component to provide the variables that your template might need.</p>
 
 <p>The template binds a few global functions to make it easier for the template to call certain common features with a simple syntax. These are:</p>
 
 <dl>
 <dt><code>e()</code></dt>
-<dd>This function escapes htmlspecialcharacters in input and prints it in-place. Use this for embedding values in html-documents.
-<code>__()</code>, <code>t()</code></dd>
+<dd>This function escapes htmlspecialcharacters in input and prints it in-place. Use this for embedding values in html-documents.</dd>
 
-<dd>These are both aliases for <code>$context-&gt;__()</code>. You can use this hook for implementing i18n support in your application. Note that there is no default implementation for <code>__</code>, so you need to explicitly implement this in your components, if you wish to support the feature.
-<code>url()</code></dd>
+<dt><code>__()</code>, <code>t()</code></dt>
+<dd>These are both aliases for <code>$context-&gt;__()</code>. You can use this hook for implementing i18n support in your application. Note that there is no default implementation for <code>__()</code>, so you need to explicitly implement this in your components, if you wish to support the feature.</dd>
 
+<dt><code>url()</code></dt>
 <dd>This is bound to <code>$context-&gt;url()</code>.</dd>
 </dl>
 
-<h2 id="component-creation">component creation</h2>
+<h2 id="component-creation">Component creation</h2>
 
-<p>In the <a href="#dispatch-map-forward">dispatch process</a>, a component may delegate control to a sub component. In doing so, the new component must be instantiated first. This task is handled by a discrete object, called a <em>component creator</em>. This can be configured in the bootstrap, which allows you to replace this without having to mingle with the internals of the library.</p>
+<p>In the <a href="#dispatch-map-forward">dispatch process</a>, a component may delegate control to a sub component. In doing so, the new component must be instantiated first. This task is handled by a discrete object, called a <em>component creator</em>. This can be configured in the <a href="#bootstrap">bootstrap</a>, which allows you to replace this without having to mingle with the internals of the library.</p>
 
-<h3 id="di-containers">di containers</h3>
+<h3 id="di-containers">DI containers</h3>
 
-<p>The intended use for a component creator, is to allow the use of a <a href="http://c2.com/cgi/wiki?DependencyInjection">dependency injection container</a> for creation of components. The base class for components (<code>k2_component</code>) doesn't have a constructor defined, which allows you free control over this for your components. This is practical because di containers often use the constructor to provide dependencies. By default, Konstrukt doesn't provide a di container, but it comes with bindings for <a href="https://phemto.svn.sourceforge.net/svnroot/phemto/trunk">Phemto</a>, and it's very simple to write adapters for other containers.</p>
+<p>The intended use for a component creator, is to allow the use of a <a href="http://c2.com/cgi/wiki?DependencyInjection">dependency injection container</a> for creation of components. The base class for components (<code>k_Component</code>) doesn't have a constructor defined, which allows you free control over this for your components. This is practical because di containers often use the constructor to provide dependencies. By default, Konstrukt doesn't provide a di container, but it comes with bindings for <a href="https://phemto.svn.sourceforge.net/svnroot/phemto/trunk">Phemto</a>, and it's very simple to write adapters for other containers.</p>
 
 <h3 id="createcomponent">createComponent</h3>
 
 <p>Most sub components are created from the dispatch process, but sometimes you need to create components manually. To do this, you can invoke the <code>createComponent()</code> method on a component, which would create a new sub component. The method takes an optional namespace, which is the <a href="#querystring-namespace">namespace used for querystring paramaters</a>.</p>
 
-<h2 id="encoding">encoding</h2>
+<h2 id="encoding">Encoding</h2>
 
 <p>Until version 6 becomes current, PHP is stuck with a primitive view of string data, where strings are treated as bytestreams. Many libraries, extensions and even core functionality in PHP, assumes that strings are singlebyte streams. This means that each byte is interpreted as a character, the consequence being that only 256 different characters can be represented. Furthermore, the default charset assumed is ISO-8859-1 (also known as latin1). As long as we only want to represent western European texts this suffices, but in our multi cultural world, this is inadequate.</p>
 
-<h3 id="how-to-use-utf-8">how to use utf-8</h3>
+<h3 id="how-to-use-utf-8">How to use utf-8</h3>
 
 <p>Even if your main audience is English speaking, your users may still have foreign names, that can't be written with the limited charset of latin1. Currently, the best solution is therefore to use UTF-8 as encoding throughout your application. This strategy does have its pitfalls, but so does using latin1. It is important to get these things right from the beginning, since it's a thing that is very hard to change later.</p>
 
@@ -303,32 +368,124 @@ It's the context that specifies a namespace for its subcomponents, and it works 
 
 <p>There is a good overview of the core PHP functions, that needs special treatment to work with UTF-8 at <a href="http://www.phpwact.org/php/i18n/utf-8">http://www.phpwact.org/php/i18n/utf-8</a>.</p>
 
-<h3 id="plan-b-legacy-applications">plan b (legacy applications)</h3>
+<h3 id="plan-b-legacy-applications">Plan b (legacy applications)</h3>
 
-<h2 id="environment-configuration">environment (configuration?)</h2>
+<p>Some times you don't have the luxury of going with UTF-8. If you're interfacing with a legacy application or you want to use third-party libraries that assume single-byte strings, you will have to use a single-byte internal encoding. Konstrukt has a configurable strategy for dealing with charsets, which enables you to switch to one of two alternate configurations, that both have a single-byte internal encoding. The first is a plain syngle-byte/latin1 strategy, where pages are served with <code>charset=iso-8859-1</code>. This is basically the same modus that plain PHP works in. The other strategy encodes output to UTF-8 and decodes it back to latin1. That way the application works with latin1 on the inside (in the scope of PHP), while presenting a UTF-8 facade outwards. The benefit of this approach is that it makes it easier for other applications to interact with yours. For example, <a href="http://en.wikipedia.org/wiki/XMLHttpRequest">XmlHttpRequest</a> (javascript) defaults to talk UTF-8. It also avoids the problem of the <a href="http://en.wikipedia.org/wiki/ISO_8859-1#ISO-8859-1_and_Windows-1252_confusion">ISO-8859-1 vs. CP-1252 confusion</a>. If you're building a new frontend for a legacy backend, this may be a good compromise.</p>
 
-<h3 id="file-layout-starterpack">file layout (starterpack)</h3>
+<p>To change the charset strategy, assign a <code>k_charset_CharsetStrategy</code> in the <a href="#bootstrap">bootstrap</a>, using <code>setCharsetStrategy()</code>. Konstrukt comes with the following three options:</p>
 
-<h3 id="static-content">static content</h3>
+<dl>
+<dt><code>k_charset_Utf8CharsetStrategy</code></dt>
+<dd>The default choice. Assumes that all strings are UTF-8 encoded.</dd>
 
-<p>and using Konstrukt in a context, href_base</p>
+<dt><code>k_charset_Latin1CharsetStrategy</code></dt>
+<dd>Legacy compatibility. Assumes that all strings are ISO-8859-1 encoded.</dd>
 
-<h3 id="global-handlers">global handlers</h3>
+<dt><code>k_charset_FauxUtf8CharsetStrategy</code></dt>
+<dd>Like Latin1, but presents an external facade of UTF-8. Assumes that all internal strings are ISO-8859-1 encoded.</dd>
+</dl>
 
-<p>errorhandler etc.</p>
+<h2 id="environment-setup">Environment/setup</h2>
 
-<h3 id="bootstrap">bootstrap</h3>
+<p>Konstrukt is fairly liberal about how files are organised. The library must of course be included in your application (Eg. <code>lib/k.inc.php</code>), but there is no class loading functionality included. It is assumed that you install an error-handler to convert all errors (wranings and notices inclusive) into exceptions. This is generally considered a best-practise for any kind of PHP development anyway, so it shouldn't be a problem.</p>
 
-<p>the bootstrap class</p>
+<p>To make it easier to get started with Konstrukt, a "starterpack" is included, that gives you a default directory layout and configuration. If you're starting a new project, it's probably a good idea to follow this standard. However, these are just suggestions and it shouldn't be a problem to divert from it.</p>
 
-<h2 id="debugging">debugging</h2>
+<p>Currently, Konstrukt comes with two different variations of the starterpack. They are quite similar, where one is a subset of the other. <code>starterpack_light</code> doesn't have any external dependencies, except for Konstrukt. It doesn't feature a DI container and it uses the simple PHP-style templates that is provided through <code>k_Template</code>. The other option - <code>starterpack_default</code> adds Phemto as a DI container and the Smarty template engine. It also gives you a place to put test cases, using SimpleTest. This is the default recommended setup; If you don't want to use one of the components, you may find it easier to remove from the default package, rather than adding to the light package.</p>
 
-<h3 id="debug-bar">debug bar</h3>
+<h3 id="file-layout">File layout</h3>
 
-<p>(dispatch logging, var-dump-2.0)</p>
+<p>The file layout of the starterpacks are as follows:</p>
 
-<h3 id="logs">logs</h3>
+<pre><code>config/               -- Global settings and other static configuration files
+lib/                  -- Application specific PHP-code
+lib/components/       -- Subclasses of k_Component.
+log/                  -- Folder for various logfiles
+log/development.log   -- The application debug log.
+log/error.log         -- PHP error-log.
+templates/            -- Template files
+templates_c/          -- Compiled Smarty template files. This is specific `starterpack_default`
+test/                 -- Automated tests. This is specific `starterpack_default`
+test/unit/            -- Unit tests.
+test/functional/      -- Functional tests (Eg. tests of individual components).
+var/                  -- Place for various datafiles, such as sqlite database etc.
+www/                  -- The directory that should be mounted as web root. Contains static content, such as Javascript files.
+www/.htaccess         -- Contains configuration for Apache.
+</code></pre>
 
-<h3 id="functional-testing">functional testing</h3>
+<h3 id="static-content">Static content</h3>
+
+<p>The <code>www</code> folder should be mounted as the <code>DocumentRoot</code> of your website. <code>mod_rewrite</code> is used to delegate control to Konstrukt. You can place static content in this folder, such as Javascript and CSS files or other static content. Apache will then serve these directly, without invoking PHP.</p>
+
+<p>This setup assumes that <code>www</code> is mounted as the web root. If you want to run your application from a subfolder, you will have to specify the <code>href_base</code> to your <a href="#bootstrap">bootstrap</a>. In <code>www/index.php</code>, call <code>setHrefBase()</code> with the relative location to the web root.</p>
+
+<h3 id="global-handlers">Global handlers</h3>
+
+<p>Konstrukt comes with a default error handler and a class loader - <code>k_exceptions_error_handler</code> and <code>k_autoload</code>.</p>
+
+<p>The error handler simply converts all errors into exceptions. It's recommended that you develop with this configuration, since it will force you to deal with errors, rather than ignoring them.</p>
+
+<p>The class loader uses a simple convention to try and autoload undefined classes; Classnames are lowercased and underscores replaced with directory-separators. So a class named <code>foo_Bar</code> is expected to be defined in <code>foo/bar.php</code>. This convention is similar to  that of PEAR and Zend Framework, except that file/directory names are all lowercased. The reason for this is that classnames are case insensitive in PHP, while filenames aren't (At least not on unix systems).</p>
+
+<h3 id="naming-convention">Naming convention</h3>
+
+<p>If you use the default autoloader (<code>k_autoload</code>), you should place your components in <code>/lib/components/</code> and name them accordingly. Eg. The following component should be placed in the file <code>/lib/components/foo/bar.php</code> :</p>
+
+<pre class="php"><span class="kw2">class</span> components_foo_Bar <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
+  ...
+<span class="br0">&#125;</span></pre>
+
+<h3 id="bootstrap">Bootstrap</h3>
+
+<p>The bootstrap is an object that is used to create the root component and dispatch it. It's really just a factory, that makes it simpler to configure the application.</p>
+
+<p>To start your application, create a default bootstrap using the <code>k()</code> function. This will return an instance of <code>k_Bootstrap</code>. The bootstrap has a number of default settings which you can override. Finally, the bootstrap can invoke the application, by calling the method <code>run()</code>. Each setter-method returns <code>$this</code>, allowing you to write in a fluent style.</p>
+
+<p>The most important setters on the bootstrap are:</p>
+
+<dl>
+<dt><code>setComponentCreator</code></dt>
+<dd>Sets the <a href="#component-creation">componentcreator</a> to use.</dd>
+
+<dt><code>setCharsetStrategy</code></dt>
+<dd>Set the <a href="#encoding">charsetstrategy</a>.</dd>
+
+<dt><code>setDebug</code></dt>
+<dd>Enable/disable the in-browser <a href="#debugging">debug-bar</a>.</dd>
+
+<dt><code>setLog</code></dt>
+<dd>Specifies a filename to log <a href="#debugging">debug information to</a>.</dd>
+
+<dt><code>setHrefBase</code></dt>
+<dd>Sets the base href, if the application isn't <a href="#static-content">mounted at the web root</a>.</dd>
+</dl>
+
+<h2 id="debugging">Debugging</h2>
+
+<p>Konstrukt comes with some tools for making development easier. Since the dispatch process of components isn't as simple as plain php or a fron controller setup, it can be useful to see the exact chain of events, to figure out which component is responsible for rendering the output. To this end, the dispatch is logged. You can get debug output in two ways; Through the debug-bar or through the logfil. For a production site, you can disable debugging to improve performance.</p>
+
+<p>You can enable/disable debugging with the relevant methods of the bootstrap.</p>
+
+<p>In adition to dispatch logging, you can also send arbitrary information to the logger. Each component has a protected method <code>debug()</code> which will dump the argument to the logger/debug-bar. It works much like <code>var_dump</code>.</p>
+
+<h3 id="logs">Logs</h3>
+
+<p>Dispatch and debug logging goes to the file <code>/log/development.log</code>. Additionally, the starterpack is configured to send php-errors to the file <code>/log/error.log</code>. While the development log is intended to use during development, the error log will usually be used on a production system. The log is configured by the <code>.htaccess</code> file in <code>www</code>. For a production site, you should edit this file to disable display of errors in the browser, and instead rely on the error log.</p>
+
+<h3 id="functional-testing">Functional testing</h3>
+
+<p>Konstrukt comes with a testing harnish for testing components. Since all access to the HTTP layer is encapsulated in adapters, it is possible to test your application down to the HTTP level without actually having a running web server. This is useful for writing automated tests.
+The testing harnish consists of an extension to the <a href="http://www.simpletest.org/">SimpleTest</a> unit testing framework. The class <code>k_VirtualSimpleBrowser</code> acts as a drop-in replacement for <a href="http://simpletest.org/api/SimpleTest/WebTester/SimpleBrowser.html"><code>SimpleBrowser</code></a>. To use it in a testcase, write your <code>WebTestCase</code> as normal, but override the method <code>createBrowser()</code> as this:</p>
+
+<pre class="php"><span class="kw2">class</span> TestOfMyComponent <span class="kw2">extends</span> WebTestCase <span class="br0">&#123;</span>
+  <span class="kw2">function</span> createBrowser<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="kw1">return</span> <span class="kw2">new</span> k_VirtualSimpleBrowser<span class="br0">&#40;</span><span class="st0">'components_MyComponent'</span><span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span>
+  <span class="kw2">function</span> test_request_root<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="re0">$this</span>-&gt;<span class="me1">assertTrue</span><span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">get</span><span class="br0">&#40;</span><span class="st0">'/'</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    <span class="re0">$this</span>-&gt;<span class="me1">assertResponse</span><span class="br0">&#40;</span><span class="nu0">200</span><span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span>
+<span class="br0">&#125;</span>
+&nbsp;</pre>
 </body>
 </html>
