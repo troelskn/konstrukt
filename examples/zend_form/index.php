@@ -1,5 +1,5 @@
 <?php
-require_once '../../lib/k.inc.php';
+require_once '../../lib/konstrukt/konstrukt.inc.php';
 
 // You must have ZendFramework on your path
 require_once 'Zend/Form.php';

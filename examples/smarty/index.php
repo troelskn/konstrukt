@@ -1,5 +1,5 @@
 <?php
-require_once '../../lib/k.inc.php';
+require_once '../../lib/konstrukt/konstrukt.inc.php';
 require_once 'smarty/libs/Smarty.class.php';
 date_default_timezone_set('Europe/Paris');
 

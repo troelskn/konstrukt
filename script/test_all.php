@@ -35,7 +35,8 @@ $failures = 0;
 $runs = 0;
 foreach (find_files(getcwd(), '/test\.php$/') as $filename) {
   chdir(dirname($filename));
-  $xml = shell_exec('php ' . escapeshellarg(basename($filename)) . ' -x');
+  $path = realpath(dirname(__FILE__) . '/../lib') . PATH_SEPARATOR . ini_get("include_path");
+  $xml = shell_exec('php -d include_path=' . escapeshellarg($path) . ' ' . escapeshellarg(basename($filename)) . ' -x');
   verbose("-------------------------------------------\n");
   verbose("Running suite: " . $filename . "\n");
   $doc = new DomDocument();

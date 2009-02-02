@@ -8,7 +8,7 @@ if (realpath($_SERVER['PHP_SELF']) == __FILE__) {
   require_once 'simpletest/autorun.php';
 }
 
-require_once '../lib/k.inc.php';
+require_once '../lib/konstrukt/konstrukt.inc.php';
 
 class test_MockContext {
   public $url_return_value;

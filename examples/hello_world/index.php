@@ -1,5 +1,5 @@
 <?php
-require_once '../../lib/k.inc.php';
+require_once '../../lib/konstrukt/konstrukt.inc.php';
 
 class Root extends k_Component {
   protected function map($name) {

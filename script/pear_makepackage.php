@@ -28,7 +28,7 @@
 
 require_once 'PEAR/PackageFileManager2.php';
 
-$version   = '2.0.0';
+$version   = '2.0.1';
 $stability = 'stable';
 $notes     = 'First stable release of Konstrukt v.2';
 
@@ -41,7 +41,8 @@ $pfm->setOptions(
     'packagedirectory'  => dirname(__FILE__) . '/../',
     'packagefile'       => 'package.xml',
     'ignore'            => array(
-      'script/*',
+      '*script*',
+      '.svn',
       '*.tgz',
     ),
     'dir_roles' => array(
@@ -57,7 +58,7 @@ $pfm->setOptions(
 );
 
 $pfm->setPackage('konstrukt');
-$pfm->setSummary('A HTTP-friendly framework of controllers for PHP5. ');
+$pfm->setSummary('A HTTP-friendly framework of controllers for PHP5.');
 $pfm->setDescription('
 Konstrukt is a minimalistic framework which provides a foundation on which to build rather than a boxed solution to all problems. It focuses on the controller layer, and tries to encourage the developer to deal directly with the HTTP protocol instead of abstracting it away. Konstrukt uses a hierarchical controller pattern, which provides a greater level of flexibility than the popular routed front controller frameworks.');
 $pfm->setUri('http://www.konstrukt.dk/');
@@ -80,11 +81,11 @@ $pfm->setPhpDep('5.2.0');
 $pfm->setPearinstallerDep('1.5.0');
 
 $lib_files = array(
-  'adapter.inc.php',
-  'charset.inc.php',
-  'k.inc.php',
-  'logging.inc.php',
-  'virtualbrowser.inc.php',
+  'konstrukt/adapter.inc.php',
+  'konstrukt/charset.inc.php',
+  'konstrukt/konstrukt.inc.php',
+  'konstrukt/logging.inc.php',
+  'konstrukt/virtualbrowser.inc.php',
 );
 
 

@@ -1,5 +1,5 @@
 <?php
-require_once '../../lib/k.inc.php';
+require_once '../../lib/konstrukt/konstrukt.inc.php';
 
 class RegistrationForm extends k_Component {
   protected $failures = array();

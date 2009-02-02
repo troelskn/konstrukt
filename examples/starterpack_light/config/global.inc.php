@@ -5,7 +5,7 @@ set_include_path(
   . PATH_SEPARATOR . dirname(dirname(__FILE__))
   . PATH_SEPARATOR . dirname(dirname(__FILE__)).'/lib');
 
-require_once 'konstrukt/trunk/lib/k.inc.php';
+require_once 'konstrukt/trunk/lib/konstrukt/konstrukt.inc.php';
 
 date_default_timezone_set('Europe/Paris');
 set_error_handler('k_exceptions_error_handler');

@@ -5,7 +5,7 @@ error_reporting(E_ALL | E_STRICT);
 if (realpath($_SERVER['PHP_SELF']) == __FILE__) {
   require_once 'simpletest/autorun.php';
 }
-require_once '../../lib/virtualbrowser.inc.php';
+require_once '../../lib/konstrukt/virtualbrowser.inc.php';
 require_once 'index.php';
 
 class TestOfExampleZendForm extends WebTestCase {

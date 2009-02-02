@@ -7,7 +7,7 @@ if (realpath($_SERVER['PHP_SELF']) == __FILE__) {
   require_once 'simpletest/autorun.php';
 }
 
-require_once '../lib/k.inc.php';
+require_once '../lib/konstrukt/konstrukt.inc.php';
 // You need to have phemto in your include_path
 require_once 'phemto/phemto.php';
 

@@ -2,8 +2,8 @@
 error_reporting(E_ALL | E_STRICT);
 
 // You need to have simpletest in your include_path
-require_once '../lib/k.inc.php';
-require_once '../lib/virtualbrowser.inc.php';
+require_once '../lib/konstrukt/konstrukt.inc.php';
+require_once '../lib/konstrukt/virtualbrowser.inc.php';
 if (realpath($_SERVER['PHP_SELF']) == __FILE__) {
   require_once 'simpletest/autorun.php';
 }

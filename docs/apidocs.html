@@ -551,7 +551,7 @@ $name, <span class="modifier">mixed</span>
 
 $next</em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">void</em>
 
 
 </h4>
@@ -611,8 +611,8 @@ $response</em>)
 <div class="docblock">
   <p>For registry-style component wiring.
 You can use this for legacy applications, that are tied to k_Registry.
-usage:
-    $registry = new k_Registry();
+usage:</p>
+<p>    $registry = new k_Registry();
     k_run(&#039;Root&#039;, new k_HttpRequest(), new k_RegistryComponentCreator($registry))-&gt;out();</p>
 </div>
 
@@ -682,7 +682,9 @@ $class_name</em>)
   <a href="#class-k_componentcreator">k_ComponentCreator</a></h3>
 
 <div class="docblock">
-  <p>Adapter for using the Phemto dependency injection container for creating components</p>
+  <p>Adapter for using the Phemto dependency injection container for creating components.
+This relies on the current (under development) implementation of Phemto, available from:
+https://phemto.svn.sourceforge.net/svnroot/phemto/trunk</p>
 </div>
 
 <h3>properties</h3>
@@ -713,7 +715,7 @@ $class_name</em>)
 
 $injector</em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">void</em>
 
 
 </h4>
@@ -2657,7 +2659,7 @@ $context [ , <span class="modifier">mixed</span>
 
 $namespace ] </em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">void</em>
 
 
 </h4>
@@ -2677,7 +2679,7 @@ $key [ , <span class="modifier">mixed</span>
 
 $default ] </em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">void</em>
 
 
 </h4>
@@ -2735,7 +2737,7 @@ $key, <span class="modifier">mixed</span>
 
 $value</em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">void</em>
 
 
 </h4>
@@ -2835,7 +2837,7 @@ $str</em>)
 
 $context</em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">string</em>
 
 
 </h4>
@@ -3158,7 +3160,7 @@ $value</em>)
 
 $output</em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">void</em>
 
 
 </h4>
@@ -3177,7 +3179,7 @@ $output</em>)
 
 $output</em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">void</em>
 
 
 </h4>
@@ -3196,7 +3198,7 @@ $output</em>)
 
 $output</em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">void</em>
 
 
 </h4>
@@ -3215,7 +3217,7 @@ $output</em>)
 
 $output ] </em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">void</em>
 
 
 </h4>
@@ -3342,7 +3344,7 @@ Use this type of redirect for redirecting after POST</p>
 
 $url</em>)
 
-  : <em class="modifier">null</em>
+  : <em class="modifier">void</em>
 
 
 </h4>

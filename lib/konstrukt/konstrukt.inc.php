@@ -1,7 +1,7 @@
 <?php
-require_once 'adapter.inc.php';
-require_once 'charset.inc.php';
-require_once 'logging.inc.php';
+require_once 'konstrukt/adapter.inc.php';
+require_once 'konstrukt/charset.inc.php';
+require_once 'konstrukt/logging.inc.php';
 
 /**
  * A factory for creating components on-the-fly.
