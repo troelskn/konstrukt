@@ -23,8 +23,8 @@ class ManualProcessor {
 
   public function run() {
     echo "Creating manual\n\n";
-    $dir = new RecursiveDirectoryIterator($this->indir, RecursiveDirectoryIterator::KEY_AS_FILENAME);
-    foreach ($dir->getChildren() as $file) {
+    $dir = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->indir, RecursiveDirectoryIterator::KEY_AS_FILENAME));
+    foreach ($dir as $file) {
       if ($file->isFile() && preg_match('/\.txt$/', $file->getFileName())) {
         echo "Processing: $file\n";
         $this->processFile($file);
