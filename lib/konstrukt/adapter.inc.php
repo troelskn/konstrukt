@@ -435,14 +435,12 @@ class k_adapter_DefaultUploadedFileAccess implements k_adapter_UploadedFileAcces
     $this->ensureDirectory(dirname($path_destination));
     if (is_uploaded_file($tmp_name)) {
       move_uploaded_file($tmp_name, $path_destination);
-      chmod($path_destination, 0666);
     } else {
       throw new Exception("Fileinfo is not a valid uploaded file");
     }
   }
   protected function mkdir($path) {
     mkdir($path);
-    chmod($path, 0777);
   }
   protected function ensureDirectory($dir) {
     if (!is_dir($dir)) {
