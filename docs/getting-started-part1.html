@@ -24,7 +24,7 @@
 
 <p>The starterpack contains several folders. For now, we'll just concern our selves with two of them; <code>www</code> which should be the web root of your site and <code>lib</code> which should contain the classes of your application. Once you're set up, the <code>www</code> folder isn't used much.</p>
 
-<p>You can now open your browser and go to <code>http://localhost/foo/www</code> and verify that everything is in order. The following message should meet you if everything is running correctly :</p>
+<p>You can now open your browser and go to <code>http://localhost/foo/www</code> and verify that everything is in order. The following message should meet you if everything is running correctly:</p>
 
 <div class="nostyle">  <h1>Root</h1>
   <p>This page is intentionally left blank</p></div>
@@ -33,7 +33,7 @@
 
 <h2 id="the-model-layer">The model layer</h2>
 
-<p>So now that we have the installation running, let's get to work with out application. To keep things simple, we'll just create an application that can display contacts from a database. I know it's boring, but we have to start some where.</p>
+<p>So now that we have the installation running, let's get to work with out application. To keep things simple, we'll just create an application that can display contacts from a database. I know it's boring, but we have to start somewhere.</p>
 
 <p>Konstrukt explicitly avoids any model layer components, to leave it as open ended as possible. For this tutorial, we'll just use a very simple model component. Save the following as <code>/var/www/foo/lib/contactsgateway.php</code>:</p>
 
@@ -52,7 +52,7 @@
      where short_name = :short_name&quot;</span><span class="br0">&#41;</span>;
     <span class="re0">$statement</span>-&gt;<span class="me1">execute</span><span class="br0">&#40;</span>
       <span class="kw3">array</span><span class="br0">&#40;</span>
-        <span class="st0">':first_name'</span> =&gt; <span class="re0">$contact</span>-&gt;<span class="me1">last_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span>,
+        <span class="st0">':first_name'</span> =&gt; <span class="re0">$contact</span>-&gt;<span class="me1">first_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span>,
         <span class="st0">':last_name'</span> =&gt; <span class="re0">$contact</span>-&gt;<span class="me1">last_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span>,
         <span class="st0">':email'</span> =&gt; <span class="re0">$contact</span>-&gt;<span class="me1">email</span><span class="br0">&#40;</span><span class="br0">&#41;</span>,
         <span class="st0">':short_name'</span> =&gt; <span class="re0">$contact</span>-&gt;<span class="me1">short_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
@@ -129,13 +129,13 @@
 <span class="re0">$db</span>-&gt;<span class="me1">setAttribute</span><span class="br0">&#40;</span>PDO::<span class="me2">ATTR_ERRMODE</span>, PDO::<span class="me2">ERRMODE_EXCEPTION</span><span class="br0">&#41;</span>;
 <span class="re0">$contacts</span> = <span class="kw2">new</span> ContactsGateway<span class="br0">&#40;</span><span class="re0">$db</span><span class="br0">&#41;</span>;</pre>
 
-<p class="note">Note: You need to have sqlite and pdo installed on your system. Theese are two separate extensions. If you get the error message "PDOException: could not find driver", it means that you have pdo, but not pdo_sqlite. On debian based systems, yhe package to install is <code>php5-sqlite</code>.</p>
+<p class="note">Note: You need to have sqlite and pdo installed on your system. Theese are two separate extensions. If you get the error message "PDOException: could not find driver", it means that you have pdo, but not pdo_sqlite. On debian based systems, the package to install is <code>php5-sqlite</code>.</p>
 
 <p class="note">Note: SQLite version 2 and 3 are not directly compatible. If you get an error message saying "file is encrypted or is not a database", you probably created the database with version 2, while the php extension is version 3. From the commandline use the tool <code>sqlite3</code>, rather than <code>sqlite</code>.</p>
 
 <h2 id="adding-a-component-finally">Adding a component, finally</h2>
 
-<p>Now that our prerequisites are in place, let's get back to the components. As you probably remember, our application currently just handles a request to <code>/foo/www</code> (The root). Since we want it to display contacts, let's add a component for that. Save the following into <code>/var/www/foo/lib/components/contacts/list.php</code>:</p>
+<p>Now that our prerequisites are in place, let's get back to the components. As you probably remember, our application currently only handles a request to <code>/foo/www</code> (The root). Since we want it to display contacts, let's add a component for that. Save the following into <code>/var/www/foo/lib/components/contacts/list.php</code>:</p>
 
 <pre class="php"><span class="kw2">&lt;?php</span>
 <span class="kw2">class</span> components_contacts_List <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
@@ -152,7 +152,7 @@
 
 <p>This is a rather simple component. It implements the function <code>GET()</code>, which corresponds to a http GET request. You can also implement handlers for other http methods, such as POST, but GET is by far the most common.</p>
 
-<p>As you can see, we're referring the global variable <code>$contacts</code>, which we created in <code>global.inc.php</code>. Net we create a template instance and assign all contacts to it, before rendering it to a string an dreturning the result. A <code>k_Template</code> is a very simple wrapper around <code>include</code> -- It just returns the output as a string.</p>
+<p>As you can see, we're referring the global variable <code>$contacts</code>, which we created in <code>global.inc.php</code>. Next we create a template instance and assign all contacts to it, before rendering it to a string and returning the result. A <code>k_Template</code> is a very simple wrapper around <code>include</code> -- It just returns the output as a string.</p>
 
 <p>Obviously we also need a template, so save the following into <code>/var/www/foo/lib/templates/contacts-list.tpl.php</code>:</p>
 
@@ -180,7 +180,7 @@
 
 <h2 id="contextual-forwards">Contextual forwards</h2>
 
-<p>We can now get a list of the available contacts, but we still need a page that can display them in full. As you may have noticed, I used the function <code>url</code> inside the previous template. This is just shorthand for the components <code>url</code> method. <code>k_Template</code> takes care of the delegation. The <code>url</code> method generates a url that points to a place <em>relative to the current component</em>. So inside of <code>components_contacts_List</code>, you will get urls like <code>http://localhost/foo/www/contacts/jabba</code>. Right now, clicking one of theese links won't give us any usable result. So let's make sure it does.</p>
+<p>We can now get a list of the available contacts, but we still need a page that can display them in full. As you may have noticed, I used the function <code>url</code> inside the previous template. This is just shorthand for the components <code>url</code> method. <code>k_Template</code> takes care of the delegation. The <code>url</code> method generates an url that points to a place <em>relative to the current component</em>. So inside of <code>components_contacts_List</code>, you will get urls like <code>http://localhost/foo/www/contacts/jabba</code>. Right now, clicking one of theese links won't give us any usable result. So let's make sure it does.</p>
 
 <p>First, we modify the <code>components_contacts_List</code> component to allow forwarding:</p>
 

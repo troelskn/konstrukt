@@ -16,7 +16,7 @@ For this tutorial we'll create a very simple application. Konstrukt doesn't stri
 
 The starterpack contains several folders. For now, we'll just concern our selves with two of them; `www` which should be the web root of your site and `lib` which should contain the classes of your application. Once you're set up, the `www` folder isn't used much.
 
-You can now open your browser and go to `http://localhost/foo/www` and verify that everything is in order. The following message should meet you if everything is running correctly :
+You can now open your browser and go to `http://localhost/foo/www` and verify that everything is in order. The following message should meet you if everything is running correctly:
 
 ..raw
   <h1>Root</h1>
@@ -26,7 +26,7 @@ This is the output of the root components `GET()` function. If you open the file
 
 The model layer
 ---------------
-So now that we have the installation running, let's get to work with out application. To keep things simple, we'll just create an application that can display contacts from a database. I know it's boring, but we have to start some where.
+So now that we have the installation running, let's get to work with out application. To keep things simple, we'll just create an application that can display contacts from a database. I know it's boring, but we have to start somewhere.
 
 Konstrukt explicitly avoids any model layer components, to leave it as open ended as possible. For this tutorial, we'll just use a very simple model component. Save the following as `/var/www/foo/lib/contactsgateway.php`:
 
@@ -46,7 +46,7 @@ class ContactsGateway {
      where short_name = :short_name");
     $statement->execute(
       array(
-        ':first_name' => $contact->last_name(),
+        ':first_name' => $contact->first_name(),
         ':last_name' => $contact->last_name(),
         ':email' => $contact->email(),
         ':short_name' => $contact->short_name()));
@@ -127,14 +127,14 @@ $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $contacts = new ContactsGateway($db);
 
 ..note
-You need to have sqlite and pdo installed on your system. Theese are two separate extensions. If you get the error message "PDOException: could not find driver", it means that you have pdo, but not pdo_sqlite. On debian based systems, yhe package to install is `php5-sqlite`.
+You need to have sqlite and pdo installed on your system. Theese are two separate extensions. If you get the error message "PDOException: could not find driver", it means that you have pdo, but not pdo_sqlite. On debian based systems, the package to install is `php5-sqlite`.
 
 ..note
 SQLite version 2 and 3 are not directly compatible. If you get an error message saying "file is encrypted or is not a database", you probably created the database with version 2, while the php extension is version 3. From the commandline use the tool `sqlite3`, rather than `sqlite`.
 
 Adding a component, finally
 ---------------------------
-Now that our prerequisites are in place, let's get back to the components. As you probably remember, our application currently just handles a request to `/foo/www` (The root). Since we want it to display contacts, let's add a component for that. Save the following into `/var/www/foo/lib/components/contacts/list.php`:
+Now that our prerequisites are in place, let's get back to the components. As you probably remember, our application currently only handles a request to `/foo/www` (The root). Since we want it to display contacts, let's add a component for that. Save the following into `/var/www/foo/lib/components/contacts/list.php`:
 
 ..php
 <?php
@@ -152,7 +152,7 @@ class components_contacts_List extends k_Component {
 
 This is a rather simple component. It implements the function `GET()`, which corresponds to a http GET request. You can also implement handlers for other http methods, such as POST, but GET is by far the most common.
 
-As you can see, we're referring the global variable `$contacts`, which we created in `global.inc.php`. Net we create a template instance and assign all contacts to it, before rendering it to a string an dreturning the result. A `k_Template` is a very simple wrapper around `include` -- It just returns the output as a string.
+As you can see, we're referring the global variable `$contacts`, which we created in `global.inc.php`. Next we create a template instance and assign all contacts to it, before rendering it to a string and returning the result. A `k_Template` is a very simple wrapper around `include` -- It just returns the output as a string.
 
 Obviously we also need a template, so save the following into `/var/www/foo/lib/templates/contacts-list.tpl.php`:
 
@@ -183,7 +183,7 @@ If this doesn't work, you may have Apache configured wrong. You need to enable `
 
 Contextual forwards
 -------------------
-We can now get a list of the available contacts, but we still need a page that can display them in full. As you may have noticed, I used the function `url` inside the previous template. This is just shorthand for the components `url` method. `k_Template` takes care of the delegation. The `url` method generates a url that points to a place *relative to the current component*. So inside of `components_contacts_List`, you will get urls like `http://localhost/foo/www/contacts/jabba`. Right now, clicking one of theese links won't give us any usable result. So let's make sure it does.
+We can now get a list of the available contacts, but we still need a page that can display them in full. As you may have noticed, I used the function `url` inside the previous template. This is just shorthand for the components `url` method. `k_Template` takes care of the delegation. The `url` method generates an url that points to a place *relative to the current component*. So inside of `components_contacts_List`, you will get urls like `http://localhost/foo/www/contacts/jabba`. Right now, clicking one of theese links won't give us any usable result. So let's make sure it does.
 
 First, we modify the `components_contacts_List` component to allow forwarding:
 
