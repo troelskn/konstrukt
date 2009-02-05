@@ -86,6 +86,12 @@ You can call the accessors without any arguments and get a hashmap back, or you 
   $this->query(); // array('foo' => 'bar')
   $this->query('foo'); // 'bar'
 
+You can also pass a default value that will be returned if the specified key doesn't exist.
+
+..php
+  // /baz?grault=waldo
+  $this->query('foo', 'bar'); // 'bar'
+
 ###Querystring namespace
 
 Because the querystring is shared amongst every component, you can sometimes run into problems when you need to pass parameters to multiple components (Not exactly a common requirement, but it can happen). Components can use a namespace to protect the querystring in these cases.
@@ -131,9 +137,9 @@ Note that the first argument isn't automatically encoded. You can optionally pas
 
 ###Urlstate parameters
 
-If a component needs to maintain view-related state, you have a limited set of options. In essence, the choice is between propagating state over urls (client side state) or using a server side mechanism (eg. sessions). Cookies are also a solution, but it has most of the problems associated with session state, and even some of its own. Client side state is often the superior choice, but it is tedious to do by hand. Konstrukt has therefore a mechanism build in to support this. Viewstate can be propagated as querystring parameters, using the `urlstate` property of a component. Properties that are set on the urlstate will be automatically set on any urls for the component, unless explicitly overridden. A typical usecase is for searches and other data-views.
+If a component needs to maintain view-related state, you have a limited set of options. In essence, the choice is between propagating state over urls (client side state) or using a server side mechanism (eg. sessions). Cookies are also a solution, but it has most of the problems associated with session state, and even some of its own. Client side state is often the superior choice, but it is tedious to do by hand. Konstrukt has therefore a mechanism builtin to support this. Viewstate can be propagated as querystring parameters, using the `urlstate` property of a component. Properties that are set on the urlstate will be automatically set on any urls for the component, unless explicitly overridden. A typical usecase is for searches and other data-views.
 
-Urlstate parameters is specified, along with their initial value, by implementing the `url_init` in your component. For example, to the following specifies a single parameter "foo". If no input is present for it, it has the value "bar":
+Urlstate parameters are specified, along with their initial value, by implementing the `url_init` in your component. For example, to the following specifies a single parameter "foo". If no input is present for it, it has the value "bar":
 
 ..php
 class MyStatefulComponent extends k_Component {
@@ -270,7 +276,7 @@ To change the charset strategy, assign a `k_charset_CharsetStrategy` in the [boo
 Environment/setup
 -----------------
 
-Konstrukt is fairly liberal about how files are organised. The library must of course be included in your application (Eg. `lib/k.inc.php`), but there is no class loading functionality included. It is assumed that you install an error-handler to convert all errors (warnings and notices inclusive) into exceptions. This is generally considered a best-practise for any kind of PHP development anyway, so it shouldn't be a problem.
+Konstrukt is fairly liberal about how files are organised. The library must of course be included in your application (Eg. `lib/konstrukt.inc.php`).
 
 To make it easier to get started with Konstrukt, a "starterpack" is included, that gives you a default directory layout and configuration. If you're starting a new project, it's probably a good idea to follow this standard. However, these are just suggestions and it shouldn't be a problem to divert from it.
 

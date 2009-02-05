@@ -207,6 +207,11 @@
 <pre class="php">  <span class="re0">$this</span>-&gt;<span class="me1">query</span><span class="br0">&#40;</span><span class="br0">&#41;</span>; <span class="co1">// array('foo' =&gt; 'bar')</span>
   <span class="re0">$this</span>-&gt;<span class="me1">query</span><span class="br0">&#40;</span><span class="st0">'foo'</span><span class="br0">&#41;</span>; <span class="co1">// 'bar'</span></pre>
 
+<p>You can also pass a default value that will be returned if the specified key doesn't exist.</p>
+
+<pre class="php">  <span class="co1">// /baz?grault=waldo</span>
+  <span class="re0">$this</span>-&gt;<span class="me1">query</span><span class="br0">&#40;</span><span class="st0">'foo'</span>, <span class="st0">'bar'</span><span class="br0">&#41;</span>; <span class="co1">// 'bar'</span></pre>
+
 <h3 id="querystring-namespace">Querystring namespace</h3>
 
 <p>Because the querystring is shared amongst every component, you can sometimes run into problems when you need to pass parameters to multiple components (Not exactly a common requirement, but it can happen). Components can use a namespace to protect the querystring in these cases.
@@ -248,9 +253,9 @@ It's the context that specifies a namespace for its subcomponents, and it works 
 
 <h3 id="urlstate-parameters">Urlstate parameters</h3>
 
-<p>If a component needs to maintain view-related state, you have a limited set of options. In essence, the choice is between propagating state over urls (client side state) or using a server side mechanism (eg. sessions). Cookies are also a solution, but it has most of the problems associated with session state, and even some of its own. Client side state is often the superior choice, but it is tedious to do by hand. Konstrukt has therefore a mechanism build in to support this. Viewstate can be propagated as querystring parameters, using the <code>urlstate</code> property of a component. Properties that are set on the urlstate will be automatically set on any urls for the component, unless explicitly overridden. A typical usecase is for searches and other data-views.</p>
+<p>If a component needs to maintain view-related state, you have a limited set of options. In essence, the choice is between propagating state over urls (client side state) or using a server side mechanism (eg. sessions). Cookies are also a solution, but it has most of the problems associated with session state, and even some of its own. Client side state is often the superior choice, but it is tedious to do by hand. Konstrukt has therefore a mechanism builtin to support this. Viewstate can be propagated as querystring parameters, using the <code>urlstate</code> property of a component. Properties that are set on the urlstate will be automatically set on any urls for the component, unless explicitly overridden. A typical usecase is for searches and other data-views.</p>
 
-<p>Urlstate parameters is specified, along with their initial value, by implementing the <code>url_init</code> in your component. For example, to the following specifies a single parameter "foo". If no input is present for it, it has the value "bar":</p>
+<p>Urlstate parameters are specified, along with their initial value, by implementing the <code>url_init</code> in your component. For example, to the following specifies a single parameter "foo". If no input is present for it, it has the value "bar":</p>
 
 <pre class="php"><span class="kw2">class</span> MyStatefulComponent <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
   <span class="kw2">protected</span> <span class="re0">$url_init</span> = <span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">'foo'</span> =&gt; <span class="st0">&quot;bar&quot;</span><span class="br0">&#41;</span>;
@@ -387,7 +392,7 @@ It's the context that specifies a namespace for its subcomponents, and it works 
 
 <h2 id="environment-setup">Environment/setup</h2>
 
-<p>Konstrukt is fairly liberal about how files are organised. The library must of course be included in your application (Eg. <code>lib/k.inc.php</code>), but there is no class loading functionality included. It is assumed that you install an error-handler to convert all errors (warnings and notices inclusive) into exceptions. This is generally considered a best-practise for any kind of PHP development anyway, so it shouldn't be a problem.</p>
+<p>Konstrukt is fairly liberal about how files are organised. The library must of course be included in your application (Eg. <code>lib/konstrukt.inc.php</code>).</p>
 
 <p>To make it easier to get started with Konstrukt, a "starterpack" is included, that gives you a default directory layout and configuration. If you're starting a new project, it's probably a good idea to follow this standard. However, these are just suggestions and it shouldn't be a problem to divert from it.</p>
 
