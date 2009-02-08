@@ -958,7 +958,7 @@ class k_Template {
     $this->path = $path;
   }
   function output($str) {
-    echo htmlspecialchars($str);
+    echo htmlspecialchars($str, ENT_QUOTES);
   }
   /**
     * @param k_Context
