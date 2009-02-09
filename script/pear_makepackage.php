@@ -64,7 +64,7 @@ Konstrukt is a minimalistic framework which provides a foundation on which to bu
 $pfm->setUri('http://www.konstrukt.dk/');
 $pfm->setLicense('LGPL License', 'http://www.gnu.org/licenses/lgpl.html');
 $pfm->addMaintainer('lead', 'troelskn', 'Troels Knak-Nielsen', 'troelskn@gmail.com');
-$pfm->addMaintainer('helper', 'ekdahl', 'Ander Ekdahl', '');
+$pfm->addMaintainer('helper', 'anders.ekdahl', 'Anders Ekdahl', '');
 $pfm->addMaintainer('helper', 'lsolesen', 'Lars Olesen', 'lsolesen@users.sourceforge.net');
 
 $pfm->setPackageType('php');
