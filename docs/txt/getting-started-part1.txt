@@ -119,7 +119,7 @@ INSERT INTO contacts (short_name, first_name, last_name, email)
     "Binks",
     "jarjar@naboo.com");
 
-Contrary to commonly accepted practise, we'll create a global database link, that we can use throughout the application. This is obviously not something you should do in a real application, but to avoid stealing focus, we'll do it none the less. Open up `config/global.inc.php` and add the following lines:
+Contrary to commonly accepted practise, we'll create a global database link, that we can use throughout the application. This is obviously not something you should do in a real application, but to keep focus on the controlelr layer for now, we'll do it none the less. We can then later change to use a dependency injection technique, which is the recommended approach. Open up `config/global.inc.php` and add the following lines:
 
 ..php
 $db = new PDO("sqlite:" . dirname(dirname(__FILE__)) . "/var/database.sqlite");
