@@ -1125,8 +1125,8 @@ class k_HttpResponse extends Exception {
     return $this->content_type = $content_type;
   }
   /**
-    * @param k_charset_Utf8
-    * @return k_charset_Utf8
+    * @param k_charset_ResponseCharset
+    * @return k_charset_ResponseCharset
     */
   function setCharset(k_charset_ResponseCharset $charset) {
     return $this->charset = $charset;

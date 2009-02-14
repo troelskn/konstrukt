@@ -123,7 +123,7 @@
     <span style="color: #ff0000;">&quot;Binks&quot;</span>,
     <span style="color: #ff0000;">&quot;jarjar@naboo.com&quot;</span><span style="color: #66cc66;">&#41;</span>;</pre>
 
-<p>Contrary to commonly accepted practise, we'll create a global database link, that we can use throughout the application. This is obviously not something you should do in a real application, but to avoid stealing focus, we'll do it none the less. Open up <code>config/global.inc.php</code> and add the following lines:</p>
+<p>Contrary to commonly accepted practise, we'll create a global database link, that we can use throughout the application. This is obviously not something you should do in a real application, but to keep focus on the controlelr layer for now, we'll do it none the less. We can then later change to use a dependency injection technique, which is the recommended approach. Open up <code>config/global.inc.php</code> and add the following lines:</p>
 
 <pre class="php"><span class="re0">$db</span> = <span class="kw2">new</span> PDO<span class="br0">&#40;</span><span class="st0">&quot;sqlite:&quot;</span> . <span class="kw3">dirname</span><span class="br0">&#40;</span><span class="kw3">dirname</span><span class="br0">&#40;</span><span class="kw2">__FILE__</span><span class="br0">&#41;</span><span class="br0">&#41;</span> . <span class="st0">&quot;/var/database.sqlite&quot;</span><span class="br0">&#41;</span>;
 <span class="re0">$db</span>-&gt;<span class="me1">setAttribute</span><span class="br0">&#40;</span>PDO::<span class="me2">ATTR_ERRMODE</span>, PDO::<span class="me2">ERRMODE_EXCEPTION</span><span class="br0">&#41;</span>;
