@@ -37,6 +37,14 @@ class TestOfGlobalsAccess extends UnitTestCase {
     eval("\$_GET = " . str_repeat("array(", 1024) . "\"O\\\\'Reilly\"" . str_repeat(")", 1024) . ";");
     $g->query(); // Note: A failing test will produce a Fatal Error and halt the suite
   }
+  function test_mixed_case_key_doesnt_get_conflated() {
+    $g = new k_adapter_SafeGlobalsAccess(new k_charset_Latin1CharsetStrategy(), true);
+    $_GET = array(
+      'foo' => "42",
+      'Foo' => "1337"
+    );
+    $this->assertEqual($g->query(), array('foo' => "42", 'Foo' => "1337"));
+  }
 }
 
 class TestOfFileUpload extends UnitTestCase {
@@ -50,7 +58,7 @@ class TestOfFileUpload extends UnitTestCase {
         'error' => 0,
       )
     );
-    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('server_name' => 'localhost', 'script_name' => '', 'request_uri' => ''), array(), array(), $files);
+    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost', 'SCRIPT_NAME' => '', 'REQUEST_URI' => ''), array(), array(), $files);
     $http = new k_HttpRequest(null, null, new k_DefaultIdentityLoader(), $glob);
     $files = $http->file();
     $this->assertTrue(is_array($files));
@@ -117,7 +125,7 @@ class TestOfFileUpload extends UnitTestCase {
         'error' => 0,
       )
     );
-    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('server_name' => 'localhost', 'script_name' => '', 'request_uri' => ''), array(), array(), $files);
+    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost', 'SCRIPT_NAME' => '', 'REQUEST_URI' => ''), array(), array(), $files);
     $file_access = new k_adapter_MockUploadedFileAccess();
     $http = new k_HttpRequest(null, null, new k_DefaultIdentityLoader(), $glob, null, null, $file_access);
     $http->file('userfile')->writeTo('/dev/null');

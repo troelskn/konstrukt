@@ -126,66 +126,6 @@ class k_adapter_SafeGlobalsAccess implements k_adapter_GlobalsAccess {
   }
 }
 
-// Lowercases all keys
-class k_adapter_LowerKeyAdapter implements k_adapter_GlobalsAccess {
-  /** @var k_adapter_GlobalsAccess */
-  protected $global_access;
-  /**
-    * @param k_adapter_GlobalsAccess
-    * @return null
-    */
-  function __construct(k_adapter_GlobalsAccess $global_access) {
-    $this->global_access = $global_access;
-  }
-  /**
-    * @return array
-    */
-  function query() {
-    return $this->lowerKeys($this->global_access->query());
-  }
-  /**
-    * @return array
-    */
-  function body() {
-    return $this->lowerKeys($this->global_access->body());
-  }
-  /**
-    * @return array
-    */
-  function server() {
-    return $this->lowerKeys($this->global_access->server());
-  }
-  /**
-    * @return array
-    */
-  function files() {
-    return $this->lowerKeys($this->global_access->files());
-  }
-  /**
-    * @return array
-    */
-  function cookie() {
-    return $this->lowerKeys($this->global_access->cookie());
-  }
-  /**
-    * @return array
-    */
-  function headers() {
-    return $this->lowerKeys($this->global_access->headers());
-  }
-  /**
-    * @param array
-    * @return array
-    */
-  protected function lowerKeys($input) {
-    $output = array();
-    foreach ($input as $key => $value) {
-      $output[strtolower($key)] = $value;
-    }
-    return $output;
-  }
-}
-
 // low-level container for abstracting away access to cookies
 interface k_adapter_CookieAccess {
   function __construct($domain, $raw);

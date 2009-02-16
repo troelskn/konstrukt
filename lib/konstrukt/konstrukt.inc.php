@@ -317,7 +317,6 @@ class k_HttpRequest implements k_Context {
     if (!$file_access) {
       $file_access = new k_adapter_DefaultUploadedFileAccess();
     }
-    $superglobals = new k_adapter_LowerKeyAdapter($superglobals);
     $this->query = $superglobals->query();
     $this->body = $superglobals->body();
     $this->server = $superglobals->server();
@@ -325,18 +324,29 @@ class k_HttpRequest implements k_Context {
     foreach ($superglobals->files() as $key => $file_info) {
       $this->files[$key] = new k_adapter_UploadedFile($file_info, $key, $file_access);
     }
-    $this->headers = $superglobals->headers();
-    $this->cookie_access = $cookie_access ? $cookie_access : new k_adapter_DefaultCookieAccess($this->server['server_name'], $superglobals->cookie());
+    $this->headers = $this->lowerKeys($superglobals->headers());
+    $this->cookie_access = $cookie_access ? $cookie_access : new k_adapter_DefaultCookieAccess($this->server['SERVER_NAME'], $superglobals->cookie());
     $this->session_access = $session_access ? $session_access : new k_adapter_DefaultSessionAccess($this->cookie_access);
     $this->identity_loader = $identity_loader ? $identity_loader : new k_DefaultIdentityLoader();
-    $this->href_base = $href_base === null ? preg_replace('~(.*)/.*~', '$1', $this->server['script_name']) : $href_base;
+    $this->href_base = $href_base === null ? preg_replace('~(.*)/.*~', '$1', $this->server['SCRIPT_NAME']) : $href_base;
     $this->subspace =
       preg_replace(  // remove root
         '~^' . preg_quote($this->href_base, '~') . '~', '',
         preg_replace( // remove trailing query-string
           '~([?]{1}.*)$~', '',
-          $request_uri === null ? $this->server['request_uri'] : $request_uri));
+          $request_uri === null ? $this->server['REQUEST_URI'] : $request_uri));
     $this->content_type_negotiator = new k_ContentTypeNegotiator($this->header('accept'));
+  }
+  /**
+    * @param array
+    * @return array
+    */
+  protected function lowerKeys($input) {
+    $output = array();
+    foreach ($input as $key => $value) {
+      $output[strtolower($key)] = $value;
+    }
+    return $output;
   }
   /**
     * @param string
@@ -344,9 +354,6 @@ class k_HttpRequest implements k_Context {
     * @return string
     */
   function query($key = null, $default = null) {
-    if ($key == null) {
-      $key = strtolower($key);
-    }
     return $key
       ? isset($this->query[$key])
         ? $this->query[$key]
@@ -359,9 +366,6 @@ class k_HttpRequest implements k_Context {
     * @return string
     */
   function body($key = null, $default = null) {
-    if ($key == null) {
-      $key = strtolower($key);
-    }
     return $key
       ? isset($this->body[$key])
         ? $this->body[$key]
@@ -374,9 +378,7 @@ class k_HttpRequest implements k_Context {
     * @return string
     */
   function header($key = null, $default = null) {
-    if ($key == null) {
-      $key = strtolower($key);
-    }
+    $key = strtolower($key);
     return $key
       ? isset($this->headers[$key])
         ? $this->headers[$key]
@@ -384,9 +386,6 @@ class k_HttpRequest implements k_Context {
       : $this->headers;
   }
   function cookie($key = null, $default = null) {
-    if ($key == null) {
-      $key = strtolower($key);
-    }
     return $key ? $this->cookie_access->get($key, $default) : $this->cookie_access->all();
   }
   /**
@@ -395,15 +394,9 @@ class k_HttpRequest implements k_Context {
     * @return string
     */
   function session($key = null, $default = null) {
-    if ($key == null) {
-      $key = strtolower($key);
-    }
     return $key ? $this->session_access->get($key, $default) : $this->session_access;
   }
   function file($key = null, $default = null) {
-    if ($key == null) {
-      $key = strtolower($key);
-    }
     return $key
       ? isset($this->files[$key])
         ? $this->files[$key]
@@ -415,7 +408,7 @@ class k_HttpRequest implements k_Context {
     * @return string
     */
   function method() {
-    return strtolower($this->server['request_method']);
+    return strtolower($this->server['REQUEST_METHOD']);
   }
   /**
     * @return k_Identity

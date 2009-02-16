@@ -11,6 +11,7 @@ php_value display_startup_errors on
 php_value display_errors         on
 
 # These settings routes all traffic, except concrete files, to the dispatcher
+DirectorySlash Off
 Options FollowSymLinks Indexes
 DirectoryIndex index.php
 
