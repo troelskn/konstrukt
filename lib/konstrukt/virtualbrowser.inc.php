@@ -6,23 +6,25 @@ class k_VirtualSimpleBrowser extends SimpleBrowser {
   protected $root_class_name;
   protected $components;
   protected $charset_strategy;
+  protected $identity_loader;
   /**
     * @param string
     * @param ???
     * @param ???
     * @return null
     */
-  function __construct($root_class_name, k_ComponentCreator $components = null, k_charset_CharsetStrategy $charset_strategy = null) {
+  function __construct($root_class_name, k_ComponentCreator $components = null, k_charset_CharsetStrategy $charset_strategy = null, k_IdentityLoader $identity_loader = null) {
     $this->root_class_name = $root_class_name;
     $this->components = $components;
     $this->charset_strategy = $charset_strategy;
+    $this->identity_loader = $identity_loader;
     parent::__construct();
   }
   /**
     * @return k_VirtualSimpleUserAgent
     */
   protected function createUserAgent() {
-    return new k_VirtualSimpleUserAgent($this->root_class_name, $this->components, $this->charset_strategy);
+    return new k_VirtualSimpleUserAgent($this->root_class_name, $this->components, $this->charset_strategy, $this->identity_loader);
   }
 }
 
@@ -140,30 +142,45 @@ class k_ActingAsSimpleHttpResponse {
   }
 }
 
+class k_VirtualHeaders {
+  protected $headers = array();
+  function addHeaderLine($text) {
+    list($key, $value) = explode(': ', $text, 2);
+    $this->headers[$key] = $value;
+  }
+  function headers() {
+    return $this->headers;
+  }
+}
+
 class k_VirtualSimpleUserAgent {
   protected $cookie_access;
   protected $session_access;
   protected $charset_strategy;
+  protected $identity_loader;
   protected $components;
   protected $root_class_name;
   protected $servername;
   protected $max_redirects = 3;
+  protected $authenticator;
   /**
     * @param string
     * @param ???
     * @param ???
     * @return null
     */
-  function __construct($root_class_name, k_ComponentCreator $components = null, k_charset_CharsetStrategy $charset_strategy = null) {
+  function __construct($root_class_name, k_ComponentCreator $components = null, k_charset_CharsetStrategy $charset_strategy = null, k_IdentityLoader $identity_loader = null) {
     $this->cookie_access = new k_adapter_MockCookieAccess('', array());
     $this->session_access = new k_adapter_MockSessionAccess($this->cookie_access);
     $this->components = $components ? $components : new k_DefaultComponentCreator();
     $this->charset_strategy = $charset_strategy ? $charset_strategy : new k_charset_Utf8CharsetStrategy();
+    $this->identity_loader = $identity_loader ? $identity_loader : new k_DefaultIdentityLoader();
     $this->root_class_name = $root_class_name;
     if (!$root_class_name) {
       throw new Exception("root_class_name not specified");
     }
     $this->servername = 'localhost';
+    $this->authenticator = new SimpleAuthenticator();
   }
   function restart($date = false) {
     $this->cookie_access = new k_adapter_MockCookieAccess('', array());
@@ -182,6 +199,9 @@ class k_VirtualSimpleUserAgent {
     */
   protected function isTooManyRedirects($redirects) {
     return ($redirects > $this->max_redirects);
+  }
+  function setIdentity($host, $realm, $username, $password) {
+    $this->authenticator->setIdentityForRealm($host, $realm, $username, $password);
   }
   /**
     * @param SimpleUrl
@@ -206,9 +226,11 @@ class k_VirtualSimpleUserAgent {
       'SERVER_NAME' => $this->servername,
       'REQUEST_METHOD' => $method,
       'REQUEST_URI' => $url_path);
-    $superglobals = new k_adapter_MockGlobalsAccess($url_query, $data, $server);
+    $headers = new k_VirtualHeaders();
+    $this->authenticator->addHeaders($headers, $url);
+    $superglobals = new k_adapter_MockGlobalsAccess($url_query, $data, $server, $headers->headers());
     $response = k()
-      ->setContext(new k_HttpRequest("", null, new k_DefaultIdentityLoader(), $superglobals, $this->cookie_access, $this->session_access))
+      ->setContext(new k_HttpRequest("", null, $this->identity_loader, $superglobals, $this->cookie_access, $this->session_access))
       ->setComponentCreator($this->components)
       ->setCharsetStrategy($this->charset_strategy)
       ->run($this->root_class_name);

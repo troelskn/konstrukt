@@ -239,6 +239,28 @@ class k_DefaultIdentityLoader implements k_IdentityLoader {
 }
 
 /**
+ * Baseclass for basic http authentication.
+ */
+class k_BasicHttpIdentityLoader implements k_IdentityLoader {
+  function load(k_Context $context) {
+    if (preg_match('/^Basic (.*)$/', $context->header('authorization'), $mm)) {
+      list($username, $password) = explode(':', base64_decode($mm[1]), 2);
+      $user = $this->selectUser($username, $password);
+      if ($user) {
+        return $user;
+      }
+    }
+    return new k_Anonymous();
+  }
+  /**
+   * This should be overridden in subclass to select user from eg. a database or similar.
+   */
+  function selectUser($username, $password) {
+    return new k_AuthenticatedUser($username);
+  }
+}
+
+/**
  * Default implementation of k_Identity ... doesn't do much
  */
 class k_Anonymous implements k_Identity {
@@ -247,6 +269,22 @@ class k_Anonymous implements k_Identity {
   }
   function anonymous() {
     return true;
+  }
+}
+
+/**
+ * Basic implementation of k_Identity, used for authenticated users.
+ */
+class k_AuthenticatedUser implements k_Identity {
+  protected $user;
+  function __construct($user) {
+    $this->user = $user;
+  }
+  function user() {
+    return $this->user;
+  }
+  function anonymous() {
+    return false;
   }
 }
 
@@ -1278,6 +1316,17 @@ class k_TemporaryRedirect extends k_HttpResponse {
 }
 
 /**
+ * Raise this if the user must be authorised to access the requested resource.
+ */
+class k_NotAuthorized extends k_MetaResponse {
+  /** @var string */
+  protected $message = 'You must be authorised to access this resource';
+  function componentName() {
+    return 'k_DefaultNotAuthorizedComponent';
+  }
+}
+
+/**
  * Raise this if the user doesn't have access to the requested resource.
  */
 class k_Forbidden extends k_MetaResponse {
@@ -1320,6 +1369,17 @@ class k_NotImplemented extends k_MetaResponse {
   protected $message = 'The server does not support the functionality required to fulfill the request';
   function componentName() {
     return 'k_DefaultNotImplementedComponent';
+  }
+}
+
+/**
+ * @see k_NotAuthorized
+ */
+class k_DefaultNotAuthorizedComponent extends k_Component {
+  function dispatch() {
+    $response = new k_HttpResponse(401);
+    $response->setHeader('WWW-Authenticate', 'Basic realm="Restricted"');
+    throw $response;
   }
 }
 
@@ -1451,6 +1511,15 @@ class k_Bootstrap {
     */
   function setCharsetStrategy(k_charset_CharsetStrategy $charset_strategy) {
     $this->charset_strategy = $charset_strategy;
+    return $this;
+  }
+  /**
+    * Set the identity loader.
+    * @param k_IdentityLoader
+    * @return k_Bootstrap
+   */
+  function setIdentityLoader(k_IdentityLoader $identity_loader) {
+    $this->identity_loader = $identity_loader;
     return $this;
   }
   /**
