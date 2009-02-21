@@ -1377,7 +1377,7 @@ class k_NotImplemented extends k_MetaResponse {
  */
 class k_DefaultNotAuthorizedComponent extends k_Component {
   function dispatch() {
-    $response = new k_HttpResponse(401);
+    $response = new k_HttpResponse(401, '<html><body><h1>HTTP 401 - Not Authorized</h1></body></html>');
     $response->setHeader('WWW-Authenticate', 'Basic realm="Restricted"');
     throw $response;
   }
@@ -1388,7 +1388,7 @@ class k_DefaultNotAuthorizedComponent extends k_Component {
  */
 class k_DefaultForbiddenComponent extends k_Component {
   function dispatch() {
-    throw new k_HttpResponse(403);
+    throw new k_HttpResponse(403, '<html><body><h1>HTTP 403 - Forbidden</h1></body></html>');
   }
 }
 
@@ -1397,7 +1397,7 @@ class k_DefaultForbiddenComponent extends k_Component {
  */
 class k_DefaultPageNotFoundComponent extends k_Component {
   function dispatch() {
-    throw new k_HttpResponse(404);
+    throw new k_HttpResponse(404, '<html><body><h1>HTTP 404 - Page Not Found</h1></body></html>');
   }
 }
 
@@ -1406,7 +1406,7 @@ class k_DefaultPageNotFoundComponent extends k_Component {
  */
 class k_DefaultMethodNotAllowedComponent extends k_Component {
   function dispatch() {
-    throw new k_HttpResponse(405);
+    throw new k_HttpResponse(405, '<html><body><h1>HTTP 405 - Method Not Allowed</h1></body></html>');
   }
 }
 
@@ -1415,7 +1415,7 @@ class k_DefaultMethodNotAllowedComponent extends k_Component {
  */
 class k_DefaultNotImplementedComponent extends k_Component {
   function dispatch() {
-    throw new k_HttpResponse(501);
+    throw new k_HttpResponse(501, '<html><body><h1>HTTP 501 - Not Implemented</h1></body></html>');
   }
 }
 
