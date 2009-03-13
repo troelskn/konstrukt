@@ -449,6 +449,13 @@ class k_HttpRequest implements k_Context {
     return strtolower($this->server['REQUEST_METHOD']);
   }
   /**
+    * Gives back the server name
+    * @return string
+    */
+  function serverName() {
+    return $this->server['SERVER_NAME'];
+  }
+  /**
     * @return k_Identity
     */
   function identity() {
@@ -762,6 +769,12 @@ abstract class k_Component implements k_Context {
     */
   function method() {
     return $this->context->method();
+  }
+  /**
+    * @return string
+    */
+  function serverName() {
+    return $this->context->serverName();
   }
   function identity() {
     return $this->context->identity();
