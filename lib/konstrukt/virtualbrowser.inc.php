@@ -163,11 +163,12 @@ class k_VirtualSimpleUserAgent {
   protected $servername;
   protected $max_redirects = 3;
   protected $authenticator;
+  protected $additional_headers = array();
   /**
     * @param string
-    * @param ???
-    * @param ???
-    * @return null
+    * @param k_ComponentCreator
+    * @param k_charset_CharsetStrategy
+    * @param k_IdentityLoader
     */
   function __construct($root_class_name, k_ComponentCreator $components = null, k_charset_CharsetStrategy $charset_strategy = null, k_IdentityLoader $identity_loader = null) {
     $this->cookie_access = new k_adapter_MockCookieAccess('', array());
@@ -185,6 +186,9 @@ class k_VirtualSimpleUserAgent {
   function restart($date = false) {
     $this->cookie_access = new k_adapter_MockCookieAccess('', array());
     $this->session_access = new k_adapter_MockSessionAccess($this->cookie_access);
+  }
+  function addHeader($header) {
+    $this->additional_headers[] = $header;
   }
   /**
     * @param bool
@@ -228,6 +232,9 @@ class k_VirtualSimpleUserAgent {
       'REQUEST_URI' => $url_path);
     $headers = new k_VirtualHeaders();
     $this->authenticator->addHeaders($headers, $url);
+    foreach ($this->additional_headers as $line) {
+      $headers->addHeaderLine($line);
+    }
     $superglobals = new k_adapter_MockGlobalsAccess($url_query, $data, $server, $headers->headers());
     $response = k()
       ->setContext(new k_HttpRequest("", null, $this->identity_loader, $superglobals, $this->cookie_access, $this->session_access))

@@ -534,6 +534,7 @@ class k_ContentTypeNegotiator {
     * @return array
     */
   function parseType($tuple) {
+    $tuple = trim($tuple);
     if (preg_match('~^(.*)/([^; ]*)(\s*;\s*q\s*=\s*([0-9.]+))?$~', $tuple, $mm)) {
       return array($mm[1] . '/' . $mm[2], $mm[1], $mm[2], isset($mm[4]) ? $mm[4] : 1);
     }
@@ -815,6 +816,10 @@ abstract class k_Component implements k_Context {
     */
   protected function segment() {
     if (preg_match('~^([^/]+)[/]{0,1}~', $this->context->subspace(), $mm)) {
+      return $mm[1];
+    }
+    // special case for top-level + subtype
+    if (preg_match('~^/(;[^/]+)[/]{0,1}~', $this->context->subspace(), $mm)) {
       return $mm[1];
     }
   }

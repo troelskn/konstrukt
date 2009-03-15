@@ -358,6 +358,13 @@ class TestOfHttpRequest extends UnitTestCase {
     $request = $this->createHttp(array('accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'));
     $this->assertEqual($request->negotiateContentType(array('text/html', 'foo'), 'foo'), 'foo');
   }
+
+  function test_negotiate_internet_explorer_headerline() {
+    $request = $this->createHttp(array('accept' => 'image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/x-shockwave-flash, application/xaml+xml, application/vnd.ms-xpsdocument, application/x-ms-xbap, application/x-ms-application, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*'));
+    $this->assertEqual($request->negotiateContentType(array('text/html')), 'text/html');
+  }
+
+
 }
 
 class TestOfHttpResponse extends UnitTestCase {
