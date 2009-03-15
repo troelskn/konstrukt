@@ -82,6 +82,11 @@ class k_DefaultComponentCreator implements k_ComponentCreator {
  */
 interface k_DebugListener {
   /**
+    * @param k_Context
+    * @return void
+    */
+  function logRequestStart(k_Context $context);
+  /**
     * @param Exception
     * @return void
     */
@@ -111,6 +116,7 @@ interface k_DebugListener {
  * A dummy implementation of k_DebugListener, which does nothing.
  */
 class k_VoidDebugListener implements k_DebugListener {
+  function logRequestStart(k_Context $context) {}
   function logException(Exception $ex) {}
   function logDispatch($component, $name, $next) {}
   function log($mixed) {}
@@ -126,6 +132,11 @@ class k_MultiDebugListener implements k_DebugListener {
   protected $listeners = array();
   function add(k_DebugListener $listener) {
     $this->listeners[] = $listener;
+  }
+  function logRequestStart(k_Context $context) {
+    foreach ($this->listeners as $listener) {
+      $listener->logRequestStart($context);
+    }
   }
   function logException(Exception $ex) {
     foreach ($this->listeners as $listener) {
@@ -1481,6 +1492,7 @@ class k_Bootstrap {
       $debugger->add(new k_logging_LogDebugger($this->log_filename));
     }
     try {
+      $debugger->logRequestStart($this->context());
       return $debugger->decorate($this->dispatchRoot($root_class_name));
     } catch (Exception $ex) {
       $debugger->logException($ex);

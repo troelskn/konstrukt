@@ -4,11 +4,17 @@
  * It's a bunch of nasty, hard coded HTML, but it works and it's self-contained.
  */
 class k_logging_WebDebugger implements k_DebugListener {
+  protected $request_headers = array();
+  protected $request_method = '';
   protected $route = array();
   protected $messages = array();
   protected $dumper;
   function __construct() {
     $this->dumper = new k_logging_HtmlDumper(new k_logging_XrayVision());
+  }
+  function logRequestStart(k_Context $context) {
+    $this->request_method = $context->method();
+    $this->request_headers = $context->header();
   }
   function logException(Exception $ex) {}
   function logDispatch($component, $name, $next) {
@@ -17,6 +23,18 @@ class k_logging_WebDebugger implements k_DebugListener {
   function log($mixed) {
     $stacktrace = debug_backtrace();
     $this->messages[] = array('file' => $stacktrace[0]['file'], 'line' => $stacktrace[0]['line'], 'dump' => $this->dumper->dump($mixed));
+  }
+  protected function renderRequest() {
+    $html =
+      '<div style="border:2px solid #848;margin:1em">' .
+      '<div style="padding:.5em;color:white;font-weight:bold;background:#a6a">http-request</div>' .
+      '<div style="padding:.5em;color:black;font-weight:bold;background:#fdf">http-method: ' . htmlspecialchars($this->request_method) . '</div>'
+      ;
+    foreach ($this->request_headers as $key => $value) {
+      $html .= '<div style="padding:.5em;color:black;background:#fdf">' . htmlspecialchars($key) . ': ' . htmlspecialchars($value) . '</div>';
+    }
+    $html .= '</div>';
+    return $html;
   }
   protected function renderDispatch($dispatch) {
     $cls = new ReflectionClass($dispatch['class-name']);
@@ -80,6 +98,7 @@ class k_logging_WebDebugger implements k_DebugListener {
       '<div style="font-weight:bold;padding:.5em;background:#090;color:white" onclick="document.getElementById(\'konstrukt-debug-output\').style.display = \'none\';">' .
       'konstrukt-debug' .
       '</div>' .
+      $this->renderRequest() .
       $this->renderResponse($response) .
       '<div style="border:2px solid #888;margin:1em">' .
       '<div style="padding:.5em;color:white;font-weight:bold;background:#aaa">route (' . count($this->route) . ')</div>' .
@@ -227,7 +246,20 @@ class k_logging_LogDebugger implements k_DebugListener {
     $this->file_handle = fopen($filename, 'at');
     $this->dumper = new k_logging_SexpDumper(new k_logging_XrayVision());
     date_default_timezone_set(@date_default_timezone_get());
-    $this->write(sprintf("(log \"%s\")\n", date("Y-m-d H:i:s")));
+  }
+  protected function indent($str) {
+    $str = str_replace("\n", "\n  ", $str);
+    if (substr($str, -3) === "\n  ") {
+      $str = substr($str, 0, -3);
+    }
+    return $str;
+  }
+  function logRequestStart(k_Context $context) {
+    $this->write(
+      '(request' . "\n" .
+      '  (time "' . date("Y-m-d H:i:s") . '")' . "\n" .
+      '  (method "' . $context->method() . '")' . "\n" .
+      '  (headers ' . $this->indent(($this->dumper->dump($context->header()))) . "))" . "\n");
   }
   function logException(Exception $ex) {
     $this->write("(exception\n" . $ex->__toString() . ")\n");
