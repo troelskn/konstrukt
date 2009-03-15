@@ -24,7 +24,7 @@ class Root extends k_Component {
     return sprintf("<html><body><h1>Authorization Example</h1>%s</body></html>", parent::dispatch());
   }
   function GET() {
-    return sprintf("<a href='%s'>restricted</a>", htmlspecialchars($this->url('restricted')));
+    return sprintf("<p><a href='%s'>restricted</a></p><p>login with one of:</p><ul><li>pirate arrr</li><li>ninja supersecret</li></ul>", htmlspecialchars($this->url('restricted')));
   }
 }
 
