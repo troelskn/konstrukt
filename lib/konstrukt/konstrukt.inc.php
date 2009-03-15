@@ -300,6 +300,7 @@ interface k_Context {
   function session($key = null, $default = null);
   function file($key = null, $default = null);
   function method();
+  function serverName();
   function identity();
   function url($path = "", $params = array());
   function subspace();
