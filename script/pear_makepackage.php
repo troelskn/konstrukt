@@ -30,7 +30,7 @@ require_once 'PEAR/PackageFileManager2.php';
 
 $version   = '2.0.1';
 $stability = 'stable';
-$notes     = 'First stable release of Konstrukt v.2';
+$notes     = 'Point release.';
 
 PEAR::setErrorHandling(PEAR_ERROR_DIE);
 $pfm = new PEAR_PackageFileManager2();
@@ -40,9 +40,10 @@ $pfm->setOptions(
     'filelistgenerator' => 'file',
     'packagedirectory'  => dirname(__FILE__) . '/../',
     'packagefile'       => 'package.xml',
+    'addhiddenfiles'    => true,
     'ignore'            => array(
       '*script*',
-      '.svn',
+      '*.svn*',
       '*.tgz',
     ),
     'dir_roles' => array(
