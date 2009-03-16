@@ -38,9 +38,13 @@ class k_adapter_DummyOutputAccess implements k_adapter_OutputAccess {
 }
 
 class k_TestDebugListener implements k_DebugListener {
+	public $request_start = null;
   public $exceptions = array();
   public $dump = array();
   public $route = array();
+	function logRequestStart(k_Context $context) {
+		$this->request_start = $context;
+	}
   function logException(Exception $ex) {
     $this->exceptions[] = $ex;
   }
