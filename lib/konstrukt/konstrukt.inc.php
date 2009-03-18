@@ -202,8 +202,8 @@ class k_PhemtoAdapter extends k_DefaultComponentCreator {
     * @param Phemto
     * @return void
     */
-  function __construct(Phemto $injector) {
-    parent::__construct();
+  function __construct(Phemto $injector, $document = null) {
+    parent::__construct($document);
     $this->injector = $injector;
   }
   /**
