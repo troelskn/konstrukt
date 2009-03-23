@@ -4,7 +4,7 @@ For this tutorial we presume that you have completed the first tutorial, since i
 
 Negotiating the Content-Type
 ----------------------------
-Most of the time a web application will emit HTML. That's the fabric of which the web is made. Once in a while though, we might have to generate other types of responses. In these cases, we clearly don't want the output to get wrapped in the regular document rendering. For that we need an abnormal response. We have already seen one kind of abnormal response, with the `k_NotFound`, but this time we need a more specific kind. We'll extend the contact component with the capacity to render as a [vcard](http://en.wikipedia.org/wiki/VCard).
+Most of the time a web application will emit HTML. That's the fabric of which the web is made. Once in a while though, we might have to generate other types of responses. In these cases, we clearly don't want the output to get wrapped in the regular document rendering. For that we need an abnormal response. We have already seen one kind of abnormal response, with the `k_PageNotFound`, but this time we need a more specific kind. We'll extend the contact component with the capacity to render as a [vcard](http://en.wikipedia.org/wiki/VCard).
 
 To supply a ressource as a different content-type, we can use Konstrukts built-in support for content-negotiation, which is an often underutilised feature of the http protocol. To get this, we need to edit the "show" component, so that the `GET()` method can fork out to either the html or the vcard handler. We could do so manually in the `GET()` method, but there are generic hooks available for this purpose. After a revision of the component, we end up with this:
 
@@ -15,7 +15,7 @@ class components_contacts_Show extends k_Component {
     global $contacts;
     $contact = $contacts->fetchByName($this->name());
     if (!$contact) {
-      throw new k_NotFound();
+      throw new k_PageNotFound();
     }
     $this->document->setTitle($contact->full_name());
     $t = new k_Template("templates/contacts-show.tpl.php");
@@ -25,7 +25,7 @@ class components_contacts_Show extends k_Component {
     global $contacts;
     $contact = $contacts->fetchByName($this->name());
     if (!$contact) {
-      throw new k_NotFound();
+      throw new k_PageNotFound();
     }
     $t = new k_Template("templates/contacts-show-vcard.tpl.php");
     $response = new k_HttpResponse();
@@ -64,7 +64,7 @@ class components_contacts_Show extends k_Component {
     global $contacts;
     $this->contact = $contacts->fetchByName($this->name());
     if (!$this->contact) {
-      throw new k_NotFound();
+      throw new k_PageNotFound();
     }
     return parent::dispatch();
   }

@@ -199,7 +199,7 @@
     <span class="kw3">global</span> <span class="re0">$contacts</span>;
     <span class="re0">$contact</span> = <span class="re0">$contacts</span>-&gt;<span class="me1">fetchByName</span><span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     <span class="kw1">if</span> <span class="br0">&#40;</span>!<span class="re0">$contact</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">throw</span> <span class="kw2">new</span> k_NotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+      <span class="kw1">throw</span> <span class="kw2">new</span> k_PageNotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
     <span class="br0">&#125;</span>
     <span class="re0">$this</span>-&gt;<span class="me1">document</span>-&gt;<span class="me1">setTitle</span><span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">full_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show.tpl.php&quot;</span><span class="br0">&#41;</span>;
@@ -209,7 +209,7 @@
 
 <p>There are two new things to note about this component. The first is that we use the <code>name()</code> method to access the url path-name. This is the name that the context used to identify this component with. We use this to select the relevant contact from the database.</p>
 
-<p>The next thing is that we throw an exception if the contact isn't found. Konstrukt defines a couple of specific exceptions, that map to a particular meaning in the http protocol. For example, <code>k_NotFound</code> will emit a 404 Page Not Found. The use of exceptions for breaking off the regular rendering pipeline makes it possible to encapsulate the effects of components.</p>
+<p>The next thing is that we throw an exception if the contact isn't found. Konstrukt defines a couple of specific exceptions, that map to a particular meaning in the http protocol. For example, <code>k_PageNotFound</code> will emit a 404 Page Not Found. The use of exceptions for breaking off the regular rendering pipeline makes it possible to encapsulate the effects of components.</p>
 
 <p>To complete the picture, we need a template to match our component. Save this as <code>/var/www/foo/templates/contacts-show.tpl.php</code>:</p>
 
@@ -227,5 +227,19 @@
 <p>With this, we can now display our contact. Go on and click one of those links from the listing.</p>
 
 <p>And that concludes our session for today.</p>
+
+<script type="text/javascript" src="http://include.reinvigorate.net/re_.js"></script>
+<script type="text/javascript">
+	  re_("6apn8-9o8d0wf23y");
+</script>
+<script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-2258159-7");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
 </body>
 </html>

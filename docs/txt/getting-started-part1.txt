@@ -204,7 +204,7 @@ class components_contacts_Show extends k_Component {
     global $contacts;
     $contact = $contacts->fetchByName($this->name());
     if (!$contact) {
-      throw new k_NotFound();
+      throw new k_PageNotFound();
     }
     $this->document->setTitle($contact->full_name());
     $t = new k_Template("templates/contacts-show.tpl.php");
@@ -214,7 +214,7 @@ class components_contacts_Show extends k_Component {
 
 There are two new things to note about this component. The first is that we use the `name()` method to access the url path-name. This is the name that the context used to identify this component with. We use this to select the relevant contact from the database.
 
-The next thing is that we throw an exception if the contact isn't found. Konstrukt defines a couple of specific exceptions, that map to a particular meaning in the http protocol. For example, `k_NotFound` will emit a 404 Page Not Found. The use of exceptions for breaking off the regular rendering pipeline makes it possible to encapsulate the effects of components.
+The next thing is that we throw an exception if the contact isn't found. Konstrukt defines a couple of specific exceptions, that map to a particular meaning in the http protocol. For example, `k_PageNotFound` will emit a 404 Page Not Found. The use of exceptions for breaking off the regular rendering pipeline makes it possible to encapsulate the effects of components.
 
 To complete the picture, we need a template to match our component. Save this as `/var/www/foo/templates/contacts-show.tpl.php`:
 

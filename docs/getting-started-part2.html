@@ -12,7 +12,7 @@
 
 <h2 id="negotiating-the-content-type">Negotiating the Content-Type</h2>
 
-<p>Most of the time a web application will emit HTML. That's the fabric of which the web is made. Once in a while though, we might have to generate other types of responses. In these cases, we clearly don't want the output to get wrapped in the regular document rendering. For that we need an abnormal response. We have already seen one kind of abnormal response, with the <code>k_NotFound</code>, but this time we need a more specific kind. We'll extend the contact component with the capacity to render as a <a href="http://en.wikipedia.org/wiki/VCard">vcard</a>.</p>
+<p>Most of the time a web application will emit HTML. That's the fabric of which the web is made. Once in a while though, we might have to generate other types of responses. In these cases, we clearly don't want the output to get wrapped in the regular document rendering. For that we need an abnormal response. We have already seen one kind of abnormal response, with the <code>k_PageNotFound</code>, but this time we need a more specific kind. We'll extend the contact component with the capacity to render as a <a href="http://en.wikipedia.org/wiki/VCard">vcard</a>.</p>
 
 <p>To supply a ressource as a different content-type, we can use Konstrukts built-in support for content-negotiation, which is an often underutilised feature of the http protocol. To get this, we need to edit the "show" component, so that the <code>GET()</code> method can fork out to either the html or the vcard handler. We could do so manually in the <code>GET()</code> method, but there are generic hooks available for this purpose. After a revision of the component, we end up with this:</p>
 
@@ -22,7 +22,7 @@
     <span class="kw3">global</span> <span class="re0">$contacts</span>;
     <span class="re0">$contact</span> = <span class="re0">$contacts</span>-&gt;<span class="me1">fetchByName</span><span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     <span class="kw1">if</span> <span class="br0">&#40;</span>!<span class="re0">$contact</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">throw</span> <span class="kw2">new</span> k_NotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+      <span class="kw1">throw</span> <span class="kw2">new</span> k_PageNotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
     <span class="br0">&#125;</span>
     <span class="re0">$this</span>-&gt;<span class="me1">document</span>-&gt;<span class="me1">setTitle</span><span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">full_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show.tpl.php&quot;</span><span class="br0">&#41;</span>;
@@ -32,7 +32,7 @@
     <span class="kw3">global</span> <span class="re0">$contacts</span>;
     <span class="re0">$contact</span> = <span class="re0">$contacts</span>-&gt;<span class="me1">fetchByName</span><span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     <span class="kw1">if</span> <span class="br0">&#40;</span>!<span class="re0">$contact</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">throw</span> <span class="kw2">new</span> k_NotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+      <span class="kw1">throw</span> <span class="kw2">new</span> k_PageNotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
     <span class="br0">&#125;</span>
     <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show-vcard.tpl.php&quot;</span><span class="br0">&#41;</span>;
     <span class="re0">$response</span> = <span class="kw2">new</span> k_HttpResponse<span class="br0">&#40;</span><span class="br0">&#41;</span>;
@@ -69,7 +69,7 @@ REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class=
     <span class="kw3">global</span> <span class="re0">$contacts</span>;
     <span class="re0">$this</span>-&gt;<span class="me1">contact</span> = <span class="re0">$contacts</span>-&gt;<span class="me1">fetchByName</span><span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     <span class="kw1">if</span> <span class="br0">&#40;</span>!<span class="re0">$this</span>-&gt;<span class="me1">contact</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">throw</span> <span class="kw2">new</span> k_NotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+      <span class="kw1">throw</span> <span class="kw2">new</span> k_PageNotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
     <span class="br0">&#125;</span>
     <span class="kw1">return</span> <span class="kw2">parent</span>::<span class="me2">dispatch</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>
@@ -201,5 +201,19 @@ REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class=
 <p>The <code>POST()</code> method - while brief - deserves a few words on the way. If the processing goes well, we generate a redirect. In this case it's for the current components url, with a neutral content-type. That will take the user back to the default representation after a successful operation. If there are failures, the form is redisplayed.</p>
 
 <p>This pattern is commonly known as "redirect after post" or "post-redirect-get" (PRG). Doing things in this exact way means that the users browser history won't store the POST actions, once the form has been completed. If we didn't do this, using the "back" button of the browser would try to re-submit the form. You have probably experienced this annoying behaviour on a web site more than once. Note that it is only after the form has been succesfully processed, that the redirect takes place.</p>
+
+<script type="text/javascript" src="http://include.reinvigorate.net/re_.js"></script>
+<script type="text/javascript">
+	  re_("6apn8-9o8d0wf23y");
+</script>
+<script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-2258159-7");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
 </body>
 </html>

@@ -285,6 +285,27 @@ them to some place for further inspection.</p>
 <div class="methods">
   
 
+<h4 id="class-k_debuglistener-method-logrequeststart">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  logRequestStart(<em><a href="#class-k_context"
+>k_Context</a>
+
+$context</em>)
+
+  : <em class="modifier">void</em>
+
+
+</h4>
+
+
+
+  
+
 <h4 id="class-k_debuglistener-method-logexception">
 
   <em class="modifier">abstract</em>,
@@ -390,6 +411,25 @@ This is used to inject a debugbar into the response. It is perhaps not the most 
 
 <h3>methods</h3>
 <div class="methods">
+  
+
+<h4 id="class-k_voiddebuglistener-method-logrequeststart">
+
+  <em class="modifier">public</em>
+
+
+  logRequestStart(<em><a href="#class-k_context"
+>k_Context</a>
+
+$context</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
   
 
 <h4 id="class-k_voiddebuglistener-method-logexception">
@@ -509,6 +549,25 @@ $response</em>)
 >k_DebugListener</a>
 
 $listener</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_multidebuglistener-method-logrequeststart">
+
+  <em class="modifier">public</em>
+
+
+  logRequestStart(<em><a href="#class-k_context"
+>k_Context</a>
+
+$context</em>)
 
   : <em class="modifier">mixed</em>
 
@@ -713,7 +772,9 @@ https://phemto.svn.sourceforge.net/svnroot/phemto/trunk</p>
   __construct(<em><a href="#class-phemto"
 >Phemto</a>
 
-$injector</em>)
+$injector [ , <span class="modifier">mixed</span>
+
+$document ] </em>)
 
   : <em class="modifier">void</em>
 
@@ -872,6 +933,65 @@ $context</em>)
 
 </div>
 </div><div class="class">
+<h2 id="class-k_basichttpidentityloader">
+  <em>class</em>
+  <a href="#class-k_basichttpidentityloader">k_BasicHttpIdentityLoader</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_identityloader">k_IdentityLoader</a></h3>
+
+<div class="docblock">
+  <p>Baseclass for basic http authentication.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_basichttpidentityloader-method-load">
+
+  <em class="modifier">public</em>
+
+
+  load(<em><a href="#class-k_context"
+>k_Context</a>
+
+$context</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_basichttpidentityloader-method-selectuser">
+
+  <em class="modifier">public</em>
+
+
+  selectUser(<em><span class="modifier">mixed</span>
+
+$username, <span class="modifier">mixed</span>
+
+$password</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>This should be overridden in subclass to select user from eg. a database or similar.</p>
+</div>
+
+
+</div>
+</div><div class="class">
 <h2 id="class-k_anonymous">
   <em>class</em>
   <a href="#class-k_anonymous">k_Anonymous</a>
@@ -906,6 +1026,86 @@ $context</em>)
   
 
 <h4 id="class-k_anonymous-method-anonymous">
+
+  <em class="modifier">public</em>
+
+
+  anonymous()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_authenticateduser">
+  <em>class</em>
+  <a href="#class-k_authenticateduser">k_AuthenticatedUser</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_identity">k_Identity</a></h3>
+
+<div class="docblock">
+  <p>Basic implementation of k_Identity, used for authenticated users.</p>
+</div>
+
+<h3>properties</h3>
+<div class="properties">
+  <h4 id="class-k_authenticateduser-property-user">
+  <em class="modifier">protected</em>
+
+
+  $user
+  : <em class="modifier">mixed</em>
+
+</h4>
+
+
+</div>
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_authenticateduser-method-__construct">
+
+  <em class="modifier">public</em>
+
+
+  __construct(<em><span class="modifier">mixed</span>
+
+$user</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_authenticateduser-method-user">
+
+  <em class="modifier">public</em>
+
+
+  user()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_authenticateduser-method-anonymous">
 
   <em class="modifier">public</em>
 
@@ -1076,6 +1276,24 @@ $default ]  ] </em>)
 
 
   method()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_context-method-servername">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  serverName()
 
   : <em class="modifier">mixed</em>
 
@@ -1339,6 +1557,24 @@ $file_access ]  ]  ]  ]  ]  ]  ] </em>)
 
   
 
+<h4 id="class-k_httprequest-method-lowerkeys">
+
+  <em class="modifier">protected</em>
+
+
+  lowerKeys(<em><span class="modifier">mixed</span>
+
+$input</em>)
+
+  : <em class="modifier">array</em>
+
+
+</h4>
+
+
+
+  
+
 <h4 id="class-k_httprequest-method-query">
 
   <em class="modifier">public</em>
@@ -1473,6 +1709,25 @@ $default ]  ] </em>)
 
 <div class="docblock">
   <p>Gives back the HTTP-method</p>
+</div>
+
+
+  
+
+<h4 id="class-k_httprequest-method-servername">
+
+  <em class="modifier">public</em>
+
+
+  serverName()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Gives back the server name</p>
 </div>
 
 
@@ -2278,6 +2533,22 @@ $default ]  ] </em>)
 
   
 
+<h4 id="class-k_component-method-servername">
+
+  <em class="modifier">public</em>
+
+
+  serverName()
+
+  : <em class="modifier">string</em>
+
+
+</h4>
+
+
+
+  
+
 <h4 id="class-k_component-method-identity">
 
   <em class="modifier">public</em>
@@ -3073,7 +3344,7 @@ $content_type</em>)
 
 $charset</em>)
 
-  : <em class="modifier"><a href="#class-k_charset_utf8">k_charset_Utf8</a></em>
+  : <em class="modifier"><a href="#class-k_charset_responsecharset">k_charset_ResponseCharset</a></em>
 
 
 </h4>
@@ -3392,6 +3663,39 @@ $url</em>)
 
 </div>
 </div><div class="class">
+<h2 id="class-k_notauthorized">
+  <em>class</em>
+  <a href="#class-k_notauthorized">k_NotAuthorized</a>
+
+  <em>extends</em>
+  <a href="#class-k_metaresponse">k_MetaResponse</a>
+</h2>
+
+<div class="docblock">
+  <p>Raise this if the user must be authorised to access the requested resource.</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_notauthorized-method-componentname">
+
+  <em class="modifier">public</em>
+
+
+  componentName()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
 <h2 id="class-k_forbidden">
   <em>class</em>
   <a href="#class-k_forbidden">k_Forbidden</a>
@@ -3515,6 +3819,39 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 
 
   componentName()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_defaultnotauthorizedcomponent">
+  <em>class</em>
+  <a href="#class-k_defaultnotauthorizedcomponent">k_DefaultNotAuthorizedComponent</a>
+
+  <em>extends</em>
+  <a href="#class-k_component">k_Component</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_context">k_Context</a></h3>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_defaultnotauthorizedcomponent-method-dispatch">
+
+  <em class="modifier">public</em>
+
+
+  dispatch()
 
   : <em class="modifier">mixed</em>
 
@@ -3854,6 +4191,28 @@ $charset_strategy</em>)
 
 <div class="docblock">
   <p>Set the charsetstrategy.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_bootstrap-method-setidentityloader">
+
+  <em class="modifier">public</em>
+
+
+  setIdentityLoader(<em><a href="#class-k_identityloader"
+>k_IdentityLoader</a>
+
+$identity_loader</em>)
+
+  : <em class="modifier"><a href="#class-k_bootstrap">k_Bootstrap</a></em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Set the identity loader.</p>
 </div>
 
 
@@ -4442,166 +4801,6 @@ $files</em>)
 
 
   unMagic(<em><span class="modifier">mixed</span>
-
-$input</em>)
-
-  : <em class="modifier">array</em>
-
-
-</h4>
-
-
-
-</div>
-</div><div class="class">
-<h2 id="class-k_adapter_lowerkeyadapter">
-  <em>class</em>
-  <a href="#class-k_adapter_lowerkeyadapter">k_adapter_LowerKeyAdapter</a>
-</h2>
-<h3>
-  <em>implements</em>
-  <a href="#class-k_adapter_globalsaccess">k_adapter_GlobalsAccess</a></h3>
-
-
-<h3>properties</h3>
-<div class="properties">
-  <h4 id="class-k_adapter_lowerkeyadapter-property-global_access">
-  <em class="modifier">protected</em>
-
-
-  $global_access
-  : <em class="modifier"><a href="#class-k_adapter_globalsaccess">k_adapter_GlobalsAccess</a></em>
-
-</h4>
-
-
-</div>
-
-<h3>methods</h3>
-<div class="methods">
-  
-
-<h4 id="class-k_adapter_lowerkeyadapter-method-__construct">
-
-  <em class="modifier">public</em>
-
-
-  __construct(<em><a href="#class-k_adapter_globalsaccess"
->k_adapter_GlobalsAccess</a>
-
-$global_access</em>)
-
-  : <em class="modifier">null</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_adapter_lowerkeyadapter-method-query">
-
-  <em class="modifier">public</em>
-
-
-  query()
-
-  : <em class="modifier">array</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_adapter_lowerkeyadapter-method-body">
-
-  <em class="modifier">public</em>
-
-
-  body()
-
-  : <em class="modifier">array</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_adapter_lowerkeyadapter-method-server">
-
-  <em class="modifier">public</em>
-
-
-  server()
-
-  : <em class="modifier">array</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_adapter_lowerkeyadapter-method-files">
-
-  <em class="modifier">public</em>
-
-
-  files()
-
-  : <em class="modifier">array</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_adapter_lowerkeyadapter-method-cookie">
-
-  <em class="modifier">public</em>
-
-
-  cookie()
-
-  : <em class="modifier">array</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_adapter_lowerkeyadapter-method-headers">
-
-  <em class="modifier">public</em>
-
-
-  headers()
-
-  : <em class="modifier">array</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_adapter_lowerkeyadapter-method-lowerkeys">
-
-  <em class="modifier">protected</em>
-
-
-  lowerKeys(<em><span class="modifier">mixed</span>
 
 $input</em>)
 
@@ -6402,5 +6601,19 @@ $input</em>)
 
 
 </div>
-</div></body>
+</div>
+<script type="text/javascript" src="http://include.reinvigorate.net/re_.js"></script>
+<script type="text/javascript">
+	  re_("6apn8-9o8d0wf23y");
+</script>
+<script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-2258159-7");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+</body>
 </html>
