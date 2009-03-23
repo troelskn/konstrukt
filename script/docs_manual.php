@@ -13,12 +13,15 @@ class ManualProcessor {
   protected $head;
   protected $foot;
 
-  function __construct($indir, $outdir) {
+  function __construct($indir, $outdir, $include_tracking = false) {
     $this->transformer = new DocumentationTransformer();
     $this->indir = rtrim($indir, "/\\")."/";
     $this->outdir = rtrim($outdir, "/\\")."/";
     $this->head = file_get_contents(dirname(__FILE__).'/templates/head.tpl.html');
     $this->foot = file_get_contents(dirname(__FILE__).'/templates/foot.tpl.html');
+    if ($include_tracking) {
+      $this->foot = file_get_contents(dirname(__FILE__).'/templates/tracking.tpl.html') . $this->foot;
+    }
   }
 
   public function run() {
@@ -84,5 +87,22 @@ class ManualProcessor {
   }
 }
 
-$transformer = new ManualProcessor(getcwd()."/docs/txt", getcwd()."/docs");
+$include_tracking = false;
+if (isset($argv[1])) {
+  switch ($argv[1]) {
+  case '--tracking':
+    $include_tracking = true;
+    break;
+  case '--help':
+  case '-h':
+    echo "Usage: {$argv[0]} [-h|--help|--tracking]\n";
+    exit;
+    break;
+  default:
+    echo "Unknown option {$argv[1]}\n";
+    exit -1;
+  }
+}
+
+$transformer = new ManualProcessor(getcwd()."/docs/txt", getcwd()."/docs", $include_tracking);
 $transformer->run();

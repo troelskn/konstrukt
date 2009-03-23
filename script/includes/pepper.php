@@ -237,20 +237,26 @@ class Pepper_Transformer
 {
   protected $template = "html";
   protected $outstream;
+  protected $before_footer;
 
   protected $important = Array();
 
-  function __construct($outstream, $template = "html") {
+  function __construct($outstream, $template = "html", $before_footer = null) {
     $this->template = $template;
     $this->outstream = $outstream;
     ob_start();
     include("templates/".$this->template."/top.tmpl.php");
     $this->outstream->write(ob_get_clean());
+    $this->before_footer = $before_footer;
   }
 
   function finalize() {
     $important = $this->important;
     ob_start();
+    if ($this->before_footer) {
+
+        include("templates/".$this->before_footer);
+    }
     include("templates/".$this->template."/bottom.tmpl.php");
     $this->outstream->write(ob_get_clean());
     $this->outstream->close();
