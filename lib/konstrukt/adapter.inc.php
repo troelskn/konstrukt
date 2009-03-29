@@ -29,6 +29,7 @@ class k_adapter_DefaultOutputAccess implements k_adapter_OutputAccess {
 interface k_adapter_GlobalsAccess {
   function query();
   function body();
+  function rawHttpRequestBody();
   function server();
   function files();
   function cookie();
@@ -58,6 +59,9 @@ class k_adapter_SafeGlobalsAccess implements k_adapter_GlobalsAccess {
   }
   function body() {
     return $this->charset->decodeInput($this->unMagic($_POST));
+  }
+  function rawHttpRequestBody() {
+    return file_get_contents('php://input');
   }
   function server() {
     return $this->charset->decodeInput($this->unMagic($_SERVER));
@@ -291,6 +295,8 @@ class k_adapter_MockGlobalsAccess implements k_adapter_GlobalsAccess {
   public $query;
   /** @var array */
   public $body;
+  /** @var string */
+  public $rawHttpRequestBody;
   /** @var array */
   public $server;
   /** @var array */
@@ -326,6 +332,12 @@ class k_adapter_MockGlobalsAccess implements k_adapter_GlobalsAccess {
     */
   function body() {
     return $this->body;
+  }
+  /**
+    * @return string
+    */
+  function rawHttpRequestBody() {
+    return $this->rawHttpRequestBody;
   }
   /**
     * @return array

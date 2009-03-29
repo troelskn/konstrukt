@@ -310,6 +310,7 @@ interface k_Context {
   function cookie($key = null, $default = null);
   function session($key = null, $default = null);
   function file($key = null, $default = null);
+  function rawHttpRequestBody();
   function method();
   function serverName();
   function identity();
@@ -330,6 +331,8 @@ class k_HttpRequest implements k_Context {
   protected $query;
   /** @var array */
   protected $body;
+  /** @var string */
+  protected $rawHttpRequestBody;
   /** @var array */
   protected $server;
   /** @var array */
@@ -369,6 +372,7 @@ class k_HttpRequest implements k_Context {
     }
     $this->query = $superglobals->query();
     $this->body = $superglobals->body();
+    $this->rawHttpRequestBody = $superglobals->rawHttpRequestBody();
     $this->server = $superglobals->server();
     $this->files = array();
     foreach ($superglobals->files() as $key => $file_info) {
@@ -421,6 +425,13 @@ class k_HttpRequest implements k_Context {
         ? $this->body[$key]
         : $default
       : $this->body;
+  }
+  /**
+   * Returns the http-request body as-is. Note that you have to manually handle charset-issues for this.
+   * @return string
+   */
+  function rawHttpRequestBody() {
+    return $this->rawHttpRequestBody;
   }
   /**
     * @param string
@@ -759,6 +770,9 @@ abstract class k_Component implements k_Context {
     */
   function body($key = null, $default = null) {
     return $this->context->body($key, $default);
+  }
+  function rawHttpRequestBody() {
+    return $this->context->rawHttpRequestBody();
   }
   function header($key = null, $default = null) {
     return $this->context->header($key, $default);
