@@ -91,7 +91,7 @@ Each of these functions can be hooked into by overriding them in your components
 ..php
 <?php
 class components_Root extends k_Component {
-  function forward() {
+  function forward($class_name, $namespace = "") {
     return '
 <div id="menu">
   <ul>
@@ -100,7 +100,7 @@ class components_Root extends k_Component {
   </ul>
 </div>
 <div id="content">
-' . parent::forward() . '
+' . parent::forward($class_name, $namespace) . '
 </div>';
   }
 }

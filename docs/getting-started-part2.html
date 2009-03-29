@@ -95,7 +95,7 @@ REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class=
 
 <pre class="php"><span class="kw2">&lt;?php</span>
 <span class="kw2">class</span> components_Root <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
-  <span class="kw2">function</span> forward<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+  <span class="kw2">function</span> forward<span class="br0">&#40;</span><span class="re0">$class_name</span>, <span class="re0">$namespace</span> = <span class="st0">&quot;&quot;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="kw1">return</span> <span class="st0">'
 &lt;div id=&quot;menu&quot;&gt;
   &lt;ul&gt;
@@ -104,7 +104,7 @@ REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class=
   &lt;/ul&gt;
 &lt;/div&gt;
 &lt;div id=&quot;content&quot;&gt;
-'</span> . <span class="kw2">parent</span>::<span class="me2">forward</span><span class="br0">&#40;</span><span class="br0">&#41;</span> . <span class="st0">'
+'</span> . <span class="kw2">parent</span>::<span class="me2">forward</span><span class="br0">&#40;</span><span class="re0">$class_name</span>, <span class="re0">$namespace</span><span class="br0">&#41;</span> . <span class="st0">'
 &lt;/div&gt;'</span>;
   <span class="br0">&#125;</span>
 <span class="br0">&#125;</span></pre>
@@ -201,19 +201,5 @@ REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class=
 <p>The <code>POST()</code> method - while brief - deserves a few words on the way. If the processing goes well, we generate a redirect. In this case it's for the current components url, with a neutral content-type. That will take the user back to the default representation after a successful operation. If there are failures, the form is redisplayed.</p>
 
 <p>This pattern is commonly known as "redirect after post" or "post-redirect-get" (PRG). Doing things in this exact way means that the users browser history won't store the POST actions, once the form has been completed. If we didn't do this, using the "back" button of the browser would try to re-submit the form. You have probably experienced this annoying behaviour on a web site more than once. Note that it is only after the form has been succesfully processed, that the redirect takes place.</p>
-
-<script type="text/javascript" src="http://include.reinvigorate.net/re_.js"></script>
-<script type="text/javascript">
-	  re_("6apn8-9o8d0wf23y");
-</script>
-<script type="text/javascript">
-	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-	var pageTracker = _gat._getTracker("UA-2258159-7");
-	pageTracker._initData();
-	pageTracker._trackPageview();
-</script>
 </body>
 </html>
