@@ -1,4 +1,20 @@
 <?php
+
+class test_ContentTypeComponent extends k_Component {
+  function post() {
+    return "post called";
+  }
+  function postJson() {
+    return "postJson called";
+  }
+  function postForm() {
+    return "postForm called";
+  }
+  function putJson() {
+    return "putJson called";
+  }
+}
+
 class test_CircularComponent extends k_Component {
   function map($name) {
     return 'test_CircularComponent';

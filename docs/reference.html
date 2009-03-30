@@ -15,6 +15,7 @@
 <li><a href="#dispatch-map-forward">dispatch, map, forward</a></li>
 <li><a href="#execute-get-post">execute, GET, POST</a></li>
 <li><a href="#renderers">Renderers</a></li>
+<li><a href="#content-type-delegation">Content-Type delegation</a></li>
 </ul>
 </li>
 <li><a href="#http-input">HTTP input</a><ul>
@@ -96,11 +97,11 @@
 
 <h3 id="execute-get-post">execute, GET, POST</h3>
 
-<p>The <code>execute()</code> method is the first method invoked for the handling component. It is unusual to override this in concrete components, although there are cases for it. Since execute is invoked for any kind of HTTP-method, it is a good place to load model components that are identified by the url of the component. The default implementation of <code>execute()</code> inspects the HTTP-method and delegates control to one of <code>GET()</code>, <code>POST()</code>, <code>HEAD()</code>, <code>PUT()</code> or <code>DELETE()</code>. In most web applications, you will probably just concern your self with the first two, since these are the only one widely supported by browsers. Luckily they are also the most important.</p>
+<p>The <code>execute()</code> method is the first method invoked for the handling component. It is unusual to override this in concrete components, although there are cases for it. Since execute is invoked for any kind of HTTP-method, it is a good place to load model components that are identified by the url of the component. The default implementation of <code>execute()</code> inspects the HTTP-method and delegates control to one of <code>GET()</code>, <code>POST()</code>, <code>HEAD()</code>, <code>PUT()</code> or <code>DELETE()</code>. In most web applications, you will probably just concern your self with the first two, since these are the only ones widely supported by browsers. Luckily they are also the most important.</p>
 
 <h3 id="renderers">Renderers</h3>
 
-<p>The <code>GET()</code> and <code>POST()</code> methods can be overridden, but it's now recommended that you don't override <code>GET()</code>. The default implementation of <code>GET()</code> will negotiate the content-type, and finally delegate control to a render method. So for most applications, you would implement <code>renderHtml()</code>. You can implement multiple renderers, and the negotiation will pick the best candidate. The naming of renderers corresponds to their content-type per the following chart:</p>
+<p>The <code>GET()</code>, <code>POST()</code> etc. methods can be overridden, but it's recommended that you don't. The default implementation of <code>GET()</code> will negotiate the content-type, based on the Accept header, and then delegate control to a render method. This is called content-negotiation, because it happens automatically based on the clients preferences - For a browser, the preferred content-type will likely be HTML, so for most applications, you would implement <code>renderHtml()</code> and this will automatically be called upon a GET request. You can implement multiple renderers, and the negotiation will pick the best candidate. The naming of renderers corresponds to their content-type per the following chart:</p>
 
 <table>
 <thead>
@@ -180,9 +181,56 @@
 
 <p>If you need a content-type that isn't listed above, you can add it to the <code>$renderers</code> property in your component. The format is:</p>
 
-<pre class="php"><span class="re0">$this</span>-&gt;<span class="me1">renderers</span><span class="br0">&#91;</span><span class="st0">'test/html;html'</span><span class="br0">&#93;</span> = <span class="st0">'renderHtml'</span>;</pre>
+<pre class="php"><span class="re0">$this</span>-&gt;<span class="me1">renderers</span><span class="br0">&#91;</span><span class="st0">'test/html;html'</span><span class="br0">&#93;</span> = <span class="st0">'html'</span>;</pre>
+
+<p>If you're adding a generic content-type, you might want mention it to the developers, and we'll try to incorporate it in the main library.</p>
 
 <p>The return type of a renderer should either be a string (Which is expected to be a HTML fragment) or the method should throw a response. Remember to specify the content-type, if you're throwing a response to a non-HTML content-type.</p>
+
+<p>Other HTTP-methods than GET may also render an output. To do so, you can call <code>render()</code> from within the handler, and it will then delegate to the appropriate render-method. (This is what <code>GET()</code> does behind the scenes).</p>
+
+<p>Apart from the rendered content-type, certain requests (notably POST and PUT) may have a request content-type. This is handled by a related, but different mechanism called <a href="#content-type-delegation">Content-Type delegation</a></p>
+
+<h3 id="content-type-delegation">Content-Type delegation</h3>
+
+<p>The HTTP-methods POST and PUT are special in that they may contain a request-body. If this is the case, the content will have a Content-Type, specified by the request-header. To distinguish themselves, the default implementation of <code>POST()</code> and <code>PUT()</code> will try to dispatch to a handler corresponding to the request's Content-Type. For example, a regular posted form has the <code>application/x-www-form-urlencoded</code> Content-Type. This will be delegated to <code>postForm()</code>. A request of the type <code>application/json</code> will be delegated to <code>postJson()</code>. This allows you to implement support for different content-types in a standard fashion.</p>
+
+<p>The naming of the content-type handlers corresponds to the following chart:</p>
+
+<table>
+<thead>
+<tr>
+  <th>content-type</th>
+  <th>POST handler</th>
+  <th>PUT handler</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>application/x-www-form-urlencoded</td>
+  <td>postForm</td>
+  <td>putForm</td>
+</tr>
+<tr>
+  <td>multipart/form-data</td>
+  <td>postMultipart</td>
+  <td>putMultipart</td>
+</tr>
+<tr>
+  <td>application/json</td>
+  <td>postJson</td>
+  <td>putJson</td>
+</tr>
+</tbody>
+</table>
+
+<p>This mechanism is somewhat similar to <a href="#renderers">content-type negotiation</a>, but differs in that <code>render()</code> relates to the <code>Accept</code> header - Which has to do with the output-format of the HTTP-response - while content-type delegation relates to the <code>Content-Type</code> header - which has to do with the input-format of the HTTP-request.</p>
+
+<p>If you need support for additional content-types that isn't listed above, you can add it to the <code>$input_content_types</code> property in your component. The format is:</p>
+
+<pre class="php"><span class="re0">$this</span>-&gt;<span class="me1">input_content_types</span><span class="br0">&#91;</span><span class="st0">'application/json'</span><span class="br0">&#93;</span> = <span class="st0">'json'</span>;</pre>
+
+<p>Again - If it's a generic content-type, please mention it to the developers, and we'll try to incorporate it in the main library.</p>
 
 <h2 id="http-input">HTTP input</h2>
 

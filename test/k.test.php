@@ -363,8 +363,6 @@ class TestOfHttpRequest extends UnitTestCase {
     $request = $this->createHttp(array('accept' => 'image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/x-shockwave-flash, application/xaml+xml, application/vnd.ms-xpsdocument, application/x-ms-xbap, application/x-ms-application, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*'));
     $this->assertEqual($request->negotiateContentType(array('text/html')), 'text/html');
   }
-
-
 }
 
 class TestOfHttpResponse extends UnitTestCase {
@@ -374,5 +372,31 @@ class TestOfHttpResponse extends UnitTestCase {
     $response->out($output);
     $this->assertEqual(404, $output->http_response_code);
     $this->assertEqual("I didn't find it", $output->body);
+  }
+}
+
+class TestOfContentTypeDispathing extends UnitTestCase {
+  function createComponent($method, $headers = array()) {
+    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost', 'REQUEST_METHOD' => $method), $headers);
+    $http = new k_HttpRequest('', '/', new k_DefaultIdentityLoader(), $glob);
+    $components = new k_DefaultComponentCreator();
+    return $components->create('test_ContentTypeComponent', $http);
+  }
+  function test_posting_without_a_content_type_calls_generic_handler() {
+    $root = $this->createComponent('post');
+    $this->assertEqual("post called", $root->dispatch());
+  }
+  function test_posting_with_a_content_type_calls_specific_handler() {
+    $root = $this->createComponent('post', array('content-type' => 'application/json'));
+    $this->assertEqual("postJson called", $root->dispatch());
+  }
+  function test_putting_without_a_content_type_fails_when_there_is_no_generic_handler() {
+    $root = $this->createComponent('put');
+    try {
+      $root->dispatch();
+      $this->fail("Expected exception not caught");
+    } catch (k_NotImplemented $ex) {
+      $this->pass();
+    }
   }
 }

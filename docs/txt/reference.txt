@@ -28,27 +28,26 @@ Once the component is instantiated, it is given control by the context calling t
 
 ###execute, GET, POST
 
-The `execute()` method is the first method invoked for the handling component. It is unusual to override this in concrete components, although there are cases for it. Since execute is invoked for any kind of HTTP-method, it is a good place to load model components that are identified by the url of the component. The default implementation of `execute()` inspects the HTTP-method and delegates control to one of `GET()`, `POST()`, `HEAD()`, `PUT()` or `DELETE()`. In most web applications, you will probably just concern your self with the first two, since these are the only one widely supported by browsers. Luckily they are also the most important.
+The `execute()` method is the first method invoked for the handling component. It is unusual to override this in concrete components, although there are cases for it. Since execute is invoked for any kind of HTTP-method, it is a good place to load model components that are identified by the url of the component. The default implementation of `execute()` inspects the HTTP-method and delegates control to one of `GET()`, `POST()`, `HEAD()`, `PUT()` or `DELETE()`. In most web applications, you will probably just concern your self with the first two, since these are the only ones widely supported by browsers. Luckily they are also the most important.
 
 ###Renderers
 
-
-The `GET()` and `POST()` methods can be overridden, but it's now recommended that you don't override `GET()`. The default implementation of `GET()` will negotiate the content-type, and finally delegate control to a render method. So for most applications, you would implement `renderHtml()`. You can implement multiple renderers, and the negotiation will pick the best candidate. The naming of renderers corresponds to their content-type per the following chart:
+The `GET()`, `POST()` etc. methods can be overridden, but it's recommended that you don't. The default implementation of `GET()` will negotiate the content-type, based on the Accept header, and then delegate control to a render method. This is called content-negotiation, because it happens automatically based on the clients preferences - For a browser, the preferred content-type will likely be HTML, so for most applications, you would implement `renderHtml()` and this will automatically be called upon a GET request. You can implement multiple renderers, and the negotiation will pick the best candidate. The naming of renderers corresponds to their content-type per the following chart:
 
 content-type             | short name | render method
 ------------------------ | ---------- | -------------
-text/html                |    html    | renderHtml
-text/html+edit           |    edit    | renderEdit
-text/xml                 |    xml     | renderXml
-text/plain               |    text    | renderText
-text/csv                 |    csv     | renderCsv
-text/x-vcard             |    vcard   | renderVcard
-application/atom+xml     |    atom    | renderAtom
-application/calendar+xml |    xcal    | renderXCal
-application/rdf+xml      |    rdf     | renderRdf
-application/json         |    json    | renderJson
-application/pdf          |    pdf     | renderPdf
-image/svg+xml            |    svg     | renderSvg
+text/html                | html       | renderHtml
+text/html+edit           | edit       | renderEdit
+text/xml                 | xml        | renderXml
+text/plain               | text       | renderText
+text/csv                 | csv        | renderCsv
+text/x-vcard             | vcard      | renderVcard
+application/atom+xml     | atom       | renderAtom
+application/calendar+xml | xcal       | renderXCal
+application/rdf+xml      | rdf        | renderRdf
+application/json         | json       | renderJson
+application/pdf          | pdf        | renderPdf
+image/svg+xml            | svg        | renderSvg
 
 If a component supports multiple renderers, you can refer to a specific representation by suffixing the url with a semicolon and the short-name. Eg. `/foo/bar;csv` is the CSV representation of `/foo/bar`. When specifying the content-type this way, the Accept header is disregarded.
 
@@ -57,9 +56,36 @@ The type `text/html+edit` is meant for a html form to edit the resource.
 If you need a content-type that isn't listed above, you can add it to the `$renderers` property in your component. The format is:
 
 ..php
-$this->renderers['test/html;html'] = 'renderHtml';
+$this->renderers['test/html;html'] = 'html';
+
+If you're adding a generic content-type, you might want mention it to the developers, and we'll try to incorporate it in the main library.
 
 The return type of a renderer should either be a string (Which is expected to be a HTML fragment) or the method should throw a response. Remember to specify the content-type, if you're throwing a response to a non-HTML content-type.
+
+Other HTTP-methods than GET may also render an output. To do so, you can call `render()` from within the handler, and it will then delegate to the appropriate render-method. (This is what `GET()` does behind the scenes).
+
+Apart from the rendered content-type, certain requests (notably POST and PUT) may have a request content-type. This is handled by a related, but different mechanism called [Content-Type delegation](#content-type-delegation)
+
+###Content-Type delegation
+
+The HTTP-methods POST and PUT are special in that they may contain a request-body. If this is the case, the content will have a Content-Type, specified by the request-header. To distinguish themselves, the default implementation of `POST()` and `PUT()` will try to dispatch to a handler corresponding to the request's Content-Type. For example, a regular posted form has the `application/x-www-form-urlencoded` Content-Type. This will be delegated to `postForm()`. A request of the type `application/json` will be delegated to `postJson()`. This allows you to implement support for different content-types in a standard fashion.
+
+The naming of the content-type handlers corresponds to the following chart:
+
+content-type                      | POST handler  | PUT handler
+--------------------------------- | ------------- | ------------
+application/x-www-form-urlencoded | postForm      | putForm
+multipart/form-data               | postMultipart | putMultipart
+application/json                  | postJson      | putJson
+
+This mechanism is somewhat similar to [content-type negotiation](#renderers), but differs in that `render()` relates to the `Accept` header - Which has to do with the output-format of the HTTP-response - while content-type delegation relates to the `Content-Type` header - which has to do with the input-format of the HTTP-request.
+
+If you need support for additional content-types that isn't listed above, you can add it to the `$input_content_types` property in your component. The format is:
+
+..php
+$this->input_content_types['application/json'] = 'json';
+
+Again - If it's a generic content-type, please mention it to the developers, and we'll try to incorporate it in the main library.
 
 HTTP input
 ----------

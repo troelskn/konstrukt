@@ -680,18 +680,27 @@ abstract class k_Component implements k_Context {
    * @var array
    */
   protected $renderers = array(
-    'text/html;html' => 'renderHtml',
-    'text/html+edit;edit' => 'renderEdit',
-    'text/xml;xml' => 'renderXml',
-    'text/plain;text' => 'renderText',
-    'text/csv;csv' => 'renderCsv',
-    'text/x-vcard;vcard' => 'renderVcard',
-    'application/atom+xml;atom' => 'renderAtom',
-    'application/calendar+xml;xcal' => 'renderXCal',
-    'application/rdf+xml;rdf' => 'renderRdf',
-    'application/json;json' => 'renderJson',
-    'application/pdf;pdf' => 'renderPdf',
-    'image/svg+xml;svg' => 'renderSvg',
+    'text/html;html' => 'html',
+    'text/html+edit;edit' => 'edit',
+    'text/xml;xml' => 'xml',
+    'text/plain;text' => 'text',
+    'text/csv;csv' => 'csv',
+    'text/x-vcard;vcard' => 'vcard',
+    'application/atom+xml;atom' => 'atom',
+    'application/calendar+xml;xcal' => 'xcal',
+    'application/rdf+xml;rdf' => 'rdf',
+    'application/json;json' => 'json',
+    'application/pdf;pdf' => 'pdf',
+    'image/svg+xml;svg' => 'svg',
+  );
+  /**
+   * Mapping to input handlers.
+   * @var array
+   */
+  protected $input_content_types = array(
+    'application/x-www-form-urlencoded' => 'form',
+    'multipart/form-data' => 'multipart',
+    'application/json' => 'json',
   );
   /** @var k_ComponentCreator */
   protected $component_creator;
@@ -921,9 +930,52 @@ abstract class k_Component implements k_Context {
     }
     return $this->{$method}();
   }
+  function HEAD() {
+    throw new k_NotImplemented();
+  }
   function GET() {
+    return $this->render();
+  }
+  function POST() {
+    $content_type = preg_replace('/^[^;]+(;.*)$/', '', $this->header('content-type'));
+    $postfix = isset($this->input_content_types[$content_type]) ? $this->input_content_types[$content_type] : '';
+    if (method_exists($this, 'post' . $postfix)) {
+      return $this->{'post' . $postfix}();
+    }
+    foreach (get_class_methods($this) as $m) {
+      if (preg_match('~^post.+~', $m)) {
+        // There is at least one acceptable handler for post
+        throw new k_NotAcceptable();
+      }
+    }
+    throw new k_NotImplemented();
+  }
+  function PUT() {
+    $content_type = preg_replace('/^[^;]+(;.*)$/', '', $this->header('content-type'));
+    $postfix = isset($this->input_content_types[$content_type]) ? $this->input_content_types[$content_type] : '';
+    if (method_exists($this, 'put' . $postfix)) {
+      return $this->{'put' . $postfix}();
+    }
+    foreach (get_class_methods($this) as $m) {
+      if (preg_match('~^put.+~', $m)) {
+        // There is at least one acceptable handler for put
+        throw new k_NotAcceptable();
+      }
+    }
+    throw new k_NotImplemented();
+  }
+  function DELETE() {
+    throw new k_NotImplemented();
+  }
+  /**
+   * Renders the components view.
+   * This method delegates control to an appropriate handler, based on content-type negotiation.
+   * The typical handler would be `renderHtml`. If no handler is present, an exception is raised.
+   */
+  function render() {
     $accept = array();
-    foreach ($this->renderers as $types => $handler) {
+    foreach ($this->renderers as $types => $name) {
+      $handler = 'render' . $name;
       if (method_exists($this, $handler)) {
         foreach (explode(";", $types) as $type) {
           $accept[$type] = $handler;
@@ -934,18 +986,6 @@ abstract class k_Component implements k_Context {
     if (isset($accept[$content_type])) {
       return $this->{$accept[$content_type]}();
     }
-    throw new k_NotImplemented();
-  }
-  function POST() {
-    throw new k_NotImplemented();
-  }
-  function HEAD() {
-    throw new k_NotImplemented();
-  }
-  function PUT() {
-    throw new k_NotImplemented();
-  }
-  function DELETE() {
     throw new k_NotImplemented();
   }
 }
@@ -1417,6 +1457,17 @@ class k_NotImplemented extends k_MetaResponse {
 }
 
 /**
+ * Raise this if the request can't be processed due to details of the request (Such as the Content-Type or other headers)
+ */
+class k_NotAcceptable extends k_MetaResponse {
+  /** @var string */
+  protected $message = 'The resource identified by the request is only capable of generating response entities which have content characteristics not acceptable according to the accept headers sent in the request';
+  function componentName() {
+    return 'k_DefaultNotNotAcceptableComponent';
+  }
+}
+
+/**
  * @see k_NotAuthorized
  */
 class k_DefaultNotAuthorizedComponent extends k_Component {
@@ -1451,6 +1502,15 @@ class k_DefaultPageNotFoundComponent extends k_Component {
 class k_DefaultMethodNotAllowedComponent extends k_Component {
   function dispatch() {
     throw new k_HttpResponse(405, '<html><body><h1>HTTP 405 - Method Not Allowed</h1></body></html>');
+  }
+}
+
+/**
+ * @see k_NotAcceptable
+ */
+class k_DefaultNotNotAcceptableComponent extends k_Component {
+  function dispatch() {
+    throw new k_HttpResponse(406, '<html><body><h1>HTTP 406 - Not Acceptable</h1></body></html>');
   }
 }
 
