@@ -382,15 +382,20 @@ class TestOfContentTypeDispathing extends UnitTestCase {
     $components = new k_DefaultComponentCreator();
     return $components->create('test_ContentTypeComponent', $http);
   }
-  function test_posting_without_a_content_type_calls_generic_handler() {
-    $root = $this->createComponent('post');
-    $this->assertEqual("post called", $root->dispatch());
-  }
   function test_posting_with_a_content_type_calls_specific_handler() {
     $root = $this->createComponent('post', array('content-type' => 'application/json'));
     $this->assertEqual("postJson called", $root->dispatch());
   }
-  function test_putting_without_a_content_type_fails_when_there_is_no_generic_handler() {
+  function test_posting_without_a_content_type_fails_with_not_acceptable_when_there_is_at_least_one_candidate() {
+    $root = $this->createComponent('post');
+    try {
+      $root->dispatch();
+      $this->fail("Expected exception not caught");
+    } catch (k_NotAcceptable $ex) {
+      $this->pass();
+    }
+  }
+  function test_putting_without_a_content_type_fails_with_not_implemented_when_there_are_no_candidates() {
     $root = $this->createComponent('put');
     try {
       $root->dispatch();

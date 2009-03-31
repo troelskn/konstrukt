@@ -938,9 +938,11 @@ abstract class k_Component implements k_Context {
   }
   function POST() {
     $content_type = preg_replace('/^[^;]+(;.*)$/', '', $this->header('content-type'));
-    $postfix = isset($this->input_content_types[$content_type]) ? $this->input_content_types[$content_type] : '';
-    if (method_exists($this, 'post' . $postfix)) {
-      return $this->{'post' . $postfix}();
+    if (isset($this->input_content_types[$content_type])) {
+      $postfix = $this->input_content_types[$content_type];
+      if (method_exists($this, 'post' . $postfix)) {
+        return $this->{'post' . $postfix}();
+      }
     }
     foreach (get_class_methods($this) as $m) {
       if (preg_match('~^post.+~', $m)) {
@@ -952,9 +954,11 @@ abstract class k_Component implements k_Context {
   }
   function PUT() {
     $content_type = preg_replace('/^[^;]+(;.*)$/', '', $this->header('content-type'));
-    $postfix = isset($this->input_content_types[$content_type]) ? $this->input_content_types[$content_type] : '';
-    if (method_exists($this, 'put' . $postfix)) {
-      return $this->{'put' . $postfix}();
+    if (isset($this->input_content_types[$content_type])) {
+      $postfix = $this->input_content_types[$content_type];
+      if (method_exists($this, 'put' . $postfix)) {
+        return $this->{'put' . $postfix}();
+      }
     }
     foreach (get_class_methods($this) as $m) {
       if (preg_match('~^put.+~', $m)) {
