@@ -5,7 +5,7 @@ set_include_path(
   . PATH_SEPARATOR . dirname(dirname(__FILE__))
   . PATH_SEPARATOR . dirname(dirname(__FILE__)).'/lib');
 
-require_once 'konstrukt/trunk/lib/konstrukt/konstrukt.inc.php';
+require_once 'konstrukt/konstrukt.inc.php';
 require_once 'smarty/libs/Smarty.class.php';
 require_once dirname(__FILE__) . '/wiring.inc.php';
 
