@@ -109,7 +109,7 @@ class k_logging_WebDebugger implements k_DebugListener {
       '</div>'
       ;
   }
-  function decorate(k_HttpResponse $response) {
+  function decorate(k_Response $response) {
     if ($response->status() >= 300 && $response->status() < 400) {
       return new k_HttpResponse(200, $this->render($response, true));
     }
@@ -281,7 +281,7 @@ class k_logging_LogDebugger implements k_DebugListener {
       $this->renderMessage(
         array('file' => $stacktrace[0]['file'], 'line' => $stacktrace[0]['line'], 'dump' => $this->dumper->dump($mixed))));
   }
-  function decorate(k_HttpResponse $response) {
+  function decorate(k_Response $response) {
     $this->write($this->renderResponse($response));
     return $response;
   }

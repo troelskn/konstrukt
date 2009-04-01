@@ -1,6 +1,7 @@
 <?php
 require_once 'konstrukt/adapter.inc.php';
 require_once 'konstrukt/charset.inc.php';
+require_once 'konstrukt/response.inc.php';
 require_once 'konstrukt/logging.inc.php';
 
 /**
@@ -106,10 +107,10 @@ interface k_DebugListener {
   /**
     * Allows the debugger to change the HttpResponse before output.
     * This is used to inject a debugbar into the response. It is perhaps not the most elegant solution, but it works.
-    * @param k_HttpResponse
-    * @return k_HttpResponse
+    * @param k_Response
+    * @return k_Response
     */
-  function decorate(k_HttpResponse $response);
+  function decorate(k_Response $response);
 }
 
 /**
@@ -120,7 +121,7 @@ class k_VoidDebugListener implements k_DebugListener {
   function logException(Exception $ex) {}
   function logDispatch($component, $name, $next) {}
   function log($mixed) {}
-  function decorate(k_HttpResponse $response) {
+  function decorate(k_Response $response) {
     return $response;
   }
 }
@@ -160,10 +161,10 @@ class k_MultiDebugListener implements k_DebugListener {
     }
   }
   /**
-    * @param k_HttpResponse
-    * @return k_HttpResponse
+    * @param k_Response
+    * @return k_Response
     */
-  function decorate(k_HttpResponse $response) {
+  function decorate(k_Response $response) {
     foreach ($this->listeners as $listener) {
       $response = $listener->decorate($response);
     }
@@ -692,6 +693,7 @@ abstract class k_Component implements k_Context {
     'application/json;json' => 'json',
     'application/pdf;pdf' => 'pdf',
     'image/svg+xml;svg' => 'svg',
+    'application/x-serialized-php' => 'php',
   );
   /**
    * Mapping to input handlers.
@@ -701,6 +703,7 @@ abstract class k_Component implements k_Context {
     'application/x-www-form-urlencoded' => 'form',
     'multipart/form-data' => 'multipart',
     'application/json' => 'json',
+    'application/x-serialized-php' => 'php',
   );
   /** @var k_ComponentCreator */
   protected $component_creator;
@@ -845,6 +848,10 @@ abstract class k_Component implements k_Context {
   function negotiateContentType($candidates = array(), $user_override = null) {
     return $this->context->negotiateContentType($candidates, $user_override);
   }
+  protected function contentTypeShortName() {
+    $content_type = preg_replace('/^[^;]+(;.*)$/', '', $this->header('content-type'));
+    return isset($this->input_content_types[$content_type]) ? $this->input_content_types[$content_type] : null;
+  }
   /**
     * The full path segment for this components representation.
     * @return string
@@ -915,7 +922,7 @@ abstract class k_Component implements k_Context {
       if (!$class_name) {
         throw new k_PageNotFound();
       }
-      return $this->forward($class_name);
+      return $this->wrap($this->forward($class_name));
     }
     return $this->execute();
   }
@@ -937,9 +944,8 @@ abstract class k_Component implements k_Context {
     return $this->render();
   }
   function POST() {
-    $content_type = preg_replace('/^[^;]+(;.*)$/', '', $this->header('content-type'));
-    if (isset($this->input_content_types[$content_type])) {
-      $postfix = $this->input_content_types[$content_type];
+    $postfix = $this->contentTypeShortName();
+    if ($postfix) {
       if (method_exists($this, 'post' . $postfix)) {
         return $this->{'post' . $postfix}();
       }
@@ -953,9 +959,8 @@ abstract class k_Component implements k_Context {
     throw new k_NotImplemented();
   }
   function PUT() {
-    $content_type = preg_replace('/^[^;]+(;.*)$/', '', $this->header('content-type'));
-    if (isset($this->input_content_types[$content_type])) {
-      $postfix = $this->input_content_types[$content_type];
+    $postfix = $this->contentTypeShortName();
+    if ($postfix) {
       if (method_exists($this, 'put' . $postfix)) {
         return $this->{'put' . $postfix}();
       }
@@ -988,9 +993,31 @@ abstract class k_Component implements k_Context {
     }
     $content_type = $this->negotiateContentType(array_keys($accept), $this->subtype());
     if (isset($accept[$content_type])) {
-      return $this->{$accept[$content_type]}();
+      return k_coerce_to_response(
+        $this->{$accept[$content_type]}(),
+        $this->contentTypeToResponseType($content_type));
     }
     throw new k_NotImplemented();
+  }
+  function wrap($content) {
+    $typed = k_coerce_to_response($content);
+    $response_type = $this->contentTypeToResponseType($typed->contentType());
+    $handler = 'wrap' . $response_type;
+    if (method_exists($this, $handler)) {
+      return k_coerce_to_response(
+        $this->{$handler}($typed->toInternalRepresentation($typed->internalType())),
+        $response_type);
+    }
+    return $content;
+  }
+  protected function contentTypeToResponseType($content_type) {
+    $regexp = '/^' . preg_quote($content_type, '/') . '/';
+    foreach ($this->renderers as $type => $name) {
+      if (preg_match($regexp, $type)) {
+        return $name;
+      }
+    }
+    return 'http';
   }
 }
 
@@ -1201,277 +1228,6 @@ class k_Template {
 }
 
 /**
- * Embodies a http response.
- * You may raise a HttpResponse to break the default rendering chain. A good example would be in
- * cases where you want to redirect. In this case, you should use the dedicated subclass though.
- */
-class k_HttpResponse extends Exception {
-  /** @var string */
-  protected $protocol = "HTTP/1.1";
-  /** @var integer */
-  protected $status;
-  /** @var string */
-  protected $content;
-  /** @var array */
-  protected $headers = array();
-  /** @var string */
-  protected $content_type = 'text/html';
-  /** @var k_charset_ResponseCharset */
-  protected $charset;
-  /**
-   * @param   $status           The HTTP status code of this response
-   * @param   $content          String data of the response
-   * @param   $input_is_utf8    If $content is already UTF-8 encoded, set this param to true
-   */
-  function __construct($status = 200, $content = "", $input_is_utf8 = false) {
-    $this->status = $status;
-    $this->content = $input_is_utf8 ? $content : utf8_encode($content);
-    $this->charset = new k_charset_Utf8();
-  }
-  function content() {
-    return $this->content;
-  }
-  function setContent($content) {
-    $this->content = $content;
-  }
-  /**
-    * @return string
-    */
-  function contentType() {
-    return $this->content_type;
-  }
-  function setContentType($content_type) {
-    return $this->content_type = $content_type;
-  }
-  /**
-    * @param k_charset_ResponseCharset
-    * @return k_charset_ResponseCharset
-    */
-  function setCharset(k_charset_ResponseCharset $charset) {
-    return $this->charset = $charset;
-  }
-  function status() {
-    return $this->status;
-  }
-  /**
-    * @return string
-    */
-  function encoding() {
-    return $this->charset->name();
-  }
-  function headers() {
-    return $this->headers;
-  }
-  /**
-    * @param string
-    * @param string
-    * @return string
-    */
-  function setHeader($key, $value) {
-    $key = strtolower($key);
-    if ($key == 'content-type') {
-      throw new Exception("Can't set Content-Type header directly. Use setContentType() and setCharset().");
-    }
-    return $this->headers[$key] = $value;
-  }
-  /**
-    * @param k_adapter_OutputAccess
-    * @return void
-    */
-  protected function sendStatus(k_adapter_OutputAccess $output) {
-    switch ($this->status) {
-      case 400 :  $statusmsg = "Bad Request";
-            break;
-      case 401 :  $statusmsg = "Unauthorized";
-            break;
-      case 403 :  $statusmsg = "Forbidden";
-            break;
-      case 404 :  $statusmsg = "Not Found";
-            break;
-      case 405 :  $statusmsg = "Method Not Allowed";
-            break;
-      case 406 :  $statusmsg = "Not Acceptable";
-            break;
-      case 410 :  $statusmsg = "Gone";
-            break;
-      case 412 :  $statusmsg = "Precondition Failed";
-            break;
-      case 500 :  $statusmsg = "Internal Server Error";
-            break;
-      case 501 :  $statusmsg = "Not Implemented";
-            break;
-      case 502 :  $statusmsg = "Bad Gateway";
-            break;
-      case 503 :  $statusmsg = "Service Unavailable";
-            break;
-      case 504 :  $statusmsg = "Gateway Timeout";
-            break;
-      default :  $statusmsg = "";
-    }
-    $output->header($this->protocol . " " . $this->status . ($statusmsg ? " " . $statusmsg : ""), true, $this->status);
-  }
-  /**
-    * @param k_adapter_OutputAccess
-    * @return void
-    */
-  protected function sendHeaders(k_adapter_OutputAccess $output) {
-    if (isset($this->content_type)) {
-      $output->header("Content-Type: " . $this->contentType() . "; charset=" . $this->encoding());
-    }
-    foreach ($this->headers as $key => $value) {
-      if ($value !== null) {
-        // normalize header
-        for ($tmp = explode("-", $key), $i=0;$i<count($tmp);$i++) {
-          $tmp[$i] = ucfirst($tmp[$i]);
-        }
-        $key = implode("-", $tmp);
-        $output->header($key . ": " . $value);
-      }
-    }
-  }
-  /**
-    * @param k_adapter_OutputAccess
-    * @return void
-    */
-  protected function sendBody(k_adapter_OutputAccess $output) {
-    $output->write($this->charset->encode($this->content));
-  }
-  /**
-    * @param k_adapter_OutputAccess
-    * @return void
-    */
-  function out(k_adapter_OutputAccess $output = null) {
-    if (!$output) {
-      $output = new k_adapter_DefaultOutputAccess();
-    }
-    $output->endSession();
-    $this->sendStatus($output);
-    $this->sendHeaders($output);
-    $this->sendBody($output);
-  }
-  function __toString() {
-    throw new Exception("k_HttpResponse to String conversion");
-  }
-}
-
-/**
- * A metaresponse represents an abstract event in the application, which needs alternate handling.
- * This would typically be an error-condition.
- * In the simplest invocation, a metaresponse maps directly to a component, which renders a generic error.
- */
-abstract class k_MetaResponse extends Exception {
-  abstract function componentName();
-}
-
-/**
- * Issues a http redirect of type "301 Moved Permanently"
- * Use this if the URL has changed (Eg. a page has been renamed)
- */
-class k_MovedPermanently extends k_HttpResponse {
-  function __construct($url) {
-    parent::__construct(301);
-    $this->setHeader("Location", $url);
-  }
-}
-
-/**
- * Issues a http redirect of type "303 See Other"
- * Use this type of redirect for redirecting after POST
- */
-class k_SeeOther extends k_HttpResponse {
-  /**
-    * @param string
-    * @return void
-    */
-  function __construct($url) {
-    parent::__construct(303);
-    $this->setHeader("Location", $url);
-  }
-}
-
-/**
- * Issues a http redirect of type "307 Temporary Redirect"
- * Use this type of redirect if the destination changes from request to request, or
- * if you want the client to keep using the requested URI in the future.
- * This is a rare type of redirect - If in doubt, you probably should
- * use either of "See Other" or "Moved Permanently"
- */
-class k_TemporaryRedirect extends k_HttpResponse {
-  function __construct($url) {
-    parent::__construct(307);
-    $this->setHeader("Location", $url);
-  }
-}
-
-/**
- * Raise this if the user must be authorised to access the requested resource.
- */
-class k_NotAuthorized extends k_MetaResponse {
-  /** @var string */
-  protected $message = 'You must be authorised to access this resource';
-  function componentName() {
-    return 'k_DefaultNotAuthorizedComponent';
-  }
-}
-
-/**
- * Raise this if the user doesn't have access to the requested resource.
- */
-class k_Forbidden extends k_MetaResponse {
-  /** @var string */
-  protected $message = 'The requested page is forbidden';
-  function componentName() {
-    return 'k_DefaultForbiddenComponent';
-  }
-}
-
-/**
- * Raise this if the requested resource couldn't be found.
- */
-class k_PageNotFound extends k_MetaResponse {
-  /** @var string */
-  protected $message = 'The requested page was not found';
-  function componentName() {
-    return 'k_DefaultPageNotFoundComponent';
-  }
-}
-
-/**
- * Raise this if resource doesn't support the requested HTTP method.
- * @see k_NotImplemented
- */
-class k_MethodNotAllowed extends k_MetaResponse {
-  /** @var string */
-  protected $message = 'The request HTTP method is not supported by the handling component';
-  function componentName() {
-    return 'k_DefaultMethodNotAllowedComponent';
-  }
-}
-
-/**
- * Raise this if the request isn't yet implemented.
- * This is roughly the HTTP equivalent to a "todo"
- */
-class k_NotImplemented extends k_MetaResponse {
-  /** @var string */
-  protected $message = 'The server does not support the functionality required to fulfill the request';
-  function componentName() {
-    return 'k_DefaultNotImplementedComponent';
-  }
-}
-
-/**
- * Raise this if the request can't be processed due to details of the request (Such as the Content-Type or other headers)
- */
-class k_NotAcceptable extends k_MetaResponse {
-  /** @var string */
-  protected $message = 'The resource identified by the request is only capable of generating response entities which have content characteristics not acceptable according to the accept headers sent in the request';
-  function componentName() {
-    return 'k_DefaultNotNotAcceptableComponent';
-  }
-}
-
-/**
  * @see k_NotAuthorized
  */
 class k_DefaultNotAuthorizedComponent extends k_Component {
@@ -1558,7 +1314,7 @@ class k_Bootstrap {
   /**
    * Serves a http request, given a root component name.
    * @param $root_class_name   string   The classname of an instance of k_Component
-   * @return k_HttpResponse
+   * @return k_Response
    */
   function run($root_class_name) {
     $debugger = new k_MultiDebugListener();
@@ -1583,15 +1339,17 @@ class k_Bootstrap {
       while (true) {
         try {
           $root = $this->components()->create($class_name, $this->context());
-          $content = $root->dispatch();
-          $response = new k_HttpResponse(200, $content, $this->charsetStrategy()->isInternalUtf8());
+          $response = $root->dispatch();
+          if (!($response instanceof k_Response)) {
+            $response = new k_HttpResponse(200, $response, $this->charsetStrategy()->isInternalUtf8());
+          }
           $response->setCharset($this->charsetStrategy()->responseCharset());
           return $response;
         } catch (k_MetaResponse $ex) {
           $class_name = $ex->componentName();
         }
       }
-    } catch (k_HttpResponse $ex) {
+    } catch (k_Response $ex) {
       return $ex;
     }
   }
