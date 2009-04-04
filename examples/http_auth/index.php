@@ -23,7 +23,7 @@ class Root extends k_Component {
   function dispatch() {
     return sprintf("<html><body><h1>Authorization Example</h1>%s</body></html>", parent::dispatch());
   }
-  function GET() {
+  function renderHtml() {
     return sprintf("<p><a href='%s'>restricted</a></p><p>login with one of:</p><ul><li>pirate arrr</li><li>ninja supersecret</li></ul>", htmlspecialchars($this->url('restricted')));
   }
 }
@@ -40,7 +40,7 @@ class RestrictedController extends k_Component {
     }
     return parent::dispatch();
   }
-  function GET() {
+  function renderHtml() {
     return
       sprintf("<p>Hello %s, anon=%s</p>", htmlspecialchars($this->identity()->user()), $this->identity()->anonymous() ? 't' : 'f').
       sprintf("<p><a href='%s'>the dojo</a></p>", htmlspecialchars($this->url('dojo')));
@@ -54,7 +54,7 @@ class DojoController extends k_Component {
     }
     return parent::dispatch();
   }
-  function GET() {
+  function renderHtml() {
     return "Welcome to the dojo, where only ninjas are allowed";
   }
 }
