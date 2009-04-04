@@ -311,6 +311,7 @@ interface k_Context {
   function session($key = null, $default = null);
   function file($key = null, $default = null);
   function rawHttpRequestBody();
+  function requestUri();
   function method();
   function serverName();
   function identity();
@@ -333,6 +334,8 @@ class k_HttpRequest implements k_Context {
   protected $body;
   /** @var string */
   protected $rawHttpRequestBody;
+  /** @var string */
+  protected $request_uri;
   /** @var array */
   protected $server;
   /** @var array */
@@ -383,12 +386,13 @@ class k_HttpRequest implements k_Context {
     $this->session_access = $session_access ? $session_access : new k_adapter_DefaultSessionAccess($this->cookie_access);
     $this->identity_loader = $identity_loader ? $identity_loader : new k_DefaultIdentityLoader();
     $this->href_base = $href_base === null ? preg_replace('~(.*)/.*~', '$1', $this->server['SCRIPT_NAME']) : $href_base;
+    $this->request_uri = $request_uri === null ? $this->server['REQUEST_URI'] : $request_uri;
     $this->subspace =
       preg_replace(  // remove root
         '~^' . preg_quote($this->href_base, '~') . '~', '',
         preg_replace( // remove trailing query-string
           '~([?]{1}.*)$~', '',
-          $request_uri === null ? $this->server['REQUEST_URI'] : $request_uri));
+          $this->request_uri));
     $this->content_type_negotiator = new k_ContentTypeNegotiator($this->header('accept'));
   }
   /**
@@ -470,6 +474,9 @@ class k_HttpRequest implements k_Context {
     */
   function method() {
     return strtolower($this->server['REQUEST_METHOD']);
+  }
+  function requestUri() {
+    return $this->request_uri;
   }
   /**
     * Gives back the server name
@@ -805,6 +812,9 @@ abstract class k_Component implements k_Context {
     */
   function method() {
     return $this->context->method();
+  }
+  function requestUri() {
+    return $this->context->requestUri();
   }
   /**
     * @return string
