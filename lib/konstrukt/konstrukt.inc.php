@@ -36,6 +36,8 @@ class k_DefaultComponentCreator implements k_ComponentCreator {
   protected $debugger;
   /** @var k_Document */
   protected $document;
+  /** @var array */
+  protected $aliases = array();
   /**
     * @param k_Document
     * @return void
@@ -53,6 +55,12 @@ class k_DefaultComponentCreator implements k_ComponentCreator {
     $this->debugger = $debugger;
   }
   /**
+    * When trying to instantiate $class_name, instead use $implementing_class
+    */
+  function setImplementation($class_name, $implementing_class) {
+    $this->aliases[strtolower($class_name)] = $implementing_class;
+  }
+  /**
     * Creates a new instance of the requested class.
     * @param string
     * @param k_Context
@@ -60,7 +68,7 @@ class k_DefaultComponentCreator implements k_ComponentCreator {
     * @return k_Component
     */
   function create($class_name, k_Context $context, $namespace = "") {
-    $component = $this->instantiate($class_name);
+    $component = $this->instantiate(isset($this->aliases[strtolower($class_name)]) ? $this->aliases[strtolower($class_name)] : $class_name);
     $component->setContext($context);
     $component->setUrlState(new k_UrlState($context, $namespace));
     $component->setDocument($this->document);
@@ -312,6 +320,7 @@ interface k_Context {
   function session($key = null, $default = null);
   function file($key = null, $default = null);
   function rawHttpRequestBody();
+  function requestUri();
   function method();
   function serverName();
   function identity();
@@ -334,6 +343,8 @@ class k_HttpRequest implements k_Context {
   protected $body;
   /** @var string */
   protected $rawHttpRequestBody;
+  /** @var string */
+  protected $request_uri;
   /** @var array */
   protected $server;
   /** @var array */
@@ -384,12 +395,13 @@ class k_HttpRequest implements k_Context {
     $this->session_access = $session_access ? $session_access : new k_adapter_DefaultSessionAccess($this->cookie_access);
     $this->identity_loader = $identity_loader ? $identity_loader : new k_DefaultIdentityLoader();
     $this->href_base = $href_base === null ? preg_replace('~(.*)/.*~', '$1', $this->server['SCRIPT_NAME']) : $href_base;
+    $this->request_uri = $request_uri === null ? $this->server['REQUEST_URI'] : $request_uri;
     $this->subspace =
       preg_replace(  // remove root
         '~^' . preg_quote($this->href_base, '~') . '~', '',
         preg_replace( // remove trailing query-string
           '~([?]{1}.*)$~', '',
-          $request_uri === null ? $this->server['REQUEST_URI'] : $request_uri));
+          $this->request_uri));
     $this->content_type_negotiator = new k_ContentTypeNegotiator($this->header('accept'));
   }
   /**
@@ -471,6 +483,9 @@ class k_HttpRequest implements k_Context {
     */
   function method() {
     return strtolower($this->server['REQUEST_METHOD']);
+  }
+  function requestUri() {
+    return $this->request_uri;
   }
   /**
     * Gives back the server name
@@ -808,6 +823,9 @@ abstract class k_Component implements k_Context {
     */
   function method() {
     return $this->context->method();
+  }
+  function requestUri() {
+    return $this->context->requestUri();
   }
   /**
     * @return string
