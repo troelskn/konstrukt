@@ -153,6 +153,16 @@ class k_VirtualHeaders {
   }
 }
 
+class k_VirtualSocketBuffer {
+  protected $data = "";
+  function write($data) {
+    $this->data .= $data;
+  }
+  function getLines() {
+    return array_filter(explode("\r\n", $this->data));
+  }
+}
+
 class k_VirtualSimpleUserAgent {
   protected $cookie_access;
   protected $session_access;
@@ -233,6 +243,11 @@ class k_VirtualSimpleUserAgent {
     $headers = new k_VirtualHeaders();
     $this->authenticator->addHeaders($headers, $url);
     foreach ($this->additional_headers as $line) {
+      $headers->addHeaderLine($line);
+    }
+    $socket_buffer = new k_VirtualSocketBuffer();
+    $parameters->writeHeadersTo($socket_buffer);
+    foreach ($socket_buffer->getLines() as $line) {
       $headers->addHeaderLine($line);
     }
     $superglobals = new k_adapter_MockGlobalsAccess($url_query, $data, $server, $headers->headers());

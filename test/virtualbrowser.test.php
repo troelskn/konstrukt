@@ -9,20 +9,19 @@ if (realpath($_SERVER['PHP_SELF']) == __FILE__) {
 }
 
 class test_LoginForm extends k_Component {
+  protected $message = "";
   function execute() {
     $this->url_state->init("destination", "http://www.example.org");
     return parent::execute();
   }
-  function GET() {
-    return $this->renderForm();
-  }
-  function POST() {
+  function postForm() {
     if ($this->body('name') == 'Yoda' && $this->body('password') == 'TopNinja33') {
       throw new k_SeeOther($this->query('destination'));
     }
-    return $this->renderForm('You have failed');
+    $this->message = 'You have failed';
+    return $this->render();
   }
-  function renderForm($message = "") {
+  function renderHtml() {
     return sprintf('
 <form method="post" action="%s">
 <p class="error">%s</p>
@@ -36,7 +35,7 @@ class test_LoginForm extends k_Component {
   <input type="submit" id="login" />
 </p>
 </form>
-', htmlspecialchars($this->url()), htmlspecialchars($message), htmlspecialchars($this->body('name', '')));
+', htmlspecialchars($this->url()), htmlspecialchars($this->message), htmlspecialchars($this->body('name', '')));
   }
 }
 
@@ -47,7 +46,7 @@ class test_StatefulPage extends k_Component {
     }
     return parent::execute();
   }
-  function GET() {
+  function renderHtml() {
     return "value: " . htmlspecialchars($this->session('slot'))
       . "<br>"
       . "<a href='" . htmlspecialchars($this->url('', array('setval' => '42'))) . "'>setval</a>"
