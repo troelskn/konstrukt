@@ -33,7 +33,7 @@ interface k_Response {
   function out(k_adapter_OutputAccess $output = null);
 }
 
-abstract class k_BaseResponse extends Exception implements k_Response {
+abstract class k_BaseResponse implements k_Response {
   protected $content;
   protected $status = 200;
   protected $headers = array();

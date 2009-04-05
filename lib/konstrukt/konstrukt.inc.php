@@ -863,6 +863,14 @@ abstract class k_Component implements k_Context {
     $content_type = preg_replace('/^[^;]+(;.*)$/', '', $this->header('content-type'));
     return isset($this->content_types[$content_type]) ? $this->content_types[$content_type] : null;
   }
+  protected function contentTypeToResponseType($content_type) {
+    return
+      isset($this->content_types[$content_type])
+      ? $this->content_types[$content_type]
+      : (in_array($content_type, $this->content_types)
+         ? $content_type
+         : 'http');
+  }
   /**
     * The full path segment for this components representation.
     * @return string
@@ -1007,6 +1015,9 @@ abstract class k_Component implements k_Context {
         $this->{$accept[$content_type]}(),
         $this->contentTypeToResponseType($content_type));
     }
+    if (count($accept[$content_type]) > 0) {
+      throw new k_NotAcceptable();
+    }
     throw new k_NotImplemented();
   }
   function wrap($content) {
@@ -1019,14 +1030,6 @@ abstract class k_Component implements k_Context {
         $response_type);
     }
     return $content;
-  }
-  protected function contentTypeToResponseType($content_type) {
-    return
-      isset($this->content_types[$content_type])
-      ? $this->content_types[$content_type]
-      : (in_array($content_type, $this->content_types)
-         ? $content_type
-         : 'http');
   }
 }
 
@@ -1243,7 +1246,7 @@ class k_DefaultNotAuthorizedComponent extends k_Component {
   function dispatch() {
     $response = new k_HttpResponse(401, '<html><body><h1>HTTP 401 - Not Authorized</h1></body></html>');
     $response->setHeader('WWW-Authenticate', 'Basic realm="Restricted"');
-    throw $response;
+    return $response;
   }
 }
 
@@ -1252,7 +1255,7 @@ class k_DefaultNotAuthorizedComponent extends k_Component {
  */
 class k_DefaultForbiddenComponent extends k_Component {
   function dispatch() {
-    throw new k_HttpResponse(403, '<html><body><h1>HTTP 403 - Forbidden</h1></body></html>');
+    return new k_HttpResponse(403, '<html><body><h1>HTTP 403 - Forbidden</h1></body></html>');
   }
 }
 
@@ -1261,7 +1264,7 @@ class k_DefaultForbiddenComponent extends k_Component {
  */
 class k_DefaultPageNotFoundComponent extends k_Component {
   function dispatch() {
-    throw new k_HttpResponse(404, '<html><body><h1>HTTP 404 - Page Not Found</h1></body></html>');
+    return new k_HttpResponse(404, '<html><body><h1>HTTP 404 - Page Not Found</h1></body></html>');
   }
 }
 
@@ -1270,7 +1273,7 @@ class k_DefaultPageNotFoundComponent extends k_Component {
  */
 class k_DefaultMethodNotAllowedComponent extends k_Component {
   function dispatch() {
-    throw new k_HttpResponse(405, '<html><body><h1>HTTP 405 - Method Not Allowed</h1></body></html>');
+    return new k_HttpResponse(405, '<html><body><h1>HTTP 405 - Method Not Allowed</h1></body></html>');
   }
 }
 
@@ -1279,7 +1282,7 @@ class k_DefaultMethodNotAllowedComponent extends k_Component {
  */
 class k_DefaultNotNotAcceptableComponent extends k_Component {
   function dispatch() {
-    throw new k_HttpResponse(406, '<html><body><h1>HTTP 406 - Not Acceptable</h1></body></html>');
+    return new k_HttpResponse(406, '<html><body><h1>HTTP 406 - Not Acceptable</h1></body></html>');
   }
 }
 
@@ -1288,7 +1291,7 @@ class k_DefaultNotNotAcceptableComponent extends k_Component {
  */
 class k_DefaultNotImplementedComponent extends k_Component {
   function dispatch() {
-    throw new k_HttpResponse(501, '<html><body><h1>HTTP 501 - Not Implemented</h1></body></html>');
+    return new k_HttpResponse(501, '<html><body><h1>HTTP 501 - Not Implemented</h1></body></html>');
   }
 }
 

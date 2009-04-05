@@ -15,7 +15,7 @@ class ZfRegistrationForm extends k_Component {
   function postForm() {
     if ($this->form()->isValid($this->body())) {
       // do stuff with data here
-      throw new k_SeeOther($this->url('thanks', array('flare' => 'You have been registered .. or something')));
+      return new k_SeeOther($this->url('thanks', array('flare' => 'You have been registered .. or something')));
     }
     return $this->render();
   }

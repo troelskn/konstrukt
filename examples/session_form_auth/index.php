@@ -13,7 +13,7 @@ class k_SessionIdentityLoader implements k_IdentityLoader {
 class NotAuthorizedComponent extends k_Component {
   function dispatch() {
     // redirect to login-page
-    throw new k_TemporaryRedirect($this->url('/login', array('continue' => $this->requestUri())));
+    return new k_TemporaryRedirect($this->url('/login', array('continue' => $this->requestUri())));
   }
 }
 
@@ -48,7 +48,7 @@ class Login extends k_Component {
     $user = $this->selectUser($this->body('username'), $this->body('password'));
     if ($user) {
       $this->session()->set('identity', $user);
-      throw new k_SeeOther($this->query('continue'));
+      return new k_SeeOther($this->query('continue'));
     }
     return $this->render();
   }
@@ -71,7 +71,7 @@ class Logout extends k_Component {
   }
   function postForm() {
     $this->session()->set('identity', null);
-    throw new k_SeeOther($this->query('continue'));
+    return new k_SeeOther($this->query('continue'));
   }
 }
 

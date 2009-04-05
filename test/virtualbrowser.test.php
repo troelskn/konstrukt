@@ -16,7 +16,7 @@ class test_LoginForm extends k_Component {
   }
   function postForm() {
     if ($this->body('name') == 'Yoda' && $this->body('password') == 'TopNinja33') {
-      throw new k_SeeOther($this->query('destination'));
+      return new k_SeeOther($this->query('destination'));
     }
     $this->message = 'You have failed';
     return $this->render();
