@@ -15,7 +15,7 @@ function k_coerce_to_response($maybe_response, $response_type = 'html') {
   }
   if ($response_type === 'http') {
     // This is to preserve BC interface for httpresponse
-    return new k_HttpRequest(200, $maybe_response);
+    return new k_HttpResponse(200, $maybe_response);
   }
   $class = 'k_' . $response_type . 'response';
   return new $class($maybe_response);
@@ -145,7 +145,7 @@ abstract class k_BaseResponse extends Exception implements k_Response {
     * @return void
     */
   protected function sendHeaders(k_adapter_OutputAccess $output) {
-    if (isset($this->content_type)) {
+    if ($this->contentType()) {
       $output->header("Content-Type: " . $this->contentType() . "; charset=" . $this->encoding());
     }
     foreach ($this->headers as $key => $value) {
@@ -164,7 +164,7 @@ abstract class k_BaseResponse extends Exception implements k_Response {
     * @return void
     */
   protected function sendBody(k_adapter_OutputAccess $output) {
-    $output->write($this->charset->encode($this->content));
+    $output->write($this->charset->encode($this->toInternalRepresentation($this->contentType())));
   }
 }
 

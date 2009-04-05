@@ -1021,7 +1021,12 @@ abstract class k_Component implements k_Context {
     return $content;
   }
   protected function contentTypeToResponseType($content_type) {
-    return isset($this->content_types[$content_type]) ? $this->content_types[$content_type] : 'http';
+    return
+      isset($this->content_types[$content_type])
+      ? $this->content_types[$content_type]
+      : (in_array($content_type, $this->content_types)
+         ? $content_type
+         : 'http');
   }
 }
 

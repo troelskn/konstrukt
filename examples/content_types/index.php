@@ -6,9 +6,9 @@ class MyMultiComponent extends k_Component {
     return "<html><title>html output</title><body><p>hello in html</p><p><a href='" . htmlspecialchars($this->url('/;json')) . "'>;json</a></p></body></html>";
   }
   function renderJson() {
-    $response = new k_HttpResponse(200, "{ title: 'content-type-json', body: 'hello in json'}");
-    $response->setContentType('application/json');
-    throw $response;
+    return array(
+      'title' => 'content-type-json',
+      'body' => 'hello in json');
   }
 }
 

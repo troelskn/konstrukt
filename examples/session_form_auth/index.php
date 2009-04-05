@@ -23,7 +23,7 @@ class Login extends k_Component {
     return parent::execute();
   }
   function renderHtml() {
-    throw new k_HttpResponse(
+    return new k_HttpResponse(
       401,
       "<html><head><title>Authentication required</title></head><body><form method='post' action='" . htmlspecialchars($this->url()) . "'>
   <h1>Authentication required</h1>
