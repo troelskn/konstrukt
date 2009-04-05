@@ -690,33 +690,26 @@ abstract class k_Component implements k_Context {
    */
   protected $url_init = array();
   /**
-   * Mapping to GET handlers. If you need to support exotic content-types, you can add to this array.
+   * Mappings between content-types and handler names. If you need to support exotic content-types, you can add to this array.
    * Note: Theese are just a random selection that I thought might be useful .. you can override in the concrete component, to supply your own.
    * See also http://rest.blueoxen.net/cgi-bin/wiki.pl?WhichContentType
    * @var array
    */
-  protected $renderers = array(
-    'text/html;html' => 'html',
-    'text/html+edit;edit' => 'edit',
-    'text/xml;xml' => 'xml',
-    'text/plain;text' => 'text',
-    'text/csv;csv' => 'csv',
-    'text/x-vcard;vcard' => 'vcard',
-    'application/atom+xml;atom' => 'atom',
-    'application/calendar+xml;xcal' => 'xcal',
-    'application/rdf+xml;rdf' => 'rdf',
-    'application/json;json' => 'json',
-    'application/pdf;pdf' => 'pdf',
-    'image/svg+xml;svg' => 'svg',
-    'application/x-serialized-php' => 'php',
-  );
-  /**
-   * Mapping to input handlers.
-   * @var array
-   */
-  protected $input_content_types = array(
-    'application/x-www-form-urlencoded' => 'form',
+  protected $content_types = array(
+    'text/html' => 'html',
+    'text/html+edit' => 'edit',
+    'text/xml' => 'xml',
+    'text/plain' => 'text',
+    'text/csv' => 'csv',
+    'text/x-vcard' => 'vcard',
+    'application/atom+xml' => 'atom',
+    'application/calendar+xml' => 'xcal',
+    'application/rdf+xml' => 'rdf',
+    'application/json' => 'json',
+    'application/pdf' => 'pdf',
+    'image/svg+xml' => 'svg',
     'multipart/form-data' => 'multipart',
+    'application/x-www-form-urlencoded' => 'form',
     'application/json' => 'json',
     'application/x-serialized-php' => 'php',
   );
@@ -868,7 +861,7 @@ abstract class k_Component implements k_Context {
   }
   protected function contentTypeShortName() {
     $content_type = preg_replace('/^[^;]+(;.*)$/', '', $this->header('content-type'));
-    return isset($this->input_content_types[$content_type]) ? $this->input_content_types[$content_type] : null;
+    return isset($this->content_types[$content_type]) ? $this->content_types[$content_type] : null;
   }
   /**
     * The full path segment for this components representation.
@@ -1001,12 +994,11 @@ abstract class k_Component implements k_Context {
    */
   function render() {
     $accept = array();
-    foreach ($this->renderers as $types => $name) {
+    foreach ($this->content_types as $type => $name) {
       $handler = 'render' . $name;
       if (method_exists($this, $handler)) {
-        foreach (explode(";", $types) as $type) {
-          $accept[$type] = $handler;
-        }
+        $accept[$type] = $handler;
+        $accept[$name] = $handler;
       }
     }
     $content_type = $this->negotiateContentType(array_keys($accept), $this->subtype());
@@ -1029,13 +1021,7 @@ abstract class k_Component implements k_Context {
     return $content;
   }
   protected function contentTypeToResponseType($content_type) {
-    $regexp = '/^' . preg_quote($content_type, '/') . '/';
-    foreach ($this->renderers as $type => $name) {
-      if (preg_match($regexp, $type)) {
-        return $name;
-      }
-    }
-    return 'http';
+    return isset($this->content_types[$content_type]) ? $this->content_types[$content_type] : 'http';
   }
 }
 
