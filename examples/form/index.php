@@ -8,12 +8,12 @@ class RegistrationForm extends k_Component {
       return 'Thanks';
     }
   }
-  function POST() {
+  function postForm() {
     if ($this->validate()) {
       // do stuff with data here
       throw new k_SeeOther($this->url('thanks', array('flare' => 'You have been registered .. or something')));
     }
-    return $this->GET();
+    return $this->render();
   }
   function validate() {
     $this->failures = array();
@@ -75,7 +75,7 @@ class RegistrationForm extends k_Component {
 }
 
 class Thanks extends k_Component {
-  function GET() {
+  function renderHtml() {
     return sprintf("<p>%s</p>", htmlspecialchars($this->query('flare')));
   }
 }

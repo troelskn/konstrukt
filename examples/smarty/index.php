@@ -4,7 +4,7 @@ require_once 'smarty/libs/Smarty.class.php';
 date_default_timezone_set('Europe/Paris');
 
 class HelloComponent extends k_Component {
-  function GET() {
+  function renderHtml() {
     $smarty = new Smarty();
     $smarty->compile_check = true;
     $smarty->debugging = true;

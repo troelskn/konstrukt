@@ -43,7 +43,7 @@ class ZfPaginationPage extends k_Component {
     }
     return $this->paginator;
   }
-  function GET() {
+  function renderHtml() {
     $t = new k_Template('templates/' . $this->template);
     return $t->render(
       $this,

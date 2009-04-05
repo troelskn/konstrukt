@@ -20,8 +20,11 @@ class Root extends k_Component {
       return 'restrictedcontroller';
     }
   }
-  function dispatch() {
-    return sprintf("<html><body><h1>Authorization Example</h1>%s</body></html>", parent::dispatch());
+  function execute() {
+    return $this->wrap(parent::execute());
+  }
+  function wrapHtml($content) {
+    return sprintf("<html><body><h1>Authorization Example</h1>%s</body></html>", $content);
   }
   function renderHtml() {
     return sprintf("<p><a href='%s'>restricted</a></p><p>login with one of:</p><ul><li>pirate arrr</li><li>ninja supersecret</li></ul>", htmlspecialchars($this->url('restricted')));

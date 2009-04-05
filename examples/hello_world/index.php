@@ -7,16 +7,19 @@ class Root extends k_Component {
       return 'hellocontroller';
     }
   }
-  function dispatch() {
-    return sprintf("<html><body><h1>Example 1</h1>%s</body></html>", parent::dispatch());
+  function execute() {
+    return $this->wrap(parent::execute());
   }
-  function GET() {
+  function wrapHtml($content) {
+    return sprintf("<html><body><h1>Example 1</h1>%s</body></html>", $content);
+  }
+  function renderHtml() {
     return sprintf("<a href='%s'>say hello</a>", htmlspecialchars($this->url('hello')));
   }
 }
 
 class HelloController extends k_Component {
-  function GET() {
+  function renderHtml() {
     return "Hello World";
   }
 }
