@@ -189,6 +189,9 @@ class k_HttpResponse extends k_BaseResponse {
     return $this->content_type;
   }
   function toInternalRepresentation($content_type) {
+    if ($content_type == 'application/octet-stream') {
+      return $this->content;
+    }
     throw new k_ImpossibleContentTypeConversionException();
   }
 }

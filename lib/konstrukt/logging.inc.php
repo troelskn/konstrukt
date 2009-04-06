@@ -114,14 +114,21 @@ class k_logging_WebDebugger implements k_DebugListener {
       return new k_HttpResponse(200, $this->render($response, true));
     }
     if ($response->contentType() == 'text/html') {
-      $html = $response->content();
+      $html = $response->toInternalRepresentation('application/octet-stream');
       if (strpos($html, '</body>') === false) {
-        $response->setContent($html . $this->render($response, false));
+        $body = $html . $this->render($response, false);
       } else {
-        $response->setContent(str_replace('</body>', $this->render($response, false) . '</body>', $html));
+        $body = str_replace('</body>', $this->render($response, false) . '</body>', $html);
       }
-      return $response;
+      $out = new k_HttpResponse($response->status(), $body);
+      $out->setContentType($response->contentType());
+      $out->setCharset($response->charset());
+      foreach ($response->headers() as $key => $value) {
+        $out->setHeader($key, $value);
+      }
+      return $out;
     }
+    return $response;
   }
 }
 
