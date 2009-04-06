@@ -120,8 +120,8 @@ class k_logging_WebDebugger implements k_DebugListener {
       } else {
         $response->setContent(str_replace('</body>', $this->render($response, false) . '</body>', $html));
       }
-      return $response;
     }
+    return $response;
   }
 }
 

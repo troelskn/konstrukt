@@ -52,3 +52,23 @@ class TestOfLogfileLogger extends UnitTestCase {
 
 }
 
+class TestOfWebDebugLogger extends UnitTestCase {
+
+  function test_decorate_returns_response_on_html() {
+    $logger = new k_logging_WebDebugger();
+    $r1 = new k_HttpResponse(200);
+    $r1->setContentType('text/html');
+    $r2 = $logger->decorate($r1);
+    $this->assertIsA($r2, 'k_HttpResponse');
+  }
+
+  function test_decorate_returns_response_on_non_html() {
+    $logger = new k_logging_WebDebugger();
+    $r1 = new k_HttpResponse(200);
+    $r1->setContentType('application/json');
+    $r2 = $logger->decorate($r1);
+    $this->assertIsA($r2, 'k_HttpResponse');
+  }
+
+}
+
