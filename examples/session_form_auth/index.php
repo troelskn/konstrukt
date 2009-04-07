@@ -87,7 +87,7 @@ class Root extends k_Component {
     }
   }
   function dispatch() {
-    return sprintf("<html><body><h1>Authorization Example</h1>%s</body></html>", parent::dispatch());
+    return sprintf("<html><body><h1>Authentication Example</h1>%s</body></html>", parent::dispatch());
   }
   function renderHtml() {
     return sprintf(

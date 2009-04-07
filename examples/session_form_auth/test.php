@@ -8,7 +8,7 @@ if (realpath($_SERVER['PHP_SELF']) == __FILE__) {
 require_once 'konstrukt/virtualbrowser.inc.php';
 require_once 'index.php';
 
-class TestOfExampleHttpAuthentication extends WebTestCase {
+class TestOfExampleSessionAndFormAuthentication extends WebTestCase {
   function createBrowser() {
   $components = new k_DefaultComponentCreator();
   $components->setImplementation('k_DefaultNotAuthorizedComponent', 'NotAuthorizedComponent');
@@ -17,14 +17,14 @@ class TestOfExampleHttpAuthentication extends WebTestCase {
   function test_root() {
     $this->assertTrue($this->get('/'));
     $this->assertResponse(200);
-    $this->assertText("Authorization Example");
+    $this->assertText("Authentication Example");
   }
-  function test_restricted_page_prompts_for_authorization() {
+  function test_restricted_page_prompts_for_authentication() {
     $this->assertTrue($this->get('/'));
     $this->click("restricted");
     $this->assertResponse(401);
   }
-  function test_valid_authorization_gains_access() {
+  function test_valid_authentication_gains_access() {
     $this->assertTrue($this->get('/'));
     $this->click("restricted");
     $this->assertResponse(401);
@@ -34,7 +34,7 @@ class TestOfExampleHttpAuthentication extends WebTestCase {
     $this->assertResponse(200);
     $this->assertText("Hello pirate");
   }
-  function test_invalid_authorization_is_forbidden_access() {
+  function test_invalid_authentication_is_forbidden_access() {
     $this->assertTrue($this->get('/'));
     $this->click("restricted");
     $this->assertResponse(401);
@@ -43,7 +43,7 @@ class TestOfExampleHttpAuthentication extends WebTestCase {
     $this->clickSubmit("Login");
     $this->assertResponse(401);
   }
-  function test_authorized_user_without_privilege_is_forbidden_from_limited_area() {
+  function test_authenticated_user_without_privilege_is_forbidden_from_limited_area() {
     $this->assertTrue($this->get('/'));
     $this->click("restricted");
     $this->assertResponse(401);
@@ -54,7 +54,7 @@ class TestOfExampleHttpAuthentication extends WebTestCase {
     $this->click("the dojo");
     $this->assertResponse(403);
   }
-  function test_authorized_user_with_privilege_is_allowed_into_limited_area() {
+  function test_authenticated_user_with_privilege_is_allowed_into_limited_area() {
     $this->assertTrue($this->get('/'));
     $this->click("restricted");
     $this->assertResponse(401);
