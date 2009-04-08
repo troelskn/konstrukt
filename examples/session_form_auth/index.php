@@ -90,7 +90,7 @@ class Root extends k_Component {
     return $this->wrap(parent::execute());
   }
   function wrapHtml($content) {
-    return sprintf("<html><body><h1>Authorization Example</h1>%s</body></html>", $content);
+    return sprintf("<html><body><h1>Authentication Example</h1>%s</body></html>", $content);
   }
   function renderHtml() {
     return sprintf(
