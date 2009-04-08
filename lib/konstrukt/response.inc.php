@@ -28,6 +28,7 @@ interface k_Response {
   /**
    * Marshals the content to text or other native type.
    * Raises an exception if it isn't possible to convert into the target type.
+   * todo: rename this to toContentType() ?
    */
   function toInternalRepresentation($content_type);
   function out(k_adapter_OutputAccess $output = null);
@@ -359,10 +360,10 @@ abstract class k_ComplexResponse extends k_BaseResponse {
     }
   }
   function internalType() {
-    return 'x-application/konstrukt+struct';
+    return 'internal/array';
   }
   function toInternalRepresentation($content_type) {
-    if ($content_type === 'x-application/konstrukt+struct') {
+    if ($content_type === 'internal/array') {
       return $this->content;
     } elseif ($content_type === $this->contentType()) {
       return $this->marshal();
@@ -387,5 +388,58 @@ class k_PhpResponse extends k_ComplexResponse {
   }
   protected function marshal() {
     return serialize($this->content);
+  }
+}
+
+/**
+ * XmlResponse can use either SimpleXML or Dom for the internal representation.
+ * You can extend this class for specific types of XML.
+ */
+class k_XmlResponse extends k_BaseResponse {
+  protected $content = null;
+  function __construct($content = "") {
+    if ($content instanceof k_BaseResponse) {
+      $this->content = $content->toInternalRepresentation($this->internalType());
+    } elseif ($this->content instanceof DomNode) {
+      $this->content = $content;
+    } elseif ($this->content instanceof SimpleXMLElement) {
+      $this->content = $content;
+    } elseif (is_string($content)) {
+      $this->content = new SimpleXMLElement($content);
+    } else {
+      throw new Exception("Illegal input type '" . gettype($content) . "'");
+    }
+  }
+  function contentType() {
+    return 'text/xml';
+  }
+  function internalType() {
+    return 'internal/xml';
+  }
+  function toInternalRepresentation($content_type) {
+    switch ($content_type) {
+    case 'internal/xml':
+      return $this->content;
+    case 'internal/xml+dom':
+      return ($this->content instanceof DomNode) ? $this->content : dom_import_simplexml($this->content);
+    case 'internal/xml+simple':
+      return ($this->content instanceof SimpleXMLElement) ? $this->content : simplexml_import_dom($this->content);
+    }
+    if ($content_type === $this->contentType()) {
+      return $this->marshal();
+    }
+    throw new k_ImpossibleContentTypeConversionException();
+  }
+  protected function marshal() {
+    if ($this->content instanceof DomNode) {
+      $dom_node = $this->content;
+    } elseif ($this->content instanceof SimpleXMLElement) {
+      $dom_node = dom_import_simplexml($this->content);
+    }
+    $document = $dom_node->ownerDocument;
+    $document->xmlStandalone = true;
+    $document->encoding = $this->encoding;
+    $document->formatOutput = true;
+    return $document->saveXML($dom_node);
   }
 }
