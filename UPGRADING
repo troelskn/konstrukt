@@ -1,12 +1,13 @@
 Upgrading from 2.0.X to 2.1.0
 ===
 
-There are three major changes in this release:
+There are four major changes in this release:
 
 1. `k_HttpResponse` no longer extends `Exception`.
 2. Handlers now return a `K_Response` rather than a native string.
     2b. Wrappers
 3. Typed handlers for POST and PUT
+4. The syntax for a specific content-type has changed.
 
 `k_HttpResponse` no longer extends `Exception`.
 ---
@@ -33,6 +34,11 @@ Typed handlers for POST and PUT
 Instead of a single entrypoint for all POST requests, there is now support for differentiating on the content-type of the request-body. For regular forms, which are encoded with `application/x-www-form-urlencoded`, the handler `postForm` will be invoked. The same names are used as for renderers, so to handle an incoming json-request, you should implement `postJson`. Likewise with PUT requests (eg. use `putJson` to handle a PUT request with the content-type of `application/json`.
 
 Except for `postForm` and `postMultipart`, the input-data isn't decoded for you - you can access the raw input-body through `rawHttpRequestBody`. For those two types, you can access `body` and `file` respectively.
+
+The syntax for a specific content-type has changed.
+---
+
+The choice of a semi-colon to designate component subtype (content-type) was a slightly unorthodox choice. This might cause problems along the way, so it has now been revised to use a dot rather than a semi-colon. Eg. to address a specific content-type of a component, you'd use `/foo/bar.json` instead of `/foo/bar;json`.
 
 Recommendations for upgrading
 ---
@@ -100,3 +106,7 @@ or this:
 Other types of responses, such as `k_MovedPermanently`, `k_SeeOther` and `k_TemporaryRedirect` should be returned rather than thrown.
 
 Note that you should still throw meta-responses, such as `k_NotAuthorized`, `k_Forbidden`, `k_PageNotFound`, `k_MethodNotAllowed`, `k_NotImplemented` and `k_NotAcceptable`. These work exactly as they've done prior.
+
+###Subtype syntax
+
+Any places where you have links that refer to a specific subtype, you should replace the semi-colon with a dot. You can simply search for all calls to `url()` and check if the first argument contains a semi-colon.

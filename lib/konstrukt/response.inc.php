@@ -195,6 +195,7 @@ abstract class k_BaseResponse implements k_Response {
 }
 
 class k_HttpResponse extends k_BaseResponse {
+  protected $content_type = 'text/html';
   function __construct($status = 200, $content = "", $input_is_utf8 = false) {
     if (!is_string($content)) {
       //      try {
@@ -218,7 +219,15 @@ class k_HttpResponse extends k_BaseResponse {
     if ($content_type == 'application/octet-stream') {
       return $this->content;
     }
+           try {
     throw new k_ImpossibleContentTypeConversionException();
+           } catch (Exception $ex) {
+             print $ex->getTraceAsString();
+             throw $ex;
+           }
+  }
+  protected function sendBody(k_adapter_OutputAccess $output) {
+    $output->write($this->charset->encode($this->content));
   }
 }
 

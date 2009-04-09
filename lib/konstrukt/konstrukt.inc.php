@@ -511,7 +511,7 @@ class k_HttpRequest implements k_Context {
     */
   function url($path = "", $params = array()) {
     if (is_array($path)) {
-      $path = str_replace('%3B', ';', implode('/', array_map('rawurlencode', $path)));
+      $path = implode('/', array_map('rawurlencode', $path));
     }
     $stack = array();
     foreach (explode('/', $this->href_base . $path) as $name) {
@@ -812,16 +812,16 @@ abstract class k_Component implements k_Context {
     */
   function url($path = "", $params = array()) {
     if (is_array($path)) {
-      $path = str_replace('%3B', ';', implode('/', array_map('rawurlencode', $path)));
+      $path = implode('/', array_map('rawurlencode', $path));
     }
     return $this->context->url(
       $path
       ? (substr($path, 0, 1) === '/'
         ? $path
-        : ($path === ';'
+        : ($path === '.'
           ? $this->name()
-          : (preg_match('~^;([^/;]*)~', $path, $mm)
-            ? ($this->name() . ';' . $mm[1])
+          : (preg_match('~^\.([^/.]+)~', $path, $mm)
+            ? ($this->name() . '.' . $mm[1])
             : $this->segment() . '/' . $path)))
       : $this->segment(),
       $this->url_state->merge($params));
@@ -848,7 +848,7 @@ abstract class k_Component implements k_Context {
       return $mm[1];
     }
     // special case for top-level + subtype
-    if (preg_match('~^/(;[^/]+)[/]{0,1}~', $this->context->subspace(), $mm)) {
+    if (preg_match('~^/(\.[^/]+)[/]{0,1}~', $this->context->subspace(), $mm)) {
       return $mm[1];
     }
   }
@@ -858,14 +858,14 @@ abstract class k_Component implements k_Context {
     */
   protected function name() {
     if ($segment = $this->segment()) {
-      return preg_replace('/;.*$/', '', $segment);
+      return preg_replace('/\..*$/', '', $segment);
     }
   }
   /**
     * @return string
     */
   protected function subtype() {
-    if (preg_match('/;(.+)$/', $this->segment(), $mm)) {
+    if (preg_match('/\.(.+)$/', $this->segment(), $mm)) {
       return $mm[1];
     }
   }
@@ -873,7 +873,7 @@ abstract class k_Component implements k_Context {
     * @return string
     */
   protected function next() {
-    if (preg_match('~^[^/;]+~', $this->subspace(), $mm)) {
+    if (preg_match('~^[^/.]+~', $this->subspace(), $mm)) {
       return $mm[0];
     }
   }
@@ -990,7 +990,7 @@ abstract class k_Component implements k_Context {
   }
   function wrap($content) {
     $typed = k_coerce_to_response($content);
-    $response_type = k_content_type_to_response_type($typed->contentType());
+    $response_type = ($typed instanceof k_HttpResponse) ? 'http' : k_content_type_to_response_type($typed->contentType());
     $handler = 'wrap' . $response_type;
     if (method_exists($this, $handler)) {
       return k_coerce_to_response(

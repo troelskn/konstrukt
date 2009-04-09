@@ -124,7 +124,7 @@
 
 <p>Most components have a way to render themselves. When a regular GET request is issued to the component, it will try to render it by calling a so-called <em>renderer</em>. Renderers are simply methods that are prefixed with <code>render</code> and followed by a short-name corresponding to the content-type that they provide. For the majority, <code>renderHtml()</code> is the most common renderer, but you can implement other content-types such as <code>renderJson()</code> or <code>renderRss()</code>. If a component provides multiple renderers, it will pick one based on the <code>Accept</code> header of the incoming request. This means that the client (usually a browser) can decide which format it prefers. This is a feature known as <em>content-type negotiation</em>, because it happens automatically based on the clients preferences and the available formats.</p>
 
-<p>Some times you may need to have a URL refer directly to a specific representation (content-type) of a component - In this case, you can postfix the URL with the content-type short-name. For example, the URL <code>/foo/bar</code> is subject to content-negotiation, while <code>/foo/bar;csv</code> will only render through <code>renderCsv()</code> (Of course provided that this method is implemented).</p>
+<p>Some times you may need to have a URL refer directly to a specific representation (content-type) of a component - In this case, you can postfix the URL with the content-type short-name. For example, the URL <code>/foo/bar</code> is subject to content-negotiation, while <code>/foo/bar.csv</code> will only render through <code>renderCsv()</code> (Of course provided that this method is implemented).</p>
 
 <h3 id="return-type">Return type</h3>
 
@@ -312,7 +312,7 @@
 
 <p>Initially the most important input is probably the <code>name</code>. This returns the part of the url that this component belongs to. For the last component of the url <code>/foo/bar/quux</code>, the name would be <code>quux</code>. This property is often used as a primary key for identifying the underlying resource.</p>
 
-<p>The <code>subtype</code> property is the part of a path-segment that comes after the name, delimited by a semi-colon. It's used internally to identify the content-type. As a developer you'll probably not need to access this very often.</p>
+<p>The <code>subtype</code> property is the part of a path-segment that comes after the name, delimited by a dot. It's used internally to identify the content-type. As a developer you'll probably not need to access this very often.</p>
 
 <p>The <code>subspace</code> property contains the remaining part of the path, for a component that isn't the last in the dispatch chain. For example, given the component identified as <code>bar</code> in the url <code>/foo/bar/quux</code>, the subspace would be <code>quux</code>. This property is also rarely used directly.</p>
 

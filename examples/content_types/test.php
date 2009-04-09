@@ -18,7 +18,7 @@ class TestOfExampleContentTypes extends WebTestCase {
     $this->assertText("hello in html");
   }
   function test_explicit_json_representation() {
-    $this->assertTrue($this->get('/;json'));
+    $this->assertTrue($this->get('/.json'));
     $this->assertResponse(200);
     $this->assertMime('application/json; charset=utf-8');
     $this->assertText("hello in json");

@@ -52,7 +52,7 @@ Some times, a request can contain a payload (Known as the [message-body](http://
 
 Most components have a way to render themselves. When a regular GET request is issued to the component, it will try to render it by calling a so-called *renderer*. Renderers are simply methods that are prefixed with `render` and followed by a short-name corresponding to the content-type that they provide. For the majority, `renderHtml()` is the most common renderer, but you can implement other content-types such as `renderJson()` or `renderRss()`. If a component provides multiple renderers, it will pick one based on the `Accept` header of the incoming request. This means that the client (usually a browser) can decide which format it prefers. This is a feature known as *content-type negotiation*, because it happens automatically based on the clients preferences and the available formats.
 
-Some times you may need to have a URL refer directly to a specific representation (content-type) of a component - In this case, you can postfix the URL with the content-type short-name. For example, the URL `/foo/bar` is subject to content-negotiation, while `/foo/bar;csv` will only render through `renderCsv()` (Of course provided that this method is implemented).
+Some times you may need to have a URL refer directly to a specific representation (content-type) of a component - In this case, you can postfix the URL with the content-type short-name. For example, the URL `/foo/bar` is subject to content-negotiation, while `/foo/bar.csv` will only render through `renderCsv()` (Of course provided that this method is implemented).
 
 ###Return type
 
@@ -137,7 +137,7 @@ Note that all these properties are accessed through methods, not as fields. So y
 
 Initially the most important input is probably the `name`. This returns the part of the url that this component belongs to. For the last component of the url `/foo/bar/quux`, the name would be `quux`. This property is often used as a primary key for identifying the underlying resource.
 
-The `subtype` property is the part of a path-segment that comes after the name, delimited by a semi-colon. It's used internally to identify the content-type. As a developer you'll probably not need to access this very often.
+The `subtype` property is the part of a path-segment that comes after the name, delimited by a dot. It's used internally to identify the content-type. As a developer you'll probably not need to access this very often.
 
 The `subspace` property contains the remaining part of the path, for a component that isn't the last in the dispatch chain. For example, given the component identified as `bar` in the url `/foo/bar/quux`, the subspace would be `quux`. This property is also rarely used directly.
 

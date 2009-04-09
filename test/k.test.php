@@ -196,20 +196,20 @@ Dispatching:
   name: 'foo'
   next: 'bar'
   subtype: 'ninja'
-  url: '/web2.0/foo;ninja'
+  url: '/web2.0/foo.ninja'
 Dispatching:
   name: 'bar'
   next: ''
   subtype: ''
-  url: '/web2.0/foo;ninja/bar'
+  url: '/web2.0/foo.ninja/bar'
 Executing
 ";
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
-    $http = new k_HttpRequest('/web2.0', '/foo;ninja/bar', new k_DefaultIdentityLoader(), $glob);
+    $http = new k_HttpRequest('/web2.0', '/foo.ninja/bar', new k_DefaultIdentityLoader(), $glob);
     $components = new k_DefaultComponentCreator();
     $root = $components->create('test_CircularComponent', $http);
     $result = $root->dispatch();
-    $this->assertEqual($result, $expected);
+    $this->assertEqual($expected, $result);
   }
 
 }
@@ -283,19 +283,19 @@ class TestOfUrlGeneration extends UnitTestCase {
   }
 
   function test_when_specifying_a_subtype_it_replaces_the_current() {
-    $http = $this->createHttp('/foo', '/foo/bar;text');
+    $http = $this->createHttp('/foo', '/foo/bar.text');
     $components = new k_DefaultComponentCreator();
     $root = $components->create('test_CircularComponent', $http);
     $first = $components->create('test_CircularComponent', $root);
-    $this->assertEqual($first->url(";xml"), "/foo/bar;xml");
+    $this->assertEqual($first->url(".xml"), "/foo/bar.xml");
   }
 
   function test_an_subtype_is_removed() {
-    $http = $this->createHttp('/foo', '/foo/bar;text');
+    $http = $this->createHttp('/foo', '/foo/bar.text');
     $components = new k_DefaultComponentCreator();
     $root = $components->create('test_CircularComponent', $http);
     $first = $components->create('test_CircularComponent', $root);
-    $this->assertEqual($first->url(";"), "/foo/bar");
+    $this->assertEqual("/foo/bar", $first->url("."));
   }
 
   function test_passing_array_as_first_argument_joins_segments() {
@@ -313,7 +313,7 @@ class TestOfUrlGeneration extends UnitTestCase {
   function test_passing_array_as_first_argument_doesnt_encode_semicolons() {
     $http = $this->createHttp('', '');
     $components = new k_DefaultComponentCreator();
-    $this->assertEqual($http->url(array("banjo;html")), "banjo;html");
+    $this->assertEqual($http->url(array("banjo.html")), "banjo.html");
   }
 
 }
