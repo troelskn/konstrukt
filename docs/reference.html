@@ -12,10 +12,14 @@
 <li><a href="#konstrukt-reference">Konstrukt Reference</a><ul>
 <li><a href="#component-essentials">Component essentials</a><ul>
 <li><a href="#dispatch-life-cycle">Dispatch life-cycle</a></li>
-<li><a href="#dispatch-map-forward">dispatch, map, forward</a></li>
-<li><a href="#execute-get-post">execute, GET, POST</a></li>
+<li><a href="#handlers">Handlers</a></li>
+<li><a href="#dispatch">Dispatch</a></li>
 <li><a href="#renderers">Renderers</a></li>
-<li><a href="#content-type-delegation">Content-Type delegation</a></li>
+<li><a href="#return-type">Return type</a></li>
+<li><a href="#content-type-short-names">content-type short-names</a></li>
+<li><a href="#input-handlers">Input handlers</a></li>
+<li><a href="#wrappers">Wrappers</a></li>
+<li><a href="#other-handlers">Other handlers</a></li>
 </ul>
 </li>
 <li><a href="#http-input">HTTP input</a><ul>
@@ -37,7 +41,7 @@
 </ul>
 </li>
 <li><a href="#abnormal-responses">Abnormal responses</a><ul>
-<li><a href="#http-response">Http response</a></li>
+<li><a href="#untyped-responses">Untyped responses</a></li>
 <li><a href="#meta-response">Meta response</a></li>
 </ul>
 </li>
@@ -83,25 +87,95 @@
 
 <h2 id="component-essentials">Component essentials</h2>
 
-<p>A component is a class that extends from <code>k_Component</code>. Its purpose is to handle a request or delegate control to another component, that can handle it. This is much similar to how the Apache web server is structured. The way a component is addressed is through the URL path. Each path segment is mapped to a component. The special thing about Konstrukt in this respect, is that the exact mapping is determined at runtime. Each component is fully responsible for choosing the next component in the chain. This is a very powerful concept, but can also be slightly hard to comprehend at first. As a newcomer you may therefore find the <a href="debugging">dispatch logging</a> useful.</p>
+<p>A component is a class that extends from <code>k_Component</code>. Its purpose is to handle a request or delegate control to another component, that can handle it. This is much similar to how the Apache web server is structured. The way a component is addressed is through the URL path. Each path segment is mapped to a component. The special thing about Konstrukt in this respect, is that the exact mapping is determined at runtime. Each component is fully responsible for choosing the next component in the chain. This is a very powerful concept, but can also be slightly hard to comprehend at first. As a newcomer you may therefore find the <a href="#debugging">dispatch logging</a> useful.</p>
 
 <h3 id="dispatch-life-cycle">Dispatch life-cycle</h3>
 
 <p>A component is instantiated as an object before use. To allow for maximum flexibility in implementation, the constructor is not used for passing essential dependencies. These are instead passed immediately after creation through setters. Of these dependencies, the most important is the context, which will usually be another component instance.</p>
 
-<p>A a developer you have great control over the creation of components. You can read more about this in the section on <a href="#component-creation">component creation</a>.</p>
+<p>As a developer you have great control over the creation of components. You can read more about this in the section on <a href="#component-creation">component creation</a>.</p>
 
-<h3 id="dispatch-map-forward">dispatch, map, forward</h3>
+<h3 id="handlers">Handlers</h3>
 
-<p>Once the component is instantiated, it is given control by the context calling the <code>dispatch()</code> method. The purpose of this method is to inspect the url subspace and either determine that it is the final handler in the chain, or forward control to another component, which will go through the same process. These choices corresponds to the methods <code>forward()</code> and <code>execute()</code>. To make the choice, the method <code>map()</code> is used. As a developer, you will often override <code>map()</code> to implement url mapping logic.</p>
+<p>Components can implement a number of fine grained methods to provide functionality. As a developer, you'll normally just implement/override a few of them, but if you need to, you can override them all, thereby hooking into the core workings of the framework. In particular, you will often implement renderers and input handlers, as well as <code>map()</code> and in some cases <code>dispatch()</code>. If you find your self overriding any of <code>execute()</code>, <code>render()</code>, <code>GET()</code>, <code>POST()</code>, <code>PUT()</code> or <code>wrap()</code>, it should be a warning sign that you are doing some thing wrong; These all default to delegate control to more specific handlers and as such you usually wouldn't have to override them.</p>
 
-<h3 id="execute-get-post">execute, GET, POST</h3>
+<h3 id="dispatch">Dispatch</h3>
 
-<p>The <code>execute()</code> method is the first method invoked for the handling component. It is unusual to override this in concrete components, although there are cases for it. Since execute is invoked for any kind of HTTP-method, it is a good place to load model components that are identified by the url of the component. The default implementation of <code>execute()</code> inspects the HTTP-method and delegates control to one of <code>GET()</code>, <code>POST()</code>, <code>HEAD()</code>, <code>PUT()</code> or <code>DELETE()</code>. In most web applications, you will probably just concern your self with the first two, since these are the only ones widely supported by browsers. Luckily they are also the most important.</p>
+<p>Once the component is instantiated, the context will delegate control to the component, by invoking its <code>dispatch()</code> method. <code>dispatch()</code> inspects the remainder of the path (the <code>subspace</code>) and does one of two things: If the path contains any further names, it will call <code>map()</code> with the next name, and receive a corresponding classname. It will then instantiate this component, becoming the context, and dispatch to it. If there is no further names (it is the final component), it will handle the request.</p>
+
+<p>While you can hook in to various places in the request handling, the most common is to implement a <a href="#renderers">renderer</a> - typically <code>renderHtml()</code>. Since you're application will presumably contain more than one component, you will also get acquainted with the <code>map()</code> method.</p>
+
+<p>Some times, a request can contain a <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.3">message-body</a> - The typical case being a POST'ed web-form. To handle this, you'd implement an input handler <code>postForm()</code>.</p>
+
+<p>The already mentioned <code>dispatch()</code> method can be overridden to put code that should execute for all types of requests to the component. It is typically used for access-control/authentication and for checking the existence of the resource (throw a <code>k_PageNotFound</code> if not). If you override this (or other) handler(s), remember to call the parent implementation at the end. Eg.:</p>
+
+<pre class="php"><span class="kw2">class</span> MyComponent <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
+  <span class="kw2">function</span> dispatch<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+    <span class="kw1">if</span> <span class="br0">&#40;</span>!<span class="re0">$this</span>-&gt;<span class="me1">model</span>-&gt;<span class="me1">find</span><span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">name</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+      <span class="kw1">throw</span> <span class="kw2">new</span> k_PageNotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    <span class="br0">&#125;</span>
+    <span class="kw1">return</span> <span class="kw2">parent</span>::<span class="me2">dispatch</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+  <span class="br0">&#125;</span>
+<span class="br0">&#125;</span></pre>
+
+<p>Some times, a request can contain a payload (Known as the <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.3">message-body</a>). This is only allowed with POST and PUT types requests - the typical use-case being a <code>&lt;form&gt;</code> being submitted through POST. To handle this, you will have to implement a handler matching the request-type and the content-type of the request. For example, to handle a regular form, you would implement <code>postForm()</code>. Another, slighty less common, handler would be <code>postMultipart()</code>, which would be used if the form contains <a href="#file-uploads">file uploads</a>. You can read more under the section <a href="#input-handlers">input handlers</a>.</p>
 
 <h3 id="renderers">Renderers</h3>
 
-<p>The <code>GET()</code>, <code>POST()</code> etc. methods can be overridden, but it's recommended that you don't. The default implementation of <code>GET()</code> will negotiate the content-type, based on the Accept header, and then delegate control to a render method. This is called content-negotiation, because it happens automatically based on the clients preferences - For a browser, the preferred content-type will likely be HTML, so for most applications, you would implement <code>renderHtml()</code> and this will automatically be called upon a GET request. You can implement multiple renderers, and the negotiation will pick the best candidate. The naming of renderers corresponds to their content-type per the following chart:</p>
+<p>Most components have a way to render themselves. When a regular GET request is issued to the component, it will try to render it by calling a so-called <em>renderer</em>. Renderers are simply methods that are prefixed with <code>render</code> and followed by a short-name corresponding to the content-type that they provide. For the majority, <code>renderHtml()</code> is the most common renderer, but you can implement other content-types such as <code>renderJson()</code> or <code>renderRss()</code>. If a component provides multiple renderers, it will pick one based on the <code>Accept</code> header of the incoming request. This means that the client (usually a browser) can decide which format it prefers. This is a feature known as <em>content-type negotiation</em>, because it happens automatically based on the clients preferences and the available formats.</p>
+
+<p>Some times you may need to have a URL refer directly to a specific representation (content-type) of a component - In this case, you can postfix the URL with the content-type short-name. For example, the URL <code>/foo/bar</code> is subject to content-negotiation, while <code>/foo/bar;csv</code> will only render through <code>renderCsv()</code> (Of course provided that this method is implemented).</p>
+
+<h3 id="return-type">Return type</h3>
+
+<p>The return type of a renderer depends on the content-type it handles. It is always valid to return an instance of <code>k_Response</code>, but most of the time you should just return a language primitive (such as a string for <code>renderHtml()</code>) and it will be wrapped in an appropriately typed response instance. The primitive type to return depends on the content-type. This type is also called the internal type, and it is the same type that will be passed to any <a href="#wrappers">wrappers</a>. The supported internal types can be read from this chart:</p>
+
+<table>
+<thead>
+<tr>
+  <th>content-type</th>
+  <th>short name</th>
+  <th>internal type(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>text/html</td>
+  <td>html</td>
+  <td>string</td>
+</tr>
+<tr>
+  <td>text/plain</td>
+  <td>text</td>
+  <td>string</td>
+</tr>
+<tr>
+  <td>application/json</td>
+  <td>json</td>
+  <td>any scalar, array</td>
+</tr>
+<tr>
+  <td>application/x-serialized-php</td>
+  <td>php</td>
+  <td>anything that can be serialized</td>
+</tr>
+<tr>
+  <td>text/xml</td>
+  <td>xml</td>
+  <td>string, DomNode, SimpleXMLElement</td>
+</tr>
+</tbody>
+</table>
+
+<p>Other HTTP-methods than GET may also render an output. To do so, you can call <code>render()</code> from within the handler, and it will then delegate to the appropriate render-method. (This is what <code>GET()</code> does behind the scenes). For example, you might end your <code>postForm()</code> method with the line:</p>
+
+<pre class="php"><span class="kw1">return</span> <span class="re0">$this</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;</pre>
+
+<p class="note">Note: The content-type of renderers is based on the <code>Accept</code> header of the request, and defines the type of response that goes out. Certain requests (notably POST and PUT) may have a different content-type, specifying the type of the message-body. This is handled by a related, but different mechanism called <a href="#input-handlers">Content-Type delegation</a></p>
+
+<h3 id="content-type-short-names">content-type short-names</h3>
+
+<p>There are various places where content-types are referred to through their short-names. For example, <a href="#renderers">renderers</a> are named according to the content-type they provide. So are <a href="#input-handlers">input handlers</a>. There are many content-types, but the most used ones are depicted in the table below:</p>
 
 <table>
 <thead>
@@ -175,27 +249,19 @@
 </tbody>
 </table>
 
-<p>If a component supports multiple renderers, you can refer to a specific representation by suffixing the url with a semicolon and the short-name. Eg. <code>/foo/bar;csv</code> is the CSV representation of <code>/foo/bar</code>. When specifying the content-type this way, the Accept header is disregarded.</p>
-
 <p>The type <code>text/html+edit</code> is meant for a html form to edit the resource.</p>
 
-<p>If you need a content-type that isn't listed above, you can add it to the <code>$renderers</code> property in your component. The format is:</p>
+<p>You can add your own content-types to the global array <code>$GLOBALS['konstrukt_content_types']</code> as follows:</p>
 
-<pre class="php"><span class="re0">$this</span>-&gt;<span class="me1">renderers</span><span class="br0">&#91;</span><span class="st0">'test/html;html'</span><span class="br0">&#93;</span> = <span class="st0">'html'</span>;</pre>
+<pre class="php"><span class="re0">$GLOBALS</span><span class="br0">&#91;</span><span class="st0">'konstrukt_content_types'</span><span class="br0">&#93;</span><span class="br0">&#91;</span><span class="st0">'test/html'</span><span class="br0">&#93;</span> = <span class="st0">'html'</span>;</pre>
 
 <p>If you're adding a generic content-type, you might want mention it to the developers, and we'll try to incorporate it in the main library.</p>
 
-<p>The return type of a renderer should either be a string (Which is expected to be a HTML fragment) or the method should throw a response. Remember to specify the content-type, if you're throwing a response to a non-HTML content-type.</p>
+<h3 id="input-handlers">Input handlers</h3>
 
-<p>Other HTTP-methods than GET may also render an output. To do so, you can call <code>render()</code> from within the handler, and it will then delegate to the appropriate render-method. (This is what <code>GET()</code> does behind the scenes).</p>
+<p>The HTTP-methods POST and PUT are special in that they contain a message-body. The content-type of this payload is specified in the requests Content-Type header.. To distinguish between them, the default implementation of <code>POST()</code> and <code>PUT()</code> will try to dispatch to a handler corresponding to the requests content-type. For example, a regular posted form has the <code>application/x-www-form-urlencoded</code> content-type. This will be delegated to <code>postForm()</code>. A request of the type <code>application/json</code> will be delegated to <code>postJson()</code>. This feature, which is known as <em>content-type delegation</em>, allows you to implement support for different content-types in a standard fashion.</p>
 
-<p>Apart from the rendered content-type, certain requests (notably POST and PUT) may have a request content-type. This is handled by a related, but different mechanism called <a href="#content-type-delegation">Content-Type delegation</a></p>
-
-<h3 id="content-type-delegation">Content-Type delegation</h3>
-
-<p>The HTTP-methods POST and PUT are special in that they may contain a request-body. If this is the case, the content will have a Content-Type, specified by the request-header. To distinguish themselves, the default implementation of <code>POST()</code> and <code>PUT()</code> will try to dispatch to a handler corresponding to the request's Content-Type. For example, a regular posted form has the <code>application/x-www-form-urlencoded</code> Content-Type. This will be delegated to <code>postForm()</code>. A request of the type <code>application/json</code> will be delegated to <code>postJson()</code>. This allows you to implement support for different content-types in a standard fashion.</p>
-
-<p>The naming of the content-type handlers corresponds to the following chart:</p>
+<p>The naming of the content-type handlers corresponds to their <a href="#content-type-short-names">short-names</a>, but the most commonly used are depicted below:</p>
 
 <table>
 <thead>
@@ -226,11 +292,15 @@
 
 <p>This mechanism is somewhat similar to <a href="#renderers">content-type negotiation</a>, but differs in that <code>render()</code> relates to the <code>Accept</code> header - Which has to do with the output-format of the HTTP-response - while content-type delegation relates to the <code>Content-Type</code> header - which has to do with the input-format of the HTTP-request.</p>
 
-<p>If you need support for additional content-types that isn't listed above, you can add it to the <code>$input_content_types</code> property in your component. The format is:</p>
+<h3 id="wrappers">Wrappers</h3>
 
-<pre class="php"><span class="re0">$this</span>-&gt;<span class="me1">input_content_types</span><span class="br0">&#91;</span><span class="st0">'application/json'</span><span class="br0">&#93;</span> = <span class="st0">'json'</span>;</pre>
+<p>When a component delegates control to a sub-component, it can some times be useful to decorate the response. A typical case is to render navigation or to render the <code>&lt;head&gt;</code> tags in the root component. While you could manually override <code>dispatch()</code> or <code>forward()</code> to do this, there is already a mechanism in Konstrukt called <em>wrappers</em>. Wrappers are typed just like <a href="#renderers">renderers</a> and they are picked according to the content-type of the sub-components response. This means that <code>wrapHtml()</code> will only apply to sub-components that return a html-response. There is a special hook for intercepting un-typed (<code>k_HttpResponse</code>) responses, which is <code>renderHttp()</code>. It is rarely used, but if you need it, it's there.</p>
 
-<p>Again - If it's a generic content-type, please mention it to the developers, and we'll try to incorporate it in the main library.</p>
+<p>A wrapper takes a single argument, which is the internal representation of the response to be wrapped. Like the renderers, wrappers can either return an instance of <code>k_Response</code> or just return the internal preresentation, which will then be converted to a typed response automatically.</p>
+
+<h3 id="other-handlers">Other handlers</h3>
+
+<p>As already mentioned, there are a few other handlers which can be implemented in your components. If you want to support all the major HTTP verbs (HEAD, PUT, DELETE), you can do so by implementing the correct handler. For handling HEAD and DELETE, simply implement a method named <code>HEAD()</code> and <code>DELETE()</code> respectively. The PUT method follows the pattern of POST, so you shouldn't implement <code>PUT()</code>, but rather a handler specific to the input type; Eg. <code>putForm</code> or <code>putJson</code> etc.</p>
 
 <h2 id="http-input">HTTP input</h2>
 
@@ -285,6 +355,8 @@ It's the context that specifies a namespace for its subcomponents, and it works 
 
 <p>Note that you need to go through the <a href="http://www.php.net/features.file-upload.post-method.php">regular hoops to get file uploads working</a>. Most importantly you need to set the <code>enctype="multipart/form-data"</code> property on your form tag.</p>
 
+<p>TODO: See also <a href="#input-handlers">input handlers</a></p>
+
 <h2 id="url-generation">Url generation</h2>
 
 <p>All components are tightly coupled to a url. Components can parse (dispatch) urls, and they can also generate urls. To make your application as flexible as possible, it is recommended that you generate internal urls, using the <code>url()</code> method, rather than hardcoding them as strings. From within a component, you can call <code>url()</code> without any parameters to get a url pointing to the current component. As the first argument, you can pass a subspace, and as the second argument, you can pass a hash of query-string parameters. Eg.:</p>
@@ -331,17 +403,11 @@ It's the context that specifies a namespace for its subcomponents, and it works 
 
 <h2 id="abnormal-responses">Abnormal responses</h2>
 
-<p>By default, components are expected to return a string of html, that can be a full or partial html document. This is the primary format of web applications, and therefore gets a special treatment over other formats. Sometimes though, you don't want the output to be embedded in the normal rendering mechanism or you need more fine grained control over the http response. This could be the case with alternative content-types, that shouldn't go in to the normal rendering chain, or it could be a redirect or an error code of some kind.</p>
+<h3 id="untyped-responses">Untyped responses</h3>
 
-<p>These are collectively called abnormal responses, because they circumvent the normal rendering chain. To do this, abnormal responses are implemented in Konstrukt as exceptions. To emit an abnormal response, you throw it instead of returning a string. The dispatcher will then catch it and use it for output.</p>
+<p>By default, components are expected to return either an instance of <code>k_Response</code> or an internal type, that is then converted. While you would usually want to return a response that matches the expected type (Eg. a <code>k_HtmlResponse</code> from <code>renderHttp()</code> etc.), you can return other types. A common reason to use this, is to respond with a redirect. You can either instantiate the generic <code>k_HttpResponse</code> object, which gives you full control over the response, or you can use one of the specific subclasses. The latter is recommended.</p>
 
-<p>There are two kinds of abnormal responses, for different levels of abstraction/control.</p>
-
-<h3 id="http-response">Http response</h3>
-
-<p>A httpresponse is the least abstract kind of abnormal response. It gives you full control over the http-level output sent back to the client, including headers and status codes. You should use this for serving non-html content-types.</p>
-
-<p>In addition to the generic <code>k_Httpresponse</code>, there are three specialised variations that should be used for redirects:</p>
+<p>There are three specialised variations that should be used for redirects:</p>
 
 <dl>
 <dt><code>k_MovedPermanently</code></dt>
@@ -356,7 +422,9 @@ It's the context that specifies a namespace for its subcomponents, and it works 
 
 <h3 id="meta-response">Meta response</h3>
 
-<p>A metaresponse is a more abstract form of response. While you could just use a httpresponse, you should try to use these for, if possible, since they make your application more flexible. A metaresponse is transformed into a concrete httpresponse by the dispatcher. The primary benefit of using a metaresponse over a httpresponse, is that it gives you control over rendering of various error-pages. For example, rather than constructing a httpresponse with status 404, you should use the metaresponse NotFound. This makes it possible to have a customised page for all "not found" responses.</p>
+<p>A meta response is not really a response. It is a type of exception, that can be caught at the top-level dispatcher and there turned into a component. Other frameworks deal with this through internal redirects, and you could think of it as such. You should use meta responses for a number of specific error-states that can occur in your application.</p>
+
+<p>While you could just return a http response, the meta response adds a level of indirection that can be useful at a later point. The primary benefit of using a meta response over a http response, is that it gives you control over rendering of various error-pages. For example, rather than constructing a http response with status 404, you should use the meta response <code>k_PageNotFound</code>. This makes it possible to have a customised page for all "not found" responses.</p>
 
 <p>The currently supported metaresponses are:</p>
 
@@ -374,7 +442,7 @@ It's the context that specifies a namespace for its subcomponents, and it works 
 <dd>This is roughly the HTTP equivalent to a "todo"</dd>
 </dl>
 
-<p>A metaresponse is associated with a componentname. For example, <code>k_Forbidden</code> resolves to <code>k_DefaultForbiddenComponent</code>. To get a customised handler for these types of responses, you can let your <a href="#component-creation">component creator</a> return a custom component instead of the defaults.</p>
+<p>A meta response is associated with a component class name. For example, <code>k_Forbidden</code> resolves to <code>k_DefaultForbiddenComponent</code>. To get a customised handler for these types of responses, you can let your <a href="#component-creation">component creator</a> return a custom component instead of the defaults.</p>
 
 <h2 id="templates">Templates</h2>
 
