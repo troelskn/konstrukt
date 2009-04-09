@@ -1,9 +1,30 @@
 <?php
 require_once 'konstrukt/charset.inc.php';
 
-class k_ImpossibleContentTypeConversionException extends Exception {}
-class k_ResponseToStringConversionException extends Exception {}
-class k_CharsetMismatchException extends Exception {}
+  /**
+   * Mappings between content-types and handler names. If you need to support exotic content-types, you can add to this array.
+   * Note: Theese are just a random selection that I thought might be useful .. you can override in the concrete component, to supply your own.
+   * See also http://rest.blueoxen.net/cgi-bin/wiki.pl?WhichContentType
+   * @var array
+   */
+$GLOBALS['konstrukt_content_types'] = array(
+  'text/html' => 'html',
+  'text/html+edit' => 'edit',
+  'text/xml' => 'xml',
+  'text/plain' => 'text',
+  'text/csv' => 'csv',
+  'text/x-vcard' => 'vcard',
+  'application/atom+xml' => 'atom',
+  'application/calendar+xml' => 'xcal',
+  'application/rdf+xml' => 'rdf',
+  'application/json' => 'json',
+  'application/pdf' => 'pdf',
+  'image/svg+xml' => 'svg',
+  'multipart/form-data' => 'multipart',
+  'application/x-www-form-urlencoded' => 'form',
+  'application/json' => 'json',
+  'application/x-serialized-php' => 'php',
+);
 
 /**
  * Ensures that the input is a k_Response.
@@ -20,6 +41,19 @@ function k_coerce_to_response($maybe_response, $response_type = 'html') {
   $class = 'k_' . $response_type . 'response';
   return new $class($maybe_response);
 }
+
+function k_content_type_to_response_type($content_type) {
+  return
+    isset($GLOBALS['konstrukt_content_types'][$content_type])
+    ? $GLOBALS['konstrukt_content_types'][$content_type]
+    : (in_array($content_type, $GLOBALS['konstrukt_content_types'])
+       ? $content_type
+       : 'http');
+}
+
+class k_ImpossibleContentTypeConversionException extends Exception {}
+class k_ResponseToStringConversionException extends Exception {}
+class k_CharsetMismatchException extends Exception {}
 
 interface k_Response {
   function encoding();
@@ -39,25 +73,16 @@ abstract class k_BaseResponse implements k_Response {
   protected $status = 200;
   protected $headers = array();
   protected $charset;
-  function __construct($content /*, [...] */) {
-    foreach (func_get_args() as $arg) {
-      if ($arg instanceof k_Response) {
-        if (!$this->charset) {
-          $this->charset = $arg->charset();
-        }
-        if ($this->encoding() !== $arg->encoding()) {
-          throw new k_CharsetMismatchException(); // todo: if possible, convert
-        }
-        $this->content .= $arg->toInternalRepresentation($this->internalType());
-      } else {
-        if (!$this->charset) {
-          $this->charset = new k_charset_Utf8();
-        }
-        $this->content .= $arg;
+  function __construct($content) {
+    if ($content instanceof k_Response) {
+      $this->charset = $content->charset();
+      if ($this->encoding() !== $content->encoding()) {
+        throw new k_CharsetMismatchException(); // todo: if possible, convert
       }
-    }
-    if (!$this->charset) {
+      $this->content = $content->toInternalRepresentation($this->internalType());
+    } else {
       $this->charset = new k_charset_Utf8();
+      $this->content = $content;
     }
   }
   function charset() {
@@ -344,19 +369,11 @@ class k_TextResponse extends k_BaseResponse {
 
 abstract class k_ComplexResponse extends k_BaseResponse {
   protected $content = null;
-  function __construct($content /*, [...] */) {
-    $multiples = array();
-    foreach (func_get_args() as $arg) {
-      if ($arg instanceof k_BaseResponse) {
-        $multiples[] = $arg->toInternalRepresentation($this->internalType());
-      } else {
-        $multiples[] = $arg;
-      }
-    }
-    if (count($multiples) === 1) {
-      $this->content = $multiples[0];
+  function __construct($content) {
+    if ($content instanceof k_BaseResponse) {
+      $this->content = $content->toInternalRepresentation($this->internalType());
     } else {
-      $this->content = $multiples;
+      $this->content = $content;
     }
   }
   function internalType() {

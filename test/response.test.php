@@ -66,24 +66,10 @@ class TestOfResponse extends UnitTestCase {
     $t = new k_TextResponse($t1);
     $this->assertEqual($t->toInternalRepresentation('text/text'), "Lorem Ipsum");
   }
-  function test_text_response_can_be_constructed_from_multiple_text_responses() {
-    $t1 = new k_TextResponse("Lorem Ipsum");
-    $t2 = new k_TextResponse(" Dolor ");
-    $t3 = new k_TextResponse("Sit Amet");
-    $t = new k_TextResponse($t1, $t2, $t3);
-    $this->assertEqual($t->toInternalRepresentation('text/text'), "Lorem Ipsum Dolor Sit Amet");
-  }
   function test_html_response_can_be_constructed_from_a_text_response() {
     $t1 = new k_TextResponse("Foo & Bar");
     $h = new k_HtmlResponse($t1);
     $this->assertEqual($h->toInternalRepresentation('text/html'), "Foo &amp; Bar");
-  }
-  function test_html_response_can_be_constructed_from_mixed_responses() {
-    $h1 = new k_HtmlResponse("<b>");
-    $t1 = new k_TextResponse("Foo & Bar");
-    $h2 = new k_HtmlResponse("</b>");
-    $h = new k_HtmlResponse($h1, $t1, $h2);
-    $this->assertEqual($h->toInternalRepresentation('text/html'), "<b>Foo &amp; Bar</b>");
   }
 }
 

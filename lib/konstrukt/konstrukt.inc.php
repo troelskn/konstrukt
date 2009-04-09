@@ -689,30 +689,6 @@ abstract class k_Component implements k_Context {
    * @var array
    */
   protected $url_init = array();
-  /**
-   * Mappings between content-types and handler names. If you need to support exotic content-types, you can add to this array.
-   * Note: Theese are just a random selection that I thought might be useful .. you can override in the concrete component, to supply your own.
-   * See also http://rest.blueoxen.net/cgi-bin/wiki.pl?WhichContentType
-   * @var array
-   */
-  protected $content_types = array(
-    'text/html' => 'html',
-    'text/html+edit' => 'edit',
-    'text/xml' => 'xml',
-    'text/plain' => 'text',
-    'text/csv' => 'csv',
-    'text/x-vcard' => 'vcard',
-    'application/atom+xml' => 'atom',
-    'application/calendar+xml' => 'xcal',
-    'application/rdf+xml' => 'rdf',
-    'application/json' => 'json',
-    'application/pdf' => 'pdf',
-    'image/svg+xml' => 'svg',
-    'multipart/form-data' => 'multipart',
-    'application/x-www-form-urlencoded' => 'form',
-    'application/json' => 'json',
-    'application/x-serialized-php' => 'php',
-  );
   /** @var k_ComponentCreator */
   protected $component_creator;
   /** @var k_Document */
@@ -861,15 +837,7 @@ abstract class k_Component implements k_Context {
   }
   protected function contentTypeShortName() {
     $content_type = preg_replace('/^[^;]+(;.*)$/', '', $this->header('content-type'));
-    return isset($this->content_types[$content_type]) ? $this->content_types[$content_type] : null;
-  }
-  protected function contentTypeToResponseType($content_type) {
-    return
-      isset($this->content_types[$content_type])
-      ? $this->content_types[$content_type]
-      : (in_array($content_type, $this->content_types)
-         ? $content_type
-         : 'http');
+    return isset($GLOBALS['konstrukt_content_types'][$content_type]) ? $GLOBALS['konstrukt_content_types'][$content_type] : null;
   }
   /**
     * The full path segment for this components representation.
@@ -1002,7 +970,7 @@ abstract class k_Component implements k_Context {
    */
   function render() {
     $accept = array();
-    foreach ($this->content_types as $type => $name) {
+    foreach ($GLOBALS['konstrukt_content_types'] as $type => $name) {
       $handler = 'render' . $name;
       if (method_exists($this, $handler)) {
         $accept[$type] = $handler;
@@ -1013,7 +981,7 @@ abstract class k_Component implements k_Context {
     if (isset($accept[$content_type])) {
       return k_coerce_to_response(
         $this->{$accept[$content_type]}(),
-        $this->contentTypeToResponseType($content_type));
+        k_content_type_to_response_type($content_type));
     }
     if (count($accept[$content_type]) > 0) {
       throw new k_NotAcceptable();
@@ -1022,7 +990,7 @@ abstract class k_Component implements k_Context {
   }
   function wrap($content) {
     $typed = k_coerce_to_response($content);
-    $response_type = $this->contentTypeToResponseType($typed->contentType());
+    $response_type = k_content_type_to_response_type($typed->contentType());
     $handler = 'wrap' . $response_type;
     if (method_exists($this, $handler)) {
       return k_coerce_to_response(
