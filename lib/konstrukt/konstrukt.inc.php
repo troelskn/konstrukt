@@ -993,7 +993,7 @@ abstract class k_Component implements k_Context {
     $response_type = ($typed instanceof k_HttpResponse) ? 'http' : k_content_type_to_response_type($typed->contentType());
     $handler = 'wrap' . $response_type;
     if (method_exists($this, $handler)) {
-      $wrapped = $this->{$handler}($typed->toInternalRepresentation($typed->internalType()));
+      $wrapped = $this->{$handler}($typed->toContentType($typed->internalType()));
       if ($wrapped instanceof k_Response) {
         return $wrapped;
       }

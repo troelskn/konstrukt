@@ -114,7 +114,7 @@ class k_logging_WebDebugger implements k_DebugListener {
       return new k_HtmlResponse($this->render($response, true));
     }
     if ($response instanceof k_HtmlResponse) {
-      $html = $response->toInternalRepresentation('text/html');
+      $html = $response->toContentType('text/html');
       if (strpos($html, '</body>') === false) {
         $body = $html . $this->render($response, false);
       } else {

@@ -66,7 +66,7 @@ interface k_Response {
    * Raises an exception if it isn't possible to convert into the target type.
    * todo: rename this to toContentType() ?
    */
-  function toInternalRepresentation($content_type);
+  function toContentType($content_type);
   function out(k_adapter_OutputAccess $output = null);
 }
 
@@ -83,7 +83,7 @@ abstract class k_BaseResponse implements k_Response {
       if ($this->encoding() !== $content->encoding()) {
         throw new k_CharsetMismatchException(); // todo: if possible, convert
       }
-      $this->content = $content->toInternalRepresentation($this->internalType());
+      $this->content = $content->toContentType($this->internalType());
     } else {
       $this->charset = new k_charset_Utf8();
       $this->content = $content;
@@ -194,7 +194,7 @@ abstract class k_BaseResponse implements k_Response {
     * @return void
     */
   protected function sendBody(k_adapter_OutputAccess $output) {
-    $output->write($this->charset->encode($this->toInternalRepresentation($this->contentType())));
+    $output->write($this->charset->encode($this->toContentType($this->contentType())));
   }
 }
 
@@ -217,7 +217,7 @@ class k_HttpResponse extends k_BaseResponse {
   function contentType() {
     return $this->content_type;
   }
-  function toInternalRepresentation($content_type) {
+  function toContentType($content_type) {
     if ($content_type == 'application/octet-stream') {
       return $this->content;
     }
@@ -272,7 +272,7 @@ class k_HtmlResponse extends k_BaseResponse {
   function contentType() {
     return 'text/html';
   }
-  function toInternalRepresentation($content_type) {
+  function toContentType($content_type) {
     switch ($content_type) {
     case 'text/html':
       return $this->content;
@@ -285,7 +285,7 @@ class k_TextResponse extends k_BaseResponse {
   function contentType() {
     return 'text/text';
   }
-  function toInternalRepresentation($content_type) {
+  function toContentType($content_type) {
     switch ($content_type) {
     case 'text/text':
       return $this->content;
@@ -303,7 +303,7 @@ abstract class k_ComplexResponse extends k_BaseResponse {
       $this->status = $content->status();
       $this->headers = $content->headers();
       $this->charset = $content->charset();
-      $this->content = $content->toInternalRepresentation($this->internalType());
+      $this->content = $content->toContentType($this->internalType());
     } else {
       $this->content = $content;
     }
@@ -311,7 +311,7 @@ abstract class k_ComplexResponse extends k_BaseResponse {
   function internalType() {
     return 'internal/array';
   }
-  function toInternalRepresentation($content_type) {
+  function toContentType($content_type) {
     if ($content_type === 'internal/array') {
       return $this->content;
     } elseif ($content_type === $this->contentType()) {
@@ -351,7 +351,7 @@ class k_XmlResponse extends k_BaseResponse {
       $this->status = $content->status();
       $this->headers = $content->headers();
       $this->charset = $content->charset();
-      $this->content = $content->toInternalRepresentation($this->internalType());
+      $this->content = $content->toContentType($this->internalType());
     } elseif ($this->content instanceof DomNode) {
       $this->content = $content;
     } elseif ($this->content instanceof SimpleXMLElement) {
@@ -368,7 +368,7 @@ class k_XmlResponse extends k_BaseResponse {
   function internalType() {
     return 'internal/xml';
   }
-  function toInternalRepresentation($content_type) {
+  function toContentType($content_type) {
     switch ($content_type) {
     case 'internal/xml':
       return $this->content;
