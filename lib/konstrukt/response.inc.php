@@ -229,15 +229,6 @@ class k_HttpResponse extends k_BaseResponse {
 }
 
 /**
- * A metaresponse represents an abstract event in the application, which needs alternate handling.
- * This would typically be an error-condition.
- * In the simplest invocation, a metaresponse maps directly to a component, which renders a generic error.
- */
-abstract class k_MetaResponse extends Exception {
-  abstract function componentName();
-}
-
-/**
  * Issues a http redirect of type "301 Moved Permanently"
  * Use this if the URL has changed (Eg. a page has been renamed)
  */
@@ -274,74 +265,6 @@ class k_TemporaryRedirect extends k_HttpResponse {
   function __construct($url) {
     parent::__construct(307);
     $this->setHeader("Location", $url);
-  }
-}
-
-/**
- * Raise this if the user must be authorised to access the requested resource.
- */
-class k_NotAuthorized extends k_MetaResponse {
-  /** @var string */
-  protected $message = 'You must be authorised to access this resource';
-  function componentName() {
-    return 'k_DefaultNotAuthorizedComponent';
-  }
-}
-
-/**
- * Raise this if the user doesn't have access to the requested resource.
- */
-class k_Forbidden extends k_MetaResponse {
-  /** @var string */
-  protected $message = 'The requested page is forbidden';
-  function componentName() {
-    return 'k_DefaultForbiddenComponent';
-  }
-}
-
-/**
- * Raise this if the requested resource couldn't be found.
- */
-class k_PageNotFound extends k_MetaResponse {
-  /** @var string */
-  protected $message = 'The requested page was not found';
-  function componentName() {
-    return 'k_DefaultPageNotFoundComponent';
-  }
-}
-
-/**
- * Raise this if resource doesn't support the requested HTTP method.
- * @see k_NotImplemented
- */
-class k_MethodNotAllowed extends k_MetaResponse {
-  /** @var string */
-  protected $message = 'The request HTTP method is not supported by the handling component';
-  function componentName() {
-    return 'k_DefaultMethodNotAllowedComponent';
-  }
-}
-
-/**
- * Raise this if the request isn't yet implemented.
- * This is roughly the HTTP equivalent to a "todo"
- */
-class k_NotImplemented extends k_MetaResponse {
-  /** @var string */
-  protected $message = 'The server does not support the functionality required to fulfill the request';
-  function componentName() {
-    return 'k_DefaultNotImplementedComponent';
-  }
-}
-
-/**
- * Raise this if the request can't be processed due to details of the request (Such as the Content-Type or other headers)
- */
-class k_NotAcceptable extends k_MetaResponse {
-  /** @var string */
-  protected $message = 'The resource identified by the request is only capable of generating response entities which have content characteristics not acceptable according to the accept headers sent in the request';
-  function componentName() {
-    return 'k_DefaultNotNotAcceptableComponent';
   }
 }
 
