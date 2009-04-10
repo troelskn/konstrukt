@@ -368,7 +368,8 @@ class TestOfHttpRequest extends UnitTestCase {
 class TestOfHttpResponse extends UnitTestCase {
   function test_404_response_should_output_custom_content_if_any() {
     $output = new k_adapter_DummyOutputAccess();
-    $response = new k_HttpResponse(404, "I didn't find it");
+    $response = new k_HtmlResponse("I didn't find it");
+    $response->setStatus(404);
     $response->out($output);
     $this->assertEqual(404, $output->http_response_code);
     $this->assertEqual("I didn't find it", $output->body);

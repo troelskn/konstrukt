@@ -23,8 +23,7 @@ class Login extends k_Component {
     return parent::execute();
   }
   function renderHtml() {
-    return new k_HttpResponse(
-      401,
+    $response = new k_HtmlResponse(
       "<html><head><title>Authentication required</title></head><body><form method='post' action='" . htmlspecialchars($this->url()) . "'>
   <h1>Authentication required</h1>
   <p>
@@ -43,6 +42,8 @@ class Login extends k_Component {
     <input type='submit' value='Login' />
   </p>
 </form></body></html>");
+    $response->setStatus(401);
+    return $response;
   }
   function postForm() {
     $user = $this->selectUser($this->body('username'), $this->body('password'));

@@ -14,12 +14,12 @@ There are four major changes in this release:
 
 Instead of throwing a response, you should now just return it.
 
-Note that `k_MetaResponse` is still an exception. So `k_SeeOther` and other meta-responses should still be thrown.
+Note that `k_MetaResponse` is still an exception. So `k_PageNotFound` and other meta-responses should still be thrown.
 
 Handlers now return a `K_Response` rather than a native string.
 ---
 
-All handlers (`dispatch`, `execute`, `GET`, `render`, `renderHtml` ...) can now either return a string or an instance of `k_Response`. `k_Response` is an interface, of which `k_HttpResponse` is one concrete implementation. Different content-types have matching implementations, so a regulat `text/html` response should be represented by an instance of `k_HtmlResponse`.
+All handlers (`dispatch`, `execute`, `GET`, `render`, `renderHtml` ...) can now either return a string or an instance of `k_Response`. `k_Response` is an interface, of which `k_HttpResponse` is one concrete implementation. Different content-types have matching implementations, so a regular `text/html` response should be represented by an instance of `k_HtmlResponse`. The un-specific `k_HttpResponse` is kept, but is deprecated - You should use a subclass that matches the content-type.
 
 Renderers will automatically wrap the return-type in the appropriate response-class. For example, if you return a string from `renderHtml`, it will be wrapped in a `k_HtmlResponse`. If you return a scalar or array from `renderJson`, it will be wrapped in a `k_JsonResponse` etc.
 
@@ -103,9 +103,13 @@ or this:
       return new k_JsonResponse($this->foo());
     }
 
+You would generally only use the second style, if you need to set additional headers or http-status on the response.
+
 Other types of responses, such as `k_MovedPermanently`, `k_SeeOther` and `k_TemporaryRedirect` should be returned rather than thrown.
 
 Note that you should still throw meta-responses, such as `k_NotAuthorized`, `k_Forbidden`, `k_PageNotFound`, `k_MethodNotAllowed`, `k_NotImplemented` and `k_NotAcceptable`. These work exactly as they've done prior.
+
+The un-specific `k_HttpResponse` is a bit of a left over now - You should use a subclass that matches the content-type. If no such type exists, please request that it be added to the library, or if it's very specific, just create a class for it your self. The usage of `k_HttpResponse` is deprecated and will probably be removed in the next version.
 
 ###Subtype syntax
 

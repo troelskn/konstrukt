@@ -56,6 +56,8 @@ class k_ResponseToStringConversionException extends Exception {}
 class k_CharsetMismatchException extends Exception {}
 
 interface k_Response {
+  function status();
+  function headers();
   function encoding();
   function internalType();
   function contentType();
@@ -75,6 +77,8 @@ abstract class k_BaseResponse implements k_Response {
   protected $charset;
   function __construct($content) {
     if ($content instanceof k_Response) {
+      $this->status = $content->status();
+      $this->headers = $content->headers();
       $this->charset = $content->charset();
       if ($this->encoding() !== $content->encoding()) {
         throw new k_CharsetMismatchException(); // todo: if possible, convert
@@ -95,7 +99,7 @@ abstract class k_BaseResponse implements k_Response {
     return $this->status;
   }
   function setStatus($status) {
-    return $this->status;
+    $this->status = $status;
   }
   function headers() {
     return $this->headers;
@@ -194,16 +198,14 @@ abstract class k_BaseResponse implements k_Response {
   }
 }
 
+/**
+ * @deprecated
+ */
 class k_HttpResponse extends k_BaseResponse {
   protected $content_type = 'text/html';
   function __construct($status = 200, $content = "", $input_is_utf8 = false) {
     if (!is_string($content)) {
-      //      try {
       throw new Exception("Illegal 2 argument - Expected string, but got a " . gettype($content));
-      //      } catch (Exception $ex) {
-      //        print $ex->getTraceAsString();
-      //        throw $ex;
-      //      }
     }
     $this->status = $status;
     $this->content = $input_is_utf8 ? $content : utf8_encode($content);
@@ -219,12 +221,7 @@ class k_HttpResponse extends k_BaseResponse {
     if ($content_type == 'application/octet-stream') {
       return $this->content;
     }
-           try {
     throw new k_ImpossibleContentTypeConversionException();
-           } catch (Exception $ex) {
-             print $ex->getTraceAsString();
-             throw $ex;
-           }
   }
   protected function sendBody(k_adapter_OutputAccess $output) {
     $output->write($this->charset->encode($this->content));
@@ -380,6 +377,9 @@ abstract class k_ComplexResponse extends k_BaseResponse {
   protected $content = null;
   function __construct($content) {
     if ($content instanceof k_BaseResponse) {
+      $this->status = $content->status();
+      $this->headers = $content->headers();
+      $this->charset = $content->charset();
       $this->content = $content->toInternalRepresentation($this->internalType());
     } else {
       $this->content = $content;
@@ -425,6 +425,9 @@ class k_XmlResponse extends k_BaseResponse {
   protected $content = null;
   function __construct($content = "") {
     if ($content instanceof k_BaseResponse) {
+      $this->status = $content->status();
+      $this->headers = $content->headers();
+      $this->charset = $content->charset();
       $this->content = $content->toInternalRepresentation($this->internalType());
     } elseif ($this->content instanceof DomNode) {
       $this->content = $content;

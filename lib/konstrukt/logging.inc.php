@@ -111,17 +111,17 @@ class k_logging_WebDebugger implements k_DebugListener {
   }
   function decorate(k_Response $response) {
     if ($response->status() >= 300 && $response->status() < 400) {
-      return new k_HttpResponse(200, $this->render($response, true));
+      return new k_HtmlResponse($this->render($response, true));
     }
-    if ($response->contentType() == 'text/html') {
-      $html = $response->toInternalRepresentation('application/octet-stream');
+    if ($response instanceof k_HtmlResponse) {
+      $html = $response->toInternalRepresentation('text/html');
       if (strpos($html, '</body>') === false) {
         $body = $html . $this->render($response, false);
       } else {
         $body = str_replace('</body>', $this->render($response, false) . '</body>', $html);
       }
-      $out = new k_HttpResponse($response->status(), $body);
-      $out->setContentType($response->contentType());
+      $out = new k_HtmlResponse($body);
+      $out->setStatus($response->status());
       $out->setCharset($response->charset());
       foreach ($response->headers() as $key => $value) {
         $out->setHeader($key, $value);

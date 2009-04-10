@@ -48,6 +48,33 @@ class test_response_JsonComponent extends k_Component {
   }
 }
 
+class test_response_RootThreeComponent extends k_Component {
+  function map($name) {
+    switch ($name) {
+    case 'hello':
+      return "test_response_HelloAgainComponent";
+    }
+  }
+  function renderHtml() {
+    return "<p>Root</p>";
+  }
+  function wrapHtml($content) {
+    return "<div class='wrap'>" . $content . "</div>";
+  }
+}
+
+class test_response_HelloAgainComponent extends k_Component {
+  function execute() {
+    $response = parent::execute();
+    $response->setStatus(500);
+    $response->setHeader('X-Foo', '42');
+    return $response;
+  }
+  function renderHtml() {
+    return "<p>Hello world</p>";
+  }
+}
+
 class TestOfResponse extends UnitTestCase {
   function test_text_response_can_convert_to_text_string() {
     $t = new k_TextResponse("Lorem Ipsum");
@@ -101,5 +128,23 @@ class TestOfResponseWrapping extends UnitTestCase {
     $r = $root->dispatch();
     $this->assertEqual($r->contentType(), 'application/json');
     $this->assertEqual($r->toInternalRepresentation($r->contentType()), '{"content":{"message":"Hello World"}}');
+  }
+  function test_wrapped_response_retains_headers() {
+    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost', 'REQUEST_METHOD' => 'get'));
+    $http = new k_HttpRequest('', '/hello', new k_DefaultIdentityLoader(), $glob);
+    $components = new k_DefaultComponentCreator();
+    $root = $components->create('test_response_RootThreeComponent', $http);
+    $r = $root->dispatch();
+    $this->assertEqual($r->headers(), array('x-foo' => '42'));
+    $this->assertEqual($r->toInternalRepresentation($r->contentType()), "<div class='wrap'><p>Hello world</p></div>");
+  }
+  function test_wrapped_response_retains_status() {
+    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost', 'REQUEST_METHOD' => 'get'));
+    $http = new k_HttpRequest('', '/hello', new k_DefaultIdentityLoader(), $glob);
+    $components = new k_DefaultComponentCreator();
+    $root = $components->create('test_response_RootThreeComponent', $http);
+    $r = $root->dispatch();
+    $this->assertEqual($r->status(), 500);
+    $this->assertEqual($r->toInternalRepresentation($r->contentType()), "<div class='wrap'><p>Hello world</p></div>");
   }
 }

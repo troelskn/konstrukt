@@ -240,9 +240,9 @@ Abnormal responses
 
 ###Untyped responses
 
-By default, components are expected to return either an instance of `k_Response` or an internal type, that is then converted. While you would usually want to return a response that matches the expected type (Eg. a `k_HtmlResponse` from `renderHttp()` etc.), you can return other types. A common reason to use this, is to respond with a redirect. You can either instantiate the generic `k_HttpResponse` object, which gives you full control over the response, or you can use one of the specific subclasses. The latter is recommended.
+By default, components are expected to return either an instance of `k_Response` or an internal type, that is then converted. While you would usually want to return a response that matches the expected type (Eg. a `k_HtmlResponse` from `renderHttp()` etc.), you can return other types. A common reason to use this, is to respond with a redirect.
 
-There are three specialised variations that should be used for redirects:
+There are three specialised responses (all types of `k_Response`) that should be used for redirects:
 
 `k_MovedPermanently`
 : Use this if the URL has changed (Eg. a page has been renamed).
@@ -252,6 +252,8 @@ There are three specialised variations that should be used for redirects:
 
 `k_TemporaryRedirect`
 : Use this type of redirect if the destination changes from request to request, or if you want the client to keep using the requested URI in the future.
+
+These all take the target URL as argument for the constructor.
 
 ###Meta response
 

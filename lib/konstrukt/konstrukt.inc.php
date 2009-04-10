@@ -993,9 +993,17 @@ abstract class k_Component implements k_Context {
     $response_type = ($typed instanceof k_HttpResponse) ? 'http' : k_content_type_to_response_type($typed->contentType());
     $handler = 'wrap' . $response_type;
     if (method_exists($this, $handler)) {
-      return k_coerce_to_response(
-        $this->{$handler}($typed->toInternalRepresentation($typed->internalType())),
-        $response_type);
+      $wrapped = $this->{$handler}($typed->toInternalRepresentation($typed->internalType()));
+      if ($wrapped instanceof k_Response) {
+        return $wrapped;
+      }
+      $wrapped = k_coerce_to_response($wrapped, $response_type);
+      $wrapped->setStatus($content->status());
+      foreach ($content->headers() as $key => $value) {
+        $wrapped->setHeader($key, $value);
+      }
+      $wrapped->setCharset($content->charset());
+      return $wrapped;
     }
     return $content;
   }
@@ -1212,9 +1220,13 @@ class k_Template {
  */
 class k_DefaultNotAuthorizedComponent extends k_Component {
   function dispatch() {
-    $response = new k_HttpResponse(401, '<html><body><h1>HTTP 401 - Not Authorized</h1></body></html>');
+    $response = $this->render();
+    $response->setStatus(401);
     $response->setHeader('WWW-Authenticate', 'Basic realm="Restricted"');
     return $response;
+  }
+  function renderHtml() {
+    return '<html><body><h1>HTTP 401 - Not Authorized</h1></body></html>';
   }
 }
 
@@ -1223,7 +1235,12 @@ class k_DefaultNotAuthorizedComponent extends k_Component {
  */
 class k_DefaultForbiddenComponent extends k_Component {
   function dispatch() {
-    return new k_HttpResponse(403, '<html><body><h1>HTTP 403 - Forbidden</h1></body></html>');
+    $response = $this->render();
+    $response->setStatus(403);
+    return $response;
+  }
+  function renderHtml() {
+    return '<html><body><h1>HTTP 403 - Forbidden</h1></body></html>';
   }
 }
 
@@ -1232,7 +1249,12 @@ class k_DefaultForbiddenComponent extends k_Component {
  */
 class k_DefaultPageNotFoundComponent extends k_Component {
   function dispatch() {
-    return new k_HttpResponse(404, '<html><body><h1>HTTP 404 - Page Not Found</h1></body></html>');
+    $response = $this->render();
+    $response->setStatus(404);
+    return $response;
+  }
+  function renderHtml() {
+    return '<html><body><h1>HTTP 404 - Page Not Found</h1></body></html>';
   }
 }
 
@@ -1241,7 +1263,12 @@ class k_DefaultPageNotFoundComponent extends k_Component {
  */
 class k_DefaultMethodNotAllowedComponent extends k_Component {
   function dispatch() {
-    return new k_HttpResponse(405, '<html><body><h1>HTTP 405 - Method Not Allowed</h1></body></html>');
+    $response = $this->render();
+    $response->setStatus(405);
+    return $response;
+  }
+  function renderHtml() {
+    return '<html><body><h1>HTTP 405 - Method Not Allowed</h1></body></html>';
   }
 }
 
@@ -1250,7 +1277,12 @@ class k_DefaultMethodNotAllowedComponent extends k_Component {
  */
 class k_DefaultNotNotAcceptableComponent extends k_Component {
   function dispatch() {
-    return new k_HttpResponse(406, '<html><body><h1>HTTP 406 - Not Acceptable</h1></body></html>');
+    $response = $this->render();
+    $response->setStatus(406);
+    return $response;
+  }
+  function renderHtml() {
+    return '<html><body><h1>HTTP 406 - Not Acceptable</h1></body></html>';
   }
 }
 
@@ -1259,7 +1291,12 @@ class k_DefaultNotNotAcceptableComponent extends k_Component {
  */
 class k_DefaultNotImplementedComponent extends k_Component {
   function dispatch() {
-    return new k_HttpResponse(501, '<html><body><h1>HTTP 501 - Not Implemented</h1></body></html>');
+    $response = $this->render();
+    $response->setStatus(501);
+    return $response;
+  }
+  function renderHtml() {
+    return '<html><body><h1>HTTP 501 - Not Implemented</h1></body></html>';
   }
 }
 
@@ -1321,7 +1358,7 @@ class k_Bootstrap {
           $root = $this->components()->create($class_name, $this->context());
           $response = $root->dispatch();
           if (!($response instanceof k_Response)) {
-            $response = new k_HttpResponse(200, $response, $this->charsetStrategy()->isInternalUtf8());
+            $response = new k_HtmlResponse($response);
           }
           $response->setCharset($this->charsetStrategy()->responseCharset());
           return $response;

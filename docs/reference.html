@@ -405,9 +405,9 @@ It's the context that specifies a namespace for its subcomponents, and it works 
 
 <h3 id="untyped-responses">Untyped responses</h3>
 
-<p>By default, components are expected to return either an instance of <code>k_Response</code> or an internal type, that is then converted. While you would usually want to return a response that matches the expected type (Eg. a <code>k_HtmlResponse</code> from <code>renderHttp()</code> etc.), you can return other types. A common reason to use this, is to respond with a redirect. You can either instantiate the generic <code>k_HttpResponse</code> object, which gives you full control over the response, or you can use one of the specific subclasses. The latter is recommended.</p>
+<p>By default, components are expected to return either an instance of <code>k_Response</code> or an internal type, that is then converted. While you would usually want to return a response that matches the expected type (Eg. a <code>k_HtmlResponse</code> from <code>renderHttp()</code> etc.), you can return other types. A common reason to use this, is to respond with a redirect.</p>
 
-<p>There are three specialised variations that should be used for redirects:</p>
+<p>There are three specialised responses (all types of <code>k_Response</code>) that should be used for redirects:</p>
 
 <dl>
 <dt><code>k_MovedPermanently</code></dt>
@@ -419,6 +419,8 @@ It's the context that specifies a namespace for its subcomponents, and it works 
 <dt><code>k_TemporaryRedirect</code></dt>
 <dd>Use this type of redirect if the destination changes from request to request, or if you want the client to keep using the requested URI in the future.</dd>
 </dl>
+
+<p>These all take the target URL as argument for the constructor.</p>
 
 <h3 id="meta-response">Meta response</h3>
 
