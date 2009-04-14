@@ -53,7 +53,6 @@ function k_content_type_to_response_type($content_type) {
 
 class k_ImpossibleContentTypeConversionException extends Exception {}
 class k_ResponseToStringConversionException extends Exception {}
-class k_CharsetMismatchException extends Exception {}
 
 interface k_Response {
   function status();
@@ -79,9 +78,6 @@ abstract class k_BaseResponse implements k_Response {
       $this->status = $content->status();
       $this->headers = $content->headers();
       $this->charset = $content->charset();
-      if ($this->encoding() !== $content->encoding()) {
-        throw new k_CharsetMismatchException(); // todo: if possible, convert
-      }
       $this->content = $content->toContentType($this->internalType());
     } else {
       $this->charset = new k_charset_Utf8();
@@ -198,6 +194,10 @@ abstract class k_BaseResponse implements k_Response {
 }
 
 /**
+ * This is an un-typed httpresponse. You should avoid using this, and instead use
+ * a response that matches the content-type of the response, such as k_HtmlResponse
+ * for test/html responses. If a type doesn't exist, please bring to the attention of
+ * the developers, and we'll see if it can be added to the library.
  * @deprecated
  */
 class k_HttpResponse extends k_BaseResponse {
