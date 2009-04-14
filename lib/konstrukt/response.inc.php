@@ -352,12 +352,14 @@ class k_XmlResponse extends k_BaseResponse {
       $this->headers = $content->headers();
       $this->charset = $content->charset();
       $this->content = $content->toContentType($this->internalType());
-    } elseif ($this->content instanceof DomNode) {
+    } elseif ($content instanceof DomNode) {
       $this->content = $content;
-    } elseif ($this->content instanceof SimpleXMLElement) {
+    } elseif ($content instanceof SimpleXMLElement) {
       $this->content = $content;
     } elseif (is_string($content)) {
       $this->content = new SimpleXMLElement($content);
+    } elseif (is_object($content)) {
+      throw new Exception("Illegal input type object('" . get_class($content) . "')");
     } else {
       throw new Exception("Illegal input type '" . gettype($content) . "'");
     }
@@ -390,7 +392,7 @@ class k_XmlResponse extends k_BaseResponse {
     }
     $document = $dom_node->ownerDocument;
     $document->xmlStandalone = true;
-    $document->encoding = $this->encoding;
+    $document->encoding = $this->encoding();
     $document->formatOutput = true;
     return $document->saveXML($dom_node);
   }
