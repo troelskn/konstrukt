@@ -64,7 +64,6 @@ interface k_Response {
   /**
    * Marshals the content to text or other native type.
    * Raises an exception if it isn't possible to convert into the target type.
-   * todo: rename this to toContentType() ?
    */
   function toContentType($content_type);
   function out(k_adapter_OutputAccess $output = null);

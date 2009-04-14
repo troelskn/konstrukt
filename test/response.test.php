@@ -148,3 +148,47 @@ class TestOfResponseWrapping extends UnitTestCase {
     $this->assertEqual($r->toContentType($r->contentType()), "<div class='wrap'><p>Hello world</p></div>");
   }
 }
+
+class TestOfJsonResponse extends UnitTestCase {
+  function test_json_response_can_be_created_from_string() {
+    $r = new k_JsonResponse("lorem ipsum");
+    $this->assertIsA($r, 'k_JsonResponse');
+  }
+  function test_json_response_can_be_created_from_array() {
+    $r = new k_JsonResponse(array("lorem ipsum", 42));
+    $this->assertIsA($r, 'k_JsonResponse');
+  }
+}
+
+class TestOfXmlResponse extends UnitTestCase {
+  function test_xml_response_can_be_created_from_string() {
+    $r = new k_XmlResponse("<foo/>");
+    $this->assertIsA($r, 'k_XmlResponse');
+  }
+  function test_xml_response_can_be_created_from_simplexmlelement() {
+    $r = new k_XmlResponse(new SimpleXMLElement("<foo/>"));
+    $this->assertIsA($r, 'k_XmlResponse');
+  }
+  function test_xml_response_can_be_created_from_domdocument_loadxml() {
+    $doc = new DOMDocument();
+    $doc->loadXML("<foo/>");
+    $r = new k_XmlResponse($doc);
+    $this->assertIsA($r, 'k_XmlResponse');
+  }
+  function test_xml_response_can_be_created_from_domdocument_loadhtml() {
+    $doc = new DOMDocument();
+    $doc->loadHTML("<b>bold</b>");
+    $r = new k_XmlResponse($doc);
+    $this->assertIsA($r, 'k_XmlResponse');
+  }
+  function test_creating_an_xml_response_from_a_malformed_string_raises_an_error() {
+    set_error_handler('k_exceptions_error_handler');
+    try {
+      new k_XmlResponse("<foo");
+      $this->fail("Expected exception");
+    } catch (exception $ex) {
+      $this->pass();
+    }
+    restore_error_handler();
+  }
+}

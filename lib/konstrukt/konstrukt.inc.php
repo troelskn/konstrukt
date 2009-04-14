@@ -113,7 +113,7 @@ interface k_DebugListener {
     */
   function log($mixed);
   /**
-    * Allows the debugger to change the HttpResponse before output.
+    * Allows the debugger to change the k_Response before output.
     * This is used to inject a debugbar into the response. It is perhaps not the most elegant solution, but it works.
     * @param k_Response
     * @return k_Response
@@ -1437,6 +1437,7 @@ class k_Bootstrap {
           if (!($response instanceof k_Response)) {
             $response = new k_HtmlResponse($response);
           }
+          // todo: The internal charset of response might need conversion
           $response->setCharset($this->charsetStrategy()->responseCharset());
           return $response;
         } catch (k_MetaResponse $ex) {
