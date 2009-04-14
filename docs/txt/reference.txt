@@ -315,28 +315,29 @@ Encoding
 
 Until version 6 becomes current, PHP is stuck with a primitive view of string data, where strings are treated as bytestreams. Many libraries, extensions and even core functionality in PHP, assumes that strings are single-byte streams. This means that each byte is interpreted as a character, the consequence being that only 256 different characters can be represented. Furthermore, the default charset assumed is ISO-8859-1 (also known as latin1). As long as we only want to represent western European texts this suffices, but in our multi cultural world, this is inadequate.
 
-###How to use utf-8
+###Using utf-8
 
-Even if your main audience is English speaking, your users may still have foreign names, that can't be written with the limited charset of latin1. Currently, the best solution is therefore to use UTF-8 as encoding throughout your application. This strategy does have its pitfalls, but so does using latin1. It is important to get these things right from the beginning, since it's a thing that is very hard to change later.
+Even if your main audience is English speaking, your users may still have foreign names, that can't be written with the limited charset of latin1. In addition, there are a number of [ambiguities with regards to the latin1 standard](http://en.wikipedia.org/wiki/ISO/IEC_8859-1#ISO-8859-1_and_Windows-1252_confusion), meaning that you can end up with corrupt data, even if you do things by the book. Currently, the best solution is therefore to use UTF-8 as encoding throughout your application. This strategy does have its pitfalls, but so does using latin1. It is important to get these things right from the beginning, since it's a thing that is very hard to change later.
 
-Konstrukt defaults to speak UTF-8 at the HTTP-level. If you use a database, you should make sure that data is stored as UTF-8 or another Unicode capable encoding, and you should also make sure that the connection between PHP and database is set to UTF-8 (This only apply to some databases, such as MySql). Also, make sure that any files - especially template files - are saved as UTF-8 (Without BOM). This covers the most common problems with UTF-8.
+Konstrukt distinguishes between the charset that it speaks on the HTTP level (The charset that the client sees) and the internal charset. By default, it will use UTF-8 in both places, but you can change the outside charset by a simple configuration option. Internally, you must use UTF-8. If you use a database, you should make sure that data is stored as UTF-8 or another Unicode capable encoding, and you should also make sure that the connection between PHP and database is set to UTF-8 (This only apply to some databases, such as MySql). Also, make sure that any files - especially template files - are saved as UTF-8 (Without BOM). This covers the most common problems with UTF-8.
 
 There is a good overview of the core PHP functions, that needs special treatment to work with UTF-8 at [http://www.phpwact.org/php/i18n/utf-8](http://www.phpwact.org/php/i18n/utf-8).
 
-###Plan b (legacy applications)
+###Interfacing with legacy applications (latin1)
 
-Some times you don't have the luxury of going with UTF-8. If you're interfacing with a legacy application or you want to use third-party libraries that assume single-byte strings, you will have to use a single-byte internal encoding. Konstrukt has a configurable strategy for dealing with charsets, which enables you to switch to one of two alternate configurations, that both have a single-byte internal encoding. The first is a plain single-byte/latin1 strategy, where pages are served with `charset=iso-8859-1`. This is basically the same modus that plain PHP works in. The other strategy encodes output to UTF-8 and decodes it back to latin1. That way the application works with latin1 on the inside (in the scope of PHP), while presenting a UTF-8 facade outwards. The benefit of this approach is that it makes it easier for other applications to interact with yours. For example, [XmlHttpRequest](http://en.wikipedia.org/wiki/XMLHttpRequest) (javascript) defaults to talk UTF-8. It also avoids the problem of the [ISO-8859-1 vs. CP-1252 confusion](http://en.wikipedia.org/wiki/ISO_8859-1#ISO-8859-1_and_Windows-1252_confusion). If you're building a new frontend for a legacy backend, this may be a good compromise.
+If you're interfacing with code that speaks iso-8859-1, you will have to manually convert to utf-8. You can do this on by simply running the output from your [renderers](#renderers) through the function `utf8_encode`. Additionally you will need to decode any input data (`query()`, `body()`, `name()` etc.) as these are internally represented as utf-8, regardless of the internal charset. If you follow these two guidelines, your code should fit nicely in to the framework. Of course, you are encouraged to upgrade to use UTF-8, since it will not only make things easier, but it will also eliminate a number of bugs and limitations.
 
-To change the charset strategy, assign a `k_charset_CharsetStrategy` in the [bootstrap](#bootstrap), using `setCharsetStrategy()`. Konstrukt comes with the following three options:
+###Charset strategy
+
+To change the charset strategy (The charset that the application presents itself in), assign a `k_charset_CharsetStrategy` in the [bootstrap](#bootstrap), using `setCharsetStrategy()`. Konstrukt comes with the following options:
 
 `k_charset_Utf8CharsetStrategy`
-: The default choice. Assumes that all strings are UTF-8 encoded.
+: The default choice. Encodes the response as UTF-8, and interprets the input as UTF-8.
 
 `k_charset_Latin1CharsetStrategy`
-: Legacy compatibility. Assumes that all strings are ISO-8859-1 encoded.
+: Legacy compatibility. Encodes the response as ISO-8859-1, and interprets the input as ISO-8859-1.
 
-`k_charset_FauxUtf8CharsetStrategy`
-: Like Latin1, but presents an external facade of UTF-8. Assumes that all internal strings are ISO-8859-1 encoded.
+It is strongly recommended that you keep the default (UTF-8) strategy.
 
 Environment/setup
 -----------------

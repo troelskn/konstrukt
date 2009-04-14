@@ -1,13 +1,14 @@
 Upgrading from 2.0.X to 2.1.0
 ===
 
-There are four major changes in this release:
+There are five major changes in this release:
 
 1. `k_HttpResponse` no longer extends `Exception`.
 2. Handlers now return a `K_Response` rather than a native string.
     2b. Wrappers
 3. Typed handlers for POST and PUT
 4. The syntax for a specific content-type has changed.
+5. The internal charset is no longer configurable - It is always UTF-8
 
 `k_HttpResponse` no longer extends `Exception`.
 ---
@@ -39,6 +40,11 @@ The syntax for a specific content-type has changed.
 ---
 
 The choice of a semi-colon to designate component subtype (content-type) was a slightly unorthodox choice. This might cause problems along the way, so it has now been revised to use a dot rather than a semi-colon. Eg. to address a specific content-type of a component, you'd use `/foo/bar.json` instead of `/foo/bar;json`.
+
+The internal charset is no longer configurable - It is always UTF-8
+---
+
+Previously, it was possible to use latin1 for the internal charset. Since this is a global setting, it was not possible to mix to applications with diverging choices. To remedy this, Konstrukt now supports only UTF-8 internally. This may mean some adjustments for legacy applications, but these will make it easier to upgrade to PHP 6 later. It also has shorter term benefits in that it will eliminate a number of possible bugs as well as enhance the capabilities of the application.
 
 Recommendations for upgrading
 ---
@@ -114,3 +120,11 @@ The un-specific `k_HttpResponse` is a bit of a left over now - You should use a 
 ###Subtype syntax
 
 Any places where you have links that refer to a specific subtype, you should replace the semi-colon with a dot. You can simply search for all calls to `url()` and check if the first argument contains a semi-colon.
+
+###If your application speaks latin1
+
+If your application currently speaks latin1 internally, you will have to either explicitly decode input/encode output or upgrade your application to UTF-8. You may find the first choice being the easiest, and may also allow for a gradual transition. If you want to use latin1 internally in a component, you should do two things:
+
+1. Return values from renderers (`renderHtml()` etc.) should be encoded with `utf8_encode()` (Transforms from latin1->utf8). If you create a k_Response object, the input should also be encoded likewise.
+
+2. Input values should be decoded with `utf8_decode()` (Transforms from utf8->latin1).

@@ -1437,7 +1437,6 @@ class k_Bootstrap {
           if (!($response instanceof k_Response)) {
             $response = new k_HtmlResponse($response);
           }
-          // todo: The internal charset of response might need conversion
           $response->setCharset($this->charsetStrategy()->responseCharset());
           return $response;
         } catch (k_MetaResponse $ex) {
