@@ -180,6 +180,16 @@ mechanism for dependencies (Such as Singleton).</p>
 </h4>
 
 
+  <h4 id="class-k_defaultcomponentcreator-property-aliases">
+  <em class="modifier">protected</em>
+
+
+  $aliases
+  : <em class="modifier">array</em>
+
+</h4>
+
+
 </div>
 
 <h3>methods</h3>
@@ -221,6 +231,29 @@ $debugger</em>)
 
 <div class="docblock">
   <p>Sets the debugger to use.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_defaultcomponentcreator-method-setimplementation">
+
+  <em class="modifier">public</em>
+
+
+  setImplementation(<em><span class="modifier">mixed</span>
+
+$class_name, <span class="modifier">mixed</span>
+
+$implementing_class</em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>When trying to instantiate $class_name, instead use $implementing_class</p>
 </div>
 
 
@@ -378,18 +411,18 @@ $mixed</em>)
   <em class="modifier">public</em>
 
 
-  decorate(<em><a href="#class-k_httpresponse"
->k_HttpResponse</a>
+  decorate(<em><a href="#class-k_response"
+>k_Response</a>
 
 $response</em>)
 
-  : <em class="modifier"><a href="#class-k_httpresponse">k_HttpResponse</a></em>
+  : <em class="modifier"><a href="#class-k_response">k_Response</a></em>
 
 
 </h4>
 
 <div class="docblock">
-  <p>Allows the debugger to change the HttpResponse before output.
+  <p>Allows the debugger to change the k_Response before output.
 This is used to inject a debugbar into the response. It is perhaps not the most elegant solution, but it works.</p>
 </div>
 
@@ -496,8 +529,8 @@ $mixed</em>)
   <em class="modifier">public</em>
 
 
-  decorate(<em><a href="#class-k_httpresponse"
->k_HttpResponse</a>
+  decorate(<em><a href="#class-k_response"
+>k_Response</a>
 
 $response</em>)
 
@@ -642,12 +675,12 @@ $mixed</em>)
   <em class="modifier">public</em>
 
 
-  decorate(<em><a href="#class-k_httpresponse"
->k_HttpResponse</a>
+  decorate(<em><a href="#class-k_response"
+>k_Response</a>
 
 $response</em>)
 
-  : <em class="modifier"><a href="#class-k_httpresponse">k_HttpResponse</a></em>
+  : <em class="modifier"><a href="#class-k_response">k_Response</a></em>
 
 
 </h4>
@@ -1286,6 +1319,24 @@ $default ]  ] </em>)
 
   
 
+<h4 id="class-k_context-method-requesturi">
+
+  <em class="modifier">abstract</em>,
+
+  <em class="modifier">public</em>
+
+
+  requestUri()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
 <h4 id="class-k_context-method-method">
 
   <em class="modifier">abstract</em>,
@@ -1459,6 +1510,16 @@ $candidates ] </em>)
 
 
   $rawHttpRequestBody
+  : <em class="modifier">string</em>
+
+</h4>
+
+
+  <h4 id="class-k_httprequest-property-request_uri">
+  <em class="modifier">protected</em>
+
+
+  $request_uri
   : <em class="modifier">string</em>
 
 </h4>
@@ -1757,6 +1818,22 @@ $default ]  ] </em>)
 <div class="docblock">
   <p>Gives back the HTTP-method</p>
 </div>
+
+
+  
+
+<h4 id="class-k_httprequest-method-requesturi">
+
+  <em class="modifier">public</em>
+
+
+  requestUri()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
 
 
   
@@ -2277,21 +2354,6 @@ depending on its parent context</p>
   <p>UrlState, will be initialised with these values, upon creation.</p>
 </div>
 
-  <h4 id="class-k_component-property-renderers">
-  <em class="modifier">protected</em>
-
-
-  $renderers
-  : <em class="modifier">array</em>
-
-</h4>
-
-<div class="docblock">
-  <p>Mapping to GET handlers. If you need to support exotic content-types, you can add to this array.
-Note: Theese are just a random selection that I thought might be useful .. you can override in the concrete component, to supply your own.
-See also http://rest.blueoxen.net/cgi-bin/wiki.pl?WhichContentType</p>
-</div>
-
   <h4 id="class-k_component-property-component_creator">
   <em class="modifier">protected</em>
 
@@ -2596,6 +2658,22 @@ $default ]  ] </em>)
 
   
 
+<h4 id="class-k_component-method-requesturi">
+
+  <em class="modifier">public</em>
+
+
+  requestUri()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
 <h4 id="class-k_component-method-servername">
 
   <em class="modifier">public</em>
@@ -2674,6 +2752,22 @@ $params ]  ] </em>)
 $candidates [ , <span class="modifier">mixed</span>
 
 $user_override ]  ] </em>)
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_component-method-contenttypeshortname">
+
+  <em class="modifier">protected</em>
+
+
+  contentTypeShortName()
 
   : <em class="modifier">mixed</em>
 
@@ -2844,6 +2938,22 @@ $name</em>)
 
   
 
+<h4 id="class-k_component-method-head">
+
+  <em class="modifier">public</em>
+
+
+  HEAD()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
 <h4 id="class-k_component-method-get">
 
   <em class="modifier">public</em>
@@ -2876,22 +2986,6 @@ $name</em>)
 
   
 
-<h4 id="class-k_component-method-head">
-
-  <em class="modifier">public</em>
-
-
-  HEAD()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
 <h4 id="class-k_component-method-put">
 
   <em class="modifier">public</em>
@@ -2914,6 +3008,45 @@ $name</em>)
 
 
   DELETE()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_component-method-render">
+
+  <em class="modifier">public</em>
+
+
+  render()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+<div class="docblock">
+  <p>Renders the components view.
+This method delegates control to an appropriate handler, based on content-type negotiation.
+The typical handler would be `renderHtml`. If no handler is present, an exception is raised.</p>
+</div>
+
+
+  
+
+<h4 id="class-k_component-method-wrap">
+
+  <em class="modifier">public</em>
+
+
+  wrap(<em><span class="modifier">mixed</span>
+
+$content</em>)
 
   : <em class="modifier">mixed</em>
 
@@ -3225,357 +3358,6 @@ Returns the absolute path (realpath) if found or FALSE</p>
 
 </div>
 </div><div class="class">
-<h2 id="class-k_httpresponse">
-  <em>class</em>
-  <a href="#class-k_httpresponse">k_HttpResponse</a>
-
-  <em>extends</em>
-  <a href="#class-exception">Exception</a>
-</h2>
-
-<div class="docblock">
-  <p>Embodies a http response.
-You may raise a HttpResponse to break the default rendering chain. A good example would be in
-cases where you want to redirect. In this case, you should use the dedicated subclass though.</p>
-</div>
-
-<h3>properties</h3>
-<div class="properties">
-  <h4 id="class-k_httpresponse-property-protocol">
-  <em class="modifier">protected</em>
-
-
-  $protocol
-  : <em class="modifier">string</em>
-
-</h4>
-
-
-  <h4 id="class-k_httpresponse-property-status">
-  <em class="modifier">protected</em>
-
-
-  $status
-  : <em class="modifier">integer</em>
-
-</h4>
-
-
-  <h4 id="class-k_httpresponse-property-content">
-  <em class="modifier">protected</em>
-
-
-  $content
-  : <em class="modifier">string</em>
-
-</h4>
-
-
-  <h4 id="class-k_httpresponse-property-headers">
-  <em class="modifier">protected</em>
-
-
-  $headers
-  : <em class="modifier">array</em>
-
-</h4>
-
-
-  <h4 id="class-k_httpresponse-property-content_type">
-  <em class="modifier">protected</em>
-
-
-  $content_type
-  : <em class="modifier">string</em>
-
-</h4>
-
-
-  <h4 id="class-k_httpresponse-property-charset">
-  <em class="modifier">protected</em>
-
-
-  $charset
-  : <em class="modifier"><a href="#class-k_charset_responsecharset">k_charset_ResponseCharset</a></em>
-
-</h4>
-
-
-</div>
-
-<h3>methods</h3>
-<div class="methods">
-  
-
-<h4 id="class-k_httpresponse-method-__construct">
-
-  <em class="modifier">public</em>
-
-
-  __construct(<em> [ <span class="modifier">mixed</span>
-
-$status [ , <span class="modifier">mixed</span>
-
-$content [ , <span class="modifier">mixed</span>
-
-$input_is_utf8 ]  ]  ] </em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_httpresponse-method-content">
-
-  <em class="modifier">public</em>
-
-
-  content()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_httpresponse-method-setcontent">
-
-  <em class="modifier">public</em>
-
-
-  setContent(<em><span class="modifier">mixed</span>
-
-$content</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_httpresponse-method-contenttype">
-
-  <em class="modifier">public</em>
-
-
-  contentType()
-
-  : <em class="modifier">string</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_httpresponse-method-setcontenttype">
-
-  <em class="modifier">public</em>
-
-
-  setContentType(<em><span class="modifier">mixed</span>
-
-$content_type</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_httpresponse-method-setcharset">
-
-  <em class="modifier">public</em>
-
-
-  setCharset(<em><a href="#class-k_charset_responsecharset"
->k_charset_ResponseCharset</a>
-
-$charset</em>)
-
-  : <em class="modifier"><a href="#class-k_charset_responsecharset">k_charset_ResponseCharset</a></em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_httpresponse-method-status">
-
-  <em class="modifier">public</em>
-
-
-  status()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_httpresponse-method-encoding">
-
-  <em class="modifier">public</em>
-
-
-  encoding()
-
-  : <em class="modifier">string</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_httpresponse-method-headers">
-
-  <em class="modifier">public</em>
-
-
-  headers()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_httpresponse-method-setheader">
-
-  <em class="modifier">public</em>
-
-
-  setHeader(<em><span class="modifier">mixed</span>
-
-$key, <span class="modifier">mixed</span>
-
-$value</em>)
-
-  : <em class="modifier">string</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_httpresponse-method-sendstatus">
-
-  <em class="modifier">protected</em>
-
-
-  sendStatus(<em><a href="#class-k_adapter_outputaccess"
->k_adapter_OutputAccess</a>
-
-$output</em>)
-
-  : <em class="modifier">void</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_httpresponse-method-sendheaders">
-
-  <em class="modifier">protected</em>
-
-
-  sendHeaders(<em><a href="#class-k_adapter_outputaccess"
->k_adapter_OutputAccess</a>
-
-$output</em>)
-
-  : <em class="modifier">void</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_httpresponse-method-sendbody">
-
-  <em class="modifier">protected</em>
-
-
-  sendBody(<em><a href="#class-k_adapter_outputaccess"
->k_adapter_OutputAccess</a>
-
-$output</em>)
-
-  : <em class="modifier">void</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_httpresponse-method-out">
-
-  <em class="modifier">public</em>
-
-
-  out(<em> [ <a href="#class-k_adapter_outputaccess"
->k_adapter_OutputAccess</a>
-
-$output ] </em>)
-
-  : <em class="modifier">void</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_httpresponse-method-__tostring">
-
-  <em class="modifier">public</em>
-
-
-  __toString()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-</div>
-</div><div class="class">
 <h2 id="class-k_metaresponse">
   <em class="modifier">abstract</em>
 
@@ -3605,117 +3387,6 @@ In the simplest invocation, a metaresponse maps directly to a component, which r
 
 
   componentName()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-</div>
-</div><div class="class">
-<h2 id="class-k_movedpermanently">
-  <em>class</em>
-  <a href="#class-k_movedpermanently">k_MovedPermanently</a>
-
-  <em>extends</em>
-  <a href="#class-k_httpresponse">k_HttpResponse</a>
-</h2>
-
-<div class="docblock">
-  <p>Issues a http redirect of type &quot;301 Moved Permanently&quot;
-Use this if the URL has changed (Eg. a page has been renamed)</p>
-</div>
-
-
-<h3>methods</h3>
-<div class="methods">
-  
-
-<h4 id="class-k_movedpermanently-method-__construct">
-
-  <em class="modifier">public</em>
-
-
-  __construct(<em><span class="modifier">mixed</span>
-
-$url</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-</div>
-</div><div class="class">
-<h2 id="class-k_seeother">
-  <em>class</em>
-  <a href="#class-k_seeother">k_SeeOther</a>
-
-  <em>extends</em>
-  <a href="#class-k_httpresponse">k_HttpResponse</a>
-</h2>
-
-<div class="docblock">
-  <p>Issues a http redirect of type &quot;303 See Other&quot;
-Use this type of redirect for redirecting after POST</p>
-</div>
-
-
-<h3>methods</h3>
-<div class="methods">
-  
-
-<h4 id="class-k_seeother-method-__construct">
-
-  <em class="modifier">public</em>
-
-
-  __construct(<em><span class="modifier">mixed</span>
-
-$url</em>)
-
-  : <em class="modifier">void</em>
-
-
-</h4>
-
-
-
-</div>
-</div><div class="class">
-<h2 id="class-k_temporaryredirect">
-  <em>class</em>
-  <a href="#class-k_temporaryredirect">k_TemporaryRedirect</a>
-
-  <em>extends</em>
-  <a href="#class-k_httpresponse">k_HttpResponse</a>
-</h2>
-
-<div class="docblock">
-  <p>Issues a http redirect of type &quot;307 Temporary Redirect&quot;
-Use this type of redirect if the destination changes from request to request, or
-if you want the client to keep using the requested URI in the future.
-This is a rare type of redirect - If in doubt, you probably should
-use either of &quot;See Other&quot; or &quot;Moved Permanently&quot;</p>
-</div>
-
-
-<h3>methods</h3>
-<div class="methods">
-  
-
-<h4 id="class-k_temporaryredirect-method-__construct">
-
-  <em class="modifier">public</em>
-
-
-  __construct(<em><span class="modifier">mixed</span>
-
-$url</em>)
 
   : <em class="modifier">mixed</em>
 
@@ -3892,6 +3563,39 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 
 </div>
 </div><div class="class">
+<h2 id="class-k_notacceptable">
+  <em>class</em>
+  <a href="#class-k_notacceptable">k_NotAcceptable</a>
+
+  <em>extends</em>
+  <a href="#class-k_metaresponse">k_MetaResponse</a>
+</h2>
+
+<div class="docblock">
+  <p>Raise this if the request can&#039;t be processed due to details of the request (Such as the Content-Type or other headers)</p>
+</div>
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_notacceptable-method-componentname">
+
+  <em class="modifier">public</em>
+
+
+  componentName()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
 <h2 id="class-k_defaultnotauthorizedcomponent">
   <em>class</em>
   <a href="#class-k_defaultnotauthorizedcomponent">k_DefaultNotAuthorizedComponent</a>
@@ -3915,6 +3619,22 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 
 
   dispatch()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_defaultnotauthorizedcomponent-method-renderhtml">
+
+  <em class="modifier">public</em>
+
+
+  renderHtml()
 
   : <em class="modifier">mixed</em>
 
@@ -3956,6 +3676,22 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 
 
 
+  
+
+<h4 id="class-k_defaultforbiddencomponent-method-renderhtml">
+
+  <em class="modifier">public</em>
+
+
+  renderHtml()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
 </div>
 </div><div class="class">
 <h2 id="class-k_defaultpagenotfoundcomponent">
@@ -3981,6 +3717,22 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 
 
   dispatch()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_defaultpagenotfoundcomponent-method-renderhtml">
+
+  <em class="modifier">public</em>
+
+
+  renderHtml()
 
   : <em class="modifier">mixed</em>
 
@@ -4022,6 +3774,71 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 
 
 
+  
+
+<h4 id="class-k_defaultmethodnotallowedcomponent-method-renderhtml">
+
+  <em class="modifier">public</em>
+
+
+  renderHtml()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+</div>
+</div><div class="class">
+<h2 id="class-k_defaultnotnotacceptablecomponent">
+  <em>class</em>
+  <a href="#class-k_defaultnotnotacceptablecomponent">k_DefaultNotNotAcceptableComponent</a>
+
+  <em>extends</em>
+  <a href="#class-k_component">k_Component</a>
+</h2>
+<h3>
+  <em>implements</em>
+  <a href="#class-k_context">k_Context</a></h3>
+
+
+
+<h3>methods</h3>
+<div class="methods">
+  
+
+<h4 id="class-k_defaultnotnotacceptablecomponent-method-dispatch">
+
+  <em class="modifier">public</em>
+
+
+  dispatch()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_defaultnotnotacceptablecomponent-method-renderhtml">
+
+  <em class="modifier">public</em>
+
+
+  renderHtml()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
 </div>
 </div><div class="class">
 <h2 id="class-k_defaultnotimplementedcomponent">
@@ -4047,6 +3864,22 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 
 
   dispatch()
+
+  : <em class="modifier">mixed</em>
+
+
+</h4>
+
+
+
+  
+
+<h4 id="class-k_defaultnotimplementedcomponent-method-renderhtml">
+
+  <em class="modifier">public</em>
+
+
+  renderHtml()
 
   : <em class="modifier">mixed</em>
 
@@ -4163,7 +3996,7 @@ This is roughly the HTTP equivalent to a &quot;todo&quot;</p>
 
 $root_class_name</em>)
 
-  : <em class="modifier"><a href="#class-k_httpresponse">k_HttpResponse</a></em>
+  : <em class="modifier"><a href="#class-k_response">k_Response</a></em>
 
 
 </h4>
@@ -6450,7 +6283,8 @@ $utf8_string</em>)
 </h2>
 
 <div class="docblock">
-  <p>A strategy for encoding/decoding charsets</p>
+  <p>A strategy for encoding/decoding charsets
+The strategy is a factory for the Responsecharset as well as a filter to convert input to UTF-8</p>
 </div>
 
 
@@ -6494,24 +6328,6 @@ $input</em>)
 
 
 
-  
-
-<h4 id="class-k_charset_charsetstrategy-method-isinternalutf8">
-
-  <em class="modifier">abstract</em>,
-
-  <em class="modifier">public</em>
-
-
-  isInternalUtf8()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
 </div>
 </div><div class="class">
 <h2 id="class-k_charset_utf8charsetstrategy">
@@ -6523,7 +6339,7 @@ $input</em>)
   <a href="#class-k_charset_charsetstrategy">k_charset_CharsetStrategy</a></h3>
 
 <div class="docblock">
-  <p>Full UTF-8
+  <p>UTF-8
 This is the preferred configuration
 If you&#039;re using PHP &lt; 6
 You should use the [mb-string extension](http://docs.php.net/manual/en/mbstring.overload.php) to replace the built-ins. This is not crucial, but a good idea none the less.
@@ -6568,22 +6384,6 @@ $input</em>)
 
 
 
-  
-
-<h4 id="class-k_charset_utf8charsetstrategy-method-isinternalutf8">
-
-  <em class="modifier">public</em>
-
-
-  isInternalUtf8()
-
-  : <em class="modifier">boolean</em>
-
-
-</h4>
-
-
-
 </div>
 </div><div class="class">
 <h2 id="class-k_charset_latin1charsetstrategy">
@@ -6595,8 +6395,8 @@ $input</em>)
   <a href="#class-k_charset_charsetstrategy">k_charset_CharsetStrategy</a></h3>
 
 <div class="docblock">
-  <p>Full latin1, throughout the application
-While this is the native solution for PHP &lt; 6, it isn&#039;t recommended for new applications. Use FauxUtf8 or preferably Utf8.</p>
+  <p>ISO-8859-1
+While this is the native solution for PHP &lt; 6, it isn&#039;t recommended for new Konstrukt applications.</p>
 </div>
 
 
@@ -6613,7 +6413,7 @@ While this is the native solution for PHP &lt; 6, it isn&#039;t recommended for 
 
 $input</em>)
 
-  : <em class="modifier">array</em>
+  : <em class="modifier">mixed</em>
 
 
 </h4>
@@ -6628,93 +6428,6 @@ $input</em>)
 
 
   responseCharset()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_charset_latin1charsetstrategy-method-isinternalutf8">
-
-  <em class="modifier">public</em>
-
-
-  isInternalUtf8()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-</div>
-</div><div class="class">
-<h2 id="class-k_charset_fauxutf8charsetstrategy">
-  <em>class</em>
-  <a href="#class-k_charset_fauxutf8charsetstrategy">k_charset_FauxUtf8CharsetStrategy</a>
-</h2>
-<h3>
-  <em>implements</em>
-  <a href="#class-k_charset_charsetstrategy">k_charset_CharsetStrategy</a></h3>
-
-<div class="docblock">
-  <p>All input/output as UTF-8, but latin1 on the inside
-This was the default charset handling of Konstrukt v. 1 - It is now deprecated in favour of full UTF-8
-It offers few benefits over a simple latin1 strategy, but forms a lowest dommon denominator when using Ajax (javascript defaults to UTF-8)
-It expects everything within PHP (files and strings) to be latin1. This includes any data received from the database.
-It will encode/decode the outside as UTF-8, so the page appears in UTF-8 for the client, even if it is limited to the latin1 subset.</p>
-</div>
-
-
-<h3>methods</h3>
-<div class="methods">
-  
-
-<h4 id="class-k_charset_fauxutf8charsetstrategy-method-decodeinput">
-
-  <em class="modifier">public</em>
-
-
-  decodeInput(<em><span class="modifier">mixed</span>
-
-$input</em>)
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_charset_fauxutf8charsetstrategy-method-responsecharset">
-
-  <em class="modifier">public</em>
-
-
-  responseCharset()
-
-  : <em class="modifier">mixed</em>
-
-
-</h4>
-
-
-
-  
-
-<h4 id="class-k_charset_fauxutf8charsetstrategy-method-isinternalutf8">
-
-  <em class="modifier">public</em>
-
-
-  isInternalUtf8()
 
   : <em class="modifier">mixed</em>
 
