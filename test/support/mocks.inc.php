@@ -64,7 +64,7 @@ class k_TestDebugListener implements k_DebugListener {
   function log($mixed) {
     $this->dump[] = $mixed;
   }
-  function decorate(k_HttpResponse $response) {
+  function decorate(k_Response $response) {
     return $response;
   }
 }

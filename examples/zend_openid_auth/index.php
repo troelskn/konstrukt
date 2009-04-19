@@ -93,8 +93,7 @@ class Login extends k_Component {
     return $this->render();
   }
   function renderHtml() {
-    throw new k_HttpResponse(
-      401,
+    $response = new k_HtmlResponse(
       "<html><head><title>Authentication required</title></head><body><form method='post' action='" . htmlspecialchars($this->url()) . "'>
   <h1>Authentication required</h1>
   <h2>OpenID Login</h2>
@@ -111,6 +110,8 @@ class Login extends k_Component {
     <input type='submit' value='Login' />
   </p>
 </form></body></html>");
+    $response->setStatus(401);
+    return $response;
   }
   protected function authenticate() {
     $open_id_adapter = new Zend_Auth_Adapter_OpenId($this->body('openid_identifier'));

@@ -104,6 +104,9 @@ class k_adapter_SafeGlobalsAccess implements k_adapter_GlobalsAccess {
   }
   function headers() {
     // I think we should decode using imap_mime_header_decode
+    if (!function_exists('apache_request_headers')) {
+      throw new Exception("Not running within web-server context");
+    }
     return apache_request_headers();
   }
   /**

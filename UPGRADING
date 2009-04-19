@@ -1,0 +1,130 @@
+Upgrading from 2.0.X to 2.1.0
+===
+
+There are five major changes in this release:
+
+1. `k_HttpResponse` no longer extends `Exception`.
+2. Handlers now return a `K_Response` rather than a native string.
+    2b. Wrappers
+3. Typed handlers for POST and PUT
+4. The syntax for a specific content-type has changed.
+5. The internal charset is no longer configurable - It is always UTF-8
+
+`k_HttpResponse` no longer extends `Exception`.
+---
+
+Instead of throwing a response, you should now just return it.
+
+Note that `k_MetaResponse` is still an exception. So `k_PageNotFound` and other meta-responses should still be thrown.
+
+Handlers now return a `K_Response` rather than a native string.
+---
+
+All handlers (`dispatch`, `execute`, `GET`, `render`, `renderHtml` ...) can now either return a string or an instance of `k_Response`. `k_Response` is an interface, of which `k_HttpResponse` is one concrete implementation. Different content-types have matching implementations, so a regular `text/html` response should be represented by an instance of `k_HtmlResponse`. The un-specific `k_HttpResponse` is kept, but is deprecated - You should use a subclass that matches the content-type.
+
+Renderers will automatically wrap the return-type in the appropriate response-class. For example, if you return a string from `renderHtml`, it will be wrapped in a `k_HtmlResponse`. If you return a scalar or array from `renderJson`, it will be wrapped in a `k_JsonResponse` etc.
+
+Wrappers
+---
+
+Since responses are now typed, there has been introduced a new (optional) hook on `k_Component`. You can implement `renderHtml` to wrap the response of any sub-components that are of the type `text/html`. Before, this would usually be done by overriding `dispatch`. The render-method is only called, if it matches the response-type, so if your sub-component returns non-html, `renderHtml` won't be called. You can implement wrappers for other content-types if you want (Same naming-convention as for renderers).
+
+Typed handlers for POST and PUT
+---
+
+Instead of a single entrypoint for all POST requests, there is now support for differentiating on the content-type of the request-body. For regular forms, which are encoded with `application/x-www-form-urlencoded`, the handler `postForm` will be invoked. The same names are used as for renderers, so to handle an incoming json-request, you should implement `postJson`. Likewise with PUT requests (eg. use `putJson` to handle a PUT request with the content-type of `application/json`.
+
+Except for `postForm` and `postMultipart`, the input-data isn't decoded for you - you can access the raw input-body through `rawHttpRequestBody`. For those two types, you can access `body` and `file` respectively.
+
+The syntax for a specific content-type has changed.
+---
+
+The choice of a semi-colon to designate component subtype (content-type) was a slightly unorthodox choice. This might cause problems along the way, so it has now been revised to use a dot rather than a semi-colon. Eg. to address a specific content-type of a component, you'd use `/foo/bar.json` instead of `/foo/bar;json`.
+
+The internal charset is no longer configurable - It is always UTF-8
+---
+
+Previously, it was possible to use latin1 for the internal charset. Since this is a global setting, it was not possible to mix to applications with diverging choices. To remedy this, Konstrukt now supports only UTF-8 internally. This may mean some adjustments for legacy applications, but these will make it easier to upgrade to PHP 6 later. It also has shorter term benefits in that it will eliminate a number of possible bugs as well as enhance the capabilities of the application.
+
+Recommendations for upgrading
+---
+
+For the most part, the upgrade is backwards compatible, but it's recommended that you upgradeypour application to take advantage of the new features. The following describes how to go about that.
+
+###GET()
+If your application currently implements `GET`, you should upgrade it to use renderers. In most cases, you can simply rename your `GET` methods to `renderHtml`. If your application currently responds with different content-types, you should implement this as renderers - Eg. use `renderHtml` for `text/html` responses, `renderJson` for `application/json` type responses etc.
+
+###POST()
+If your application currently has handlers for POST (eg. form-processing), you should rename your methods to either `postForm` or `postMultipart`. The latter is used if the form contains file-uploads. If the POST handler must render output, you may now have a call to `GET`. You should change this to call `render` instead, since this will allow the client to chose the response-type. The procedure for PUT is exactly the same.
+
+###dispatch() + execute()
+If your application overrides `dispatch` or `execute` to decorate/wrap the response, you may get an error. The response is no longer guaranteed to be a string. Instead of wrapping in `dispatch`, you should use the new wrappers feature. Simply implement `wrapHtml`. The method takes one argument, which is the content. So instead of this:
+
+    function dispatch() {
+      return "<div>" . parent::dispatch() . "</div>";
+    }
+
+Use this:
+
+    function wrapHtml($html) {
+      return "<div>" . $html . "</div>";
+    }
+
+If you do wrapping in `execute`, you can call to `render`, and then follow the procedure above. Eg. instead of this:
+
+    function execute() {
+      return "<div>" . parent::execute() . "</div>";
+    }
+
+Use this:
+
+    function execute() {
+      return $this->wrap(parent::execute());
+    }
+    function wrapHtml($html) {
+      return "<div>" . $html . "</div>";
+    }
+
+###k_HttpResponse
+
+If your application currently throws any responses, you should instead return the response. However, throwing a response was usually used to respond with a non-html type. With the new version of Konstrukt, you don't need to use this trick to respond with non-html. From a renderer, you can simply return a primitive and it will then be wrapped in an appropriate response. If you - for some reason - still wants to return a response-object (for example, if you have to set response-headers), you should consider using a typed response. There are specific classes available for the most common formats.
+
+So,  instead of this:
+
+    function renderJson() {
+      $response = new k_HttpResponse(200, json_encode($this->foo()));
+      $response->setContentType('application/json');
+      throw $response;
+    }
+
+Use this:
+
+    function renderJson() {
+      return $this->foo();
+    }
+
+or this:
+
+    function renderJson() {
+      return new k_JsonResponse($this->foo());
+    }
+
+You would generally only use the second style, if you need to set additional headers or http-status on the response.
+
+Other types of responses, such as `k_MovedPermanently`, `k_SeeOther` and `k_TemporaryRedirect` should be returned rather than thrown.
+
+Note that you should still throw meta-responses, such as `k_NotAuthorized`, `k_Forbidden`, `k_PageNotFound`, `k_MethodNotAllowed`, `k_NotImplemented` and `k_NotAcceptable`. These work exactly as they've done prior.
+
+The un-specific `k_HttpResponse` is a bit of a left over now - You should use a subclass that matches the content-type. If no such type exists, please request that it be added to the library, or if it's very specific, just create a class for it your self. The usage of `k_HttpResponse` is deprecated and will probably be removed in the next version.
+
+###Subtype syntax
+
+Any places where you have links that refer to a specific subtype, you should replace the semi-colon with a dot. You can simply search for all calls to `url()` and check if the first argument contains a semi-colon.
+
+###If your application speaks latin1
+
+If your application currently speaks latin1 internally, you will have to either explicitly decode input/encode output or upgrade your application to UTF-8. You may find the first choice being the easiest, and may also allow for a gradual transition. If you want to use latin1 internally in a component, you should do two things:
+
+1. Return values from renderers (`renderHtml()` etc.) should be encoded with `utf8_encode()` (Transforms from latin1->utf8). If you create a k_Response object, the input should also be encoded likewise.
+
+2. Input values should be decoded with `utf8_decode()` (Transforms from utf8->latin1).

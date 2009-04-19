@@ -63,15 +63,15 @@ class k_charset_Latin1 implements k_charset_ResponseCharset {
 
 /**
  * A strategy for encoding/decoding charsets
+ * The strategy is a factory for the Responsecharset as well as a filter to convert input to UTF-8
  */
 interface k_charset_CharsetStrategy {
   function decodeInput($input);
   function responseCharset();
-  function isInternalUtf8();
 }
 
 /**
- * Full UTF-8
+ * UTF-8
  * This is the preferred configuration
  * If you're using PHP < 6
  * You should use the [mb-string extension](http://docs.php.net/manual/en/mbstring.overload.php) to replace the built-ins. This is not crucial, but a good idea none the less.
@@ -88,56 +88,33 @@ class k_charset_Utf8CharsetStrategy implements k_charset_CharsetStrategy {
   function responseCharset() {
     return new k_charset_Utf8();
   }
-  /**
-    * @return boolean
-    */
-  function isInternalUtf8() {
-    return true;
-  }
 }
 
 /**
- * Full latin1, throughout the application
- * While this is the native solution for PHP < 6, it isn't recommended for new applications. Use FauxUtf8 or preferably Utf8.
+ * ISO-8859-1
+ * While this is the native solution for PHP < 6, it isn't recommended for new Konstrukt applications.
  */
 class k_charset_Latin1CharsetStrategy implements k_charset_CharsetStrategy {
   /**
-    * @param array
-    * @return array
+    * @param mixed
+    * @return mixed
     */
   function decodeInput($input) {
+    // http://talks.php.net/show/php-best-practices/26
+    $in = array(&$input);
+    while (list($k,$v) = each($in)) {
+      foreach ($v as $key => $val) {
+        if (!is_array($val)) {
+          $in[$k][$key] = utf8_encode($val);
+          continue;
+        }
+        $in[] =& $in[$k][$key];
+      }
+    }
+    unset($in);
     return $input;
   }
   function responseCharset() {
     return new k_charset_Latin1();
-  }
-  function isInternalUtf8() {
-    return false;
-  }
-}
-
-/**
- * All input/output as UTF-8, but latin1 on the inside
- * This was the default charset handling of Konstrukt v. 1 - It is now deprecated in favour of full UTF-8
- * It offers few benefits over a simple latin1 strategy, but forms a lowest dommon denominator when using Ajax (javascript defaults to UTF-8)
- * It expects everything within PHP (files and strings) to be latin1. This includes any data received from the database.
- * It will encode/decode the outside as UTF-8, so the page appears in UTF-8 for the client, even if it is limited to the latin1 subset.
- */
-class k_charset_FauxUtf8CharsetStrategy implements k_charset_CharsetStrategy {
-  function decodeInput($input) {
-    if (is_array($input)) {
-      $output = array();
-      foreach ($input as $key => $value) {
-        $output[$key] = $this->decodeInput($value);
-      }
-      return $output;
-    }
-    return utf8_decode($input);
-  }
-  function responseCharset() {
-    return new k_charset_Utf8();
-  }
-  function isInternalUtf8() {
-    return false;
   }
 }

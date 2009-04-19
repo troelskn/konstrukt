@@ -31,7 +31,7 @@ class components_contacts_Show extends k_Component {
     $response = new k_HttpResponse();
     $response->setContent($t->render($this, array('contact' => $contact)));
     $response->setContentType('text/x-vcard');
-    throw $response;
+    return $response;
   }
 }
 
@@ -78,7 +78,7 @@ class components_contacts_Show extends k_Component {
     $response = new k_HttpResponse();
     $response->setContent($t->render($this, array('contact' => $this->contact)));
     $response->setContentType('text/x-vcard');
-    throw $response;
+    return $response;
   }
 }
 
@@ -162,7 +162,7 @@ Now that we have the rendering of a form in place, we still need to process the 
 class components_contacts_Show extends k_Component {
   function POST() {
     if ($this->process()) {
-      throw new k_SeeOther($this->url(';'));
+      return new k_SeeOther($this->url(';'));
     }
     return $this->GET();
   }

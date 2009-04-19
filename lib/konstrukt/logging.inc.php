@@ -109,17 +109,24 @@ class k_logging_WebDebugger implements k_DebugListener {
       '</div>'
       ;
   }
-  function decorate(k_HttpResponse $response) {
+  function decorate(k_Response $response) {
     if ($response->status() >= 300 && $response->status() < 400) {
-      return new k_HttpResponse(200, $this->render($response, true));
+      return new k_HtmlResponse($this->render($response, true));
     }
-    if ($response->contentType() == 'text/html') {
-      $html = $response->content();
+    if ($response instanceof k_HtmlResponse) {
+      $html = $response->toContentType('text/html');
       if (strpos($html, '</body>') === false) {
-        $response->setContent($html . $this->render($response, false));
+        $body = $html . $this->render($response, false);
       } else {
-        $response->setContent(str_replace('</body>', $this->render($response, false) . '</body>', $html));
+        $body = str_replace('</body>', $this->render($response, false) . '</body>', $html);
       }
+      $out = new k_HtmlResponse($body);
+      $out->setStatus($response->status());
+      $out->setCharset($response->charset());
+      foreach ($response->headers() as $key => $value) {
+        $out->setHeader($key, $value);
+      }
+      return $out;
     }
     return $response;
   }
@@ -281,7 +288,7 @@ class k_logging_LogDebugger implements k_DebugListener {
       $this->renderMessage(
         array('file' => $stacktrace[0]['file'], 'line' => $stacktrace[0]['line'], 'dump' => $this->dumper->dump($mixed))));
   }
-  function decorate(k_HttpResponse $response) {
+  function decorate(k_Response $response) {
     $this->write($this->renderResponse($response));
     return $response;
   }

@@ -12,12 +12,12 @@ class ZfRegistrationForm extends k_Component {
       return 'ZfThanks';
     }
   }
-  function POST() {
+  function postForm() {
     if ($this->form()->isValid($this->body())) {
       // do stuff with data here
-      throw new k_SeeOther($this->url('thanks', array('flare' => 'You have been registered .. or something')));
+      return new k_SeeOther($this->url('thanks', array('flare' => 'You have been registered .. or something')));
     }
-    return $this->GET();
+    return $this->render();
   }
   function renderHtml() {
     return $this->form()->render();
@@ -59,7 +59,7 @@ class ZfRegistrationForm extends k_Component {
 }
 
 class ZfThanks extends k_Component {
-  function GET() {
+  function renderHtml() {
     return sprintf("<p>%s</p>", htmlspecialchars($this->query('flare')));
   }
 }

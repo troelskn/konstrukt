@@ -14,25 +14,69 @@ Troels Knak-Nielsen, January 2009, troelskn@gmail.com
 Component essentials
 --------------------
 
-A component is a class that extends from `k_Component`. Its purpose is to handle a request or delegate control to another component, that can handle it. This is much similar to how the Apache web server is structured. The way a component is addressed is through the URL path. Each path segment is mapped to a component. The special thing about Konstrukt in this respect, is that the exact mapping is determined at runtime. Each component is fully responsible for choosing the next component in the chain. This is a very powerful concept, but can also be slightly hard to comprehend at first. As a newcomer you may therefore find the [dispatch logging](debugging) useful.
+A component is a class that extends from `k_Component`. Its purpose is to handle a request or delegate control to another component, that can handle it. This is much similar to how the Apache web server is structured. The way a component is addressed is through the URL path. Each path segment is mapped to a component. The special thing about Konstrukt in this respect, is that the exact mapping is determined at runtime. Each component is fully responsible for choosing the next component in the chain. This is a very powerful concept, but can also be slightly hard to comprehend at first. As a newcomer you may therefore find the [dispatch logging](#debugging) useful.
 
 ###Dispatch life-cycle
 
 A component is instantiated as an object before use. To allow for maximum flexibility in implementation, the constructor is not used for passing essential dependencies. These are instead passed immediately after creation through setters. Of these dependencies, the most important is the context, which will usually be another component instance.
 
-A a developer you have great control over the creation of components. You can read more about this in the section on [component creation](#component-creation).
+As a developer you have great control over the creation of components. You can read more about this in the section on [component creation](#component-creation).
 
-###dispatch, map, forward
+###Handlers
 
-Once the component is instantiated, it is given control by the context calling the `dispatch()` method. The purpose of this method is to inspect the url subspace and either determine that it is the final handler in the chain, or forward control to another component, which will go through the same process. These choices corresponds to the methods `forward()` and `execute()`. To make the choice, the method `map()` is used. As a developer, you will often override `map()` to implement url mapping logic.
+Components can implement a number of fine grained methods to provide functionality. As a developer, you'll normally just implement/override a few of them, but if you need to, you can override them all, thereby hooking into the core workings of the framework. In particular, you will often implement renderers and input handlers, as well as `map()` and in some cases `dispatch()`. If you find your self overriding any of `execute()`, `render()`, `GET()`, `POST()`, `PUT()` or `wrap()`, it should be a warning sign that you are doing some thing wrong; These all default to delegate control to more specific handlers and as such you usually wouldn't have to override them.
 
-###execute, GET, POST
+###Dispatch
 
-The `execute()` method is the first method invoked for the handling component. It is unusual to override this in concrete components, although there are cases for it. Since execute is invoked for any kind of HTTP-method, it is a good place to load model components that are identified by the url of the component. The default implementation of `execute()` inspects the HTTP-method and delegates control to one of `GET()`, `POST()`, `HEAD()`, `PUT()` or `DELETE()`. In most web applications, you will probably just concern your self with the first two, since these are the only ones widely supported by browsers. Luckily they are also the most important.
+Once the component is instantiated, the context will delegate control to the component, by invoking its `dispatch()` method. `dispatch()` inspects the remainder of the path (the `subspace`) and does one of two things: If the path contains any further names, it will call `map()` with the next name, and receive a corresponding classname. It will then instantiate this component, becoming the context, and dispatch to it. If there is no further names (it is the final component), it will handle the request.
+
+While you can hook in to various places in the request handling, the most common is to implement a [renderer](#renderers) - typically `renderHtml()`. Since you're application will presumably contain more than one component, you will also get acquainted with the `map()` method.
+
+Some times, a request can contain a [message-body](http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.3) - The typical case being a POST'ed web-form. To handle this, you'd implement an input handler `postForm()`.
+
+The already mentioned `dispatch()` method can be overridden to put code that should execute for all types of requests to the component. It is typically used for access-control/authentication and for checking the existence of the resource (throw a `k_PageNotFound` if not). If you override this (or other) handler(s), remember to call the parent implementation at the end. Eg.:
+
+..php
+class MyComponent extends k_Component {
+  function dispatch() {
+    if (!$this->model->find($this->name)) {
+      throw new k_PageNotFound();
+    }
+    return parent::dispatch();
+  }
+}
+
+Some times, a request can contain a payload (Known as the [message-body](http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.3)). This is only allowed with POST and PUT types requests - the typical use-case being a `<form>` being submitted through POST. To handle this, you will have to implement a handler matching the request-type and the content-type of the request. For example, to handle a regular form, you would implement `postForm()`. Another, slighty less common, handler would be `postMultipart()`, which would be used if the form contains [file uploads](#file-uploads). You can read more under the section [input handlers](#input-handlers).
 
 ###Renderers
 
-The `GET()`, `POST()` etc. methods can be overridden, but it's recommended that you don't. The default implementation of `GET()` will negotiate the content-type, based on the Accept header, and then delegate control to a render method. This is called content-negotiation, because it happens automatically based on the clients preferences - For a browser, the preferred content-type will likely be HTML, so for most applications, you would implement `renderHtml()` and this will automatically be called upon a GET request. You can implement multiple renderers, and the negotiation will pick the best candidate. The naming of renderers corresponds to their content-type per the following chart:
+Most components have a way to render themselves. When a regular GET request is issued to the component, it will try to render it by calling a so-called *renderer*. Renderers are simply methods that are prefixed with `render` and followed by a short-name corresponding to the content-type that they provide. For the majority, `renderHtml()` is the most common renderer, but you can implement other content-types such as `renderJson()` or `renderRss()`. If a component provides multiple renderers, it will pick one based on the `Accept` header of the incoming request. This means that the client (usually a browser) can decide which format it prefers. This is a feature known as *content-type negotiation*, because it happens automatically based on the clients preferences and the available formats.
+
+Some times you may need to have a URL refer directly to a specific representation (content-type) of a component - In this case, you can postfix the URL with the content-type short-name. For example, the URL `/foo/bar` is subject to content-negotiation, while `/foo/bar.csv` will only render through `renderCsv()` (Of course provided that this method is implemented).
+
+###Return type
+
+The return type of a renderer depends on the content-type it handles. It is always valid to return an instance of `k_Response`, but most of the time you should just return a language primitive (such as a string for `renderHtml()`) and it will be wrapped in an appropriately typed response instance. The primitive type to return depends on the content-type. This type is also called the internal type, and it is the same type that will be passed to any [wrappers](#wrappers). The supported internal types can be read from this chart:
+
+content-type                 | short name | internal type(s)
+---------------------------- | ---------- | -------------
+text/html                    | html       | string
+text/plain                   | text       | string
+application/json             | json       | any scalar, array
+application/x-serialized-php | php        | anything that can be serialized
+text/xml                     | xml        | string, DomNode, SimpleXMLElement
+
+Other HTTP-methods than GET may also render an output. To do so, you can call `render()` from within the handler, and it will then delegate to the appropriate render-method. (This is what `GET()` does behind the scenes). For example, you might end your `postForm()` method with the line:
+
+..php
+return $this->render();
+
+..note
+The content-type of renderers is based on the `Accept` header of the request, and defines the type of response that goes out. Certain requests (notably POST and PUT) may have a different content-type, specifying the type of the message-body. This is handled by a related, but different mechanism called [Content-Type delegation](#input-handlers)
+
+###content-type short-names
+
+There are various places where content-types are referred to through their short-names. For example, [renderers](#renderers) are named according to the content-type they provide. So are [input handlers](#input-handlers). There are many content-types, but the most used ones are depicted in the table below:
 
 content-type             | short name | render method
 ------------------------ | ---------- | -------------
@@ -49,28 +93,20 @@ application/json         | json       | renderJson
 application/pdf          | pdf        | renderPdf
 image/svg+xml            | svg        | renderSvg
 
-If a component supports multiple renderers, you can refer to a specific representation by suffixing the url with a semicolon and the short-name. Eg. `/foo/bar;csv` is the CSV representation of `/foo/bar`. When specifying the content-type this way, the Accept header is disregarded.
-
 The type `text/html+edit` is meant for a html form to edit the resource.
 
-If you need a content-type that isn't listed above, you can add it to the `$renderers` property in your component. The format is:
+You can add your own content-types to the global array `$GLOBALS['konstrukt_content_types']` as follows:
 
 ..php
-$this->renderers['test/html;html'] = 'html';
+$GLOBALS['konstrukt_content_types']['test/html'] = 'html';
 
 If you're adding a generic content-type, you might want mention it to the developers, and we'll try to incorporate it in the main library.
 
-The return type of a renderer should either be a string (Which is expected to be a HTML fragment) or the method should throw a response. Remember to specify the content-type, if you're throwing a response to a non-HTML content-type.
+###Input handlers
 
-Other HTTP-methods than GET may also render an output. To do so, you can call `render()` from within the handler, and it will then delegate to the appropriate render-method. (This is what `GET()` does behind the scenes).
+The HTTP-methods POST and PUT are special in that they contain a message-body. The content-type of this payload is specified in the requests Content-Type header.. To distinguish between them, the default implementation of `POST()` and `PUT()` will try to dispatch to a handler corresponding to the requests content-type. For example, a regular posted form has the `application/x-www-form-urlencoded` content-type. This will be delegated to `postForm()`. A request of the type `application/json` will be delegated to `postJson()`. This feature, which is known as *content-type delegation*, allows you to implement support for different content-types in a standard fashion.
 
-Apart from the rendered content-type, certain requests (notably POST and PUT) may have a request content-type. This is handled by a related, but different mechanism called [Content-Type delegation](#content-type-delegation)
-
-###Content-Type delegation
-
-The HTTP-methods POST and PUT are special in that they may contain a request-body. If this is the case, the content will have a Content-Type, specified by the request-header. To distinguish themselves, the default implementation of `POST()` and `PUT()` will try to dispatch to a handler corresponding to the request's Content-Type. For example, a regular posted form has the `application/x-www-form-urlencoded` Content-Type. This will be delegated to `postForm()`. A request of the type `application/json` will be delegated to `postJson()`. This allows you to implement support for different content-types in a standard fashion.
-
-The naming of the content-type handlers corresponds to the following chart:
+The naming of the content-type handlers corresponds to their [short-names](#content-type-short-names), but the most commonly used are depicted below:
 
 content-type                      | POST handler  | PUT handler
 --------------------------------- | ------------- | ------------
@@ -80,12 +116,15 @@ application/json                  | postJson      | putJson
 
 This mechanism is somewhat similar to [content-type negotiation](#renderers), but differs in that `render()` relates to the `Accept` header - Which has to do with the output-format of the HTTP-response - while content-type delegation relates to the `Content-Type` header - which has to do with the input-format of the HTTP-request.
 
-If you need support for additional content-types that isn't listed above, you can add it to the `$input_content_types` property in your component. The format is:
+###Wrappers
 
-..php
-$this->input_content_types['application/json'] = 'json';
+When a component delegates control to a sub-component, it can some times be useful to decorate the response. A typical case is to render navigation or to render the `<head>` tags in the root component. While you could manually override `dispatch()` or `forward()` to do this, there is already a mechanism in Konstrukt called *wrappers*. Wrappers are typed just like [renderers](#renderers) and they are picked according to the content-type of the sub-components response. This means that `wrapHtml()` will only apply to sub-components that return a html-response. There is a special hook for intercepting un-typed (`k_HttpResponse`) responses, which is `renderHttp()`. It is rarely used, but if you need it, it's there.
 
-Again - If it's a generic content-type, please mention it to the developers, and we'll try to incorporate it in the main library.
+A wrapper takes a single argument, which is the internal representation of the response to be wrapped. Like the renderers, wrappers can either return an instance of `k_Response` or just return the internal preresentation, which will then be converted to a typed response automatically.
+
+###Other handlers
+
+As already mentioned, there are a few other handlers which can be implemented in your components. If you want to support all the major HTTP verbs (HEAD, PUT, DELETE), you can do so by implementing the correct handler. For handling HEAD and DELETE, simply implement a method named `HEAD()` and `DELETE()` respectively. The PUT method follows the pattern of POST, so you shouldn't implement `PUT()`, but rather a handler specific to the input type; Eg. `putForm` or `putJson` etc.
 
 HTTP input
 ----------
@@ -98,7 +137,7 @@ Note that all these properties are accessed through methods, not as fields. So y
 
 Initially the most important input is probably the `name`. This returns the part of the url that this component belongs to. For the last component of the url `/foo/bar/quux`, the name would be `quux`. This property is often used as a primary key for identifying the underlying resource.
 
-The `subtype` property is the part of a path-segment that comes after the name, delimited by a semi-colon. It's used internally to identify the content-type. As a developer you'll probably not need to access this very often.
+The `subtype` property is the part of a path-segment that comes after the name, delimited by a dot. It's used internally to identify the content-type. As a developer you'll probably not need to access this very often.
 
 The `subspace` property contains the remaining part of the path, for a component that isn't the last in the dispatch chain. For example, given the component identified as `bar` in the url `/foo/bar/quux`, the subspace would be `quux`. This property is also rarely used directly.
 
@@ -141,7 +180,7 @@ The cookie wrapper works just as the session wrapper. Each component has a metho
 
 In PHP files uploaded with a form are accessible through `$_FILES`. Inside a component, you can access the same information through the method `file()`. You can either pass a parameter to get back a specific file or call it without any arguments to get a hashmap of all files. A file is wrapped in an object of the type `k_adapter_UploadedFile`, which helps to abstract direct access to the filesystem away. As a side effect it also has a simpler interface than PHPs native handling of file uploads. To save an uploaded file, just call `writeTo($path_destination)` with the destination as argument.
 
-Note that you need to go through the [regular hoops to get file uploads working](http://www.php.net/features.file-upload.post-method.php). Most importantly you need to set the `enctype="multipart/form-data"` property on your form tag.
+Note that you need to go through the [regular hoops to get file uploads working](http://www.php.net/features.file-upload.post-method.php). Most importantly you need to set the `enctype="multipart/form-data"` property on your form tag. When you do this, the hanler for processing the form will be named `postMultipart()`. (See [input handlers](#input-handlers) for more details).
 
 Url generation
 --------------
@@ -197,17 +236,11 @@ The default document has accessors for setting the title, adding external javasc
 Abnormal responses
 ------------------
 
-By default, components are expected to return a string of html, that can be a full or partial html document. This is the primary format of web applications, and therefore gets a special treatment over other formats. Sometimes though, you don't want the output to be embedded in the normal rendering mechanism or you need more fine grained control over the http response. This could be the case with alternative content-types, that shouldn't go in to the normal rendering chain, or it could be a redirect or an error code of some kind.
+###Untyped responses
 
-These are collectively called abnormal responses, because they circumvent the normal rendering chain. To do this, abnormal responses are implemented in Konstrukt as exceptions. To emit an abnormal response, you throw it instead of returning a string. The dispatcher will then catch it and use it for output.
+By default, components are expected to return either an instance of `k_Response` or an internal type, that is then converted. While you would usually want to return a response that matches the expected type (Eg. a `k_HtmlResponse` from `renderHttp()` etc.), you can return other types. A common reason to use this, is to respond with a redirect.
 
-There are two kinds of abnormal responses, for different levels of abstraction/control.
-
-###Http response
-
-A httpresponse is the least abstract kind of abnormal response. It gives you full control over the http-level output sent back to the client, including headers and status codes. You should use this for serving non-html content-types.
-
-In addition to the generic `k_Httpresponse`, there are three specialised variations that should be used for redirects:
+There are three specialised responses (all types of `k_Response`) that should be used for redirects:
 
 `k_MovedPermanently`
 : Use this if the URL has changed (Eg. a page has been renamed).
@@ -218,9 +251,13 @@ In addition to the generic `k_Httpresponse`, there are three specialised variati
 `k_TemporaryRedirect`
 : Use this type of redirect if the destination changes from request to request, or if you want the client to keep using the requested URI in the future.
 
+These all take the target URL as argument for the constructor.
+
 ###Meta response
 
-A metaresponse is a more abstract form of response. While you could just use a httpresponse, you should try to use these for, if possible, since they make your application more flexible. A metaresponse is transformed into a concrete httpresponse by the dispatcher. The primary benefit of using a metaresponse over a httpresponse, is that it gives you control over rendering of various error-pages. For example, rather than constructing a httpresponse with status 404, you should use the metaresponse NotFound. This makes it possible to have a customised page for all "not found" responses.
+A meta response is not really a response. It is a type of exception, that can be caught at the top-level dispatcher and there turned into a component. Other frameworks deal with this through internal redirects, and you could think of it as such. You should use meta responses for a number of specific error-states that can occur in your application.
+
+While you could just return a http response, the meta response adds a level of indirection that can be useful at a later point. The primary benefit of using a meta response over a http response, is that it gives you control over rendering of various error-pages. For example, rather than constructing a http response with status 404, you should use the meta response `k_PageNotFound`. This makes it possible to have a customised page for all "not found" responses.
 
 The currently supported metaresponses are:
 
@@ -236,7 +273,7 @@ The currently supported metaresponses are:
 `k_NotImplemented`
 : This is roughly the HTTP equivalent to a "todo"
 
-A metaresponse is associated with a componentname. For example, `k_Forbidden` resolves to `k_DefaultForbiddenComponent`. To get a customised handler for these types of responses, you can let your [component creator](#component-creation) return a custom component instead of the defaults.
+A meta response is associated with a component class name. For example, `k_Forbidden` resolves to `k_DefaultForbiddenComponent`. To get a customised handler for these types of responses, you can let your [component creator](#component-creation) return a custom component instead of the defaults.
 
 Templates
 ---------
@@ -276,28 +313,29 @@ Encoding
 
 Until version 6 becomes current, PHP is stuck with a primitive view of string data, where strings are treated as bytestreams. Many libraries, extensions and even core functionality in PHP, assumes that strings are single-byte streams. This means that each byte is interpreted as a character, the consequence being that only 256 different characters can be represented. Furthermore, the default charset assumed is ISO-8859-1 (also known as latin1). As long as we only want to represent western European texts this suffices, but in our multi cultural world, this is inadequate.
 
-###How to use utf-8
+###Using utf-8
 
-Even if your main audience is English speaking, your users may still have foreign names, that can't be written with the limited charset of latin1. Currently, the best solution is therefore to use UTF-8 as encoding throughout your application. This strategy does have its pitfalls, but so does using latin1. It is important to get these things right from the beginning, since it's a thing that is very hard to change later.
+Even if your main audience is English speaking, your users may still have foreign names, that can't be written with the limited charset of latin1. In addition, there are a number of [ambiguities with regards to the latin1 standard](http://en.wikipedia.org/wiki/ISO/IEC_8859-1#ISO-8859-1_and_Windows-1252_confusion), meaning that you can end up with corrupt data, even if you do things by the book. Currently, the best solution is therefore to use UTF-8 as encoding throughout your application. This strategy does have its pitfalls, but so does using latin1. It is important to get these things right from the beginning, since it's a thing that is very hard to change later.
 
-Konstrukt defaults to speak UTF-8 at the HTTP-level. If you use a database, you should make sure that data is stored as UTF-8 or another Unicode capable encoding, and you should also make sure that the connection between PHP and database is set to UTF-8 (This only apply to some databases, such as MySql). Also, make sure that any files - especially template files - are saved as UTF-8 (Without BOM). This covers the most common problems with UTF-8.
+Konstrukt distinguishes between the charset that it speaks on the HTTP level (The charset that the client sees) and the internal charset. By default, it will use UTF-8 in both places, but you can change the outside charset by a simple configuration option. Internally, you must use UTF-8. If you use a database, you should make sure that data is stored as UTF-8 or another Unicode capable encoding, and you should also make sure that the connection between PHP and database is set to UTF-8 (This only apply to some databases, such as MySql). Also, make sure that any files - especially template files - are saved as UTF-8 (Without BOM). This covers the most common problems with UTF-8.
 
 There is a good overview of the core PHP functions, that needs special treatment to work with UTF-8 at [http://www.phpwact.org/php/i18n/utf-8](http://www.phpwact.org/php/i18n/utf-8).
 
-###Plan b (legacy applications)
+###Interfacing with legacy applications (latin1)
 
-Some times you don't have the luxury of going with UTF-8. If you're interfacing with a legacy application or you want to use third-party libraries that assume single-byte strings, you will have to use a single-byte internal encoding. Konstrukt has a configurable strategy for dealing with charsets, which enables you to switch to one of two alternate configurations, that both have a single-byte internal encoding. The first is a plain single-byte/latin1 strategy, where pages are served with `charset=iso-8859-1`. This is basically the same modus that plain PHP works in. The other strategy encodes output to UTF-8 and decodes it back to latin1. That way the application works with latin1 on the inside (in the scope of PHP), while presenting a UTF-8 facade outwards. The benefit of this approach is that it makes it easier for other applications to interact with yours. For example, [XmlHttpRequest](http://en.wikipedia.org/wiki/XMLHttpRequest) (javascript) defaults to talk UTF-8. It also avoids the problem of the [ISO-8859-1 vs. CP-1252 confusion](http://en.wikipedia.org/wiki/ISO_8859-1#ISO-8859-1_and_Windows-1252_confusion). If you're building a new frontend for a legacy backend, this may be a good compromise.
+If you're interfacing with code that speaks iso-8859-1, you will have to manually convert to utf-8. You can do this on by simply running the output from your [renderers](#renderers) through the function `utf8_encode`. Additionally you will need to decode any input data (`query()`, `body()`, `name()` etc.) as these are internally represented as utf-8, regardless of the internal charset. If you follow these two guidelines, your code should fit nicely in to the framework. Of course, you are encouraged to upgrade to use UTF-8, since it will not only make things easier, but it will also eliminate a number of bugs and limitations.
 
-To change the charset strategy, assign a `k_charset_CharsetStrategy` in the [bootstrap](#bootstrap), using `setCharsetStrategy()`. Konstrukt comes with the following three options:
+###Charset strategy
+
+To change the charset strategy (The charset that the application presents itself in), assign a `k_charset_CharsetStrategy` in the [bootstrap](#bootstrap), using `setCharsetStrategy()`. Konstrukt comes with the following options:
 
 `k_charset_Utf8CharsetStrategy`
-: The default choice. Assumes that all strings are UTF-8 encoded.
+: The default choice. Encodes the response as UTF-8, and interprets the input as UTF-8.
 
 `k_charset_Latin1CharsetStrategy`
-: Legacy compatibility. Assumes that all strings are ISO-8859-1 encoded.
+: Legacy compatibility. Encodes the response as ISO-8859-1, and interprets the input as ISO-8859-1.
 
-`k_charset_FauxUtf8CharsetStrategy`
-: Like Latin1, but presents an external facade of UTF-8. Assumes that all internal strings are ISO-8859-1 encoded.
+It is strongly recommended that you keep the default (UTF-8) strategy.
 
 Environment/setup
 -----------------
