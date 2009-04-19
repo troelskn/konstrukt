@@ -1,6 +1,65 @@
 <?php
-require_once 'support/simpletest.inc.php';
-require_once '../examples/std.inc.php';
+function test_exceptions_error_handler($severity, $message, $filename, $lineno) {
+  if (error_reporting() == 0) {
+    return;
+  }
+  if (error_reporting() & $severity) {
+    throw new ErrorException($message, 0, $severity, $filename, $lineno);
+  }
+}
+
+/**
+  * Provides functionality for including files.
+  */
+class test_ClassLoader
+{
+  /**
+    * Default autoloader for Konstrukt naming scheme.
+    */
+  static function autoload($classname) {
+    $filename = str_replace('_', '/', strtolower($classname)).'.php';
+    if (self::SearchIncludePath($filename)) {
+      require_once($filename);
+    }
+  }
+
+  /**
+    * Searches the include-path for a filename.
+    * Returns the absolute path (realpath) if found or FALSE
+    * @return mixed
+    */
+  static function SearchIncludePath($filename) {
+    if (is_file($filename)) {
+      return $filename;
+    }
+    foreach (explode(PATH_SEPARATOR, ini_get("include_path")) as $path) {
+      if (strlen($path) > 0 && $path{strlen($path)-1} != DIRECTORY_SEPARATOR) {
+        $path .= DIRECTORY_SEPARATOR;
+      }
+      $f = realpath($path . $filename);
+      if ($f && is_file($f)) {
+        return $f;
+      }
+    }
+    return FALSE;
+  }
+}
+
+// You need to have simpletest in your include_path
+require_once 'simpletest/unit_tester.php';
+require_once 'simpletest/mock_objects.php';
+if (realpath($_SERVER['PHP_SELF']) == __FILE__) {
+  // Adds /lib/ to the path
+  ini_set(
+    'include_path',
+    "lib"
+    . PATH_SEPARATOR . dirname(dirname(__FILE__))."/lib"
+    . PATH_SEPARATOR . ini_get('include_path'));
+  error_reporting(E_ALL | E_STRICT);
+  set_error_handler('test_exceptions_error_handler');
+  spl_autoload_register(Array('test_ClassLoader', 'autoload'));
+  require_once 'simpletest/autorun.php';
+}
 
 /*
 todo:
@@ -41,7 +100,7 @@ class TestOfWire_SubCux extends TestOfWire_Cux
 class TestOfWire extends UnitTestCase
 {
   function setUp() {
-    $this->container = new k_wire_Container();
+    $this->container = new wire_Container();
   }
 
   function tearDown() {
@@ -53,12 +112,12 @@ class TestOfWire extends UnitTestCase
   }
 
   function test_get_shared_instance_of_class() {
-    $this->assertReference($this->container->get('testofwire_cux'), $this->container->get('testofwire_cux'));
+    $this->assertTrue($this->container->get('testofwire_cux') === $this->container->get('testofwire_cux'));
   }
 
   function test_create_instance_with_constructor_dependency() {
     $factory = $this->container->register('testofwire_foo');
-    $factory->registerConstructor(new k_wire_SharedDependency('testofwire_cux'));
+    $factory->registerConstructor(new wire_SharedDependency('testofwire_cux'));
     $foo = $this->container->create('testofwire_foo');
     $this->assertIsA($foo, 'testofwire_foo');
     $this->assertIsA($foo->bar, 'testofwire_cux');
@@ -66,7 +125,7 @@ class TestOfWire extends UnitTestCase
 
   function test_create_instance_with_setter_dependency() {
     $factory = $this->container->register('testofwire_bar');
-    $factory->registerSetter(new k_wire_SharedDependency('testofwire_cux'), 'setFoo');
+    $factory->registerSetter(new wire_SharedDependency('testofwire_cux'), 'setFoo');
     $bar = $this->container->create('testofwire_bar');
     $this->assertIsA($bar, 'testofwire_bar');
     $this->assertIsA($bar->foo, 'testofwire_cux');
@@ -74,7 +133,7 @@ class TestOfWire extends UnitTestCase
 
   function test_create_instance_with_property_dependency() {
     $factory = $this->container->register('testofwire_bar');
-    $factory->registerProperty(new k_wire_SharedDependency('testofwire_cux'), 'cuxx');
+    $factory->registerProperty(new wire_SharedDependency('testofwire_cux'), 'cuxx');
     $bar = $this->container->create('testofwire_bar');
     $this->assertTrue(isset($bar->cuxx));
     $this->assertIsA($bar->cuxx, 'testofwire_cux');
@@ -82,10 +141,10 @@ class TestOfWire extends UnitTestCase
 
   function test_create_instance_with_cyclic_dependency_using_setter() {
     $factory = $this->container->register('testofwire_foo');
-    $factory->registerConstructor(new k_wire_SharedDependency('testofwire_bar'));
+    $factory->registerConstructor(new wire_SharedDependency('testofwire_bar'));
 
     $factory = $this->container->register('testofwire_bar');
-    $factory->registerSetter(new k_wire_SharedDependency('testofwire_foo'), 'setFoo');
+    $factory->registerSetter(new wire_SharedDependency('testofwire_foo'), 'setFoo');
 
     $foo = $this->container->get('testofwire_foo');
     $bar = $this->container->get('testofwire_bar');
@@ -96,14 +155,14 @@ class TestOfWire extends UnitTestCase
 
   function test_get_shared_instance_with_cyclic_property_dependency() {
     $factory = $this->container->register('testofwire_cux');
-    $factory->registerProperty(new k_wire_SharedDependency('testofwire_cux'), 'cuxx');
+    $factory->registerProperty(new wire_SharedDependency('testofwire_cux'), 'cuxx');
     $cux = $this->container->get('testofwire_cux');
     $this->assertReference($cux, $cux->cuxx);
   }
 
   function test_registered_factory_called_when_creating_subclass() {
     $factory = $this->container->register('testofwire_cux');
-    $factory->registerProperty(new k_wire_ConstantDependency('some value'), 'cuxx');
+    $factory->registerProperty(new wire_ConstantDependency('some value'), 'cuxx');
 
     $cux = $this->container->create('testofwire_subcux');
     $this->assertIsA($cux, 'testofwire_subcux');
@@ -112,7 +171,7 @@ class TestOfWire extends UnitTestCase
 
   function test_create_with_required_userland_dependency() {
     $factory = $this->container->register('testofwire_foo');
-    $factory->registerConstructor(new k_wire_RequiredUserDependency());
+    $factory->registerConstructor(new wire_RequiredUserDependency());
     $obj = new StdClass();
     $foo = $this->container->create('testofwire_foo', $obj);
     $this->assertReference($foo->bar, $obj);
@@ -120,25 +179,25 @@ class TestOfWire extends UnitTestCase
 
   function test_create_with_required_userland_dependency_fails_when_called_without_arguments() {
     $factory = $this->container->register('testofwire_foo');
-    $factory->registerConstructor(new k_wire_RequiredUserDependency());
+    $factory->registerConstructor(new wire_RequiredUserDependency());
     try {
       $this->container->create('testofwire_foo');
       $this->fail("Expected exception not thrown");
-    } catch (k_wire_Exception $ex) {
+    } catch (wire_Exception $ex) {
       $this->pass("Expected exception caught");
     }
   }
 
   function test_create_with_optional_userland_dependency_doesnt_fail_when_called_without_arguments() {
     $factory = $this->container->register('testofwire_foo');
-    $factory->registerConstructor(new k_wire_UserDependency(NULL));
+    $factory->registerConstructor(new wire_UserDependency(NULL));
     $this->container->create('testofwire_foo');
   }
 
   function test_create_with_multiple_required_userland_dependency() {
     $factory = $this->container->register('testofwire_cux');
-    $factory->registerProperty(new k_wire_RequiredUserDependency(), 'one');
-    $factory->registerProperty(new k_wire_RequiredUserDependency(), 'two');
+    $factory->registerProperty(new wire_RequiredUserDependency(), 'one');
+    $factory->registerProperty(new wire_RequiredUserDependency(), 'two');
     $one = new StdClass();
     $two = new StdClass();
     $foo = $this->container->create('testofwire_cux', $one, $two);
@@ -148,9 +207,9 @@ class TestOfWire extends UnitTestCase
 
   function test_cascade_userland_arguments() {
     $factory = $this->container->register('testofwire_foo');
-    $factory->registerConstructor(new k_wire_TransientDependency('testofwire_cux'));
+    $factory->registerConstructor(new wire_TransientDependency('testofwire_cux'));
     $factory = $this->container->register('testofwire_cux');
-    $factory->registerProperty(new k_wire_RequiredUserDependency(), 'prop');
+    $factory->registerProperty(new wire_RequiredUserDependency(), 'prop');
     $one = new StdClass();
     $foo = $this->container->create('testofwire_foo', $one);
     $this->assertReference($foo->bar->prop, $one);
@@ -158,10 +217,10 @@ class TestOfWire extends UnitTestCase
 
   function test_cascade_userland_arguments_with_multiple_consumers() {
     $factory = $this->container->register('testofwire_foo');
-    $factory->registerConstructor(new k_wire_TransientDependency('testofwire_cux'));
-    $factory->registerProperty(new k_wire_RequiredUserDependency(), 'prop');
+    $factory->registerConstructor(new wire_TransientDependency('testofwire_cux'));
+    $factory->registerProperty(new wire_RequiredUserDependency(), 'prop');
     $factory = $this->container->register('testofwire_cux');
-    $factory->registerProperty(new k_wire_RequiredUserDependency(), 'prop');
+    $factory->registerProperty(new wire_RequiredUserDependency(), 'prop');
     $one = new StdClass();
     $two = new StdClass();
     $foo = $this->container->create('testofwire_foo', $one, $two);
@@ -202,19 +261,19 @@ class TestOfRegistry_SubFoo extends TestOfRegistry_Foo
 class TestOfRegistry extends UnitTestCase
 {
   function test_can_create_class_without_args() {
-    $registry = new k_wire_Container();
+    $registry = new wire_Container();
     $foo = $registry->create("TestOfRegistry_Foo");
     $this->assertIsA($foo, "TestOfRegistry_Foo");
   }
 
   function test_can_create_class_with_args() {
-    $registry = new k_wire_Container();
+    $registry = new wire_Container();
     $foo = $registry->create("TestOfRegistry_Foo", 42);
     $this->assertEqual(Array(42), $foo->cargs);
   }
 
   function test_can_create_class_with_args_as_array() {
-    $registry = new k_wire_Container();
+    $registry = new wire_Container();
     $foo = $registry->createArgs("TestOfRegistry_Foo", Array(42));
     $this->assertEqual(Array(42), $foo->cargs);
   }
@@ -222,7 +281,7 @@ class TestOfRegistry extends UnitTestCase
   // segfaults ... and doesn't work either
   // the problem is, that calling ReflectionClass::newInstance() with a constructor, taking arguments by reference
   // function test_create_class_with_args_as_array_preserves_reference() {
-  //   $registry = new k_wire_Container();
+  //   $registry = new wire_Container();
   //   $val = 42;
   //   $args = Array();
   //   $args[] =& $val;
@@ -232,7 +291,7 @@ class TestOfRegistry extends UnitTestCase
   // }
 
   function test_register_invalid_callback_as_factory_throws_exception() {
-    $registry = new k_wire_Container();
+    $registry = new wire_Container();
     try {
       $registry->registerConstructor(
         "TestOfRegistry_Foo",
@@ -249,7 +308,7 @@ class TestOfRegistry extends UnitTestCase
   }
 
   function test_registered_factory_called_when_creating_class() {
-    $registry = new k_wire_Container();
+    $registry = new wire_Container();
     $registry->registerConstructor(
       "TestOfRegistry_Foo",
       create_function(
@@ -262,7 +321,7 @@ class TestOfRegistry extends UnitTestCase
   }
 
   function test_registered_factory_called_when_creating_subclass() {
-    $registry = new k_wire_Container();
+    $registry = new wire_Container();
     $registry->registerConstructor(
       "TestOfRegistry_Foo",
       create_function(
@@ -275,7 +334,7 @@ class TestOfRegistry extends UnitTestCase
   }
 
   function test_callback_pass_classname_as_first_parameter() {
-    $registry = new k_wire_Container();
+    $registry = new wire_Container();
     $registry->registerConstructor(
       "TestOfRegistry_Foo",
       create_function(
@@ -288,7 +347,7 @@ class TestOfRegistry extends UnitTestCase
   }
 
   function test_callback_pass_arguments_as_second_parameter() {
-    $registry = new k_wire_Container();
+    $registry = new wire_Container();
     $registry->registerConstructor(
       "TestOfRegistry_Foo",
       create_function(
@@ -301,7 +360,7 @@ class TestOfRegistry extends UnitTestCase
   }
 
   function test_callback_pass_registry_as_third_parameter() {
-    $registry = new k_wire_Container();
+    $registry = new wire_Container();
     $registry->registerConstructor(
       "TestOfRegistry_Foo",
       create_function(
@@ -314,20 +373,20 @@ class TestOfRegistry extends UnitTestCase
   }
 
   function test_get_shared_returns_new_instance() {
-    $registry = new k_wire_Container();
+    $registry = new wire_Container();
     $foo = $registry->get("TestOfRegistry_Foo");
     $this->assertIsA($foo, "TestOfRegistry_Foo");
   }
 
   function test_get_shared_twice_returns_same_instance() {
-    $registry = new k_wire_Container();
+    $registry = new wire_Container();
     $foo = $registry->get("TestOfRegistry_Foo");
     $bar = $registry->get("TestOfRegistry_Foo");
     $this->assertReference($foo, $bar);
   }
 
   function test_alias_resolves_to_classname() {
-    $registry = new k_wire_Container();
+    $registry = new wire_Container();
     $registry->registerAlias("foo", "TestOfRegistry_Foo");
     $foo = $registry->get('foo');
     $bar = $registry->get("TestOfRegistry_Foo");
@@ -335,7 +394,7 @@ class TestOfRegistry extends UnitTestCase
   }
 
   function test_get_shared_with_magic_stuff() {
-    $registry = new k_wire_Container();
+    $registry = new wire_Container();
     $registry->registerAlias("foo", "TestOfRegistry_Foo");
     $foo = $registry->foo;
     $bar = $registry->get("TestOfRegistry_Foo");
@@ -343,13 +402,13 @@ class TestOfRegistry extends UnitTestCase
   }
 
   function test_get_shared_with_magic_stuff_works_transparently() {
-    $registry = new k_wire_Container();
+    $registry = new wire_Container();
     $registry->registerAlias("foo", "TestOfRegistry_Foo");
     $this->assertEqual($registry->foo->yonks(), "yonks");
   }
 
   function test_load_from_config_file() {
-    $registry = new k_wire_Container();
+    $registry = new wire_Container();
     $registry->load(dirname(__FILE__)."/support/registry.config.php");
     $this->assertIsA($registry->get("TestOfRegistry_Foo"), "StdClass");
     $this->assertIsA($registry->get("yabba_the_hutt"), "StdClass");
@@ -357,4 +416,3 @@ class TestOfRegistry extends UnitTestCase
 
 }
 
-simpletest_autorun(__FILE__);

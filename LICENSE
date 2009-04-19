@@ -1,5 +1,6 @@
-konstrukt framework
-Copyright (C) 2005,2006 Troels Knak-Nielsen (troels@konstrukt.dk)
+Wire - A dependency injection container
+
+Copyright (C) 2005-2009 Troels Knak-Nielsen (troels@konstrukt.dk)
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
