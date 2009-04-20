@@ -4,7 +4,7 @@ if (realpath($_SERVER['PHP_SELF']) == __FILE__) {
   require_once 'simpletest/autorun.php';
 }
 require_once dirname(__FILE__) . '/../../config/global.inc.php';
-require_once 'konstrukt/trunk/lib/konstrukt/virtualbrowser.inc.php';
+require_once 'konstrukt/virtualbrowser.inc.php';
 
 class WebTestOfRoot extends WebTestCase {
   function createBrowser() {
