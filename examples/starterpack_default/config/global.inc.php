@@ -6,9 +6,12 @@ set_include_path(
   . PATH_SEPARATOR . dirname(dirname(__FILE__)).'/lib');
 
 require_once 'konstrukt/konstrukt.inc.php';
-require_once 'smarty/libs/Smarty.class.php';
-require_once dirname(__FILE__) . '/wiring.inc.php';
-
-date_default_timezone_set('Europe/Paris');
 set_error_handler('k_exceptions_error_handler');
 spl_autoload_register('k_autoload');
+
+if (is_file(dirname(__FILE__) . '/local.inc.php')) {
+  require_once dirname(__FILE__) . '/local.inc.php';
+} else {
+  require_once dirname(__FILE__) . '/default.inc.php';
+}
+
