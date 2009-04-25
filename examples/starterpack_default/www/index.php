@@ -5,7 +5,7 @@ k()
   ->setComponentCreator(new k_PhemtoAdapter(create_phemto_container()))
   // Enable file logging
   ->setLog(dirname(__FILE__) . '/../log/debug.log')
-  // Uncomment the nexct line to enable in-browser debugging
+  // Uncomment the next line to enable in-browser debugging
   //->setDebug()
   // Dispatch request
   ->run('components_Root')
