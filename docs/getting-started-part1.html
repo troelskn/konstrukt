@@ -29,7 +29,7 @@
 <div class="nostyle">  <h1>Root</h1>
   <p>This page is intentionally left blank</p></div>
 
-<p>This is the output of the root components <code>GET()</code> function. If you open the file <code>/var/www/foo/lib/components/root.php</code>, you'll see that it renders the output with the use of a basic template. If you'd rather use a different template engine (Or perhaps none at all), you are free to change this. All that matters is that the <code>GET()</code> method returns a string - How it's generated is of no concern for Konstrukt.</p>
+<p>This is the output of the root components <code>renderHtml()</code> function. If you open the file <code>/var/www/foo/lib/components/root.php</code>, you'll see that it renders the output with the use of a basic template. If you'd rather use a different template engine (Or perhaps none at all), you are free to change this. All that matters is that the <code>renderHtml()</code> method returns a string - How it's generated is of no concern for Konstrukt.</p>
 
 <h2 id="the-model-layer">The model layer</h2>
 
@@ -139,7 +139,7 @@
 
 <pre class="php"><span class="kw2">&lt;?php</span>
 <span class="kw2">class</span> components_contacts_List <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
-  <span class="kw2">function</span> GET<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+  <span class="kw2">function</span> renderHtml<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="kw3">global</span> <span class="re0">$contacts</span>;
     <span class="re0">$this</span>-&gt;<span class="me1">document</span>-&gt;<span class="me1">setTitle</span><span class="br0">&#40;</span><span class="st0">&quot;Contacts&quot;</span><span class="br0">&#41;</span>;
     <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-list.tpl.php&quot;</span><span class="br0">&#41;</span>;
@@ -150,7 +150,7 @@
   <span class="br0">&#125;</span>
 <span class="br0">&#125;</span></pre>
 
-<p>This is a rather simple component. It implements the function <code>GET()</code>, which corresponds to a http GET request. You can also implement handlers for other http methods, such as POST, but GET is by far the most common.</p>
+<p>This is a rather simple component. It implements the function <code>renderHtml()</code>, which will be called for a basic GET request, if the client supports that format (All browsers do). You could alternatively implement <code>GET()</code>, which would be invoked on any kind of GET request, but usually you shouldn't need this. There are also handlers for POST (and other more exotic http-methods), which follows a similar naming scheme.</p>
 
 <p>As you can see, we're referring the global variable <code>$contacts</code>, which we created in <code>global.inc.php</code>. Next we create a template instance and assign all contacts to it, before rendering it to a string and returning the result. A <code>k_Template</code> is a very simple wrapper around <code>include</code> -- It just returns the output as a string.</p>
 
@@ -195,7 +195,7 @@
 
 <pre class="php"><span class="kw2">&lt;?php</span>
 <span class="kw2">class</span> components_contacts_Show <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
-  <span class="kw2">function</span> GET<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+  <span class="kw2">function</span> renderHtml<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="kw3">global</span> <span class="re0">$contacts</span>;
     <span class="re0">$contact</span> = <span class="re0">$contacts</span>-&gt;<span class="me1">fetchByName</span><span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     <span class="kw1">if</span> <span class="br0">&#40;</span>!<span class="re0">$contact</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>

@@ -6,7 +6,7 @@ Negotiating the Content-Type
 ----------------------------
 Most of the time a web application will emit HTML. That's the fabric of which the web is made. Once in a while though, we might have to generate other types of responses. In these cases, we clearly don't want the output to get wrapped in the regular document rendering. For that we need an abnormal response. We have already seen one kind of abnormal response, with the `k_PageNotFound`, but this time we need a more specific kind. We'll extend the contact component with the capacity to render as a [vcard](http://en.wikipedia.org/wiki/VCard).
 
-To supply a ressource as a different content-type, we can use Konstrukts built-in support for content-negotiation, which is an often underutilised feature of the http protocol. To get this, we need to edit the "show" component, so that the `GET()` method can fork out to either the html or the vcard handler. We could do so manually in the `GET()` method, but there are generic hooks available for this purpose. After a revision of the component, we end up with this:
+To supply a ressource as a different content-type, we can use Konstrukts built-in support for content-negotiation, which is an often underutilised feature of the http protocol. To get this, we need to edit the "show" component, so that the GET request can fork out to either the html or the vcard handler. We could do so manually in the `GET()` method, but there are generic hooks available for this purpose. After a revision of the component, we end up with this:
 
 ..php
 <?php
@@ -35,7 +35,7 @@ class components_contacts_Show extends k_Component {
   }
 }
 
-As you can see, we now have two render-methods, instead of a single `GET()` method. The default `GET()` method will use these mappings to dispatch to one or the other, using content-type negotiation. There is a default mapping from content-type to renderer name, which you can find in the documentation, or you can override the `$renderers` property to specify your own; This may also be needed, if you're rendering a content-type that isn't specified amongst the defaults.
+As you can see, we now have two render-methods, instead of a single `GET()` method. The default `GET()` method will use these mappings to dispatch to one or the other, using content-type negotiation. There is a default mapping from content-type to renderer name, which you can find in the documentation.
 
 Inside of the vcard renderer, we're creating an abnormal response. As discussed above, this circumvents the normal rendering pipeline and allows us fine grained control over the exact http response sent out.
 

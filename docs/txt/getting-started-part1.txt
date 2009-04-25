@@ -22,7 +22,7 @@ You can now open your browser and go to `http://localhost/foo/www` and verify th
   <h1>Root</h1>
   <p>This page is intentionally left blank</p>
 
-This is the output of the root components `GET()` function. If you open the file `/var/www/foo/lib/components/root.php`, you'll see that it renders the output with the use of a basic template. If you'd rather use a different template engine (Or perhaps none at all), you are free to change this. All that matters is that the `GET()` method returns a string - How it's generated is of no concern for Konstrukt.
+This is the output of the root components `renderHtml()` function. If you open the file `/var/www/foo/lib/components/root.php`, you'll see that it renders the output with the use of a basic template. If you'd rather use a different template engine (Or perhaps none at all), you are free to change this. All that matters is that the `renderHtml()` method returns a string - How it's generated is of no concern for Konstrukt.
 
 The model layer
 ---------------
@@ -139,7 +139,7 @@ Now that our prerequisites are in place, let's get back to the components. As yo
 ..php
 <?php
 class components_contacts_List extends k_Component {
-  function GET() {
+  function renderHtml() {
     global $contacts;
     $this->document->setTitle("Contacts");
     $t = new k_Template("templates/contacts-list.tpl.php");
@@ -150,7 +150,7 @@ class components_contacts_List extends k_Component {
   }
 }
 
-This is a rather simple component. It implements the function `GET()`, which corresponds to a http GET request. You can also implement handlers for other http methods, such as POST, but GET is by far the most common.
+This is a rather simple component. It implements the function `renderHtml()`, which will be called for a basic GET request, if the client supports that format (All browsers do). You could alternatively implement `GET()`, which would be invoked on any kind of GET request, but usually you shouldn't need this. There are also handlers for POST (and other more exotic http-methods), which follows a similar naming scheme.
 
 As you can see, we're referring the global variable `$contacts`, which we created in `global.inc.php`. Next we create a template instance and assign all contacts to it, before rendering it to a string and returning the result. A `k_Template` is a very simple wrapper around `include` -- It just returns the output as a string.
 
@@ -200,7 +200,7 @@ Note how `components_contact_Show` is used, regardless of what the name is. Now 
 ..php
 <?php
 class components_contacts_Show extends k_Component {
-  function GET() {
+  function renderHtml() {
     global $contacts;
     $contact = $contacts->fetchByName($this->name());
     if (!$contact) {
