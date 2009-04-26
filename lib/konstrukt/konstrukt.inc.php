@@ -522,9 +522,10 @@ class k_HttpRequest implements k_Context {
       }
     }
     $normalised_path = implode('/', $stack);
+    $querystring = http_build_query($params);
     return
       ($normalised_path === $this->href_base ? ($normalised_path . '/') : $normalised_path)
-      . (count($params) > 0 ? ('?' . http_build_query($params)) : '');
+      . ($querystring ? ('?' . $querystring) : '');
   }
   /**
     * @return string
