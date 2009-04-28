@@ -280,6 +280,10 @@ class k_HtmlResponse extends k_BaseResponse {
   }
 }
 
+class k_EditResponse extends k_HtmlResponse {
+
+}
+
 class k_TextResponse extends k_BaseResponse {
   function contentType() {
     return 'text/text';

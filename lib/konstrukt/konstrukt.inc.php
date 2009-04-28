@@ -1121,7 +1121,7 @@ class k_Template {
     $GLOBALS['_global_function_callback_url'] = array($context, 'url');
     ob_start();
     try {
-      if (!self::SearchIncludePath($this->path)) {
+      if (!k_search_include_path($this->path)) {
         throw new Exception("Unable to find file '" . $this->path . "'");
       }
       include($this->path);
@@ -1139,26 +1139,6 @@ class k_Template {
       $GLOBALS['_global_function_callback_url'] = $__old_handler_url__;
       throw $ex;
     }
-  }
-  /**
-    * Searches the include-path for a filename.
-    * Returns the absolute path (realpath) if found or FALSE
-    * @return mixed
-    */
-  protected static function SearchIncludePath($filename) {
-    if (is_file($filename)) {
-      return $filename;
-    }
-    foreach (explode(PATH_SEPARATOR, ini_get("include_path")) as $path) {
-      if (strlen($path) > 0 && $path{strlen($path)-1} != DIRECTORY_SEPARATOR) {
-        $path .= DIRECTORY_SEPARATOR;
-      }
-      $f = realpath($path . $filename);
-      if ($f && is_file($f)) {
-        return $f;
-      }
-    }
-    return false;
   }
   /**
    * Installs global functions
