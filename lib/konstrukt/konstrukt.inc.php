@@ -680,6 +680,14 @@ class k_PropertyImmutableException extends Exception {
 }
 
 /**
+ * Exception is raised when an input content-type has an unsupported charset.
+ */
+class k_UnsupportedContentTypeCharsetException extends Exception {
+  /** @var string */
+  protected $message = 'Received an unsupported chaset in content-type';
+}
+
+/**
  * A component is the baseclass for all userland components
  * Each component should be completely isolated from its surrounding, only
  * depending on its parent context
@@ -844,7 +852,14 @@ abstract class k_Component implements k_Context {
     return $this->context->negotiateContentType($candidates, $user_override);
   }
   protected function contentTypeShortName() {
-    $content_type = preg_replace('/^[^;]+(;.*)$/', '', $this->header('content-type'));
+    preg_match('/^([^;]+)\s*(;\s*charset=(.*))?$/', $this->header('content-type'), $reg);
+    $content_type = isset($reg[1]) ? $reg[1] : '';
+    $charset = isset($reg[3]) ? strtolower($reg[3]) : 'utf-8';
+    if ($charset !== 'utf-8') {
+      // This could probably be dealt with a bit more elegantly, but that would require us to re-implement PHP's native input-parsing.
+      // For now, if you get this error, you should just fix the problem by requiring your clients to speak utf-8.
+      throw new k_UnsupportedContentTypeCharsetException();
+    }
     return isset($GLOBALS['konstrukt_content_types'][$content_type]) ? $GLOBALS['konstrukt_content_types'][$content_type] : null;
   }
   /**

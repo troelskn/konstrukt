@@ -405,4 +405,17 @@ class TestOfContentTypeDispathing extends UnitTestCase {
       $this->pass();
     }
   }
+  function test_a_content_type_with_explicit_charset_utf8_is_treated_transparently() {
+    $root = $this->createComponent('post', array('content-type' => 'application/json; charset=utf-8'));
+    $this->assertEqual("postJson called", $root->dispatch());
+  }
+  function test_a_content_type_with_explicit_charset_other_than_utf8_raises_an_error() {
+    $root = $this->createComponent('post', array('content-type' => 'application/json; charset=iso-8859-1'));
+    try {
+      $root->dispatch();
+      $this->fail("Expected exception");
+    } catch (k_UnsupportedContentTypeCharsetException $ex) {
+      $this->pass("Exception caught");
+    }
+  }
 }
