@@ -323,6 +323,7 @@ interface k_Context {
   function requestUri();
   function method();
   function serverName();
+  function remoteAddr();
   function identity();
   function url($path = "", $params = array());
   function subspace();
@@ -493,6 +494,9 @@ class k_HttpRequest implements k_Context {
     */
   function serverName() {
     return $this->server['SERVER_NAME'];
+  }
+  function remoteAddr() {
+    return $this->server['REMOTE_ADDR'];
   }
   /**
     * @return k_Identity
@@ -802,6 +806,9 @@ abstract class k_Component implements k_Context {
     */
   function serverName() {
     return $this->context->serverName();
+  }
+  function remoteAddr() {
+    return $this->context->remoteAddr();
   }
   function identity() {
     return $this->context->identity();
