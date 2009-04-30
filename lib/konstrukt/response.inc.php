@@ -275,7 +275,6 @@ class k_HtmlResponse extends k_BaseResponse {
   function toContentType($content_type) {
     switch ($content_type) {
     case 'text/html':
-    case 'text/x-html-fragment':
       return $this->content;
     }
     throw new k_ImpossibleContentTypeConversionException();
@@ -289,6 +288,14 @@ class k_EditResponse extends k_HtmlResponse {
 class k_FragmentResponse extends k_HtmlResponse {
   function contentType() {
     return 'text/x-html-fragment';
+  }
+  function toContentType($content_type) {
+    switch ($content_type) {
+    case 'text/html':
+    case 'text/x-html-fragment':
+      return $this->content;
+    }
+    throw new k_ImpossibleContentTypeConversionException();
   }
 }
 
