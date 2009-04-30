@@ -10,6 +10,7 @@ require_once 'konstrukt/charset.inc.php';
 $GLOBALS['konstrukt_content_types'] = array(
   'text/html' => 'html',
   'text/html+edit' => 'edit',
+  'text/x-html-fragment' => 'fragment',
   'text/xml' => 'xml',
   'text/plain' => 'text',
   'text/csv' => 'csv',
@@ -274,6 +275,7 @@ class k_HtmlResponse extends k_BaseResponse {
   function toContentType($content_type) {
     switch ($content_type) {
     case 'text/html':
+    case 'text/x-html-fragment':
       return $this->content;
     }
     throw new k_ImpossibleContentTypeConversionException();
@@ -282,6 +284,12 @@ class k_HtmlResponse extends k_BaseResponse {
 
 class k_EditResponse extends k_HtmlResponse {
 
+}
+
+class k_FragmentResponse extends k_HtmlResponse {
+  function contentType() {
+    return 'text/x-html-fragment';
+  }
 }
 
 class k_TextResponse extends k_BaseResponse {
