@@ -323,6 +323,7 @@ abstract class k_ComplexResponse extends k_BaseResponse {
       $this->charset = $content->charset();
       $this->content = $content->toContentType($this->internalType());
     } else {
+      $this->charset = new k_charset_Utf8();
       $this->content = $content;
     }
   }
