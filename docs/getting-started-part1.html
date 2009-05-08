@@ -18,11 +18,17 @@
 
 <h2 id="creating-a-new-project">Creating a new project</h2>
 
-<p>For this tutorial we'll create a very simple application. Konstrukt doesn't strictly enforce any particular directory layout, but to provide a starting point, you can take a copy of the folder <code>examples/starterpack_light</code> from the distribution of Konstrukt. Assuming that your web root is at <code>/var/www</code>, copy the directory <code>examples/starterpack_light</code> to <code>/var/www/foo</code> for our application "foo". For a real application, you'd probably want to mount the application on its own virtualhost, but this is a quick way to get started and it's trivial to move the application later on.</p>
+<p>For this tutorial we'll create a very simple application. Konstrukt doesn't strictly enforce any particular directory layout, but to provide a starting point, you can take a copy of the folder <code>examples/starterpack_light</code> from the distribution of Konstrukt. Assuming that your web root is at <code>/var/www</code>, copy the directory <code>examples/starterpack_light</code> to <code>/var/www/foo</code> for our application "foo". For a real application, you'd probably want to mount the application on its own virtualhost, but this is a quick way to get started and it's trivial to move the application later on. If you have svn installed, you can type the following on the command line to create your project:</p>
+
+<div class="nostyle">  svn export https://konstrukt.googlecode.com/svn/tags/2.1.0/examples/starterpack_light /var/www/foo</div>
 
 <p><code>starterpack_light</code> is a basic setup, which contains a simple directory structure, and other things that you need to begin a web application. There is also a more complete setup at <code>starterpack_default</code>, which is recommended for new applications; The reason we're using the minimal setup in this tutorial, is to keep external dependencies low.</p>
 
 <p>The starterpack contains several folders. For now, we'll just concern our selves with two of them; <code>www</code> which should be the web root of your site and <code>lib</code> which should contain the classes of your application. Once you're set up, the <code>www</code> folder isn't used much.</p>
+
+<p>If you use a unix system, you'll probably have to give the web server access to write to the folder <code>log</code>, since the application is configured to write various information to log files placed herein. You can simply run the following command:</p>
+
+<div class="nostyle">  chmod 777 /var/www/foo/log</div>
 
 <p>You can now open your browser and go to <code>http://localhost/foo/www</code> and verify that everything is in order. The following message should meet you if everything is running correctly:</p>
 
@@ -100,6 +106,14 @@
 
 <p>To use our model component, we need a database. Since SqLite is standard with most php installations, and it's the simplest database to install, I'll assume that, but this simple example should work equally well with MySql or any other sql database for the matter.</p>
 
+<p>Since SqLite stores its database in a file, we need a location for it. We'll create a folder under your project for this:</p>
+
+<p>..
+mkdir var
+chmod 777 var</p>
+
+<p class="note">Note: If you use Windows, you can skip the <code>chmod</code> part.</p>
+
 <p>Log in to sqlite and create our database at <code>/var/www/foo/var/database.sqlite</code>:</p>
 
 <pre class="sql"><span style="color: #993333; font-weight: bold;">CREATE</span> <span style="color: #993333; font-weight: bold;">TABLE</span> contacts <span style="color: #66cc66;">&#40;</span>
@@ -122,6 +136,11 @@
     <span style="color: #ff0000;">&quot;Jar Jar&quot;</span>,
     <span style="color: #ff0000;">&quot;Binks&quot;</span>,
     <span style="color: #ff0000;">&quot;jarjar@naboo.com&quot;</span><span style="color: #66cc66;">&#41;</span>;</pre>
+
+<p>Again, since the web server needs access to the database, we'll have to lax the file permissions:</p>
+
+<p>..
+chmod 666 var/database.sqlite</p>
 
 <p>Contrary to commonly accepted practise, we'll create a global database link, that we can use throughout the application. This is obviously not something you should do in a real application, but to keep focus on the controlelr layer for now, we'll do it none the less. We can then later change to use a dependency injection technique, which is the recommended approach. Open up <code>config/global.inc.php</code> and add the following lines:</p>
 
@@ -154,7 +173,7 @@
 
 <p>As you can see, we're referring the global variable <code>$contacts</code>, which we created in <code>global.inc.php</code>. Next we create a template instance and assign all contacts to it, before rendering it to a string and returning the result. A <code>k_Template</code> is a very simple wrapper around <code>include</code> -- It just returns the output as a string.</p>
 
-<p>Obviously we also need a template, so save the following into <code>/var/www/foo/lib/templates/contacts-list.tpl.php</code>:</p>
+<p>Obviously we also need a template, so save the following into <code>/var/www/foo/templates/contacts-list.tpl.php</code>:</p>
 
 <pre class="php">&lt;h2&gt;Contacts&lt;/h2&gt;
 &lt;ul&gt;
@@ -187,14 +206,14 @@
 <pre class="php"><span class="kw2">&lt;?php</span>
 <span class="kw2">class</span> components_contacts_List <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
   <span class="kw2">function</span> map<span class="br0">&#40;</span><span class="re0">$name</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="kw1">return</span> <span class="st0">'components_contacts_Show'</span>;
+    <span class="kw1">return</span> <span class="st0">'components_contacts_Entity'</span>;
   <span class="br0">&#125;</span>
 ...</pre>
 
-<p>Note how <code>components_contact_Show</code> is used, regardless of what the name is. Now we need to create the newly referred component. Save this as <code>/var/www/foo/lib/components/contacts/show.php</code>:</p>
+<p>Note how <code>components_contact_Entity</code> is used, regardless of what the name is. Now we need to create the newly referred component. Save this as <code>/var/www/foo/lib/components/contacts/entity.php</code>:</p>
 
 <pre class="php"><span class="kw2">&lt;?php</span>
-<span class="kw2">class</span> components_contacts_Show <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
+<span class="kw2">class</span> components_contacts_Entity <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
   <span class="kw2">function</span> renderHtml<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="kw3">global</span> <span class="re0">$contacts</span>;
     <span class="re0">$contact</span> = <span class="re0">$contacts</span>-&gt;<span class="me1">fetchByName</span><span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
@@ -202,7 +221,7 @@
       <span class="kw1">throw</span> <span class="kw2">new</span> k_PageNotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
     <span class="br0">&#125;</span>
     <span class="re0">$this</span>-&gt;<span class="me1">document</span>-&gt;<span class="me1">setTitle</span><span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">full_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show.tpl.php&quot;</span><span class="br0">&#41;</span>;
+    <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-entity.tpl.php&quot;</span><span class="br0">&#41;</span>;
     <span class="kw1">return</span> <span class="re0">$t</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="re0">$this</span>, <span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">'contact'</span> =&gt; <span class="re0">$contact</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>
 <span class="br0">&#125;</span></pre>
@@ -211,7 +230,7 @@
 
 <p>The next thing is that we throw an exception if the contact isn't found. Konstrukt defines a couple of specific exceptions, that map to a particular meaning in the http protocol. For example, <code>k_PageNotFound</code> will emit a 404 Page Not Found. The use of exceptions for breaking off the regular rendering pipeline makes it possible to encapsulate the effects of components.</p>
 
-<p>To complete the picture, we need a template to match our component. Save this as <code>/var/www/foo/templates/contacts-show.tpl.php</code>:</p>
+<p>To complete the picture, we need a template to match our component. Save this as <code>/var/www/foo/templates/contacts-entity.tpl.php</code>:</p>
 
 <pre class="php">&lt;h2&gt;&lt;?php e<span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">short_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; ?&gt;&lt;/h2&gt;
 &lt;dl&gt;

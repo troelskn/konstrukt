@@ -14,10 +14,10 @@
 
 <p>Most of the time a web application will emit HTML. That's the fabric of which the web is made. Once in a while though, we might have to generate other types of responses. In these cases, we clearly don't want the output to get wrapped in the regular document rendering. For that we need an abnormal response. We have already seen one kind of abnormal response, with the <code>k_PageNotFound</code>, but this time we need a more specific kind. We'll extend the contact component with the capacity to render as a <a href="http://en.wikipedia.org/wiki/VCard">vcard</a>.</p>
 
-<p>To supply a ressource as a different content-type, we can use Konstrukts built-in support for content-negotiation, which is an often underutilised feature of the http protocol. To get this, we need to edit the "show" component, so that the GET request can fork out to either the html or the vcard handler. We could do so manually in the <code>GET()</code> method, but there are generic hooks available for this purpose. After a revision of the component, we end up with this:</p>
+<p>To supply a ressource as a different content-type, we can use Konstrukts built-in support for content-negotiation, which is an often underutilised feature of the http protocol. To get this, we need to edit the "entity" component, so that the GET request can fork out to either the html or the vcard handler. We could do so manually in the <code>GET()</code> method, but there are generic hooks available for this purpose. After a revision of the component, we end up with this:</p>
 
 <pre class="php"><span class="kw2">&lt;?php</span>
-<span class="kw2">class</span> components_contacts_Show <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
+<span class="kw2">class</span> components_contacts_Entity <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
   <span class="kw2">function</span> renderHtml<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="kw3">global</span> <span class="re0">$contacts</span>;
     <span class="re0">$contact</span> = <span class="re0">$contacts</span>-&gt;<span class="me1">fetchByName</span><span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
@@ -25,7 +25,7 @@
       <span class="kw1">throw</span> <span class="kw2">new</span> k_PageNotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
     <span class="br0">&#125;</span>
     <span class="re0">$this</span>-&gt;<span class="me1">document</span>-&gt;<span class="me1">setTitle</span><span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">full_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show.tpl.php&quot;</span><span class="br0">&#41;</span>;
+    <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-entity.tpl.php&quot;</span><span class="br0">&#41;</span>;
     <span class="kw1">return</span> <span class="re0">$t</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="re0">$this</span>, <span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">'contact'</span> =&gt; <span class="re0">$contact</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>
   <span class="kw2">function</span> renderVcard<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
@@ -34,9 +34,8 @@
     <span class="kw1">if</span> <span class="br0">&#40;</span>!<span class="re0">$contact</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
       <span class="kw1">throw</span> <span class="kw2">new</span> k_PageNotFound<span class="br0">&#40;</span><span class="br0">&#41;</span>;
     <span class="br0">&#125;</span>
-    <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show-vcard.tpl.php&quot;</span><span class="br0">&#41;</span>;
-    <span class="re0">$response</span> = <span class="kw2">new</span> k_HttpResponse<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    <span class="re0">$response</span>-&gt;<span class="me1">setContent</span><span class="br0">&#40;</span><span class="re0">$t</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="re0">$this</span>, <span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">'contact'</span> =&gt; <span class="re0">$contact</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-entity-vcard.tpl.php&quot;</span><span class="br0">&#41;</span>;
+    <span class="re0">$response</span> = <span class="kw2">new</span> k_HttpResponse<span class="br0">&#40;</span><span class="nu0">200</span>, <span class="re0">$t</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="re0">$this</span>, <span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">'contact'</span> =&gt; <span class="re0">$contact</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     <span class="re0">$response</span>-&gt;<span class="me1">setContentType</span><span class="br0">&#40;</span><span class="st0">'text/x-vcard'</span><span class="br0">&#41;</span>;
     <span class="kw1">return</span> <span class="re0">$response</span>;
   <span class="br0">&#125;</span>
@@ -46,7 +45,7 @@
 
 <p>Inside of the vcard renderer, we're creating an abnormal response. As discussed above, this circumvents the normal rendering pipeline and allows us fine grained control over the exact http response sent out.</p>
 
-<p>Of course, we need the template to go with it in <code>templates/contacts-show-vcard.tpl.php</code>:</p>
+<p>Of course, we need the template to go with it in <code>templates/contacts-entity-vcard.tpl.php</code>:</p>
 
 <pre class="php">BEGIN:VCARD
 VERSION:<span class="nu0">3.0</span>
@@ -56,14 +55,14 @@ EMAIL;TYPE=PREF,INTERNET:<span class="kw2">&lt;?php</span> <span class="kw3">ech
 REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class="kw3">date</span><span class="br0">&#40;</span><span class="st0">&quot;Y-m-dTH:i:sZ&quot;</span><span class="br0">&#41;</span> . <span class="st0">&quot;<span class="es0">\n</span>&quot;</span>; <span class="kw2">?&gt;</span>
 <span class="kw3">END</span>:VCARD</pre>
 
-<p>If you have a browser with the capability of showing the <code>text/x-vcard</code> content-type, you can now request that. Chances are though, that you don't, so to make things a bit easier, there is an alternative. You can specify the content-type after the components name, separated by a semi-colon. Since a content-type contains a slash, it would break the url to include the whole content-type, so you can use the short-name instead. In this case, you can navigate to <code>http://localhost/foo/www/contacts/jabba;vcard</code> which will yield the same result as if you had requested the page with an accept header specifying that it wants <code>text/x-vcard</code> rather than <code>text/html</code>.</p>
+<p>If you have a browser with the capability of showing the <code>text/x-vcard</code> content-type, you can now request that. Chances are though, that you don't, so to make things a bit easier, there is an alternative. You can specify the content-type after the components name, separated by a dot. Since a content-type contains a slash, it would break the url to include the whole content-type, so you can use the short-name instead. In this case, you can navigate to <code>http://localhost/foo/www/contacts/jabba.vcard</code> which will yield the same result as if you had requested the page with an accept header specifying that it wants <code>text/x-vcard</code> rather than <code>text/html</code>.</p>
 
 <h2 id="component-chain-of-command">Component chain of command</h2>
 
 <p>As you may have noted above, there is some duplication between the two render functions. We can reduce this by moving part of it up into a more general handler on the component. In this case the top-level (<code>dispatch()</code>) would fit:</p>
 
 <pre class="php"><span class="kw2">&lt;?php</span>
-<span class="kw2">class</span> components_contacts_Show <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
+<span class="kw2">class</span> components_contacts_Entity <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
   <span class="kw2">protected</span> <span class="re0">$contact</span>;
   <span class="kw2">function</span> dispatch<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="kw3">global</span> <span class="re0">$contacts</span>;
@@ -75,13 +74,12 @@ REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class=
   <span class="br0">&#125;</span>
   <span class="kw2">function</span> renderHtml<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="re0">$this</span>-&gt;<span class="me1">document</span>-&gt;<span class="me1">setTitle</span><span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">contact</span>-&gt;<span class="me1">full_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show.tpl.php&quot;</span><span class="br0">&#41;</span>;
+    <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-entity.tpl.php&quot;</span><span class="br0">&#41;</span>;
     <span class="kw1">return</span> <span class="re0">$t</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="re0">$this</span>, <span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">'contact'</span> =&gt; <span class="re0">$this</span>-&gt;<span class="me1">contact</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>
   <span class="kw2">function</span> renderVcard<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-    <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show-vcard.tpl.php&quot;</span><span class="br0">&#41;</span>;
-    <span class="re0">$response</span> = <span class="kw2">new</span> k_HttpResponse<span class="br0">&#40;</span><span class="br0">&#41;</span>;
-    <span class="re0">$response</span>-&gt;<span class="me1">setContent</span><span class="br0">&#40;</span><span class="re0">$t</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="re0">$this</span>, <span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">'contact'</span> =&gt; <span class="re0">$this</span>-&gt;<span class="me1">contact</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-entity-vcard.tpl.php&quot;</span><span class="br0">&#41;</span>;
+    <span class="re0">$response</span> = <span class="kw2">new</span> k_HttpResponse<span class="br0">&#40;</span><span class="nu0">200</span>, <span class="re0">$t</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="re0">$this</span>, <span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">'contact'</span> =&gt; <span class="re0">$contact</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     <span class="re0">$response</span>-&gt;<span class="me1">setContentType</span><span class="br0">&#40;</span><span class="st0">'text/x-vcard'</span><span class="br0">&#41;</span>;
     <span class="kw1">return</span> <span class="re0">$response</span>;
   <span class="br0">&#125;</span>
@@ -113,18 +111,18 @@ REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class=
 
 <p>Most web applications have to do with user input from html-forms. A component can implement a handler for any HTTP method - including the POST, which are closely related to forms. Doing so is just a matter of providing a <code>POST()</code> method on the component. A POST request has some additional properties over a GET request. The payload of the request - usually fields of a form - can be accessed through the <code>body()</code> method. This corresponds to PHPs native <code>$_POST</code> superglobal, just like <code>query()</code> corresponds to <code>$_GET</code>. This naming is more correct, since the querystring is available in all requests - not just GET, and a payload can come with other types of request, such as PUT.</p>
 
-<p>To continue from our running example, the first thing we need is to render a html form for editing a contact. A form can be seen as an alternative rendering of a resource, and for this there is a special content-type reserved. Add the following to out 'show' component:</p>
+<p>To continue from our running example, the first thing we need is to render a html form for editing a contact. A form can be seen as an alternative rendering of a resource, and for this there is a special content-type reserved. Add the following to out 'entity' component:</p>
 
 <pre class="php"><span class="kw2">&lt;?php</span>
-<span class="kw2">class</span> components_contacts_Show <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
+<span class="kw2">class</span> components_contacts_Entity <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
   <span class="kw2">function</span> renderEdit<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="re0">$this</span>-&gt;<span class="me1">document</span>-&gt;<span class="me1">setTitle</span><span class="br0">&#40;</span><span class="st0">&quot;Edit &quot;</span> . <span class="re0">$this</span>-&gt;<span class="me1">contact</span>-&gt;<span class="me1">full_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
-    <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-show-edit.tpl.php&quot;</span><span class="br0">&#41;</span>;
-    <span class="kw1">return</span> <span class="re0">$t</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="re0">$this</span>, <span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">'contact'</span> =&gt; <span class="re0">$this</span>-&gt;<span class="me1">contact</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+    <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-entity-edit.tpl.php&quot;</span><span class="br0">&#41;</span>;
+    <span class="kw1">return</span> <span class="kw2">new</span> k_HtmlResponse<span class="br0">&#40;</span><span class="re0">$t</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="re0">$this</span>, <span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">'contact'</span> =&gt; <span class="re0">$this</span>-&gt;<span class="me1">contact</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>
   ...</pre>
 
-<p>And the template to go with it in <code>templates/contacts-show-edit.tpl.php</code>:</p>
+<p>And the template to go with it in <code>templates/contacts-entity-edit.tpl.php</code>:</p>
 
 <pre class="php">&lt;h2&gt;Edit <span class="kw2">&lt;?php</span> e<span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">short_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; ?&gt;&lt;/h2&gt;
 &lt;form method=<span class="st0">&quot;post&quot;</span> action=<span class="st0">&quot;&lt;?php e(url()); ?&gt;&quot;</span>&gt;
@@ -146,7 +144,7 @@ REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class=
      &lt;/label&gt;
   &lt;/p&gt;
    &lt;p&gt;
-     &lt;label&gt;Emal
+     &lt;label&gt;Email
        &lt;input type=<span class="st0">&quot;text&quot;</span> name=<span class="st0">&quot;email&quot;</span> value=<span class="st0">&quot;&lt;?php e($contact-&gt;email()); ?&gt;&quot;</span> /&gt;
      &lt;/label&gt;
   &lt;/p&gt;
@@ -160,12 +158,12 @@ REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class=
 <p>Now that we have the rendering of a form in place, we still need to process the POST request it will generate. Time to add yet another method to our component:</p>
 
 <pre class="php"><span class="kw2">&lt;?php</span>
-<span class="kw2">class</span> components_contacts_Show <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
-  <span class="kw2">function</span> POST<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+<span class="kw2">class</span> components_contacts_Entity <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
+  <span class="kw2">function</span> postForm<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="kw1">if</span> <span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">process</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">return</span> <span class="kw2">new</span> k_SeeOther<span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">url</span><span class="br0">&#40;</span><span class="st0">';'</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+      <span class="kw1">return</span> <span class="kw2">new</span> k_SeeOther<span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">url</span><span class="br0">&#40;</span><span class="st0">'.'</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     <span class="br0">&#125;</span>
-    <span class="kw1">return</span> <span class="re0">$this</span>-&gt;<span class="me1">GET</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
+    <span class="kw1">return</span> <span class="re0">$this</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>
   <span class="kw2">function</span> process<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="kw3">global</span> <span class="re0">$contacts</span>;
@@ -198,7 +196,7 @@ REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class=
 
 <p>As this tutorial isn't about the model layer, the implementation of <code>process()</code> is kept simple. You can test a failure case by omitting one of the fields. Otherwise the entity is saved back to the database.</p>
 
-<p>The <code>POST()</code> method - while brief - deserves a few words on the way. If the processing goes well, we generate a redirect. In this case it's for the current components url, with a neutral content-type. That will take the user back to the default representation after a successful operation. If there are failures, the form is redisplayed.</p>
+<p>The <code>postForm()</code> method - while brief - deserves a few words on the way. If the processing goes well, we generate a redirect. In this case it's for the current components url, with a neutral content-type. That will take the user back to the default representation after a successful operation. If there are failures, the form is redisplayed.</p>
 
 <p>This pattern is commonly known as "redirect after post" or "post-redirect-get" (PRG). Doing things in this exact way means that the users browser history won't store the POST actions, once the form has been completed. If we didn't do this, using the "back" button of the browser would try to re-submit the form. You have probably experienced this annoying behaviour on a web site more than once. Note that it is only after the form has been succesfully processed, that the redirect takes place.</p>
 </body>

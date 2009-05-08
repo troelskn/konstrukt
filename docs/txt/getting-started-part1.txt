@@ -10,11 +10,19 @@ A proper component does not communicate directly with its environment. Instead o
 
 Creating a new project
 ----------------------
-For this tutorial we'll create a very simple application. Konstrukt doesn't strictly enforce any particular directory layout, but to provide a starting point, you can take a copy of the folder `examples/starterpack_light` from the distribution of Konstrukt. Assuming that your web root is at `/var/www`, copy the directory `examples/starterpack_light` to `/var/www/foo` for our application "foo". For a real application, you'd probably want to mount the application on its own virtualhost, but this is a quick way to get started and it's trivial to move the application later on.
+For this tutorial we'll create a very simple application. Konstrukt doesn't strictly enforce any particular directory layout, but to provide a starting point, you can take a copy of the folder `examples/starterpack_light` from the distribution of Konstrukt. Assuming that your web root is at `/var/www`, copy the directory `examples/starterpack_light` to `/var/www/foo` for our application "foo". For a real application, you'd probably want to mount the application on its own virtualhost, but this is a quick way to get started and it's trivial to move the application later on. If you have svn installed, you can type the following on the command line to create your project:
+
+..raw
+  svn export https://konstrukt.googlecode.com/svn/tags/2.1.0/examples/starterpack_light /var/www/foo
 
 `starterpack_light` is a basic setup, which contains a simple directory structure, and other things that you need to begin a web application. There is also a more complete setup at `starterpack_default`, which is recommended for new applications; The reason we're using the minimal setup in this tutorial, is to keep external dependencies low.
 
 The starterpack contains several folders. For now, we'll just concern our selves with two of them; `www` which should be the web root of your site and `lib` which should contain the classes of your application. Once you're set up, the `www` folder isn't used much.
+
+If you use a unix system, you'll probably have to give the web server access to write to the folder `log`, since the application is configured to write various information to log files placed herein. You can simply run the following command:
+
+..raw
+  chmod 777 /var/www/foo/log
 
 You can now open your browser and go to `http://localhost/foo/www` and verify that everything is in order. The following message should meet you if everything is running correctly:
 
@@ -95,6 +103,15 @@ class Contact {
 
 To use our model component, we need a database. Since SqLite is standard with most php installations, and it's the simplest database to install, I'll assume that, but this simple example should work equally well with MySql or any other sql database for the matter.
 
+Since SqLite stores its database in a file, we need a location for it. We'll create a folder under your project for this:
+
+..
+mkdir var
+chmod 777 var
+
+..note
+If you use Windows, you can skip the `chmod` part.
+
 Log in to sqlite and create our database at `/var/www/foo/var/database.sqlite`:
 
 ..sql
@@ -118,6 +135,11 @@ INSERT INTO contacts (short_name, first_name, last_name, email)
     "Jar Jar",
     "Binks",
     "jarjar@naboo.com");
+
+Again, since the web server needs access to the database, we'll have to lax the file permissions:
+
+..
+chmod 666 var/database.sqlite
 
 Contrary to commonly accepted practise, we'll create a global database link, that we can use throughout the application. This is obviously not something you should do in a real application, but to keep focus on the controlelr layer for now, we'll do it none the less. We can then later change to use a dependency injection technique, which is the recommended approach. Open up `config/global.inc.php` and add the following lines:
 
@@ -154,7 +176,7 @@ This is a rather simple component. It implements the function `renderHtml()`, wh
 
 As you can see, we're referring the global variable `$contacts`, which we created in `global.inc.php`. Next we create a template instance and assign all contacts to it, before rendering it to a string and returning the result. A `k_Template` is a very simple wrapper around `include` -- It just returns the output as a string.
 
-Obviously we also need a template, so save the following into `/var/www/foo/lib/templates/contacts-list.tpl.php`:
+Obviously we also need a template, so save the following into `/var/www/foo/templates/contacts-list.tpl.php`:
 
 ..php
 <h2>Contacts</h2>
@@ -191,15 +213,15 @@ First, we modify the `components_contacts_List` component to allow forwarding:
 <?php
 class components_contacts_List extends k_Component {
   function map($name) {
-    return 'components_contacts_Show';
+    return 'components_contacts_Entity';
   }
 ...
 
-Note how `components_contact_Show` is used, regardless of what the name is. Now we need to create the newly referred component. Save this as `/var/www/foo/lib/components/contacts/show.php`:
+Note how `components_contact_Entity` is used, regardless of what the name is. Now we need to create the newly referred component. Save this as `/var/www/foo/lib/components/contacts/entity.php`:
 
 ..php
 <?php
-class components_contacts_Show extends k_Component {
+class components_contacts_Entity extends k_Component {
   function renderHtml() {
     global $contacts;
     $contact = $contacts->fetchByName($this->name());
@@ -207,7 +229,7 @@ class components_contacts_Show extends k_Component {
       throw new k_PageNotFound();
     }
     $this->document->setTitle($contact->full_name());
-    $t = new k_Template("templates/contacts-show.tpl.php");
+    $t = new k_Template("templates/contacts-entity.tpl.php");
     return $t->render($this, array('contact' => $contact));
   }
 }
@@ -216,7 +238,7 @@ There are two new things to note about this component. The first is that we use 
 
 The next thing is that we throw an exception if the contact isn't found. Konstrukt defines a couple of specific exceptions, that map to a particular meaning in the http protocol. For example, `k_PageNotFound` will emit a 404 Page Not Found. The use of exceptions for breaking off the regular rendering pipeline makes it possible to encapsulate the effects of components.
 
-To complete the picture, we need a template to match our component. Save this as `/var/www/foo/templates/contacts-show.tpl.php`:
+To complete the picture, we need a template to match our component. Save this as `/var/www/foo/templates/contacts-entity.tpl.php`:
 
 ..php
 <h2><?php e($contact->short_name()); ?></h2>

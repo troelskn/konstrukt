@@ -6,11 +6,11 @@ Negotiating the Content-Type
 ----------------------------
 Most of the time a web application will emit HTML. That's the fabric of which the web is made. Once in a while though, we might have to generate other types of responses. In these cases, we clearly don't want the output to get wrapped in the regular document rendering. For that we need an abnormal response. We have already seen one kind of abnormal response, with the `k_PageNotFound`, but this time we need a more specific kind. We'll extend the contact component with the capacity to render as a [vcard](http://en.wikipedia.org/wiki/VCard).
 
-To supply a ressource as a different content-type, we can use Konstrukts built-in support for content-negotiation, which is an often underutilised feature of the http protocol. To get this, we need to edit the "show" component, so that the GET request can fork out to either the html or the vcard handler. We could do so manually in the `GET()` method, but there are generic hooks available for this purpose. After a revision of the component, we end up with this:
+To supply a ressource as a different content-type, we can use Konstrukts built-in support for content-negotiation, which is an often underutilised feature of the http protocol. To get this, we need to edit the "entity" component, so that the GET request can fork out to either the html or the vcard handler. We could do so manually in the `GET()` method, but there are generic hooks available for this purpose. After a revision of the component, we end up with this:
 
 ..php
 <?php
-class components_contacts_Show extends k_Component {
+class components_contacts_Entity extends k_Component {
   function renderHtml() {
     global $contacts;
     $contact = $contacts->fetchByName($this->name());
@@ -18,7 +18,7 @@ class components_contacts_Show extends k_Component {
       throw new k_PageNotFound();
     }
     $this->document->setTitle($contact->full_name());
-    $t = new k_Template("templates/contacts-show.tpl.php");
+    $t = new k_Template("templates/contacts-entity.tpl.php");
     return $t->render($this, array('contact' => $contact));
   }
   function renderVcard() {
@@ -27,9 +27,8 @@ class components_contacts_Show extends k_Component {
     if (!$contact) {
       throw new k_PageNotFound();
     }
-    $t = new k_Template("templates/contacts-show-vcard.tpl.php");
-    $response = new k_HttpResponse();
-    $response->setContent($t->render($this, array('contact' => $contact)));
+    $t = new k_Template("templates/contacts-entity-vcard.tpl.php");
+    $response = new k_HttpResponse(200, $t->render($this, array('contact' => $contact)));
     $response->setContentType('text/x-vcard');
     return $response;
   }
@@ -39,7 +38,7 @@ As you can see, we now have two render-methods, instead of a single `GET()` meth
 
 Inside of the vcard renderer, we're creating an abnormal response. As discussed above, this circumvents the normal rendering pipeline and allows us fine grained control over the exact http response sent out.
 
-Of course, we need the template to go with it in `templates/contacts-show-vcard.tpl.php`:
+Of course, we need the template to go with it in `templates/contacts-entity-vcard.tpl.php`:
 
 ..php
 BEGIN:VCARD
@@ -50,7 +49,7 @@ EMAIL;TYPE=PREF,INTERNET:<?php echo $contact->email() . "\n"; ?>
 REV:<?php echo date("Y-m-dTH:i:sZ") . "\n"; ?>
 END:VCARD
 
-If you have a browser with the capability of showing the `text/x-vcard` content-type, you can now request that. Chances are though, that you don't, so to make things a bit easier, there is an alternative. You can specify the content-type after the components name, separated by a semi-colon. Since a content-type contains a slash, it would break the url to include the whole content-type, so you can use the short-name instead. In this case, you can navigate to `http://localhost/foo/www/contacts/jabba;vcard` which will yield the same result as if you had requested the page with an accept header specifying that it wants `text/x-vcard` rather than `text/html`.
+If you have a browser with the capability of showing the `text/x-vcard` content-type, you can now request that. Chances are though, that you don't, so to make things a bit easier, there is an alternative. You can specify the content-type after the components name, separated by a dot. Since a content-type contains a slash, it would break the url to include the whole content-type, so you can use the short-name instead. In this case, you can navigate to `http://localhost/foo/www/contacts/jabba.vcard` which will yield the same result as if you had requested the page with an accept header specifying that it wants `text/x-vcard` rather than `text/html`.
 
 Component chain of command
 --------------------------
@@ -58,7 +57,7 @@ As you may have noted above, there is some duplication between the two render fu
 
 ..php
 <?php
-class components_contacts_Show extends k_Component {
+class components_contacts_Entity extends k_Component {
   protected $contact;
   function dispatch() {
     global $contacts;
@@ -70,13 +69,12 @@ class components_contacts_Show extends k_Component {
   }
   function renderHtml() {
     $this->document->setTitle($this->contact->full_name());
-    $t = new k_Template("templates/contacts-show.tpl.php");
+    $t = new k_Template("templates/contacts-entity.tpl.php");
     return $t->render($this, array('contact' => $this->contact));
   }
   function renderVcard() {
-    $t = new k_Template("templates/contacts-show-vcard.tpl.php");
-    $response = new k_HttpResponse();
-    $response->setContent($t->render($this, array('contact' => $this->contact)));
+    $t = new k_Template("templates/contacts-entity-vcard.tpl.php");
+    $response = new k_HttpResponse(200, $t->render($this, array('contact' => $contact)));
     $response->setContentType('text/x-vcard');
     return $response;
   }
@@ -109,19 +107,19 @@ Posting and forms
 -----------------
 Most web applications have to do with user input from html-forms. A component can implement a handler for any HTTP method - including the POST, which are closely related to forms. Doing so is just a matter of providing a `POST()` method on the component. A POST request has some additional properties over a GET request. The payload of the request - usually fields of a form - can be accessed through the `body()` method. This corresponds to PHPs native `$_POST` superglobal, just like `query()` corresponds to `$_GET`. This naming is more correct, since the querystring is available in all requests - not just GET, and a payload can come with other types of request, such as PUT.
 
-To continue from our running example, the first thing we need is to render a html form for editing a contact. A form can be seen as an alternative rendering of a resource, and for this there is a special content-type reserved. Add the following to out 'show' component:
+To continue from our running example, the first thing we need is to render a html form for editing a contact. A form can be seen as an alternative rendering of a resource, and for this there is a special content-type reserved. Add the following to out 'entity' component:
 
 ..php
 <?php
-class components_contacts_Show extends k_Component {
+class components_contacts_Entity extends k_Component {
   function renderEdit() {
     $this->document->setTitle("Edit " . $this->contact->full_name());
-    $t = new k_Template("templates/contacts-show-edit.tpl.php");
-    return $t->render($this, array('contact' => $this->contact));
+    $t = new k_Template("templates/contacts-entity-edit.tpl.php");
+    return new k_HtmlResponse($t->render($this, array('contact' => $this->contact)));
   }
   ...
 
-And the template to go with it in `templates/contacts-show-edit.tpl.php`:
+And the template to go with it in `templates/contacts-entity-edit.tpl.php`:
 
 ..php
 <h2>Edit <?php e($contact->short_name()); ?></h2>
@@ -144,7 +142,7 @@ And the template to go with it in `templates/contacts-show-edit.tpl.php`:
      </label>
   </p>
    <p>
-     <label>Emal
+     <label>Email
        <input type="text" name="email" value="<?php e($contact->email()); ?>" />
      </label>
   </p>
@@ -159,12 +157,12 @@ Now that we have the rendering of a form in place, we still need to process the 
 
 ..php
 <?php
-class components_contacts_Show extends k_Component {
-  function POST() {
+class components_contacts_Entity extends k_Component {
+  function postForm() {
     if ($this->process()) {
-      return new k_SeeOther($this->url(';'));
+      return new k_SeeOther($this->url('.'));
     }
-    return $this->GET();
+    return $this->render();
   }
   function process() {
     global $contacts;
@@ -197,6 +195,6 @@ class components_contacts_Show extends k_Component {
 
 As this tutorial isn't about the model layer, the implementation of `process()` is kept simple. You can test a failure case by omitting one of the fields. Otherwise the entity is saved back to the database.
 
-The `POST()` method - while brief - deserves a few words on the way. If the processing goes well, we generate a redirect. In this case it's for the current components url, with a neutral content-type. That will take the user back to the default representation after a successful operation. If there are failures, the form is redisplayed.
+The `postForm()` method - while brief - deserves a few words on the way. If the processing goes well, we generate a redirect. In this case it's for the current components url, with a neutral content-type. That will take the user back to the default representation after a successful operation. If there are failures, the form is redisplayed.
 
 This pattern is commonly known as "redirect after post" or "post-redirect-get" (PRG). Doing things in this exact way means that the users browser history won't store the POST actions, once the form has been completed. If we didn't do this, using the "back" button of the browser would try to re-submit the form. You have probably experienced this annoying behaviour on a web site more than once. Note that it is only after the form has been succesfully processed, that the redirect takes place.
