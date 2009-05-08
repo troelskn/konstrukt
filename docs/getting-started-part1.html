@@ -20,7 +20,8 @@
 
 <p>For this tutorial we'll create a very simple application. Konstrukt doesn't strictly enforce any particular directory layout, but to provide a starting point, you can take a copy of the folder <code>examples/starterpack_light</code> from the distribution of Konstrukt. Assuming that your web root is at <code>/var/www</code>, copy the directory <code>examples/starterpack_light</code> to <code>/var/www/foo</code> for our application "foo". For a real application, you'd probably want to mount the application on its own virtualhost, but this is a quick way to get started and it's trivial to move the application later on. If you have svn installed, you can type the following on the command line to create your project:</p>
 
-<div class="nostyle">  svn export https://konstrukt.googlecode.com/svn/tags/2.1.0/examples/starterpack_light /var/www/foo</div>
+<pre><code>svn export https://konstrukt.googlecode.com/svn/tags/2.1.0/examples/starterpack_light /var/www/foo
+</code></pre>
 
 <p><code>starterpack_light</code> is a basic setup, which contains a simple directory structure, and other things that you need to begin a web application. There is also a more complete setup at <code>starterpack_default</code>, which is recommended for new applications; The reason we're using the minimal setup in this tutorial, is to keep external dependencies low.</p>
 
@@ -28,7 +29,8 @@
 
 <p>If you use a unix system, you'll probably have to give the web server access to write to the folder <code>log</code>, since the application is configured to write various information to log files placed herein. You can simply run the following command:</p>
 
-<div class="nostyle">  chmod 777 /var/www/foo/log</div>
+<pre><code>chmod 777 /var/www/foo/log
+</code></pre>
 
 <p>You can now open your browser and go to <code>http://localhost/foo/www</code> and verify that everything is in order. The following message should meet you if everything is running correctly:</p>
 
@@ -108,9 +110,9 @@
 
 <p>Since SqLite stores its database in a file, we need a location for it. We'll create a folder under your project for this:</p>
 
-<p>..
-mkdir var
-chmod 777 var</p>
+<pre><code>mkdir var
+chmod 777 var
+</code></pre>
 
 <p class="note">Note: If you use Windows, you can skip the <code>chmod</code> part.</p>
 
@@ -139,8 +141,8 @@ chmod 777 var</p>
 
 <p>Again, since the web server needs access to the database, we'll have to lax the file permissions:</p>
 
-<p>..
-chmod 666 var/database.sqlite</p>
+<pre><code>chmod 666 var/database.sqlite
+</code></pre>
 
 <p>Contrary to commonly accepted practise, we'll create a global database link, that we can use throughout the application. This is obviously not something you should do in a real application, but to keep focus on the controlelr layer for now, we'll do it none the less. We can then later change to use a dependency injection technique, which is the recommended approach. Open up <code>config/global.inc.php</code> and add the following lines:</p>
 
