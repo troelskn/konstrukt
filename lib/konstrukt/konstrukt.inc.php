@@ -1006,7 +1006,7 @@ abstract class k_Component implements k_Context {
         $this->{$accept[$content_type]}(),
         k_content_type_to_response_type($content_type));
     }
-    if (count($accept[$content_type]) > 0) {
+    if (count($accept) > 0) {
       throw new k_NotAcceptable();
     }
     throw new k_NotImplemented();
