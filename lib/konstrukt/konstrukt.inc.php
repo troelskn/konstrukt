@@ -526,7 +526,25 @@ class k_HttpRequest implements k_Context {
       }
     }
     $normalised_path = implode('/', $stack);
-    $querystring = http_build_query($params);
+    $assoc = array();
+    $indexed = array();
+    foreach ($params as $key => $value) {
+      if (is_int($key)) {
+        $indexed[] = rawurlencode($value);
+      } else {
+        $assoc[$key] = $value;
+      }
+    }
+    $querystring = "";
+    if (count($indexed) > 0) {
+      $querystring = implode('&', $indexed);
+    }
+    if (count($assoc) > 0) {
+      if ($querystring) {
+        $querystring .= '&';
+      }
+      $querystring .= http_build_query($assoc);
+    }
     return
       ($normalised_path === $this->href_base ? ($normalised_path . '/') : $normalised_path)
       . ($querystring ? ('?' . $querystring) : '');
@@ -1002,6 +1020,17 @@ abstract class k_Component implements k_Context {
     }
     $content_type = $this->negotiateContentType(array_keys($accept), $this->subtype());
     if (isset($accept[$content_type])) {
+      // subview dispatch
+      $regex = '/^' . preg_quote($accept[$content_type]) . '(.+)/i';
+      foreach (get_class_methods($this) as $method) {
+        if (preg_match($regex, $method, $mm)) {
+          if ($this->query(strtolower($mm[1])) === "") {
+            return k_coerce_to_response(
+              $this->{$mm[0]}(),
+              k_content_type_to_response_type($content_type));
+          }
+        }
+      }
       return k_coerce_to_response(
         $this->{$accept[$content_type]}(),
         k_content_type_to_response_type($content_type));
