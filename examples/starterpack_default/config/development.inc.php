@@ -4,7 +4,7 @@
 date_default_timezone_set('Europe/Paris');
 
 require_once 'phemto/phemto.php';
-function create_phemto_container() {
+function create_container() {
   $injector = new Phemto();
   // put application wiring here
   $template_dir = realpath(dirname(__FILE__) . '/../templates');

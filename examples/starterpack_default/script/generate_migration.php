@@ -8,7 +8,7 @@ $destination_file_name = $dir_migrations . DIRECTORY_SEPARATOR . $base_name;
 $php = '#!/usr/bin/env php
 <?php
 require_once(dirname(__FILE__) . \'/../../config/global.inc.php\');
-$container = create_phemto_container();
+$container = create_container();
 //$db = $container->create(\'PDO\');
 ';
 

@@ -357,8 +357,8 @@ The file layout of the starterpacks are as follows:
     log/development.log   -- The application debug log.
     log/error.log         -- PHP error-log.
     templates/            -- Template files
-    templates_c/          -- Compiled Smarty template files. This is specific `starterpack_default`
-    test/                 -- Automated tests. This is specific `starterpack_default`
+    templates_c/          -- Compiled Smarty template files. This is specific for `starterpack_default`
+    test/                 -- Automated tests. This is specific for `starterpack_default`
     test/unit/            -- Unit tests.
     test/functional/      -- Functional tests (Eg. tests of individual components).
     var/                  -- Place for various datafiles, such as sqlite database etc.

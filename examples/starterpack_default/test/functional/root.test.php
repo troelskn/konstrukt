@@ -8,7 +8,7 @@ require_once 'konstrukt/virtualbrowser.inc.php';
 
 class WebTestOfRoot extends WebTestCase {
   function createBrowser() {
-    return new k_VirtualSimpleBrowser('components_Root', new k_PhemtoAdapter(create_phemto_container()));
+    return new k_VirtualSimpleBrowser('components_Root', new k_InjectorAdapter(create_container()));
   }
   function createInvoker() {
     return new SimpleInvoker($this);

@@ -8,8 +8,8 @@ if (realpath($_SERVER['PHP_SELF']) == __FILE__) {
 }
 
 require_once '../lib/konstrukt/konstrukt.inc.php';
-// You need to have phemto in your include_path
-require_once 'phemto/phemto.php';
+// You need to have bucket in your include_path
+require_once 'bucket/lib/bucket.inc.php';
 
 class test_BasicComponent extends k_Component {}
 
@@ -27,7 +27,7 @@ class test_DependingComponent extends k_Component {
   }
 }
 
-class TestOfPhemtoAdapter extends UnitTestCase {
+class TestOfBucketAdapter extends UnitTestCase {
 
   protected function makeHttp() {
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
@@ -40,15 +40,15 @@ class TestOfPhemtoAdapter extends UnitTestCase {
     $this->assertIsA($root, 'test_BasicComponent');
   }
 
-  function test_can_create_simple_component_with_phemto_container() {
-    $injector = new Phemto();
+  function test_can_create_simple_component_with_bucket_container() {
+    $injector = new bucket_Container();
     $components = new k_InjectorAdapter($injector);
     $root = $components->create('test_BasicComponent', $this->makeHttp());
     $this->assertIsA($root, 'test_BasicComponent');
   }
 
-  function test_can_create_complex_component_with_phemto_container() {
-    $injector = new Phemto();
+  function test_can_create_complex_component_with_bucket_container() {
+    $injector = new bucket_Container();
     $components = new k_InjectorAdapter($injector);
     $root = $components->create('test_DependingComponent', $this->makeHttp());
     $this->assertIsA($root, 'test_DependingComponent');

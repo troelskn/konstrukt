@@ -200,18 +200,23 @@ class k_RegistryComponentCreator extends k_DefaultComponentCreator {
 }
 
 /**
- * Adapter for using the Phemto dependency injection container for creating components.
- * This relies on the current (under development) implementation of Phemto, available from:
- * https://phemto.svn.sourceforge.net/svnroot/phemto/trunk
+ * Adapter for using a dependency injection container for creating components.
+ * Works with any di-container, that provides a method `create` for instantiating a container.
+ * Tested with:
+ *   https://phemto.svn.sourceforge.net/svnroot/phemto/trunk
+ *   http://github.com/troelskn/bucket/tree/master
  */
-class k_PhemtoAdapter extends k_DefaultComponentCreator {
-  /** @var Phemto */
+class k_InjectorAdapter extends k_DefaultComponentCreator {
+  /** @var Object */
   protected $injector;
   /**
-    * @param Phemto
+    * @param Object
     * @return void
     */
-  function __construct(Phemto $injector, $document = null) {
+  function __construct($injector, $document = null) {
+    if (!method_exists($injector, 'create')) {
+      throw new Exception("Injector must provide a method `create`");
+    }
     parent::__construct($document);
     $this->injector = $injector;
   }
@@ -223,6 +228,13 @@ class k_PhemtoAdapter extends k_DefaultComponentCreator {
     return $this->injector->create($class_name);
   }
 }
+
+/**
+ * For BC. Use k_InjectorAdapter instead.
+ *
+ * @deprecatd
+ */
+class k_PhemtoAdapter extends k_InjectorAdapter {}
 
 /**
  * Representation of the applications' user
@@ -480,10 +492,14 @@ class k_HttpRequest implements k_Context {
   }
   /**
     * Gives back the HTTP-method
+    * Allows a body-parameter `_method` to override, if the real HTTP-method is POST.
+    * Eg. to emulate a PUT request, you can POST with:
+    *     <input type="hidden" name="_method" value="put" />
     * @return string
     */
   function method() {
-    return strtolower($this->server['REQUEST_METHOD']);
+    $real_http_method = strtolower($this->server['REQUEST_METHOD']);
+    return $real_http_method === 'post' ? $this->body('_method', 'post') : $real_http_method;
   }
   function requestUri() {
     return $this->request_uri;
@@ -539,11 +555,12 @@ class k_HttpRequest implements k_Context {
     if (count($indexed) > 0) {
       $querystring = implode('&', $indexed);
     }
-    if (count($assoc) > 0) {
+    $assoc_string = http_build_query($assoc);
+    if ($assoc_string) {
       if ($querystring) {
         $querystring .= '&';
       }
-      $querystring .= http_build_query($assoc);
+      $querystring .= $assoc_string;
     }
     return
       ($normalised_path === $this->href_base ? ($normalised_path . '/') : $normalised_path)
