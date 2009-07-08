@@ -28,9 +28,9 @@
 
 require_once 'PEAR/PackageFileManager2.php';
 
-$version   = '2.1.0';
+$version   = '2.1.1';
 $stability = 'stable';
-$notes     = 'Added mime-based type-system. See UPGRADING for info on changes.';
+$notes     = 'Mostly bug fixes.';
 
 PEAR::setErrorHandling(PEAR_ERROR_DIE);
 $pfm = new PEAR_PackageFileManager2();
@@ -85,6 +85,7 @@ $lib_files = array(
   'konstrukt/adapter.inc.php',
   'konstrukt/charset.inc.php',
   'konstrukt/konstrukt.inc.php',
+  'konstrukt/template.inc.php',
   'konstrukt/logging.inc.php',
   'konstrukt/response.inc.php',
   'konstrukt/virtualbrowser.inc.php',
