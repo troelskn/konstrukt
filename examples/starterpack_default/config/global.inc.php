@@ -6,7 +6,6 @@ set_include_path(
   . PATH_SEPARATOR . dirname(dirname(__FILE__)).'/lib');
 
 require_once 'konstrukt/konstrukt.inc.php';
-require_once 'smarty/libs/Smarty.class.php';
 set_error_handler('k_exceptions_error_handler');
 spl_autoload_register('k_autoload');
 

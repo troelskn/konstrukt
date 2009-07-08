@@ -8,4 +8,3 @@ The following dependencies are required:
   Konstrukt, version 2 (https://konstrukt.googlecode.com/svn/trunk)
   Simpletest (http://simpletest.org/en/download.html)
   Phemto (https://phemto.svn.sourceforge.net/svnroot/phemto/trunk) 
-  Smarty (http://www.smarty.net/download.php)
