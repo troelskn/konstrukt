@@ -145,3 +145,21 @@ class k_Template {
     }
   }
 }
+
+class k_DefaultTemplateFactory {
+  protected $template_dir;
+  protected $helpers = array();
+  function __construct($template_dir) {
+    $this->template_dir = $template_dir;
+  }
+  function loadViewHelper($helper) {
+    foreach (get_class_methods($helper) as $method) {
+      $this->helpers[strtolower($method)] = array($helper, $method);
+    }
+  }
+  function create($file_name) {
+    return new k_template_HelperTemplate(
+      $this->template_dir . DIRECTORY_SEPARATOR . $file_name . '.tpl.php',
+      $this->helpers);
+  }
+}
