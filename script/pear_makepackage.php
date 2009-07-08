@@ -26,7 +26,15 @@
  * @author  Lars Olesen <lars@legestue.net>
  */
 
-require_once 'PEAR/PackageFileManager2.php';
+@include 'PEAR/PackageFileManager2.php';
+if (!class_exists('PEAR_PackageFileManager2')) {
+  echo "\nYou need to install PEAR_PackageFileManager2 in order to run this script\n\n";
+  echo "Installation tips:\n\n";
+  echo "  $ sudo pear upgrade PEAR\n";
+  echo "  $ sudo pear install XML_Serializer-0.19.2\n";
+  echo "  $ sudo pear install --alldeps PEAR_PackageFileManager2\n\n";
+  exit(0);
+}
 
 $version   = '2.1.1';
 $stability = 'stable';
