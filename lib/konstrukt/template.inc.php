@@ -146,7 +146,12 @@ class k_Template {
   }
 }
 
-class k_DefaultTemplateFactory {
+interface k_TemplateFactory {
+  function loadViewHelper($helper);
+  function create($file_name);
+}
+
+class k_DefaultTemplateFactory implements k_TemplateFactory {
   protected $template_dir;
   protected $helpers = array();
   function __construct($template_dir) {
@@ -158,7 +163,7 @@ class k_DefaultTemplateFactory {
     }
   }
   function create($file_name) {
-    return new k_template_HelperTemplate(
+    return new k_Template(
       $this->template_dir . DIRECTORY_SEPARATOR . $file_name . '.tpl.php',
       $this->helpers);
   }
