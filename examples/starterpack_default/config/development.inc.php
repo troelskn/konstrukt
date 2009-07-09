@@ -1,13 +1,15 @@
 <?php
 // Put default application configuration in this file.
 // Individual sites (servers) can override it.
+require_once 'applicationfactory.php';
+require_once 'bucket.inc.php';
 date_default_timezone_set('Europe/Paris');
 
-require_once 'phemto/phemto.php';
 function create_container() {
-  $injector = new Phemto();
-  // put application wiring here
-  $template_dir = realpath(dirname(__FILE__) . '/../templates');
-  $injector->whenCreating('k_TemplateFactory')->forVariable('template_dir')->willUse(new Value($template_dir));
-  return $injector;
+  $factory = new ApplicationFactory();
+  $container = new bucket_Container($factory);
+  $factory->template_dir = realpath(dirname(__FILE__) . '/../templates');
+  $factory->pdo_dsn = 'mysql:host=localhost;dbname=test';
+  $factory->pdo_username = 'root';
+  return $container;
 }
