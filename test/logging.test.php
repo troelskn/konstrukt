@@ -52,6 +52,22 @@ class TestOfLogfileLogger extends UnitTestCase {
 
 }
 
+class test_DummyOutputAccess implements k_adapter_OutputAccess {
+  public $headers = array();
+  public $content = "";
+  public $session_state = true;
+  function header($string, $replace = true, $http_response_code = null) {
+    $this->headers[]  = array($string, $replace, $http_response_code);
+  }
+  function write($bytes) {
+    $this->content .= $bytes;
+  }
+  function endSession() {
+    $this->session_state = false;
+  }
+}
+
+
 class TestOfWebDebugLogger extends UnitTestCase {
 
   function test_decorate_returns_response_on_html() {
@@ -66,6 +82,16 @@ class TestOfWebDebugLogger extends UnitTestCase {
     $r1 = new k_JsonResponse("'foo'");
     $r2 = $logger->decorate($r1);
     $this->assertIsA($r2, 'k_Response');
+  }
+
+  function test_when_wrapped_in_decorator_it_should_report_the_caller() {
+    $logger = new k_MultiDebugListener();
+    $logger->add(new k_logging_WebDebugger());
+    $logger->log(42);
+    $response = $logger->decorate(new k_HtmlResponse(""));
+    $capture = new test_DummyOutputAccess();
+    $response->out($capture);
+    $this->assertNoPattern('~konstrukt/konstrukt.*\.inc\.php~', $capture->content);
   }
 
 }

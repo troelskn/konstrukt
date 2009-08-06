@@ -21,8 +21,8 @@ class k_logging_WebDebugger implements k_DebugListener {
     $this->route[] = array('class-name' => get_class($component), 'name' => $name, 'next' => $next);
   }
   function log($mixed) {
-    $stacktrace = debug_backtrace();
-    $this->messages[] = array('file' => $stacktrace[0]['file'], 'line' => $stacktrace[0]['line'], 'dump' => $this->dumper->dump($mixed));
+    $frame = k_debuglistener_get_stackframe();
+    $this->messages[] = array('file' => $frame['file'], 'line' => $frame['line'], 'dump' => $this->dumper->dump($mixed));
   }
   protected function renderRequest() {
     $html =
@@ -283,10 +283,10 @@ class k_logging_LogDebugger implements k_DebugListener {
         array('class-name' => get_class($component), 'name' => $name, 'next' => $next)));
   }
   function log($mixed) {
-    $stacktrace = debug_backtrace();
+    $frame = k_debuglistener_get_stackframe();
     $this->write(
       $this->renderMessage(
-        array('file' => $stacktrace[0]['file'], 'line' => $stacktrace[0]['line'], 'dump' => $this->dumper->dump($mixed))));
+        array('file' => $frame['file'], 'line' => $frame['line'], 'dump' => $this->dumper->dump($mixed))));
   }
   function decorate(k_Response $response) {
     $this->write($this->renderResponse($response));

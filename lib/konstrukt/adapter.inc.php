@@ -109,7 +109,10 @@ class k_adapter_SafeGlobalsAccess implements k_adapter_GlobalsAccess {
     }
     $headers = array();
     foreach ($_SERVER as $key => $value) {
-      if (substr($key, 0, 5) === "HTTP_") {
+      // To support FastCGI
+      if ($key === 'CONTENT_TYPE') {
+        $headers['Content-Type'] = $value;
+      } elseif (substr($key, 0, 5) === "HTTP_") {
         $headername = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 0, 5)))));
         $headers[$headername] = $value;
       }

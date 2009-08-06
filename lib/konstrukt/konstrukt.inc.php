@@ -123,6 +123,22 @@ interface k_DebugListener {
 }
 
 /**
+ * Used internally.
+ *
+ * Returns the first stack frame, which isn't a method on a k_DebugListener.
+ */
+function k_debuglistener_get_stackframe() {
+  $stacktrace = debug_backtrace();
+  array_shift($stacktrace);
+  foreach ($stacktrace as $frame) {
+    if (!isset($frame['class'])) break;
+    $reflection = new ReflectionClass($frame['class']);
+    if (!$reflection->implementsInterface('k_DebugListener')) break;
+  }
+  return $frame;
+}
+
+/**
  * A dummy implementation of k_DebugListener, which does nothing.
  */
 class k_VoidDebugListener implements k_DebugListener {
@@ -136,7 +152,7 @@ class k_VoidDebugListener implements k_DebugListener {
 }
 
 /**
- * Decorator that allowsmultiple k_DebugListener objects to receive the same events.
+ * Decorator that allows multiple k_DebugListener objects to receive the same events.
  */
 class k_MultiDebugListener implements k_DebugListener {
   protected $listeners = array();
