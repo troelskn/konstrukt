@@ -1085,21 +1085,28 @@ abstract class k_Component implements k_Context {
     $typed = k_coerce_to_response($content);
     $response_type = ($typed instanceof k_HttpResponse) ? 'http' : k_content_type_to_response_type($typed->contentType());
     $handler = 'wrap' . $response_type;
+    // is there a wrapper for this content-type ?
     if (method_exists($this, $handler)) {
       $wrapped = $this->{$handler}($typed->toContentType($typed->internalType()));
+      // if the wrapper returns a k_Response, we just pass it through
       if ($wrapped instanceof k_Response) {
         return $wrapped;
       }
-      $wrapped = k_coerce_to_response($wrapped, $response_type);
-      $wrapped->setStatus($content->status());
-      foreach ($content->headers() as $key => $value) {
-        $wrapped->setHeader($key, $value);
+      // if the content is a typed response, we clone its status + headers
+      if ($content instanceof k_Response) {
+        $wrapped = k_coerce_to_response($wrapped, $response_type);
+        $wrapped->setStatus($typed->status());
+        foreach ($typed->headers() as $key => $value) {
+          $wrapped->setHeader($key, $value);
+        }
+        $wrapped->setCharset($typed->charset());
       }
-      $wrapped->setCharset($content->charset());
       return $wrapped;
     }
+    // no wrapper ? do nothing.
     return $content;
   }
+
 }
 
 /**
