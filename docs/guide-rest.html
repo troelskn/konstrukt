@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+	<title>Guide Rest</title>
+  <link rel="stylesheet" type="text/css" href="documentation.css" />
+</head>
+<body>
+
+<h1 id="guide-to-restful-applications-with-konstrukt">Guide to RESTful applications with Konstrukt</h1>
+
+<p>REST is a complex subject, even if the basics are familiar to many developers. This guide won't assume to explain everything REST, but rather focus on a set of recommendations mainly for URL design and how to implement it with Konstrukt.</p>
+
+<p>First a few ground rules however.</p>
+
+<h2 id="general-rest-guidelines">General REST guidelines</h2>
+
+<p>REST stresses the importance of HTTP methods - In particular the distinction between idempotent and non-idempotent actions. This is very important, because it controls what can be cached and proxied, but also hints at which behaviour automated systems (Such as crawlers) should exhibit.</p>
+
+<p>Fundamentally, GET and POST can be seen as a <a href="http://c2.com/cgi/wiki?CommandQuerySeparation">Command Query Separation</a>. To quote:</p>
+
+<blockquote>
+  <p>Separate state-preserving operations (call them queries, or selectors)
+  from state-modifying operations (commands, or modifiers).</p>
+</blockquote>
+
+<h4>Recommendation</h4>
+
+<p>In a HTTP setting, you may think of GET as queries and POST as commands. From this follows that you should never modify state in response to a GET. In Konstrukt terms, this means that render methods shoul never modify state.</p>
+
+<h3 id="specific-commands">Specific commands</h3>
+
+<p>Another aspect, that is often held out when discussing REST, is the lesser used methods DELETE and PUT. These are both types of commands, since they modify state. There may be some benefit to use these over the more general POST method. (TODO: Something about them being more specific, and thus gives richer interface)</p>
+
+<h4>Recommendation</h4>
+
+<p>DELETE + PUT are specific types of commands. Prefer them over POST, if they make sense.</p>
+
+<h3 id="uri-s-replaces-id-s-hypermedia-as-the-engine-of-application-state">URI's replaces id's (Hypermedia As the Engine of Application State)</h3>
+
+<p>URI's identify entities (resources). In particular:</p>
+
+<ul>
+<li>URI's do <em>not</em> represent actions.</li>
+<li>Use full URI's to link between resources. (Don't construct the URI at the client-side, using an id or similar)</li>
+<li>URI's should not be known beforehand by the client. It should be possible to follow links between pages to other relevant pages within the application.</li>
+</ul>
+
+<h4>Recommendation</h4>
+
+<p>TODO</p>
+
+<h3 id="content-types-replaces-xsd">Content-Types replaces XSD</h3>
+
+<p>In RPC-style webservices (such as SOAP), the format of a HTTP-body is identified by an formal document (An XSD in the case of SOAP). In a RESTful design, the format is identified by a mime-type, using the HTTP <code>Content-Type</code> header. While it is possible to make up a custom format, it is generally considered better style to use a common format, if a suitable one exists. By using such standards, the interoperability becomes easier, as the client may often be able to find available libraries to deal with the data.</p>
+
+<p>HTTP has room for a service to provide the same resource in multiple formats (representations), and specifies a protocol for negotiating the best match with a client. Konstrukt supports this through the render methods. For example, the method <code>renderHtml</code> is used to render a <code>text/html</code> response. If a component provides multipl render methods, Konstrukt will negotiate with the client, using the <code>Accept</code> header of the clients http-request, or alternatively through a filename suffix (See <a href="#browser-hacks">"browser hacks"</a>)</p>
+
+<h4>Recommendation</h4>
+
+<p>Use render methods to provide multiple representations of the same resource.</p>
+
+<p>Link to a suffixed URL, if you want to refer to a specific representation of a resource. Eg. <code>/foo/bar</code> is the resource, but <code>/foo/bar.html</code> is the html representation of the resource. The first may negotiate to return the html representation, but the latter won't perform negotiation. Most of the time, you should link to the main resource, rather than a particular representation.</p>
+
+<h3 id="application-state">Application state</h3>
+
+<p>... can of worms, this ...</p>
+
+<h4>Recommendation</h4>
+
+<p>TODO</p>
+
+<h3 id="atompub">Atompub</h3>
+
+<p><a href="http://www.ietf.org/rfc/rfc5023.txt">Atompub is a RESTful protocol</a>. It consists of a schema for how URI's should look, as well as a specification of the content-type of the documents that are exchanged. The protocol is tailored towards publishing (CRUD).</p>
+
+<p>Atompub has some limitations that makes it unsuitable for interaction through a regular web browser. In particular, there is no support for displaying html-forms for edit+create of entries. The following reccomendations build upon Atompub, but makes some changes to get around the shortcomings.</p>
+
+<h2 id="konstrukt-crud">Konstrukt+crud</h2>
+
+<p>A basic web CRUD interface consists of five entrypoints.</p>
+
+<p>There are two queries; An index, that lists the collection of entries, and a view for a particular entry. The index will often have certain modifies, that allows for refining the view. For example, pagination and sorting and even searching.</p>
+
+<p>In addition to the queries, there are three commands; Create a new entry, update an existing entry and delete an entry. All of these five entrypoints can be mapped to the following schema:</p>
+
+<h3 id="uri-schema">URI Schema</h3>
+
+<pre><code>GET    /thing            -&gt; list all things
+POST   /thing            -&gt; create new thing
+GET    /thing/$id        -&gt; show thing
+PUT    /thing/$id        -&gt; update thing
+DELETE /thing/$id        -&gt; destroy thing
+</code></pre>
+
+<p>Further, there should be an html-form for each command. These can be mapped to the following URL's:</p>
+
+<pre><code>GET    /thing?new        -&gt; new  (input-form)
+GET    /thing/$id?edit   -&gt; edit (input-form)
+GET    /thing/$id?delete -&gt; delete (input-form)
+</code></pre>
+
+<p>Konstrukt supports this URL-syntax as a concept called sub-views. For example, <code>/thing?new</code> points to a component, with the sub-view set to <code>new</code>. This will map to a method <code>renderHtmlNew</code>.</p>
+
+<h3 id="code-scaffold">Code scaffold</h3>
+
+<p>The suggested schema can be supported by two components, which must implement the following methods:</p>
+
+<pre><code>class ThingCollection extends k_Component {
+  function map($id) { return 'ThingEntry'; }
+  function postForm() { /* create entry */ }
+  function renderHtml() { /* list entries */ }
+  function renderHtmlNew() { /* show create-form */ }
+}
+
+class ThingEntry extends k_Component {
+  function renderHtml() { /* show entry */ }
+  function renderHtmlEdit() { /* show edit-form */ }
+  function renderHtmlDelete() { /* show delete-form */ }
+  function putForm() { /* update entry */ }
+  function DELETE() { /* delete entry */ }
+}
+</code></pre>
+
+<h2 id="browser-hacks">Browser hacks</h2>
+
+<h3 id="http-methods">HTTP methods</h3>
+
+<p>Since browsers don't support PUT+DELETE, these can not be implemented directly. To solve this issue, Konstrukt provides two hacks, that allows a client to tunnel a DELETE or PUT request through POST. In other words, a request may be sent as POST, but by crafting it specially, Konstrukt will treat it as if it had been a PUT or a DELETE. This is a fairly standard feature of many frameworks.</p>
+
+<h4>Through HTTP-header.</h4>
+
+<p>This is mainly used from Javascript code, making XMLHttpRequests (ajax). These days, most browsers support PUT and DELETE natively, but it is not universial. For implementations that sill doesn't allow for PUT and DELETE, you can set a header on the request, as follows:</p>
+
+<pre><code>X-HTTP-Method-Override: put
+</code></pre>
+
+<h4>Through hidden form field</h4>
+
+<p>This is used within html forms. A field with the name <code>_method</code> in the payload of a http form, will be interpreted as the HTTP method.</p>
+
+<pre><code>&lt;input name="_method" type="hidden" value="put" /&gt;
+</code></pre>
+
+<h3 id="formats-in-the-url">Formats in the URL</h3>
+
+<pre><code>/teams + `Accept: */*`      -&gt; default content-type (typically text/html)
+/teams + `Accept: text/xml` -&gt; text/xml
+/teams.xml                  -&gt; text/xml
+</code></pre>
+
+<h2 id="notes">Notes</h2>
+
+<ul>
+<li>http://blog.ianbicking.org/2009/01/11/atompub-instead-o-webdav/</li>
+<li>http://intertwingly.net/wiki/pie/CarrotVsOrange</li>
+<li>http://code.google.com/apis/gdata/docs/2.0/basics.html</li>
+<li>http://www.sitepoint.com/blogs/2008/02/04/restful-rails-part-i/</li>
+<li>http://www.slideshare.net/moro/rails-form-chronicle</li>
+<li>http://architects.dzone.com/news/common-rest-design-pattern</li>
+</ul>
+</body>
+</html>

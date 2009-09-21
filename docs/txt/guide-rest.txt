@@ -1,0 +1,145 @@
+Guide to RESTful applications with Konstrukt
+===
+
+REST is a complex subject, even if the basics are familiar to many developers. This guide won't assume to explain everything REST, but rather focus on a set of recommendations mainly for URL design and how to implement it with Konstrukt.
+
+First a few ground rules however.
+
+General REST guidelines
+---
+
+REST stresses the importance of HTTP methods - In particular the distinction between idempotent and non-idempotent actions. This is very important, because it controls what can be cached and proxied, but also hints at which behaviour automated systems (Such as crawlers) should exhibit.
+
+Fundamentally, GET and POST can be seen as a [Command Query Separation](http://c2.com/cgi/wiki?CommandQuerySeparation). To quote:
+
+> Separate state-preserving operations (call them queries, or selectors)
+> from state-modifying operations (commands, or modifiers).
+
+####Recommendation
+
+In a HTTP setting, you may think of GET as queries and POST as commands. From this follows that you should never modify state in response to a GET. In Konstrukt terms, this means that render methods shoul never modify state.
+
+###Specific commands
+
+Another aspect, that is often held out when discussing REST, is the lesser used methods DELETE and PUT. These are both types of commands, since they modify state. There may be some benefit to use these over the more general POST method. (TODO: Something about them being more specific, and thus gives richer interface)
+
+####Recommendation
+
+DELETE + PUT are specific types of commands. Prefer them over POST, if they make sense.
+
+###URI's replaces id's (Hypermedia As the Engine of Application State)
+
+URI's identify entities (resources). In particular:
+
+* URI's do *not* represent actions.
+* Use full URI's to link between resources. (Don't construct the URI at the client-side, using an id or similar)
+* URI's should not be known beforehand by the client. It should be possible to follow links between pages to other relevant pages within the application.
+
+####Recommendation
+
+TODO
+
+###Content-Types replaces XSD
+
+In RPC-style webservices (such as SOAP), the format of a HTTP-body is identified by an formal document (An XSD in the case of SOAP). In a RESTful design, the format is identified by a mime-type, using the HTTP `Content-Type` header. While it is possible to make up a custom format, it is generally considered better style to use a common format, if a suitable one exists. By using such standards, the interoperability becomes easier, as the client may often be able to find available libraries to deal with the data.
+
+HTTP has room for a service to provide the same resource in multiple formats (representations), and specifies a protocol for negotiating the best match with a client. Konstrukt supports this through the render methods. For example, the method `renderHtml` is used to render a `text/html` response. If a component provides multipl render methods, Konstrukt will negotiate with the client, using the `Accept` header of the clients http-request, or alternatively through a filename suffix (See ["browser hacks"](#browser-hacks))
+
+####Recommendation
+
+Use render methods to provide multiple representations of the same resource.
+
+Link to a suffixed URL, if you want to refer to a specific representation of a resource. Eg. `/foo/bar` is the resource, but `/foo/bar.html` is the html representation of the resource. The first may negotiate to return the html representation, but the latter won't perform negotiation. Most of the time, you should link to the main resource, rather than a particular representation.
+
+###Application state
+
+... can of worms, this ...
+
+####Recommendation
+
+TODO
+
+###Atompub
+
+[Atompub is a RESTful protocol](http://www.ietf.org/rfc/rfc5023.txt). It consists of a schema for how URI's should look, as well as a specification of the content-type of the documents that are exchanged. The protocol is tailored towards publishing (CRUD).
+
+Atompub has some limitations that makes it unsuitable for interaction through a regular web browser. In particular, there is no support for displaying html-forms for edit+create of entries. The following reccomendations build upon Atompub, but makes some changes to get around the shortcomings.
+
+Konstrukt+crud
+---
+
+A basic web CRUD interface consists of five entrypoints.
+
+There are two queries; An index, that lists the collection of entries, and a view for a particular entry. The index will often have certain modifies, that allows for refining the view. For example, pagination and sorting and even searching.
+
+In addition to the queries, there are three commands; Create a new entry, update an existing entry and delete an entry. All of these five entrypoints can be mapped to the following schema:
+
+###URI Schema
+
+    GET    /thing            -> list all things
+    POST   /thing            -> create new thing
+    GET    /thing/$id        -> show thing
+    PUT    /thing/$id        -> update thing
+    DELETE /thing/$id        -> destroy thing
+
+Further, there should be an html-form for each command. These can be mapped to the following URL's:
+
+    GET    /thing?new        -> new  (input-form)
+    GET    /thing/$id?edit   -> edit (input-form)
+    GET    /thing/$id?delete -> delete (input-form)
+
+Konstrukt supports this URL-syntax as a concept called sub-views. For example, `/thing?new` points to a component, with the sub-view set to `new`. This will map to a method `renderHtmlNew`.
+
+###Code scaffold
+
+The suggested schema can be supported by two components, which must implement the following methods:
+
+    class ThingCollection extends k_Component {
+      function map($id) { return 'ThingEntry'; }
+      function postForm() { /* create entry */ }
+      function renderHtml() { /* list entries */ }
+      function renderHtmlNew() { /* show create-form */ }
+    }
+
+    class ThingEntry extends k_Component {
+      function renderHtml() { /* show entry */ }
+      function renderHtmlEdit() { /* show edit-form */ }
+      function renderHtmlDelete() { /* show delete-form */ }
+      function putForm() { /* update entry */ }
+      function DELETE() { /* delete entry */ }
+    }
+
+Browser hacks
+---
+
+###HTTP methods
+
+Since browsers don't support PUT+DELETE, these can not be implemented directly. To solve this issue, Konstrukt provides two hacks, that allows a client to tunnel a DELETE or PUT request through POST. In other words, a request may be sent as POST, but by crafting it specially, Konstrukt will treat it as if it had been a PUT or a DELETE. This is a fairly standard feature of many frameworks.
+
+####Through HTTP-header.
+
+This is mainly used from Javascript code, making XMLHttpRequests (ajax). These days, most browsers support PUT and DELETE natively, but it is not universial. For implementations that sill doesn't allow for PUT and DELETE, you can set a header on the request, as follows:
+
+    X-HTTP-Method-Override: put
+
+####Through hidden form field
+
+This is used within html forms. A field with the name `_method` in the payload of a http form, will be interpreted as the HTTP method.
+
+    <input name="_method" type="hidden" value="put" />
+
+###Formats in the URL
+
+    /teams + `Accept: */*`      -> default content-type (typically text/html)
+    /teams + `Accept: text/xml` -> text/xml
+    /teams.xml                  -> text/xml
+
+Notes
+---
+
+* http://blog.ianbicking.org/2009/01/11/atompub-instead-o-webdav/
+* http://intertwingly.net/wiki/pie/CarrotVsOrange
+* http://code.google.com/apis/gdata/docs/2.0/basics.html
+* http://www.sitepoint.com/blogs/2008/02/04/restful-rails-part-i/
+* http://www.slideshare.net/moro/rails-form-chronicle
+* http://architects.dzone.com/news/common-rest-design-pattern
