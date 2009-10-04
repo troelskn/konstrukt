@@ -54,6 +54,16 @@ Most components have a way to render themselves. When a regular GET request is i
 
 Some times you may need to have a URL refer directly to a specific representation (content-type) of a component - In this case, you can postfix the URL with the content-type short-name. For example, the URL `/foo/bar` is subject to content-negotiation, while `/foo/bar.csv` will only render through `renderCsv()` (Of course provided that this method is implemented).
 
+###Subviews
+
+Some times you need to be able to display alternative views of the same resource + content-type. The most common example is for forms. A url like `/superheroes/batman` might show a html page for the dark knight, but which url should be used to edit the stats for him? One option is to use a sub component, as in `/superheroes/batman/edit`, but this suggests that `edit` is a resource under `batmna`, when it is really just another representation of it. A place where this causes trouble, is if a component has children. For example, `/superheroes/create` might be a form for creating a new entity, but it could also refer to an entity named `create`.
+
+To deal with these issues, Konstrukt provides a concept called *subviews*. If the url contains a parameter without any value, following right after the question mark, it will be used as a prefix to the render method. For example, `/foo/bar.html?edit` will resolve to `renderHtmlEdit`, if defined. Again, the content-type may be left out, so that `/foo/bar?edit` resolves to the same handler.
+
+To have a subview, there *must* be a primary view. Eg. you can't have `renderHtmlEdit` without having `renderHtml`.
+
+Note that the subview parameter is also a query-string parameter, so it will turn up in `query()`.
+
 ###Return type
 
 The return type of a renderer depends on the content-type it handles. It is always valid to return an instance of `k_Response`, but most of the time you should just return a language primitive (such as a string for `renderHtml()`) and it will be wrapped in an appropriately typed response instance. The primitive type to return depends on the content-type. This type is also called the internal type, and it is the same type that will be passed to any [wrappers](#wrappers). The supported internal types can be read from this chart:
@@ -81,7 +91,6 @@ There are various places where content-types are referred to through their short
 content-type             | short name | render method
 ------------------------ | ---------- | -------------
 text/html                | html       | renderHtml
-text/html+edit           | edit       | renderEdit
 text/xml                 | xml        | renderXml
 text/plain               | text       | renderText
 text/csv                 | csv        | renderCsv
@@ -92,8 +101,6 @@ application/rdf+xml      | rdf        | renderRdf
 application/json         | json       | renderJson
 application/pdf          | pdf        | renderPdf
 image/svg+xml            | svg        | renderSvg
-
-The type `text/html+edit` is meant for a html form to edit the resource.
 
 You can add your own content-types to the global array `$GLOBALS['konstrukt_content_types']` as follows:
 
@@ -156,6 +163,8 @@ You can also pass a default value that will be returned if the specified key doe
 ..php
   // /baz?grault=waldo
   $this->query('foo', 'bar'); // 'bar'
+
+The renderer operates with the concept of *subview*. This is simply a query-string parameter without any value. In a url like `/foo/bar?quux`, the subview would be `quux`. This property is used to determine the appropriate [renderer](#renderers). While the value could occur anywhere in the query-string, it is usually placed as the first element, right after the question mark.
 
 ###Querystring namespace
 

@@ -15,6 +15,7 @@
 <li><a href="#handlers">Handlers</a></li>
 <li><a href="#dispatch">Dispatch</a></li>
 <li><a href="#renderers">Renderers</a></li>
+<li><a href="#subviews">Subviews</a></li>
 <li><a href="#return-type">Return type</a></li>
 <li><a href="#content-type-short-names">content-type short-names</a></li>
 <li><a href="#input-handlers">Input handlers</a></li>
@@ -127,6 +128,16 @@
 
 <p>Some times you may need to have a URL refer directly to a specific representation (content-type) of a component - In this case, you can postfix the URL with the content-type short-name. For example, the URL <code>/foo/bar</code> is subject to content-negotiation, while <code>/foo/bar.csv</code> will only render through <code>renderCsv()</code> (Of course provided that this method is implemented).</p>
 
+<h3 id="subviews">Subviews</h3>
+
+<p>Some times you need to be able to display alternative views of the same resource + content-type. The most common example is for forms. A url like <code>/superheroes/batman</code> might show a html page for the dark knight, but which url should be used to edit the stats for him? One option is to use a sub component, as in <code>/superheroes/batman/edit</code>, but this suggests that <code>edit</code> is a resource under <code>batmna</code>, when it is really just another representation of it. A place where this causes trouble, is if a component has children. For example, <code>/superheroes/create</code> might be a form for creating a new entity, but it could also refer to an entity named <code>create</code>.</p>
+
+<p>To deal with these issues, Konstrukt provides a concept called <em>subviews</em>. If the url contains a parameter without any value, following right after the question mark, it will be used as a prefix to the render method. For example, <code>/foo/bar.html?edit</code> will resolve to <code>renderHtmlEdit</code>, if defined. Again, the content-type may be left out, so that <code>/foo/bar?edit</code> resolves to the same handler.</p>
+
+<p>To have a subview, there <em>must</em> be a primary view. Eg. you can't have <code>renderHtmlEdit</code> without having <code>renderHtml</code>.</p>
+
+<p>Note that the subview parameter is also a query-string parameter, so it will turn up in <code>query()</code>.</p>
+
 <h3 id="return-type">Return type</h3>
 
 <p>The return type of a renderer depends on the content-type it handles. It is always valid to return an instance of <code>k_Response</code>, but most of the time you should just return a language primitive (such as a string for <code>renderHtml()</code>) and it will be wrapped in an appropriately typed response instance. The primitive type to return depends on the content-type. This type is also called the internal type, and it is the same type that will be passed to any <a href="#wrappers">wrappers</a>. The supported internal types can be read from this chart:</p>
@@ -193,11 +204,6 @@
   <td>renderHtml</td>
 </tr>
 <tr>
-  <td>text/html+edit</td>
-  <td>edit</td>
-  <td>renderEdit</td>
-</tr>
-<tr>
   <td>text/xml</td>
   <td>xml</td>
   <td>renderXml</td>
@@ -249,8 +255,6 @@
 </tr>
 </tbody>
 </table>
-
-<p>The type <code>text/html+edit</code> is meant for a html form to edit the resource.</p>
 
 <p>You can add your own content-types to the global array <code>$GLOBALS['konstrukt_content_types']</code> as follows:</p>
 
@@ -330,6 +334,8 @@
 
 <pre class="php">  <span class="co1">// /baz?grault=waldo</span>
   <span class="re0">$this</span>-&gt;<span class="me1">query</span><span class="br0">&#40;</span><span class="st0">'foo'</span>, <span class="st0">'bar'</span><span class="br0">&#41;</span>; <span class="co1">// 'bar'</span></pre>
+
+<p>The renderer operates with the concept of <em>subview</em>. This is simply a query-string parameter without any value. In a url like <code>/foo/bar?quux</code>, the subview would be <code>quux</code>. This property is used to determine the appropriate <a href="#renderers">renderer</a>. While the value could occur anywhere in the query-string, it is usually placed as the first element, right after the question mark.</p>
 
 <h3 id="querystring-namespace">Querystring namespace</h3>
 
