@@ -118,3 +118,8 @@ th {
   padding: .5em 1em;
   background-color: #eee;
 }
+
+pre.shell {
+  background-color: #444;
+  color: #ccc;
+}

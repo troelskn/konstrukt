@@ -82,6 +82,7 @@ class DocumentationTransformer {
     $this->transformer->addPlugin('html', array($this, 'transformHtml'));
     $this->transformer->addPlugin('raw', array($this, 'transformRaw'));
     $this->transformer->addPlugin('note', array($this, 'wrapNote'));
+    $this->transformer->addPlugin('shell', array($this, 'transformShell'));
   }
 
   function transform($input) {
@@ -122,6 +123,10 @@ class DocumentationTransformer {
     $geshi = new GeSHi($data, 'sql');
     $geshi->enable_keyword_links(false);
     return $geshi->parse_code();
+  }
+
+  function transformShell($data, $keyword, $header) {
+    return '<pre class="shell">'.htmlspecialchars($data)."</pre>";
   }
 
   function transformRaw($data, $keyword, $header) {
