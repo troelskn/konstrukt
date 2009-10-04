@@ -55,9 +55,23 @@ EMAIL;TYPE=PREF,INTERNET:<span class="kw2">&lt;?php</span> <span class="kw3">ech
 REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class="kw3">date</span><span class="br0">&#40;</span><span class="st0">&quot;Y-m-dTH:i:sZ&quot;</span><span class="br0">&#41;</span> . <span class="st0">&quot;<span class="es0">\n</span>&quot;</span>; <span class="kw2">?&gt;</span>
 <span class="kw3">END</span>:VCARD</pre>
 
-<p>If you have a browser with the capability of showing the <code>text/x-vcard</code> content-type, you can now request that. Chances are though, that you don't, so to make things a bit easier, there is an alternative. You can specify the content-type after the components name, separated by a dot. Since a content-type contains a slash, it would break the url to include the whole content-type, so you can use the short-name instead. In this case, you can navigate to <code>http://localhost/foo/www/contacts/jabba.vcard</code> which will yield the same result as if you had requested the page with an accept header specifying that it wants <code>text/x-vcard</code> rather than <code>text/html</code>.</p>
+<p>Our component can now render in two different content-types, depending on the client's request. To see this in action, you can use the command line tool <a href="http://curl.haxx.se/">curl</a>. Go to the command line and type:</p>
 
-<h2 id="component-chain-of-command">Component chain of command</h2>
+<pre class="shell">curl --dump-header - --header &quot;Accept: text/html&quot; http://localhost/foo/www/contacts/jabba</pre>
+
+<p>You will get a dump of the HTTP response, as <code>text/html</code>. Now try requesting <code>text/x-vcard</code>:</p>
+
+<pre class="shell">curl --dump-header - --header &quot;Accept: text/x-vcard&quot; http://localhost/foo/www/contacts/jabba</pre>
+
+<p>As you can see, the same component now returns different representations, depending on the clients preference. This is in accordance with the HTTP protocol and some clients are capable of handling it just fine, but the most common clients - browsers - are generally not. Because of this, there is an alternative way. You can specify the content-type after the components name, separated by a dot (Actually, you should use the short name, rather than the full mimetype name). In this case, you can navigate to <code>http://localhost/foo/www/contacts/jabba.vcard</code> which will yield the same result as if you had requested the page with an accept header specifying that it wants <code>text/x-vcard</code>. Try it out with:</p>
+
+<pre class="shell">curl --dump-header - http://localhost/foo/www/contacts/jabba.vcard</pre>
+
+<p>Note that Konstrukt ignores the <code>Accept</code> header, when a short name is specified - The short name takes precedence. Thus, the following also gives a vcard:</p>
+
+<pre class="shell">curl --dump-header - --header &quot;Accept: text/html&quot; http://localhost/foo/www/contacts/jabba.vcard</pre>
+
+<h2 id="tidying-the-code-up-a-bit">Tidying the code up a bit</h2>
 
 <p>As you may have noted above, there is some duplication between the two render functions. We can reduce this by moving part of it up into a more general handler on the component. In this case the top-level (<code>dispatch()</code>) would fit:</p>
 
@@ -85,37 +99,54 @@ REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class=
   <span class="br0">&#125;</span>
 <span class="br0">&#125;</span></pre>
 
-<p>A component starts its processing in the <code>dispatch()</code> method. This determines if the component is the last handler or it should delegate control to another component. In a nested path, each component will enter the <code>dispatch()</code> method and then delegate to the next, until the last segment of the path is reached.</p>
-
-<p>This component will then delegate to its own <code>execute()</code> method, which again delegates to a method that corresponds to the HTTP method, usually <code>GET()</code>. Finally, the <code>GET()</code> method will try to find a suitable renderer method to dispatch to, based on the content-type.</p>
-
-<p>Each of these functions can be hooked into by overriding them in your components. That allows you to attatch code to run for every renderer (override <code>GET()</code>), for every request-type (override <code>execute()</code>) or even for this and all sub components (override <code>dispatch()</code>). The latter is for example, a good place to put authentication logic. You can also override <code>forward()</code> to affect all sub components, but not it self. This is useful for rendering additional HTML decorations, such as navigation, which could look like this:</p>
+<p>This may also serve as an opportunity to use a powerful feature of Konstrukt, known as <em>wrappers</em>. Add the following snippet to <code>/var/www/foo/lib/components/contacts/list.php</code>:</p>
 
 <pre class="php"><span class="kw2">&lt;?php</span>
-<span class="kw2">class</span> components_Root <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
-  <span class="kw2">function</span> forward<span class="br0">&#40;</span><span class="re0">$class_name</span>, <span class="re0">$namespace</span> = <span class="st0">&quot;&quot;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+<span class="kw2">class</span> components_contacts_List <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
+  ...
+  <span class="kw2">function</span> wrapHtml<span class="br0">&#40;</span><span class="re0">$content</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="kw1">return</span> <span class="st0">'
-&lt;div id=&quot;menu&quot;&gt;
-  &lt;ul&gt;
-    &lt;li&gt;&lt;a href=&quot;'</span> . <span class="re0">$this</span>-&gt;<span class="me1">url</span><span class="br0">&#40;</span><span class="st0">&quot;/&quot;</span><span class="br0">&#41;</span> . <span class="st0">'&quot;&gt;Back to index&lt;/a&gt;
-    &lt;li&gt;&lt;a href=&quot;'</span> . <span class="re0">$this</span>-&gt;<span class="me1">url</span><span class="br0">&#40;</span><span class="st0">&quot;/help&quot;</span><span class="br0">&#41;</span> . <span class="st0">'&quot;&gt;Help&lt;/a&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;
+&lt;p&gt;&lt;a href=&quot;'</span> . <span class="kw3">htmlspecialchars</span><span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">url</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> . <span class="st0">'&quot;&gt;List contacts&lt;/a&gt;&lt;/p&gt;
 &lt;div id=&quot;content&quot;&gt;
-'</span> . <span class="kw2">parent</span>::<span class="me2">forward</span><span class="br0">&#40;</span><span class="re0">$class_name</span>, <span class="re0">$namespace</span><span class="br0">&#41;</span> . <span class="st0">'
+'</span> . <span class="re0">$content</span> . <span class="st0">'
 &lt;/div&gt;'</span>;
   <span class="br0">&#125;</span>
+  ...
 <span class="br0">&#125;</span></pre>
+
+<p>What this will do is that whenever a child component (Eg. <code>components_contacts_Entity</code>) is rendered, the response will be decorated. It will only apply for HTML responses, so our vcard response won't be affected. This provides a convenient way to place navigation and similar snippets of HTML, that relates to the location with in the url hierarchy.</p>
+
+<p>We have now introduced a number of concepts relating to the dispatch process. But to understand how they all fit together and what is really happening inside the library, we'll have to take a step back:</p>
+
+<h2 id="intermezzo-component-chain-of-command">Intermezzo - Component chain of command</h2>
+
+<p>(<em>You can skip this section, if your head is too full</em>)</p>
+
+<p><img src="dispatch-800.png" alt="dispatch-800.png" /></p>
+
+<p>The diagram above depicts the process that a component goes through during execution.</p>
+
+<p>A component starts its processing in the <code>dispatch()</code> method. This determines if there are any more components to dispatch to or if this is the last in the chain. In a nested path, each component will enter the <code>dispatch()</code> method and then delegate to the next, until the last segment of the path is reached.</p>
+
+<p>If there is a next component, <code>dispatch()</code> uses first asks <code>map()</code> to translate the path segment into a component class name. It then calls <code>forward()</code>, which instantiates the component and delegates to it, starting the process over within the next component.</p>
+
+<p>The last component in the chain will delegate to its own <code>execute()</code> method, instead of <code>forward()</code>. This will further delegate to a method that corresponds to the HTTP method, usually <code>GET()</code>. Finally, the <code>GET()</code> method calls <code>render()</code>, which will try to find a suitable renderer method to dispatch to, based on the requested content-type (Determined by <code>Accept</code> header or URL prefix) and - if applicable - subview.</p>
+
+<p>When the <code>forward()</code> method dispatches to another component, it will receive a <code>k_Response</code> object. This is sent to the <code>wrap()</code> method. <code>wrap()</code> will check if there are any wrappers that match the content-type of the response. If so, it will pipe it through this to allow decoration of the response. Wrappers are very useful for rendering things like navigation. I you take a look at the root component (Located in <code>/var/www/foo/lib/components/root.php</code>), you will see that it has a method <code>wrapHtml</code>. Each time a sub component returns a HTML response, this method is used to decorate it. Since <code>wrap()</code> is only called upon a forward, the <code>execute()</code> method is further augmented to wrap the result of <code>dispatch()</code>. Thus, <code>Root</code> wraps itself for HTML responses.</p>
+
+<p>All these methods may seem a bit much and it <em>is</em> probably the most complex part of Konstrukt. You don't need to understand the subtle differences to be able to use Konstrukt, but if you want to get the full benefit of the library there it is required knowledge. The point of having so many methods in the dispatch is that it gives different points to hook into, depending on what you intent. So it is very uncommon for any component to use all of these features at once. For starters, the way that <code>render()</code> and <code>map()</code> works are the most important.</p>
 
 <h2 id="posting-and-forms">Posting and forms</h2>
 
-<p>Most web applications have to do with user input from html-forms. A component can implement a handler for any HTTP method - including the POST, which are closely related to forms. Doing so is just a matter of providing a <code>POST()</code> method on the component. A POST request has some additional properties over a GET request. The payload of the request - usually fields of a form - can be accessed through the <code>body()</code> method. This corresponds to PHPs native <code>$_POST</code> superglobal, just like <code>query()</code> corresponds to <code>$_GET</code>. This naming is more correct, since the querystring is available in all requests - not just GET, and a payload can come with other types of request, such as PUT.</p>
+<p>Most web applications have to do with user input from html-forms. A component can implement a handler for any HTTP method - including the POST, which are closely related to forms. You can implement the <code>POST()</code> method on the component, to handle all POST requests, but just like you shouldn't implement <code>GET()</code> directly, but rather rely on render methods, you shouldn't implement <code>POST()</code> directly either. Instead, you can implement <code>postForm()</code> to accept the regular <code>application/x-www-form-urlencoded</code> type requests (The default encoding of a HTML form), or <code>postMultipart()</code> for multipart forms (Usually used with file uploads). If you want to support other input formats, the same rules applies - <code>postXml()</code> would accept a POST request with the <code>Content-Type</code> header set to <code>text/xml</code>. PUT type requests follow the same rules.</p>
 
-<p>To continue from our running example, the first thing we need is to render a html form for editing a contact. A form can be seen as an alternative rendering of a resource, and for this there is a special content-type reserved. Add the following to out 'entity' component:</p>
+<p>The payload of the request - usually fields of a form - can be accessed through the <code>body()</code> method. This corresponds to PHPs native <code>$_POST</code> superglobal, just like <code>query()</code> corresponds to <code>$_GET</code>. This naming is more correct, since the querystring is available in all requests - not just GET, and a payload can come with other types of request, such as PUT.</p>
+
+<p>To continue from our running example, the first thing we need is to render a html form for editing a contact. A form can be seen as an alternate view over the resource. Konstrukt has the concept of sub-views to cater to this. Add the following to out 'entity' component:</p>
 
 <pre class="php"><span class="kw2">&lt;?php</span>
 <span class="kw2">class</span> components_contacts_Entity <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
-  <span class="kw2">function</span> renderEdit<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
+  <span class="kw2">function</span> renderHtmlEdit<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="re0">$this</span>-&gt;<span class="me1">document</span>-&gt;<span class="me1">setTitle</span><span class="br0">&#40;</span><span class="st0">&quot;Edit &quot;</span> . <span class="re0">$this</span>-&gt;<span class="me1">contact</span>-&gt;<span class="me1">full_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     <span class="re0">$t</span> = <span class="kw2">new</span> k_Template<span class="br0">&#40;</span><span class="st0">&quot;templates/contacts-entity-edit.tpl.php&quot;</span><span class="br0">&#41;</span>;
     <span class="kw1">return</span> <span class="kw2">new</span> k_HtmlResponse<span class="br0">&#40;</span><span class="re0">$t</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="re0">$this</span>, <span class="kw3">array</span><span class="br0">&#40;</span><span class="st0">'contact'</span> =&gt; <span class="re0">$this</span>-&gt;<span class="me1">contact</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
@@ -125,7 +156,7 @@ REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class=
 <p>And the template to go with it in <code>templates/contacts-entity-edit.tpl.php</code>:</p>
 
 <pre class="php">&lt;h2&gt;Edit <span class="kw2">&lt;?php</span> e<span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">short_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; ?&gt;&lt;/h2&gt;
-&lt;form method=<span class="st0">&quot;post&quot;</span> action=<span class="st0">&quot;&lt;?php e(url()); ?&gt;&quot;</span>&gt;
+&lt;form method=<span class="st0">&quot;post&quot;</span> action=<span class="st0">&quot;&lt;?php e(url('', array('edit'))); ?&gt;&quot;</span>&gt;
 <span class="kw2">&lt;?php</span> <span class="kw1">if</span> <span class="br0">&#40;</span><span class="kw3">isset</span><span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">errors</span><span class="br0">&#41;</span><span class="br0">&#41;</span>: <span class="kw2">?&gt;</span>
 <span class="kw2">&lt;?php</span> <span class="kw1">foreach</span> <span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">errors</span> <span class="kw1">as</span> <span class="re0">$error</span><span class="br0">&#41;</span>: <span class="kw2">?&gt;</span>
    &lt;p style=<span class="st0">&quot;color:red&quot;</span>&gt;
@@ -153,15 +184,32 @@ REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class=
    &lt;/p&gt;
 &lt;/form&gt;</pre>
 
-<p>This is obviously a primitive way to render form components. HTML widgets are outside the scope of Konstrukt, but you can use third party libraries, such as Zend_Form to generate the html. If you use a real template engine, it may also provide a means for this.</p>
+<p>This is obviously a primitive way to render form components. HTML widgets are outside the scope of Konstrukt, but you can use third party libraries, such as <a href="http://framework.zend.com/manual/en/zend.form.html">Zend_Form</a> to generate the html. If you use a real template engine, it may also provide a means for this.</p>
 
-<p>Now that we have the rendering of a form in place, we still need to process the POST request it will generate. Time to add yet another method to our component:</p>
+<p>To access the form, we need to add a link from the view page, so edit <code>templates/contacts-entity.tpl.php</code>:</p>
+
+<pre class="php">&lt;h2&gt;&lt;?php e<span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">short_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; ?&gt;&lt;/h2&gt;
+&lt;dl&gt;
+  &lt;dt&gt;First Name&lt;/dt&gt;
+  &lt;dd&gt;&lt;?php e<span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">first_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; ?&gt;&lt;/dd&gt;
+  &lt;dt&gt;Last Name&lt;/dt&gt;
+  &lt;dd&gt;&lt;?php e<span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">last_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; ?&gt;&lt;/dd&gt;
+  &lt;dt&gt;Email&lt;/dt&gt;
+  &lt;dd&gt;&lt;?php e<span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">email</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; ?&gt;&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;p&gt;
+  &lt;a href=<span class="st0">&quot;&lt;?php e(url('', 'edit')); ?&gt;&quot;</span>&gt;edit&lt;/a&gt;
+&lt;/p&gt;</pre>
+
+<p>You can now reach the form by clicking the url to <code>contacts/jabba?edit</code>. Internally, Konstrukt will translate this to <code>renderHtmlEdit</code> and dispatch to that method.</p>
+
+<p>Now that we have the rendering of a form in place, we still need to process the POST request it will generate. Time to add some more methods to our component:</p>
 
 <pre class="php"><span class="kw2">&lt;?php</span>
 <span class="kw2">class</span> components_contacts_Entity <span class="kw2">extends</span> k_Component <span class="br0">&#123;</span>
   <span class="kw2">function</span> postForm<span class="br0">&#40;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
     <span class="kw1">if</span> <span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">process</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span> <span class="br0">&#123;</span>
-      <span class="kw1">return</span> <span class="kw2">new</span> k_SeeOther<span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">url</span><span class="br0">&#40;</span><span class="st0">'.'</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+      <span class="kw1">return</span> <span class="kw2">new</span> k_SeeOther<span class="br0">&#40;</span><span class="re0">$this</span>-&gt;<span class="me1">url</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
     <span class="br0">&#125;</span>
     <span class="kw1">return</span> <span class="re0">$this</span>-&gt;<span class="me1">render</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;
   <span class="br0">&#125;</span>
@@ -196,8 +244,8 @@ REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class=
 
 <p>As this tutorial isn't about the model layer, the implementation of <code>process()</code> is kept simple. You can test a failure case by omitting one of the fields. Otherwise the entity is saved back to the database.</p>
 
-<p>The <code>postForm()</code> method - while brief - deserves a few words on the way. If the processing goes well, we generate a redirect. In this case it's for the current components url, with a neutral content-type. That will take the user back to the default representation after a successful operation. If there are failures, the form is redisplayed.</p>
+<p>The <code>postForm()</code> method - while brief - deserves a few words on the way. If the processing goes well, we generate a redirect. In this case it's for the current components url. That will take the user back to the default representation after a successful operation. If there are failures, the form is instead redisplayed. Note that we have to explicitly call <code>render()</code> at the end. Without it, we would get a blank page.</p>
 
-<p>This pattern is commonly known as "redirect after post" or "post-redirect-get" (PRG). Doing things in this exact way means that the users browser history won't store the POST actions, once the form has been completed. If we didn't do this, using the "back" button of the browser would try to re-submit the form. You have probably experienced this annoying behaviour on a web site more than once. Note that it is only after the form has been succesfully processed, that the redirect takes place.</p>
+<p>This pattern is commonly known as "redirect after post" or <a href="http://en.wikipedia.org/wiki/Post/Redirect/Get">"post-redirect-get" (PRG)</a>. Doing things in this exact way means that the users browser history won't store the POST actions, once the form has been completed. If we didn't do this, using the "back" button of the browser would try to re-submit the form. You have probably experienced this annoying behaviour on a web site more than once. Note that it is only after the form has been succesfully processed, that the redirect takes place.</p>
 </body>
 </html>

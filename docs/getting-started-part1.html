@@ -20,8 +20,7 @@
 
 <p>For this tutorial we'll create a very simple application. Konstrukt doesn't strictly enforce any particular directory layout, but to provide a starting point, you can take a copy of the folder <code>examples/starterpack_light</code> from the distribution of Konstrukt. Assuming that your web root is at <code>/var/www</code>, copy the directory <code>examples/starterpack_light</code> to <code>/var/www/foo</code> for our application "foo". For a real application, you'd probably want to mount the application on its own virtualhost, but this is a quick way to get started and it's trivial to move the application later on. If you have svn installed, you can type the following on the command line to create your project:</p>
 
-<pre><code>svn export https://konstrukt.googlecode.com/svn/tags/2.1.0/examples/starterpack_light /var/www/foo
-</code></pre>
+<pre class="shell">svn export https://konstrukt.googlecode.com/svn/tags/2.1.1/examples/starterpack_light /var/www/foo</pre>
 
 <p><code>starterpack_light</code> is a basic setup, which contains a simple directory structure, and other things that you need to begin a web application. There is also a more complete setup at <code>starterpack_default</code>, which is recommended for new applications; The reason we're using the minimal setup in this tutorial, is to keep external dependencies low.</p>
 
@@ -29,8 +28,7 @@
 
 <p>If you use a unix system, you'll probably have to give the web server access to write to the folder <code>log</code>, since the application is configured to write various information to log files placed herein. You can simply run the following command:</p>
 
-<pre><code>chmod 777 /var/www/foo/log
-</code></pre>
+<pre class="shell">chmod 777 /var/www/foo/log</pre>
 
 <p>You can now open your browser and go to <code>http://localhost/foo/www</code> and verify that everything is in order. The following message should meet you if everything is running correctly:</p>
 
@@ -110,13 +108,16 @@
 
 <p>Since SqLite stores its database in a file, we need a location for it. We'll create a folder under your project for this:</p>
 
-<pre><code>mkdir var
-chmod 777 var
-</code></pre>
+<pre class="shell">mkdir var
+chmod 777 var</pre>
 
 <p class="note">Note: If you use Windows, you can skip the <code>chmod</code> part.</p>
 
-<p>Log in to sqlite and create our database at <code>/var/www/foo/var/database.sqlite</code>:</p>
+<p>Log in to sqlite and create our database at <code>/var/www/foo/var/database.sqlite</code>. From the command line type:</p>
+
+<pre class="shell">sqlite3 var/database.sqlite</pre>
+
+<p>Create the database with the following SQL:</p>
 
 <pre class="sql"><span style="color: #993333; font-weight: bold;">CREATE</span> <span style="color: #993333; font-weight: bold;">TABLE</span> contacts <span style="color: #66cc66;">&#40;</span>
   id SERIAL,
@@ -141,10 +142,9 @@ chmod 777 var
 
 <p>Again, since the web server needs access to the database, we'll have to lax the file permissions:</p>
 
-<pre><code>chmod 666 var/database.sqlite
-</code></pre>
+<pre class="shell">chmod 666 var/database.sqlite</pre>
 
-<p>Contrary to commonly accepted practise, we'll create a global database link, that we can use throughout the application. This is obviously not something you should do in a real application, but to keep focus on the controlelr layer for now, we'll do it none the less. We can then later change to use a dependency injection technique, which is the recommended approach. Open up <code>config/global.inc.php</code> and add the following lines:</p>
+<p>Contrary to commonly accepted practise, we'll create a global database link, that we can use throughout the application. This is obviously not something you should do in a real application, but to keep focus on the controller layer for now, we'll do it none the less. We can then later change to use a dependency injection technique, which is the recommended approach. Open up <code>config/global.inc.php</code> and add the following lines:</p>
 
 <pre class="php"><span class="re0">$db</span> = <span class="kw2">new</span> PDO<span class="br0">&#40;</span><span class="st0">&quot;sqlite:&quot;</span> . <span class="kw3">dirname</span><span class="br0">&#40;</span><span class="kw3">dirname</span><span class="br0">&#40;</span><span class="kw2">__FILE__</span><span class="br0">&#41;</span><span class="br0">&#41;</span> . <span class="st0">&quot;/var/database.sqlite&quot;</span><span class="br0">&#41;</span>;
 <span class="re0">$db</span>-&gt;<span class="me1">setAttribute</span><span class="br0">&#40;</span>PDO::<span class="me2">ATTR_ERRMODE</span>, PDO::<span class="me2">ERRMODE_EXCEPTION</span><span class="br0">&#41;</span>;
@@ -242,8 +242,7 @@ chmod 777 var
   &lt;dd&gt;&lt;?php e<span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">last_name</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; ?&gt;&lt;/dd&gt;
   &lt;dt&gt;Email&lt;/dt&gt;
   &lt;dd&gt;&lt;?php e<span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">email</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; ?&gt;&lt;/dd&gt;
-&lt;/dl&gt;
-&lt;p&gt;&lt;a href=<span class="st0">&quot;&lt;?php e(url(&quot;</span>..<span class="st0">&quot;)); ?&gt;&quot;</span>&gt;Back to index&lt;/a&gt;&lt;/p&gt;</pre>
+&lt;/dl&gt;</pre>
 
 <p>With this, we can now display our contact. Go on and click one of those links from the listing.</p>
 

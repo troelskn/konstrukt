@@ -12,8 +12,8 @@ Creating a new project
 ----------------------
 For this tutorial we'll create a very simple application. Konstrukt doesn't strictly enforce any particular directory layout, but to provide a starting point, you can take a copy of the folder `examples/starterpack_light` from the distribution of Konstrukt. Assuming that your web root is at `/var/www`, copy the directory `examples/starterpack_light` to `/var/www/foo` for our application "foo". For a real application, you'd probably want to mount the application on its own virtualhost, but this is a quick way to get started and it's trivial to move the application later on. If you have svn installed, you can type the following on the command line to create your project:
 
-
-    svn export https://konstrukt.googlecode.com/svn/tags/2.1.0/examples/starterpack_light /var/www/foo
+..shell
+svn export https://konstrukt.googlecode.com/svn/tags/2.1.1/examples/starterpack_light /var/www/foo
 
 `starterpack_light` is a basic setup, which contains a simple directory structure, and other things that you need to begin a web application. There is also a more complete setup at `starterpack_default`, which is recommended for new applications; The reason we're using the minimal setup in this tutorial, is to keep external dependencies low.
 
@@ -21,8 +21,8 @@ The starterpack contains several folders. For now, we'll just concern our selves
 
 If you use a unix system, you'll probably have to give the web server access to write to the folder `log`, since the application is configured to write various information to log files placed herein. You can simply run the following command:
 
-
-    chmod 777 /var/www/foo/log
+..shell
+chmod 777 /var/www/foo/log
 
 You can now open your browser and go to `http://localhost/foo/www` and verify that everything is in order. The following message should meet you if everything is running correctly:
 
@@ -105,13 +105,19 @@ To use our model component, we need a database. Since SqLite is standard with mo
 
 Since SqLite stores its database in a file, we need a location for it. We'll create a folder under your project for this:
 
-    mkdir var
-    chmod 777 var
+..shell
+mkdir var
+chmod 777 var
 
 ..note
 If you use Windows, you can skip the `chmod` part.
 
-Log in to sqlite and create our database at `/var/www/foo/var/database.sqlite`:
+Log in to sqlite and create our database at `/var/www/foo/var/database.sqlite`. From the command line type:
+
+..shell
+sqlite3 var/database.sqlite
+
+Create the database with the following SQL:
 
 ..sql
 CREATE TABLE contacts (
@@ -137,9 +143,10 @@ INSERT INTO contacts (short_name, first_name, last_name, email)
 
 Again, since the web server needs access to the database, we'll have to lax the file permissions:
 
-    chmod 666 var/database.sqlite
+..shell
+chmod 666 var/database.sqlite
 
-Contrary to commonly accepted practise, we'll create a global database link, that we can use throughout the application. This is obviously not something you should do in a real application, but to keep focus on the controlelr layer for now, we'll do it none the less. We can then later change to use a dependency injection technique, which is the recommended approach. Open up `config/global.inc.php` and add the following lines:
+Contrary to commonly accepted practise, we'll create a global database link, that we can use throughout the application. This is obviously not something you should do in a real application, but to keep focus on the controller layer for now, we'll do it none the less. We can then later change to use a dependency injection technique, which is the recommended approach. Open up `config/global.inc.php` and add the following lines:
 
 ..php
 $db = new PDO("sqlite:" . dirname(dirname(__FILE__)) . "/var/database.sqlite");
@@ -248,7 +255,6 @@ To complete the picture, we need a template to match our component. Save this as
   <dt>Email</dt>
   <dd><?php e($contact->email()); ?></dd>
 </dl>
-<p><a href="<?php e(url("..")); ?>">Back to index</a></p>
 
 With this, we can now display our contact. Go on and click one of those links from the listing.
 
