@@ -1062,15 +1062,12 @@ abstract class k_Component implements k_Context {
     $content_type = $this->negotiateContentType(array_keys($accept), $this->subtype());
     if (isset($accept[$content_type])) {
       // subview dispatch
-      $regex = '/^' . preg_quote($accept[$content_type]) . '(.+)/i';
-      foreach (get_class_methods($this) as $method) {
-        if (preg_match($regex, $method, $mm)) {
-          if ($this->query(strtolower($mm[1])) === "") {
-            return k_coerce_to_response(
-              $this->{$mm[0]}(),
-              k_content_type_to_response_type($content_type));
-          }
-        }
+      $subview = $this->subview();
+      $subhandler = $accept[$content_type] . $subview;
+      if ($subview && method_exists($this, $subhandler)) {
+        return k_coerce_to_response(
+          $this->{$subhandler}(),
+          k_content_type_to_response_type($content_type));
       }
       return k_coerce_to_response(
         $this->{$accept[$content_type]}(),
@@ -1106,7 +1103,15 @@ abstract class k_Component implements k_Context {
     // no wrapper ? do nothing.
     return $content;
   }
-
+  /**
+    * Returns the subview component of the URL, if any.
+    * @return string
+    */
+  protected function subview() {
+    if (preg_match('~^.*\?([a-z]+)~i', $this->requestUri(), $mm)) {
+      return $mm[1];
+    }
+  }
 }
 
 /**
