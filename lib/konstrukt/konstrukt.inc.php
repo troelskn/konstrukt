@@ -497,7 +497,7 @@ class k_HttpRequest implements k_Context {
       : $this->headers;
   }
   function cookie($key = null, $default = null) {
-    return $key ? $this->cookie_access->get($key, $default) : $this->cookie_access->all();
+    return $key ? $this->cookie_access->get($key, $default) : $this->cookie_access;
   }
   /**
     * @param string
