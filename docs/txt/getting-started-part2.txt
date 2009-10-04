@@ -1,5 +1,5 @@
-Second tutorial
-===============
+Getting started - part 2
+========================
 For this tutorial we presume that you have completed the first tutorial, since it builds on the code produced from that.
 
 Negotiating the Content-Type
@@ -92,7 +92,7 @@ class components_contacts_Entity extends k_Component {
   }
   function renderVcard() {
     $t = new k_Template("templates/contacts-entity-vcard.tpl.php");
-    $response = new k_HttpResponse(200, $t->render($this, array('contact' => $contact)));
+    $response = new k_HttpResponse(200, $t->render($this, array('contact' => $this->contact)));
     $response->setContentType('text/x-vcard');
     return $response;
   }
