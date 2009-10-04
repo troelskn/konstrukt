@@ -1264,8 +1264,8 @@ class k_DefaultNotAuthorizedComponent extends k_Component {
     $response->setHeader('WWW-Authenticate', 'Basic realm="Restricted"');
     return $response;
   }
-  function renderHtml() {
-    return '<html><body><h1>HTTP 401 - Not Authorized</h1></body></html>';
+  function render() {
+    return new k_HtmlResponse('<html><body><h1>HTTP 401 - Not Authorized</h1></body></html>');
   }
 }
 
@@ -1278,8 +1278,8 @@ class k_DefaultForbiddenComponent extends k_Component {
     $response->setStatus(403);
     return $response;
   }
-  function renderHtml() {
-    return '<html><body><h1>HTTP 403 - Forbidden</h1></body></html>';
+  function render() {
+    return new k_HtmlResponse('<html><body><h1>HTTP 403 - Forbidden</h1></body></html>');
   }
 }
 
@@ -1292,8 +1292,8 @@ class k_DefaultPageNotFoundComponent extends k_Component {
     $response->setStatus(404);
     return $response;
   }
-  function renderHtml() {
-    return '<html><body><h1>HTTP 404 - Page Not Found</h1></body></html>';
+  function render() {
+    return new k_HtmlResponse('<html><body><h1>HTTP 404 - Page Not Found</h1></body></html>');
   }
 }
 
@@ -1306,8 +1306,8 @@ class k_DefaultMethodNotAllowedComponent extends k_Component {
     $response->setStatus(405);
     return $response;
   }
-  function renderHtml() {
-    return '<html><body><h1>HTTP 405 - Method Not Allowed</h1></body></html>';
+  function render() {
+    return new k_HtmlResponse('<html><body><h1>HTTP 405 - Method Not Allowed</h1></body></html>');
   }
 }
 
@@ -1320,8 +1320,8 @@ class k_DefaultNotNotAcceptableComponent extends k_Component {
     $response->setStatus(406);
     return $response;
   }
-  function renderHtml() {
-    return '<html><body><h1>HTTP 406 - Not Acceptable</h1></body></html>';
+  function render() {
+    return new k_HtmlResponse('<html><body><h1>HTTP 406 - Not Acceptable</h1></body></html>');
   }
 }
 
@@ -1334,8 +1334,8 @@ class k_DefaultNotImplementedComponent extends k_Component {
     $response->setStatus(501);
     return $response;
   }
-  function renderHtml() {
-    return '<html><body><h1>HTTP 501 - Not Implemented</h1></body></html>';
+  function render() {
+    return new k_HtmlResponse('<html><body><h1>HTTP 501 - Not Implemented</h1></body></html>');
   }
 }
 
