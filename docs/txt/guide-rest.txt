@@ -1,12 +1,12 @@
 Guide to RESTful applications with Konstrukt
-===
+============================================
 
 REST is a complex subject, even if the basics are familiar to many developers. This guide won't assume to explain everything REST, but rather focus on a set of recommendations mainly for URL design and how to implement it with Konstrukt.
 
 First a few ground rules however.
 
 General REST guidelines
----
+-----------------------
 
 REST stresses the importance of HTTP methods - In particular the distinction between idempotent and non-idempotent actions. This is very important, because it controls what can be cached and proxied, but also hints at which behaviour automated systems (Such as crawlers) should exhibit.
 
@@ -66,7 +66,7 @@ TODO
 Atompub has some limitations that makes it unsuitable for interaction through a regular web browser. In particular, there is no support for displaying html-forms for edit+create of entries. The following reccomendations build upon Atompub, but makes some changes to get around the shortcomings.
 
 Konstrukt+crud
----
+--------------
 
 A basic web CRUD interface consists of five entrypoints.
 
@@ -110,7 +110,7 @@ The suggested schema can be supported by two components, which must implement th
     }
 
 Browser hacks
----
+-------------
 
 ###HTTP methods
 
@@ -135,7 +135,7 @@ This is used within html forms. A field with the name `_method` in the payload o
     /teams.xml                  -> text/xml
 
 Notes
----
+-----
 
 * http://blog.ianbicking.org/2009/01/11/atompub-instead-o-webdav/
 * http://intertwingly.net/wiki/pie/CarrotVsOrange
