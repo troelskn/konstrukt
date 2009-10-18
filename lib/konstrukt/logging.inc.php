@@ -6,6 +6,7 @@
 class k_logging_WebDebugger implements k_DebugListener {
   protected $request_headers = array();
   protected $request_method = '';
+  protected $request_uri = '';
   protected $route = array();
   protected $messages = array();
   protected $dumper;
@@ -15,6 +16,7 @@ class k_logging_WebDebugger implements k_DebugListener {
   function logRequestStart(k_Context $context) {
     $this->request_method = $context->method();
     $this->request_headers = $context->header();
+    $this->request_uri = $context->requestUri();
   }
   function logException(Exception $ex) {}
   function logDispatch($component, $name, $next) {
@@ -266,6 +268,7 @@ class k_logging_LogDebugger implements k_DebugListener {
       '(request' . "\n" .
       '  (time "' . date("Y-m-d H:i:s") . '")' . "\n" .
       '  (method "' . $context->method() . '")' . "\n" .
+      '  (request-uri "' . addslashes($context->requestUri()) . '")' . "\n" .
       '  (headers ' . $this->indent(($this->dumper->dump($context->header()))) . "))" . "\n");
   }
   function logException(Exception $ex) {
@@ -315,7 +318,7 @@ class k_logging_LogDebugger implements k_DebugListener {
   }
   protected function renderResponse($response) {
     $html =
-      '(http-response' . "\n" .
+      '(response' . "\n" .
       '  (http-status ' . $response->status() . ')' . "\n" .
       '  (content-type "' . $response->contentType() . '")' . "\n" .
       '  (charset "' . $response->encoding() . '")' . "\n" .
