@@ -32,7 +32,8 @@ require_once \'konstrukt/virtualbrowser.inc.php\';
 
 class WebTestOf'.$component_uc_name.' extends WebTestCase {
   function createBrowser() {
-    return new k_VirtualSimpleBrowser(\''.$class_name.'\', new k_InjectorAdapter(create_container()));
+    $this->container = create_container();
+    return new k_VirtualSimpleBrowser(\''.$class_name.'\', new k_InjectorAdapter($this->container));
   }
   function createInvoker() {
     return new SimpleInvoker($this);
