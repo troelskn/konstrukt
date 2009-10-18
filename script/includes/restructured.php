@@ -243,6 +243,12 @@ class restructured_Transformer
     return $geshi->parse_code();
   }
 
+  protected function transformSexp($args) {
+    $geshi = new GeSHi($args, 'lisp');
+    $geshi->enable_keyword_links(false);
+    return $geshi->parse_code();
+  }
+
   protected function transformRaw($args) {
     return "<div class=\"nostyle\">".$args."</div>\n";
   }

@@ -79,6 +79,7 @@ class DocumentationTransformer {
     $this->transformer = new MyMarkdownTransformer();
     $this->transformer->addPlugin('php', array($this, 'transformPHP'));
     $this->transformer->addPlugin('sql', array($this, 'transformSql'));
+    $this->transformer->addPlugin('sexp', array($this, 'transformSexp'));
     $this->transformer->addPlugin('html', array($this, 'transformHtml'));
     $this->transformer->addPlugin('raw', array($this, 'transformRaw'));
     $this->transformer->addPlugin('note', array($this, 'wrapNote'));
@@ -122,6 +123,15 @@ class DocumentationTransformer {
   function transformSQL($data, $keyword, $header) {
     $geshi = new GeSHi($data, 'sql');
     $geshi->enable_keyword_links(false);
+    return $geshi->parse_code();
+  }
+
+  function transformSexp($args) {
+    $geshi = new GeSHi($args, 'lisp');
+    $geshi->enable_classes();
+    $geshi->enable_keyword_links(false);
+    //    $geshi->language_data['KEYWORDS'][1] = array('request', 'http-response', 'dispatch', 'debug');
+    //    $geshi->language_data['KEYWORDS'][3] = array('array', 'string', 'object', 'integer', 'float', '*NULL*');
     return $geshi->parse_code();
   }
 

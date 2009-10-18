@@ -1,0 +1,256 @@
+Getting started - part 3
+========================
+
+*Warning: This document is still work-in-progress*
+
+This is the third part of a series. Since the text refers to a running example, you should start with the first two parts.
+
+Managing Dependencies
+---------------------
+
+So far, we have used global variables to hold the access to out model component. As I mentioned already at the beginning, this is not a good practise. Konstrukt is designed in a way so that it is possible to use a [dependency injection container](http://www.picocontainer.org/patterns.html) for managing shared components in the application. We'll now see how the application can be transformed to use this.
+
+For this purpose we'll use the simplistic [Bucket](http://github.com/troelskn/bucket) library. If you prefer a different container, it's trivial to change, since such containers - by their nature - introduce very few dependencies.
+
+You can install Bucket in a shared place on your machine, but for this tutorial, we'll just pull it in to the application we're working on. Open a shell, go to your site's root folder (`/var/www/foo`) and type the following commands:
+
+..shell
+mkdir thirdparty
+git clone git@github.com:troelskn/bucket.git thirdparty/bucket
+
+This will pull a copy of Bucket into the folder `thirdparty/bucket`.
+
+Before we can make use of Bucket, we need to configure out project to use it. Open up `config/development.inc.php` and replace the contents with:
+
+..php
+<?php
+require_once 'applicationfactory.php';
+require_once dirname(__FILE__).'/../thirdparty/bucket/lib/bucket.inc.php';
+date_default_timezone_set('Europe/Paris');
+function create_container() {
+  $factory = new ApplicationFactory();
+  $container = new bucket_Container($factory);
+  $factory->pdo_dsn = "sqlite:" . dirname(dirname(__FILE__)) . "/var/database.sqlite";
+  $factory->pdo_attributes = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
+  return $container;
+}
+
+The function `create_container` creates a Bucket container and attaches a factory (`ApplicationFactory`) for creating objects. We need a `ApplicationFactory` to go with this - Open a new file at `lib/applicationfactory.php` and enter:
+
+..php
+<?php
+/**
+  * Provides class dependency wiring for this application
+  */
+class ApplicationFactory {
+  public $pdo_dsn;
+  public $pdo_username;
+  public $pdo_password;
+  public $pdo_attributes = array();
+  function new_PDO($c) {
+    return new PDO($this->pdo_dsn, $this->pdo_username, $this->pdo_password, $this->pdo_attributes);
+  }
+}
+
+And finally, open up `www/index.php` and change it so that it contains:
+
+..php
+<?php
+require_once dirname(__FILE__) . '/../config/global.inc.php';
+k()
+  // Use container for wiring of components
+  ->setComponentCreator(new k_InjectorAdapter(create_container()))
+  // Dispatch request
+  ->run('components_Root')
+  ->out();
+
+At this point, the dependency injection container is set up and configured, and all components will have their dependencies automagically filled at instantiation.
+
+We can now edit the components to take advantage of this. Open up `lib/components/contacts/list.php` and add a constructor:
+
+..php
+class components_contacts_List extends k_Component {
+  protected $contacts;
+  function __construct(ContactsGateway $contacts) {
+    $this->contacts = $contacts;
+  }
+  ...
+
+The container will see that `components_contacts_List` requires an instance of `ContactsGateway` and provide it. We can then replace the references to the global variable, as so:
+
+..php
+class components_contacts_List extends k_Component {
+  ...
+  function renderHtml() {
+    $this->document->setTitle("Contacts");
+    $t = new k_Template("templates/contacts-list.tpl.php");
+    return $t->render(
+      $this,
+      array(
+        'contacts' => $this->contacts->all()));
+  }
+  ...
+
+We have to do the same thing with `lib/components/contacts/entity.php`
+
+..php
+class components_contacts_Entity extends k_Component {
+  protected $contact;
+  protected $contacts;
+  function __construct(ContactsGateway $contacts) {
+    $this->contacts = $contacts;
+  }
+  function dispatch() {
+    $this->contact = $this->contacts->fetchByName($this->name());
+    if (!$this->contact) {
+      throw new k_PageNotFound();
+    }
+    return parent::dispatch();
+  }
+  ...
+  function process() {
+    ...
+      try {
+        $this->contacts->save($this->contact);
+      } catch (Exception $ex) {
+        @$this->contact->errors[] = $ex->getMessage();
+        return false;
+      }
+    ...
+
+You can now go verify that the application works exactly as before. That may seem like a lot of effort, but the result is that all components are now managed by the dependency injection container. *Why* this is a big deal is a bit beyond the scope of this tutorial, so I suggest [other sources](http://stackoverflow.com/search?q=dependency+injection) for that.
+
+###The default starterpack
+
+A lot of the bootstrapping that we did above would need to be done for each new application. That is why there is a starterpack which has this and more preconfigured. Instead of using `starterpack_light`, the `starterpack_default` contains a more complete setup, including Bucket.
+
+Before we continue, we'll just pull in the remaining bits from `starterpack_default`:
+
+..shell
+svn export http://konstrukt.googlecode.com/svn/trunk/examples/starterpack_default/script script
+svn export http://konstrukt.googlecode.com/svn/trunk/examples/starterpack_default/test test
+
+This "upgrades" our `starterpack_light`, so that our application is now similar to how it would have looked if we started out with `starterpack_default`. The folder `script/` contains various commandline scripts for maintenance and code generation.
+
+Testing
+-------
+
+Noticed that last dir we pulled in? (Hint: It begins with *t* and ends with *est*). Yup, the default Konstrukt configuration holds tests in a dir called `test/`. This is further split into a folder for unit tests `test/unit/` and a folder for functional tests `test/functional/`. Unit tests test the smallest "unit" of your appplication - Typically a single class. Functional tests test interaction. In Konstrukt, you would typically have a test per component.
+
+The starterpack comes with a single functional test to start out with. You can try running it with:
+
+..shell
+php test/functional/root.test.php
+
+Hopefully it passes.
+
+This first test was for free, but we should want to write tests for our own components. Time for another freebie:
+
+..shell
+script/generate_test_functional.php components_contacts_List
+
+As you might suspect, this generates a functional test case for the component `components_contacts_List`. Or rather, it generates the file and skeleton - You still need to fill the actual tests in manually. Open up the newly generated file at: `test/functional/contacts_list.test.php`. As you can see, it contains a [web testcase](http://www.simpletest.org/en/web_tester_documentation.html) for the List component.
+
+Unlike regular web testcases from SimpleTest, this one uses a `k_VirtualSimpleBrowser`. This is a component provided by Konstrukt which completely mocks out the HTTP-access, thus making it possible to test a component without running it through a web server. Not only is this faster and simpler, but it makes it possible to mock out dependencies - Something which isn't really possible with regular web testcases.
+
+The skeleton contains a single test, which simply checks that the component responds to a GET request. Let's add a more interesting test to it:
+
+..php
+function test_lists_contacts() {
+  $this->get('/');
+  $this->assertLink("Jabba the Hutt");
+}
+
+If you didn't mess too much around with the data, this should pass. However, letting tests depend on the state of the database is a bad idea. Let's mock out that dependency, shall we:
+
+..php
+function test_lists_contacts() {
+  Mock::Generate('ContactsGateway');
+  $contacts = new MockContactsGateway();
+  $jabba = new Contact(array('first_name' => "Jabba", 'last_name' => "the Hutt", 'short_name' => "jabba"));
+  $contacts->setReturnValue('all', array($jabba));
+  $this->container->set($contacts, 'ContactsGateway');
+  $this->get('/');
+  $this->assertLink("Jabba the Hutt");
+}
+
+First we generate a [mock](http://www.simpletest.org/en/mock_objects_documentation.html) for the model component `ContactsGateway` and set up its expectations. Then we configure the containier to use our mocked object in place of the real deal. When running the test, the container will assign the mock object to the list component, thus making the test independent of the database.
+
+This isn't a tutorial in writing automated tests, so we'll leave off here, but hopefully this shows the basic framework that Konstrukt provides for functional tests.
+
+Debugging + logs
+----------------
+
+The inner workings of Konstrukt's dispatch process can be a bit daunting at first. To help understanding how each request is processed, you can turn on debug logging. This will log information about each component in the chain of execution. If you use the default starterpack, logging is enabled by default. Otherwise you can add it with a single line to the bootstrap (`www/index.php`):
+
+..php
+k()
+  ...
+  ->setLog(dirname(__FILE__) . '/../log/debug.log')
+  ...
+
+You can follow the output as it flows into the log by running the `tail` command:
+
+..shell
+tail -f log/debug.log
+
+Which will give you something like the following:
+
+..sexp
+(request
+  (time "2009-10-18 23:15:46")
+  (method "get")
+  (request-uri "/foo/www/contacts")
+  (headers (array (length 9)
+    (host (string "localhost"))
+    (user-agent (string "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.14) Gecko/2009090216 Ubuntu/9.04 (jaunty) Firefox/3.0.14"))
+    (accept (string "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"))
+    (accept-language (string "en-us,en;q=0.5"))
+    (accept-encoding (string "gzip,deflate"))
+    (accept-charset (string "ISO-8859-1,utf-8;q=0.7,*;q=0.7"))
+    (keep-alive (string "300"))
+    (connection (string "keep-alive"))
+    (cookie (string "wp-settings-time-1=1234546590; re_ret=0"))))
+(dispatch
+  (class-name "components_Root" (defined-in "/var/www/foo/lib/components/root.php"))
+  (name *NULL*)
+  (next contacts))
+(dispatch
+  (class-name "components_contacts_List" (defined-in "/var/www/foo/lib/components/contacts/list.php"))
+  (name contacts)
+  (next *NULL*))
+(http-response
+  (http-status 200)
+  (content-type "text/html")
+  (charset "utf-8")
+  (headers))
+
+There are three types of entries in that piece of log. The `request` entry logs the parsed http-request.
+
+Following that comes a number of `dispatch` entries - one for each component that gets invoked on the chain. There will always be the root component at the beginning, but there can be any number of components following that. For each component is logged the class name of the component along with the url-name that it has and the next name on the chain.
+
+Finally there is a `response` entry which displays the value of the http-response that is sent back to the client.
+
+You can further send custom log messages to the debug log, from within a component, by calling to `$this->debug()`. This is often used during development, instead of `var_dump`.
+
+..note
+The format of the debug log is s-expressions. You can syntax-highlight it as lisp code. For example, if you have `source-highlight` installed on your system, you can view the log with the command `tail -f log/debug.log | source-highlight --out-format=esc --src-lang=slang`.
+
+If you're not so found of the command line, you might want to use the in-browser log output instead. Go back to the bootstrap and add the following line:
+
+..php
+k()
+  ...
+  ->setDebug()
+  ...
+
+If you go back and display the application in your browser, you'll notice a green box in the top-right corner. Try clicking on it and you'll get a neatly formatted table with the same information as you have in the log-file.
+
+Error log
+
+Configuring application for production.
+
+MetaResponse handlers
+---------------------
+
+... pretty 404 ...
