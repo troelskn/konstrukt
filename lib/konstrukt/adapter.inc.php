@@ -113,7 +113,7 @@ class k_adapter_SafeGlobalsAccess implements k_adapter_GlobalsAccess {
       if ($key === 'CONTENT_TYPE') {
         $headers['Content-Type'] = $value;
       } elseif (substr($key, 0, 5) === "HTTP_") {
-        $headername = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 0, 5)))));
+        $headername = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))));
         $headers[$headername] = $value;
       }
     }
