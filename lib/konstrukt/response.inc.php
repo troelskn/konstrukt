@@ -371,7 +371,7 @@ class k_XmlResponse extends k_BaseResponse {
       $this->headers = $content->headers();
       $this->charset = $content->charset();
       $this->content = $content->toContentType($this->internalType());
-    } elseif ($content instanceof DomNode) {
+    } elseif ($content instanceof DomDocument) {
       $this->content = $content;
     } elseif ($content instanceof SimpleXMLElement) {
       $this->content = $content;
@@ -381,6 +381,9 @@ class k_XmlResponse extends k_BaseResponse {
       throw new Exception("Illegal input type object('" . get_class($content) . "')");
     } else {
       throw new Exception("Illegal input type '" . gettype($content) . "'");
+    }
+    if (!$this->charset) {
+      $this->charset = new k_charset_Utf8();
     }
   }
   function contentType() {
@@ -394,7 +397,7 @@ class k_XmlResponse extends k_BaseResponse {
     case 'internal/xml':
       return $this->content;
     case 'internal/xml+dom':
-      return ($this->content instanceof DomNode) ? $this->content : dom_import_simplexml($this->content);
+      return ($this->content instanceof DomDocument) ? $this->content : dom_import_simplexml($this->content);
     case 'internal/xml+simple':
       return ($this->content instanceof SimpleXMLElement) ? $this->content : simplexml_import_dom($this->content);
     }
@@ -404,15 +407,14 @@ class k_XmlResponse extends k_BaseResponse {
     throw new k_ImpossibleContentTypeConversionException();
   }
   protected function marshal() {
-    if ($this->content instanceof DomNode) {
-      $dom_node = $this->content;
+    if ($this->content instanceof DomDocument) {
+      $document = $this->content;
     } elseif ($this->content instanceof SimpleXMLElement) {
       $dom_node = dom_import_simplexml($this->content);
+      $document = $dom_node->ownerDocument;
     }
-    $document = $dom_node->ownerDocument;
-    $document->xmlStandalone = true;
     $document->encoding = $this->encoding();
     $document->formatOutput = true;
-    return $document->saveXML($dom_node);
+    return $document->saveXML();
   }
 }

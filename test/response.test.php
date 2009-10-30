@@ -165,6 +165,10 @@ class TestOfXmlResponse extends UnitTestCase {
     $r = new k_XmlResponse("<foo/>");
     $this->assertIsA($r, 'k_XmlResponse');
   }
+  function test_creating_xml_response_from_string_gets_a_default_charset() {
+    $r = new k_XmlResponse("<foo/>");
+    $this->assertNotNull($r->encoding());
+  }
   function test_xml_response_can_be_created_from_simplexmlelement() {
     $r = new k_XmlResponse(new SimpleXMLElement("<foo/>"));
     $this->assertIsA($r, 'k_XmlResponse');
@@ -190,5 +194,10 @@ class TestOfXmlResponse extends UnitTestCase {
       $this->pass();
     }
     restore_error_handler();
+  }
+  function test_xml_response_from_string_retains_xml_header() {
+    $xml = "<" . "?xml version=\"1.0\" encoding=\"utf-8\"?" . ">" . "\n" . "<foo/>" . "\n";
+    $r = new k_XmlResponse($xml);
+    $this->assertEqual($r->toContentType('text/xml'), $xml);
   }
 }
