@@ -8,13 +8,11 @@
 
 <h1 id="getting-started-part-3">Getting started - part 3</h1>
 
-<p><em>Warning: This document is still work-in-progress</em></p>
-
 <p>This is the third part of a series. Since the text refers to a running example, you should start with the first two parts.</p>
 
 <h2 id="managing-dependencies">Managing Dependencies</h2>
 
-<p>So far, we have used global variables to hold the access to out model component. As I mentioned already at the beginning, this is not a good practise. Konstrukt is designed in a way so that it is possible to use a <a href="http://www.picocontainer.org/patterns.html">dependency injection container</a> for managing shared components in the application. We'll now see how the application can be transformed to use this.</p>
+<p>So far, we have used global variables to hold the access to our model component. As I mentioned already at the beginning, this is not a good practise. Konstrukt is designed in a way so that it is possible to use a <a href="http://www.picocontainer.org/patterns.html">dependency injection container</a> for managing shared components in the application. We'll now see how the application can be transformed to use this.</p>
 
 <p>For this purpose we'll use the simplistic <a href="http://github.com/troelskn/bucket">Bucket</a> library. If you prefer a different container, it's trivial to change, since such containers - by their nature - introduce very few dependencies.</p>
 
@@ -25,7 +23,7 @@ git clone git@github.com:troelskn/bucket.git thirdparty/bucket</pre>
 
 <p>This will pull a copy of Bucket into the folder <code>thirdparty/bucket</code>.</p>
 
-<p>Before we can make use of Bucket, we need to configure out project to use it. Open up <code>config/development.inc.php</code> and replace the contents with:</p>
+<p>Before we can make use of Bucket, we need to configure our project to use it. Open up <code>config/development.inc.php</code> and replace the contents with:</p>
 
 <pre class="php"><span class="kw2">&lt;?php</span>
 <span class="kw1">require_once</span> <span class="st0">'applicationfactory.php'</span>;
@@ -119,7 +117,7 @@ k<span class="br0">&#40;</span><span class="br0">&#41;</span>
 
 <p>You can now go verify that the application works exactly as before. That may seem like a lot of effort, but the result is that all components are now managed by the dependency injection container. <em>Why</em> this is a big deal is a bit beyond the scope of this tutorial, so I suggest <a href="http://stackoverflow.com/search?q=dependency+injection">other sources</a> for that.</p>
 
-<h2 id="starterpack">Starterpack</h2>
+<h3 id="the-default-starterpack">The default starterpack</h3>
 
 <p>A lot of the bootstrapping that we did above would need to be done for each new application. That is why there is a starterpack which has this and more preconfigured. Instead of using <code>starterpack_light</code>, the <code>starterpack_default</code> contains a more complete setup, including Bucket.</p>
 
@@ -128,7 +126,7 @@ k<span class="br0">&#40;</span><span class="br0">&#41;</span>
 <pre class="shell">svn export http://konstrukt.googlecode.com/svn/trunk/examples/starterpack_default/script script
 svn export http://konstrukt.googlecode.com/svn/trunk/examples/starterpack_default/test test</pre>
 
-<p>This "upgrades" our <code>starterpack_light</code>, so that our application is now similar to how it would have looked if we started out with <code>starterpack_default</code>. The folder <code>script/</code> contains various commandline scripts for maintenance and code generation.</p>
+<p>This "upgrades" our <code>starterpack_light</code>, so that our application is now similar to how it would have looked if we started out with <code>starterpack_default</code> (Except for the bootstrap, which we'll cover later). The folder <code>script/</code> contains various commandline scripts for maintenance and code generation.</p>
 
 <h2 id="testing">Testing</h2>
 
@@ -222,23 +220,67 @@ svn export http://konstrukt.googlecode.com/svn/trunk/examples/starterpack_defaul
 
 <p>You can further send custom log messages to the debug log, from within a component, by calling to <code>$this-&gt;debug()</code>. This is often used during development, instead of <code>var_dump</code>.</p>
 
-<p class="note">Note: The format of the debug log is s-expressions. You can syntax-highlight it as lisp code. For example, if you have <code>source-highlight</code> installed on your system, you can view the log with the command <code>tail -f log/debug.log | source-highlight --out-format=esc --src-lang=slang</code>.</p>
+<p class="note">Note: The format of the debug log is <a href="http://en.wikipedia.org/wiki/S-expression">s-expressions</a>. You can syntax-highlight it as lisp code. For example, if you have <code>source-highlight</code> installed on your system, you can view the log with the command <code>tail -f log/debug.log | source-highlight --out-format=esc --src-lang=slang</code>.</p>
 
-<p>If you're not so found of the command line, you might want to use the in-browser log output instead. Go back to the bootstrap and add the following line:</p>
+<p>If you're not so fond of the command line, you might want to use the in-browser log output instead. Go back to the bootstrap and add the following line:</p>
 
 <pre class="php">k<span class="br0">&#40;</span><span class="br0">&#41;</span>
   ...
   -&gt;<span class="me1">setDebug</span><span class="br0">&#40;</span><span class="br0">&#41;</span>
   ...</pre>
 
-<p>If you go back and display the application in your browser, you'll notice a green box in the top-right corner. Try clicking on it and you'll get a neatly formatted table with the same information as you have in the log-file.</p>
+<p>If you view the application in your browser, you'll notice a green box in the top-right corner. Try clicking on it and you'll get a neatly formatted table with the same information as you have in the log-file.</p>
 
-<p>Error log</p>
+<h2 id="error-log">Error log</h2>
 
-<p>Configuring application for production.</p>
+<p>In addition to the debug log, the default setup configures Apache to put errors in a custom error log. This will happen if Apache is misconfigured or if a fatal error happens in your php application. If you are having trouble getting things to work, try checking if there is anything in <code>log/error.log</code>.</p>
 
-<h2 id="metaresponse-handlers">MetaResponse handlers</h2>
+<h1 id="configuring-application-for-production">Configuring application for production</h1>
 
-<p>... pretty 404 ...</p>
+<p>On a production site, you obviously don't want errors displayed in the browser or a lot of dispatching information in the debug log. You should make sure to remove or comment out the calls to <code>setLog</code> and <code>setDebug</code> in the bootstrap after you have deployed to the production site.</p>
+
+<p>Some times you also want to make other configuration changes in the various sites. For example, you probably need different connection details to the database (if you use one) and so on. You can put different global configuration in a config file under <code>config/</code>. The bootstrap will include <code>global.inc.php</code>, which in turn will load either <code>local.inc.php</code> or fall back to <code>development.inc.php</code>.</p>
+
+<p>The idea is that you create a separate config file for each target site (developement, staging, production etc.) and name them accordingly (<code>development.inc.php</code>, <code>staging.inc.php</code>, <code>production.inc.php</code> etc.). On each site, you can create a symlink that points to the relevant config file. For example, on the production site, you would create a link <code>local.inc.php -&gt; production.inc.php</code>. You can make this part of your deployment script, if you use an automated deployment script.</p>
+
+<p>To make the debug/logging configurable, we'll have to make a small change to <code>index.php</code>:</p>
+
+<pre class="php"><span class="kw2">&lt;?php</span>
+<span class="kw1">require_once</span> <span class="kw3">dirname</span><span class="br0">&#40;</span><span class="kw2">__FILE__</span><span class="br0">&#41;</span> . <span class="st0">'/../config/global.inc.php'</span>;
+k<span class="br0">&#40;</span><span class="br0">&#41;</span>
+  -&gt;<span class="me1">setComponentCreator</span><span class="br0">&#40;</span><span class="kw2">new</span> k_InjectorAdapter<span class="br0">&#40;</span>create_container<span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>
+  -&gt;<span class="me1">setLog</span><span class="br0">&#40;</span><span class="re0">$debug_log_path</span><span class="br0">&#41;</span>
+  -&gt;<span class="me1">setDebug</span><span class="br0">&#40;</span><span class="re0">$debug_enabled</span><span class="br0">&#41;</span>
+  -&gt;<span class="me1">run</span><span class="br0">&#40;</span><span class="st0">'components_Root'</span><span class="br0">&#41;</span>
+  -&gt;<span class="me1">out</span><span class="br0">&#40;</span><span class="br0">&#41;</span>;</pre>
+
+<p>And to <code>development.inc.php</code> we add the two configuration parameters:</p>
+
+<pre class="php">..
+<span class="re0">$debug_log_path</span> = <span class="kw3">dirname</span><span class="br0">&#40;</span><span class="kw3">dirname</span><span class="br0">&#40;</span><span class="kw2">__FILE__</span><span class="br0">&#41;</span><span class="br0">&#41;</span> . <span class="st0">&quot;/var/debug.log&quot;</span>;
+<span class="re0">$debug_enabled</span> = <span class="kw2">true</span>;
+..</pre>
+
+<p>Now, let's assume you wanted a production site (which isn't too far fetched, I hope). Start by making a copy of development:</p>
+
+<pre class="shell">cp config/development.inc.php config/production.inc.php</pre>
+
+<p>And edit it to suit your needs. For now, we'll just disable debug logging and in-browser debugging. Replace the two lines from before with:</p>
+
+<pre class="php">..
+<span class="re0">$debug_log_path</span> = <span class="kw2">null</span>;
+<span class="re0">$debug_enabled</span> = <span class="kw2">false</span>;
+..</pre>
+
+<p>You can now switch to use the production site profile by making a symlink:</p>
+
+<pre class="shell">ln -s config/production.inc.php config/local.inc.php</pre>
+
+<p>Without the link, the development profile is loaded. So for your development site, you won't have any link.</p>
+
+<p>The actual deployment process is a bit outside the scope of Konstrukt and this tutorial, but you can use tools such as <a href="http://www.capify.org/">Capistrano</a> or <a href="http://phing.info/">Phing</a> for this. Or you can just use a bunch of shell scripts.</p>
+
+<p class="note">Note: The default starterpack already has a bootstrap which is configured in this way, so if you start from there, all you need to do is make a copy of <code>development.inc.php</code> for the production (and any other) site and put a link when you deploy to it.
+</p>
 </body>
 </html>

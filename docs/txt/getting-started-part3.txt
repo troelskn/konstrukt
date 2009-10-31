@@ -1,8 +1,6 @@
 Getting started - part 3
 ========================
 
-*Warning: This document is still work-in-progress*
-
 This is the third part of a series. Since the text refers to a running example, you should start with the first two parts.
 
 Managing Dependencies
@@ -130,7 +128,7 @@ Before we continue, we'll just pull in the remaining bits from `starterpack_defa
 svn export http://konstrukt.googlecode.com/svn/trunk/examples/starterpack_default/script script
 svn export http://konstrukt.googlecode.com/svn/trunk/examples/starterpack_default/test test
 
-This "upgrades" our `starterpack_light`, so that our application is now similar to how it would have looked if we started out with `starterpack_default`. The folder `script/` contains various commandline scripts for maintenance and code generation.
+This "upgrades" our `starterpack_light`, so that our application is now similar to how it would have looked if we started out with `starterpack_default` (Except for the bootstrap, which we'll cover later). The folder `script/` contains various commandline scripts for maintenance and code generation.
 
 Testing
 -------
@@ -234,7 +232,7 @@ Finally there is a `response` entry which displays the value of the http-respons
 You can further send custom log messages to the debug log, from within a component, by calling to `$this->debug()`. This is often used during development, instead of `var_dump`.
 
 ..note
-The format of the debug log is s-expressions. You can syntax-highlight it as lisp code. For example, if you have `source-highlight` installed on your system, you can view the log with the command `tail -f log/debug.log | source-highlight --out-format=esc --src-lang=slang`.
+The format of the debug log is [s-expressions](http://en.wikipedia.org/wiki/S-expression). You can syntax-highlight it as lisp code. For example, if you have `source-highlight` installed on your system, you can view the log with the command `tail -f log/debug.log | source-highlight --out-format=esc --src-lang=slang`.
 
 If you're not so fond of the command line, you might want to use the in-browser log output instead. Go back to the bootstrap and add the following line:
 
@@ -244,13 +242,63 @@ k()
   ->setDebug()
   ...
 
-If you go back and display the application in your browser, you'll notice a green box in the top-right corner. Try clicking on it and you'll get a neatly formatted table with the same information as you have in the log-file.
+If you view the application in your browser, you'll notice a green box in the top-right corner. Try clicking on it and you'll get a neatly formatted table with the same information as you have in the log-file.
 
 Error log
+---------
 
-Configuring application for production.
+In addition to the debug log, the default setup configures Apache to put errors in a custom error log. This will happen if Apache is misconfigured or if a fatal error happens in your php application. If you are having trouble getting things to work, try checking if there is anything in `log/error.log`.
 
-MetaResponse handlers
----------------------
+Configuring application for production
+======================================
 
-... pretty 404 ...
+On a production site, you obviously don't want errors displayed in the browser or a lot of dispatching information in the debug log. You should make sure to remove or comment out the calls to `setLog` and `setDebug` in the bootstrap after you have deployed to the production site.
+
+Some times you also want to make other configuration changes in the various sites. For example, you probably need different connection details to the database (if you use one) and so on. You can put different global configuration in a config file under `config/`. The bootstrap will include `global.inc.php`, which in turn will load either `local.inc.php` or fall back to `development.inc.php`.
+
+The idea is that you create a separate config file for each target site (developement, staging, production etc.) and name them accordingly (`development.inc.php`, `staging.inc.php`, `production.inc.php` etc.). On each site, you can create a symlink that points to the relevant config file. For example, on the production site, you would create a link `local.inc.php -> production.inc.php`. You can make this part of your deployment script, if you use an automated deployment script.
+
+To make the debug/logging configurable, we'll have to make a small change to `index.php`:
+
+..php
+<?php
+require_once dirname(__FILE__) . '/../config/global.inc.php';
+k()
+  ->setComponentCreator(new k_InjectorAdapter(create_container()))
+  ->setLog($debug_log_path)
+  ->setDebug($debug_enabled)
+  ->run('components_Root')
+  ->out();
+
+And to `development.inc.php` we add the two configuration parameters:
+
+..php
+..
+$debug_log_path = dirname(dirname(__FILE__)) . "/var/debug.log";
+$debug_enabled = true;
+..
+
+Now, let's assume you wanted a production site (which isn't too far fetched, I hope). Start by making a copy of development:
+
+..shell
+cp config/development.inc.php config/production.inc.php
+
+And edit it to suit your needs. For now, we'll just disable debug logging and in-browser debugging. Replace the two lines from before with:
+
+..php
+..
+$debug_log_path = null;
+$debug_enabled = false;
+..
+
+You can now switch to use the production site profile by making a symlink:
+
+..shell
+ln -s config/production.inc.php config/local.inc.php
+
+Without the link, the development profile is loaded. So for your development site, you won't have any link.
+
+The actual deployment process is a bit outside the scope of Konstrukt and this tutorial, but you can use tools such as [Capistrano](http://www.capify.org/) or [Phing](http://phing.info/) for this. Or you can just use a bunch of shell scripts.
+
+..note
+The default starterpack already has a bootstrap which is configured in this way, so if you start from there, all you need to do is make a copy of `development.inc.php` for the production (and any other) site and put a link when you deploy to it.
