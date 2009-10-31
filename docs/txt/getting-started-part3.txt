@@ -8,7 +8,7 @@ This is the third part of a series. Since the text refers to a running example, 
 Managing Dependencies
 ---------------------
 
-So far, we have used global variables to hold the access to out model component. As I mentioned already at the beginning, this is not a good practise. Konstrukt is designed in a way so that it is possible to use a [dependency injection container](http://www.picocontainer.org/patterns.html) for managing shared components in the application. We'll now see how the application can be transformed to use this.
+So far, we have used global variables to hold the access to our model component. As I mentioned already at the beginning, this is not a good practise. Konstrukt is designed in a way so that it is possible to use a [dependency injection container](http://www.picocontainer.org/patterns.html) for managing shared components in the application. We'll now see how the application can be transformed to use this.
 
 For this purpose we'll use the simplistic [Bucket](http://github.com/troelskn/bucket) library. If you prefer a different container, it's trivial to change, since such containers - by their nature - introduce very few dependencies.
 
@@ -20,7 +20,7 @@ git clone git@github.com:troelskn/bucket.git thirdparty/bucket
 
 This will pull a copy of Bucket into the folder `thirdparty/bucket`.
 
-Before we can make use of Bucket, we need to configure out project to use it. Open up `config/development.inc.php` and replace the contents with:
+Before we can make use of Bucket, we need to configure our project to use it. Open up `config/development.inc.php` and replace the contents with:
 
 ..php
 <?php
@@ -236,7 +236,7 @@ You can further send custom log messages to the debug log, from within a compone
 ..note
 The format of the debug log is s-expressions. You can syntax-highlight it as lisp code. For example, if you have `source-highlight` installed on your system, you can view the log with the command `tail -f log/debug.log | source-highlight --out-format=esc --src-lang=slang`.
 
-If you're not so found of the command line, you might want to use the in-browser log output instead. Go back to the bootstrap and add the following line:
+If you're not so fond of the command line, you might want to use the in-browser log output instead. Go back to the bootstrap and add the following line:
 
 ..php
 k()
