@@ -252,11 +252,11 @@ In addition to the debug log, the default setup configures Apache to put errors 
 Configuring application for production
 ======================================
 
-On a production site, you obviously don't want errors displayed in the browser or a lot of dispatching information in the debug log. You should make sure to remove or comment out the calls to `setLog` and `setDebug` in the bootstrap after you have deployed to the production site.
+On a production site, you obviously don't want errors displayed in the browser or a lot of dispatching information in the debug log. You could edit the bootstrap and remove remove or comment out the calls to `setLog` and `setDebug` after you have deployed to the production site, but this is a bit tedious and error-prone. Some times you also want to make other configuration changes in the various sites. For example, you probably need different connection details to the database (if you use one) and so on.
 
-Some times you also want to make other configuration changes in the various sites. For example, you probably need different connection details to the database (if you use one) and so on. You can put different global configuration in a config file under `config/`. The bootstrap will include `global.inc.php`, which in turn will load either `local.inc.php` or fall back to `development.inc.php`.
+You can put different global configuration in a config file under `config/`. The bootstrap will include `global.inc.php`, which in turn will load either `local.inc.php` or fall back to `development.inc.php`.
 
-The idea is that you create a separate config file for each target site (developement, staging, production etc.) and name them accordingly (`development.inc.php`, `staging.inc.php`, `production.inc.php` etc.). On each site, you can create a symlink that points to the relevant config file. For example, on the production site, you would create a link `local.inc.php -> production.inc.php`. You can make this part of your deployment script, if you use an automated deployment script.
+The idea is that you create a separate config file for each target site (development, staging, production etc.) and name them accordingly (`development.inc.php`, `staging.inc.php`, `production.inc.php` etc.). On each site, you can create a symlink that points to the relevant config file. For example, on the production site, you would create a link `local.inc.php -> production.inc.php`. You can make this part of your deployment script, if you use an automated deployment script.
 
 To make the debug/logging configurable, we'll have to make a small change to `index.php`:
 
