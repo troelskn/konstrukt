@@ -198,7 +198,7 @@ REV:<span class="kw2">&lt;?php</span> <span class="kw3">echo</span> <span class=
   &lt;dd&gt;&lt;?php e<span class="br0">&#40;</span><span class="re0">$contact</span>-&gt;<span class="me1">email</span><span class="br0">&#40;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>; ?&gt;&lt;/dd&gt;
 &lt;/dl&gt;
 &lt;p&gt;
-  &lt;a href=<span class="st0">&quot;&lt;?php e(url('', 'edit')); ?&gt;&quot;</span>&gt;edit&lt;/a&gt;
+  &lt;a href=<span class="st0">&quot;&lt;?php e(url('', array('edit'))); ?&gt;&quot;</span>&gt;edit&lt;/a&gt;
 &lt;/p&gt;</pre>
 
 <p>You can now reach the form by clicking the url to <code>contacts/jabba?edit</code>. Internally, Konstrukt will translate this to <code>renderHtmlEdit</code> and dispatch to that method.</p>

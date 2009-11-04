@@ -201,7 +201,7 @@ To access the form, we need to add a link from the view page, so edit `templates
   <dd><?php e($contact->email()); ?></dd>
 </dl>
 <p>
-  <a href="<?php e(url('', 'edit')); ?>">edit</a>
+  <a href="<?php e(url('', array('edit'))); ?>">edit</a>
 </p>
 
 You can now reach the form by clicking the url to `contacts/jabba?edit`. Internally, Konstrukt will translate this to `renderHtmlEdit` and dispatch to that method.
