@@ -235,7 +235,7 @@ svn export http://konstrukt.googlecode.com/svn/trunk/examples/starterpack_defaul
 
 <p>In addition to the debug log, the default setup configures Apache to put errors in a custom error log. This will happen if Apache is misconfigured or if a fatal error happens in your php application. If you are having trouble getting things to work, try checking if there is anything in <code>log/error.log</code>.</p>
 
-<h1 id="configuring-application-for-production">Configuring application for production</h1>
+<h2 id="configuring-application-for-production">Configuring application for production</h2>
 
 <p>On a production site, you obviously don't want errors displayed in the browser or a lot of dispatching information in the debug log. You could edit the bootstrap and remove remove or comment out the calls to <code>setLog</code> and <code>setDebug</code> after you have deployed to the production site, but this is a bit tedious and error-prone. Some times you also want to make other configuration changes in the various sites. For example, you probably need different connection details to the database (if you use one) and so on.</p>
 
@@ -256,10 +256,10 @@ k<span class="br0">&#40;</span><span class="br0">&#41;</span>
 
 <p>And to <code>development.inc.php</code> we add the two configuration parameters:</p>
 
-<pre class="php">..
+<pre class="php">...
 <span class="re0">$debug_log_path</span> = <span class="kw3">dirname</span><span class="br0">&#40;</span><span class="kw3">dirname</span><span class="br0">&#40;</span><span class="kw2">__FILE__</span><span class="br0">&#41;</span><span class="br0">&#41;</span> . <span class="st0">&quot;/var/debug.log&quot;</span>;
 <span class="re0">$debug_enabled</span> = <span class="kw2">true</span>;
-..</pre>
+...</pre>
 
 <p>Now, let's assume you wanted a production site (which isn't too far fetched, I hope). Start by making a copy of development:</p>
 
@@ -267,10 +267,10 @@ k<span class="br0">&#40;</span><span class="br0">&#41;</span>
 
 <p>And edit it to suit your needs. For now, we'll just disable debug logging and in-browser debugging. Replace the two lines from before with:</p>
 
-<pre class="php">..
+<pre class="php">...
 <span class="re0">$debug_log_path</span> = <span class="kw2">null</span>;
 <span class="re0">$debug_enabled</span> = <span class="kw2">false</span>;
-..</pre>
+...</pre>
 
 <p>You can now switch to use the production site profile by making a symlink:</p>
 

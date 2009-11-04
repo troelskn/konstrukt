@@ -250,7 +250,7 @@ Error log
 In addition to the debug log, the default setup configures Apache to put errors in a custom error log. This will happen if Apache is misconfigured or if a fatal error happens in your php application. If you are having trouble getting things to work, try checking if there is anything in `log/error.log`.
 
 Configuring application for production
-======================================
+--------------------------------------
 
 On a production site, you obviously don't want errors displayed in the browser or a lot of dispatching information in the debug log. You could edit the bootstrap and remove remove or comment out the calls to `setLog` and `setDebug` after you have deployed to the production site, but this is a bit tedious and error-prone. Some times you also want to make other configuration changes in the various sites. For example, you probably need different connection details to the database (if you use one) and so on.
 
@@ -273,10 +273,10 @@ k()
 And to `development.inc.php` we add the two configuration parameters:
 
 ..php
-..
+...
 $debug_log_path = dirname(dirname(__FILE__)) . "/var/debug.log";
 $debug_enabled = true;
-..
+...
 
 Now, let's assume you wanted a production site (which isn't too far fetched, I hope). Start by making a copy of development:
 
@@ -286,10 +286,10 @@ cp config/development.inc.php config/production.inc.php
 And edit it to suit your needs. For now, we'll just disable debug logging and in-browser debugging. Replace the two lines from before with:
 
 ..php
-..
+...
 $debug_log_path = null;
 $debug_enabled = false;
-..
+...
 
 You can now switch to use the production site profile by making a symlink:
 
