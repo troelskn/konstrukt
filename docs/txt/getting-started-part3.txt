@@ -14,7 +14,7 @@ You can install Bucket in a shared place on your machine, but for this tutorial,
 
 ..shell
 mkdir thirdparty
-git clone git@github.com:troelskn/bucket.git thirdparty/bucket
+git clone git://github.com/troelskn/bucket.git thirdparty/bucket
 
 This will pull a copy of Bucket into the folder `thirdparty/bucket`.
 

@@ -243,6 +243,7 @@ class components_contacts_Entity extends k_Component {
       }
       return true;
     }
+    return false;
   }
   ...
 
