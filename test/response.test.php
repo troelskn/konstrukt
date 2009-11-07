@@ -103,7 +103,7 @@ class TestOfResponse extends UnitTestCase {
 class TestOfResponseWrapping extends UnitTestCase {
   function test_wrap_doesnt_affect_self() {
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost', 'REQUEST_METHOD' => 'get'));
-    $http = new k_HttpRequest('', '/', new k_DefaultIdentityLoader(), $glob);
+    $http = new k_HttpRequest('', '/', new k_DefaultIdentityLoader(), null, $glob);
     $components = new k_DefaultComponentCreator();
     $root = $components->create('test_response_RootComponent', $http);
     $r = $root->dispatch();
@@ -112,7 +112,7 @@ class TestOfResponseWrapping extends UnitTestCase {
   }
   function test_legacy_string_level_wrapping() {
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost', 'REQUEST_METHOD' => 'get'));
-    $http = new k_HttpRequest('', '/hello', new k_DefaultIdentityLoader(), $glob);
+    $http = new k_HttpRequest('', '/hello', new k_DefaultIdentityLoader(), null, $glob);
     $components = new k_DefaultComponentCreator();
     $root = $components->create('test_response_RootComponent', $http);
     $r = $root->dispatch();
@@ -122,7 +122,7 @@ class TestOfResponseWrapping extends UnitTestCase {
   function test_json_type_wrapping() {
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost', 'REQUEST_METHOD' => 'get'));
     $glob->headers = array('accept' => 'application/json');
-    $http = new k_HttpRequest('', '/json', new k_DefaultIdentityLoader(), $glob);
+    $http = new k_HttpRequest('', '/json', new k_DefaultIdentityLoader(), null, $glob);
     $components = new k_DefaultComponentCreator();
     $root = $components->create('test_response_RootTwoComponent', $http);
     $r = $root->dispatch();
@@ -131,7 +131,7 @@ class TestOfResponseWrapping extends UnitTestCase {
   }
   function test_wrapped_response_retains_headers() {
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost', 'REQUEST_METHOD' => 'get'));
-    $http = new k_HttpRequest('', '/hello', new k_DefaultIdentityLoader(), $glob);
+    $http = new k_HttpRequest('', '/hello', new k_DefaultIdentityLoader(), null, $glob);
     $components = new k_DefaultComponentCreator();
     $root = $components->create('test_response_RootThreeComponent', $http);
     $r = $root->dispatch();
@@ -140,7 +140,7 @@ class TestOfResponseWrapping extends UnitTestCase {
   }
   function test_wrapped_response_retains_status() {
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost', 'REQUEST_METHOD' => 'get'));
-    $http = new k_HttpRequest('', '/hello', new k_DefaultIdentityLoader(), $glob);
+    $http = new k_HttpRequest('', '/hello', new k_DefaultIdentityLoader(), null, $glob);
     $components = new k_DefaultComponentCreator();
     $root = $components->create('test_response_RootThreeComponent', $http);
     $r = $root->dispatch();

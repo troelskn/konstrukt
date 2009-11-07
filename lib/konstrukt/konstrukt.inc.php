@@ -338,6 +338,56 @@ class k_AuthenticatedUser implements k_Identity {
 }
 
 /**
+ * Representation of the applications' user
+ */
+interface k_Language {
+  /**
+   * Return the language name in English
+   */
+  function name();
+  /**
+   * Return the language native name
+   */
+  function nativeName();
+  /**
+   * Return the two letter language language iso code (639-1)
+   */
+  function isoCode();
+}
+
+/**
+ * A factory for recognising and loading the language
+ */
+interface k_LanguageLoader {
+  /**
+   * Using the context as input, the languageloader should find and return a language object.
+   * @return k_Language
+   */
+  function load(k_Context $context);
+}
+
+/**
+ * A default implementation, which always returns k_EnglishLanguage
+ */
+class k_DefaultLanguageLoader implements k_LanguageLoader {
+  function load(k_Context $context) {
+    return new k_EnglishLanguage();
+  }
+}
+
+class k_EnglishLanguage implements k_Language {
+  function name() {
+    return 'English';
+  }
+  function nativeName() {
+    return 'English';
+  }
+  function isoCode() {
+    return 'en';
+  }
+}
+
+/**
  * A context provides a full encapsulation of global variables, for any sub-components
  * The most important direct implementations are k_HttpRequest and k_Component
  */
@@ -354,6 +404,7 @@ interface k_Context {
   function serverName();
   function remoteAddr();
   function identity();
+  function language();
   function url($path = "", $params = array());
   function subspace();
   function negotiateContentType($candidates = array());
@@ -389,17 +440,22 @@ class k_HttpRequest implements k_Context {
   protected $identity_loader;
   /** @var k_Identity */
   protected $identity;
+  /** @var k_LanguageLoader */
+  protected $language_loader;
+  /** @var k_Language */
+  protected $language;
   /** @var k_ContentTypeNegotiator */
   protected $content_type_negotiator;
   /**
     * @param string
     * @param string
-    * @param k_DefaultIdentityLoader
+    * @param k_IdentityLoader
+    * @param k_LanguageLoader
     * @param k_adapter_MockGlobalsAccess
     * @param k_adapter_MockCookieAccess
     * @param k_adapter_MockSessionAccess
     */
-  function __construct($href_base = null, $request_uri = null, k_IdentityLoader $identity_loader = null, k_adapter_GlobalsAccess $superglobals = null, k_adapter_CookieAccess $cookie_access = null, k_adapter_SessionAccess $session_access = null, k_adapter_UploadedFileAccess $file_access = null) {
+  function __construct($href_base = null, $request_uri = null, k_IdentityLoader $identity_loader = null, k_LanguageLoader $language_loader = null, k_adapter_GlobalsAccess $superglobals = null, k_adapter_CookieAccess $cookie_access = null, k_adapter_SessionAccess $session_access = null, k_adapter_UploadedFileAccess $file_access = null) {
     if (preg_match('~/$~', $href_base)) {
       throw new Exception("href_base may _not_ have trailing slash");
     }
@@ -431,6 +487,7 @@ class k_HttpRequest implements k_Context {
     $this->cookie_access = $cookie_access ? $cookie_access : new k_adapter_DefaultCookieAccess($this->server['SERVER_NAME'], $superglobals->cookie());
     $this->session_access = $session_access ? $session_access : new k_adapter_DefaultSessionAccess($this->cookie_access);
     $this->identity_loader = $identity_loader ? $identity_loader : new k_DefaultIdentityLoader();
+    $this->language_loader = $language_loader ? $language_loader : new k_DefaultLanguageLoader();
     $this->href_base = $href_base === null ? preg_replace('~(.*)/.*~', '$1', $this->server['SCRIPT_NAME']) : $href_base;
     $this->request_uri = $request_uri === null ? $this->server['REQUEST_URI'] : $request_uri;
     $this->subspace =
@@ -546,6 +603,15 @@ class k_HttpRequest implements k_Context {
       $this->identity = $this->identity_loader->load($this);
     }
     return $this->identity;
+  }
+  /**
+    * @return k_Language
+    */
+  function language() {
+    if (!isset($this->language)) {
+      $this->language = $this->language_loader->load($this);
+    }
+    return $this->language;
   }
   /**
     * Generates a URL relative to this component
@@ -879,6 +945,9 @@ abstract class k_Component implements k_Context {
   }
   function identity() {
     return $this->context->identity();
+  }
+  function language() {
+    return $this->context->language();
   }
   /**
     * @param mixed
@@ -1370,6 +1439,8 @@ class k_Bootstrap {
   protected $href_base = null;
   /** @var k_IdentityLoader */
   protected $identity_loader;
+  /** @var k_LanguageLoader */
+  protected $language_loader;
   /** @var k_adapter_GlobalsAccess */
   protected $globals_access;
   /**
@@ -1451,6 +1522,15 @@ class k_Bootstrap {
     return $this;
   }
   /**
+    * Set the language loader.
+    * @param k_LanguageLoader
+    * @return k_Bootstrap
+   */
+  function setLanguageLoader(k_LanguageLoader $language_loader) {
+    $this->language_loader = $language_loader;
+    return $this;
+  }
+  /**
     * Enable/disable the in-browser debug-bar.
     * @param boolean
     * @return k_Bootstrap
@@ -1482,7 +1562,7 @@ class k_Bootstrap {
     */
   protected function context() {
     if (!isset($this->http_request)) {
-      $this->http_request = new k_HttpRequest($this->href_base, null, $this->identityLoader(), $this->globalsAccess());
+      $this->http_request = new k_HttpRequest($this->href_base, null, $this->identityLoader(), $this->languageLoader(), $this->globalsAccess());
     }
     return $this->http_request;
   }
@@ -1512,6 +1592,15 @@ class k_Bootstrap {
       $this->identity_loader = new k_DefaultIdentityLoader();
     }
     return $this->identity_loader;
+  }
+  /**
+    * @return k_LanguageLoader
+    */
+  protected function languageLoader() {
+    if (!isset($this->language_loader)) {
+      $this->language_loader = new k_DefaultLanguageLoader();
+    }
+    return $this->language_loader;
   }
   /**
     * @return k_adapter_GlobalsAccess
