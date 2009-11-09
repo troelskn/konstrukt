@@ -1176,7 +1176,7 @@ abstract class k_Component implements k_Context {
     * Returns the subview component of the URL, if any.
     * @return string
     */
-  protected function subview() {
+  function subview() {
     if (preg_match('~^.*\?([a-z]+)~i', $this->requestUri(), $mm)) {
       return $mm[1];
     }
