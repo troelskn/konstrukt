@@ -387,6 +387,10 @@ class TestOfContentTypeDispathing extends UnitTestCase {
     $root = $this->createComponent('post', array('content-type' => 'application/json'));
     $this->assertEqual("postJson called", $root->dispatch());
   }
+  function test_post_multipart() {
+    $root = $this->createComponent('post', array('content-type' => 'multipart/form-data; boundary=---------------------------1991290281749441721928095653'));
+    $this->assertEqual("postMultipart called", $root->dispatch());
+  }
   function test_posting_without_a_content_type_fails_with_not_acceptable_when_there_is_at_least_one_candidate() {
     $root = $this->createComponent('post');
     try {

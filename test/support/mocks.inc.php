@@ -7,6 +7,9 @@ class test_ContentTypeComponent extends k_Component {
   function postForm() {
     return "postForm called";
   }
+  function postMultipart() {
+    return "postMultipart called";
+  }
 }
 
 class test_CircularComponent extends k_Component {

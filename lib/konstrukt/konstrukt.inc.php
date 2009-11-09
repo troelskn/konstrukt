@@ -980,9 +980,19 @@ abstract class k_Component implements k_Context {
     return $this->context->negotiateContentType($candidates, $user_override);
   }
   protected function contentTypeShortName() {
-    preg_match('/^([^;]+)\s*(;\s*charset=(.*))?$/', $this->header('content-type'), $reg);
-    $content_type = isset($reg[1]) ? $reg[1] : '';
-    $charset = isset($reg[3]) ? strtolower($reg[3]) : 'utf-8';
+    $value = null;
+    $parameters = array();
+    foreach (explode(";", $this->header('content-type')) as $tuple) {
+      if (preg_match('/^([^=]+)=(.+)$/', $tuple, $reg)) {
+        $parameters[strtolower(trim($reg[1]))] = $reg[2];
+      } elseif ($value !== null) {
+        throw new Exception("HTTP parse error. Header line has multiple values");
+      } else {
+        $value = $tuple;
+      }
+    }
+    $content_type = isset($value) ? $value : '';
+    $charset = isset($parameters['charset']) ? strtolower($parameters['charset']) : 'utf-8';
     if ($charset !== 'utf-8') {
       // This could probably be dealt with a bit more elegantly, but that would require us to re-implement PHP's native input-parsing.
       // For now, if you get this error, you should just fix the problem by requiring your clients to speak utf-8.
