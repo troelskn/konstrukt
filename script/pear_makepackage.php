@@ -36,9 +36,9 @@ if (!class_exists('PEAR_PackageFileManager2')) {
   exit(0);
 }
 
-$version   = '2.1.1';
+$version   = '2.2.0';
 $stability = 'stable';
-$notes     = 'Mostly bug fixes.';
+$notes     = 'Some bug fixes + a few new features. Existing users should upgrade.';
 
 PEAR::setErrorHandling(PEAR_ERROR_DIE);
 $pfm = new PEAR_PackageFileManager2();
