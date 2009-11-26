@@ -59,7 +59,7 @@ class TestOfFileUpload extends UnitTestCase {
       )
     );
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost', 'SCRIPT_NAME' => '', 'REQUEST_URI' => ''), array(), array(), $files);
-    $http = new k_HttpRequest(null, null, new k_DefaultIdentityLoader(), null, $glob);
+    $http = new k_HttpRequest(null, null, new k_DefaultIdentityLoader(), null, null, $glob);
     $files = $http->file();
     $this->assertTrue(is_array($files));
     $file = $http->file('userfile');
@@ -127,7 +127,7 @@ class TestOfFileUpload extends UnitTestCase {
     );
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost', 'SCRIPT_NAME' => '', 'REQUEST_URI' => ''), array(), array(), $files);
     $file_access = new k_adapter_MockUploadedFileAccess();
-    $http = new k_HttpRequest(null, null, new k_DefaultIdentityLoader(), null, $glob, null, null, $file_access);
+    $http = new k_HttpRequest(null, null, new k_DefaultIdentityLoader(), null, null, $glob, null, null, $file_access);
     $http->file('userfile')->writeTo('/dev/null');
     $this->assertEqual(array(array('tmp85937457', '/dev/null')), $file_access->actions);
   }
@@ -137,13 +137,13 @@ class TestOfDispatching extends UnitTestCase {
 
   function test_root_gives_request_uri_as_subspace() {
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
-    $http = new k_HttpRequest('', '/foo/bar', new k_DefaultIdentityLoader(), null, $glob);
+    $http = new k_HttpRequest('', '/foo/bar', new k_DefaultIdentityLoader(), null, null, $glob);
     $this->assertEqual($http->subspace(), "/foo/bar");
   }
 
   function test_first_component_has_root_subspace() {
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
-    $http = new k_HttpRequest('', '/foo/bar', new k_DefaultIdentityLoader(), null, $glob);
+    $http = new k_HttpRequest('', '/foo/bar', new k_DefaultIdentityLoader(), null, null, $glob);
     $components = new k_DefaultComponentCreator();
     $root = $components->create('test_CircularComponent', $http);
     $this->assertEqual($root->subspace(), "foo/bar");
@@ -173,13 +173,13 @@ Dispatching:
 Executing
 ";
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
-    $http = new k_HttpRequest('/web2.0', '/web2.0/foo/bar/cux', new k_DefaultIdentityLoader(), null, $glob);
+    $http = new k_HttpRequest('/web2.0', '/web2.0/foo/bar/cux', new k_DefaultIdentityLoader(), null, null, $glob);
     $components = new k_DefaultComponentCreator();
     $root = $components->create('test_CircularComponent', $http);
     $result = $root->dispatch();
     $this->assertEqual($result, $expected);
 
-    $http = new k_HttpRequest('/web2.0', '/web2.0/foo/bar/cux/', new k_DefaultIdentityLoader(), null, $glob);
+    $http = new k_HttpRequest('/web2.0', '/web2.0/foo/bar/cux/', new k_DefaultIdentityLoader(), null, null, $glob);
     $components = new k_DefaultComponentCreator();
     $root = $components->create('test_CircularComponent', $http);
     $result = $root->dispatch();
@@ -205,7 +205,7 @@ Dispatching:
 Executing
 ";
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
-    $http = new k_HttpRequest('/web2.0', '/foo.ninja/bar', new k_DefaultIdentityLoader(), null, $glob);
+    $http = new k_HttpRequest('/web2.0', '/foo.ninja/bar', new k_DefaultIdentityLoader(), null, null, $glob);
     $components = new k_DefaultComponentCreator();
     $root = $components->create('test_CircularComponent', $http);
     $result = $root->dispatch();
@@ -218,7 +218,7 @@ class TestOfUrlGeneration extends UnitTestCase {
 
   function createHttp($href_base, $request_uri) {
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'example.org'));
-    return new k_HttpRequest($href_base, $request_uri, new k_DefaultIdentityLoader(), null, $glob);
+    return new k_HttpRequest($href_base, $request_uri, new k_DefaultIdentityLoader(), null, null, $glob);
   }
 
   function test_url_state_param_propagates_over_url() {
@@ -278,7 +278,7 @@ class TestOfUrlGeneration extends UnitTestCase {
   // Bug reported by Ander Ekdahl
   function test_when_script_name_is_slash_href_base_should_be_slash() {
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'example.org', 'SCRIPT_NAME' => '/', 'REQUEST_URI' => '/'));
-    $http = new k_HttpRequest(null, null, new k_DefaultIdentityLoader(), null, $glob);
+    $http = new k_HttpRequest(null, null, new k_DefaultIdentityLoader(), null, null, $glob);
     $this->assertEqual('/', $http->url());
   }
 
@@ -321,7 +321,7 @@ class TestOfUrlGeneration extends UnitTestCase {
 class TestOfHttpRequest extends UnitTestCase {
   function createHttp($headers) {
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'example.org'), $headers);
-    return new k_HttpRequest('', '', new k_DefaultIdentityLoader(), null, $glob);
+    return new k_HttpRequest('', '', new k_DefaultIdentityLoader(), null, null, $glob);
   }
 
   function test_negotiate_returns_first_match_from_accept_header() {
@@ -379,7 +379,7 @@ class TestOfHttpResponse extends UnitTestCase {
 class TestOfContentTypeDispathing extends UnitTestCase {
   function createComponent($method, $headers = array()) {
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost', 'REQUEST_METHOD' => $method), $headers);
-    $http = new k_HttpRequest('', '/', new k_DefaultIdentityLoader(), null, $glob);
+    $http = new k_HttpRequest('', '/', new k_DefaultIdentityLoader(), null, null, $glob);
     $components = new k_DefaultComponentCreator();
     return $components->create('test_ContentTypeComponent', $http);
   }

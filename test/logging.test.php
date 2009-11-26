@@ -16,7 +16,7 @@ class TestOfLogging extends UnitTestCase {
   function test_trace_listener() {
     $debugger = new k_TestDebugListener();
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
-    $http = new k_HttpRequest('/web2.0', '/web2.0/foo/bar/cux', new k_DefaultIdentityLoader(), $glob);
+    $http = new k_HttpRequest('/web2.0', '/web2.0/foo/bar/cux', new k_DefaultIdentityLoader(), null, null, $glob);
     $components = new k_DefaultComponentCreator();
     $components->setDebugger($debugger);
     $root = $components->create('test_CircularComponent', $http);
@@ -42,7 +42,7 @@ class TestOfLogfileLogger extends UnitTestCase {
     $GLOBALS['log'] = "";
     $debugger = new k_logging_LogDebugger('var://log');
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
-    $http = new k_HttpRequest('/web2.0', '/web2.0/foo/bar/cux', new k_DefaultIdentityLoader(), $glob);
+    $http = new k_HttpRequest('/web2.0', '/web2.0/foo/bar/cux', new k_DefaultIdentityLoader(), null, null, $glob);
     $components = new k_DefaultComponentCreator();
     $components->setDebugger($debugger);
     $root = $components->create('test_CircularComponent', $http);
