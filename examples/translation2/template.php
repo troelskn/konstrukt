@@ -1,0 +1,1 @@
+<?php e(t('How are you?')); ?>
