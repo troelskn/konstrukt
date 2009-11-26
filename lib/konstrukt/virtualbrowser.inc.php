@@ -8,25 +8,27 @@ class k_VirtualSimpleBrowser extends SimpleBrowser {
   protected $charset_strategy;
   protected $identity_loader;
   protected $language_loader;
+  protected $translator_loader;
   /**
     * @param string
     * @param ???
     * @param ???
     * @return null
     */
-  function __construct($root_class_name, k_ComponentCreator $components = null, k_charset_CharsetStrategy $charset_strategy = null, k_IdentityLoader $identity_loader = null, k_LanguageLoader $language_loader = null) {
+  function __construct($root_class_name, k_ComponentCreator $components = null, k_charset_CharsetStrategy $charset_strategy = null, k_IdentityLoader $identity_loader = null, k_LanguageLoader $language_loader = null, k_TranslatorLoader $translator_loader = null) {
     $this->root_class_name = $root_class_name;
     $this->components = $components;
     $this->charset_strategy = $charset_strategy;
     $this->identity_loader = $identity_loader;
     $this->language_loader = $language_loader;
+    $this->translator_loader = $translator_loader;
     parent::__construct();
   }
   /**
     * @return k_VirtualSimpleUserAgent
     */
   protected function createUserAgent() {
-    return new k_VirtualSimpleUserAgent($this->root_class_name, $this->components, $this->charset_strategy, $this->identity_loader, $this->language_loader);
+    return new k_VirtualSimpleUserAgent($this->root_class_name, $this->components, $this->charset_strategy, $this->identity_loader, $this->language_loader, $this->translator_loader);
   }
 }
 
@@ -171,6 +173,7 @@ class k_VirtualSimpleUserAgent {
   protected $charset_strategy;
   protected $identity_loader;
   protected $language_loader;
+  protected $translator_loader;
   protected $components;
   protected $root_class_name;
   protected $servername;
@@ -183,13 +186,14 @@ class k_VirtualSimpleUserAgent {
     * @param k_charset_CharsetStrategy
     * @param k_IdentityLoader
     */
-  function __construct($root_class_name, k_ComponentCreator $components = null, k_charset_CharsetStrategy $charset_strategy = null, k_IdentityLoader $identity_loader = null, k_LanguageLoader $language_loader = null) {
+  function __construct($root_class_name, k_ComponentCreator $components = null, k_charset_CharsetStrategy $charset_strategy = null, k_IdentityLoader $identity_loader = null, k_LanguageLoader $language_loader = null, k_TranslatorLoader $translator_loader = null) {
     $this->cookie_access = new k_adapter_MockCookieAccess('', array());
     $this->session_access = new k_adapter_MockSessionAccess($this->cookie_access);
     $this->components = $components ? $components : new k_DefaultComponentCreator();
     $this->charset_strategy = $charset_strategy ? $charset_strategy : new k_charset_Utf8CharsetStrategy();
     $this->identity_loader = $identity_loader ? $identity_loader : new k_DefaultIdentityLoader();
     $this->language_loader = $language_loader ? $language_loader : new k_DefaultLanguageLoader();
+    $this->translator_loader = $translator_loader ? $translator_loader : new k_DefaultTranslatorLoader();
     $this->root_class_name = $root_class_name;
     if (!$root_class_name) {
       throw new Exception("root_class_name not specified");
@@ -256,7 +260,7 @@ class k_VirtualSimpleUserAgent {
     }
     $superglobals = new k_adapter_MockGlobalsAccess($url_query, $data, $server, $headers->headers());
     $response = k()
-      ->setContext(new k_HttpRequest("", null, $this->identity_loader, $this->language_loader, $superglobals, $this->cookie_access, $this->session_access))
+      ->setContext(new k_HttpRequest("", null, $this->identity_loader, $this->language_loader, $this->translator_loader, $superglobals, $this->cookie_access, $this->session_access))
       ->setComponentCreator($this->components)
       ->setCharsetStrategy($this->charset_strategy)
       ->run($this->root_class_name);

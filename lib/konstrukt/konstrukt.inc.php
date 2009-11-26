@@ -338,17 +338,13 @@ class k_AuthenticatedUser implements k_Identity {
 }
 
 /**
- * Representation of the applications' user
+ * Representation of the applications' current language
  */
 interface k_Language {
   /**
    * Return the language name in English
    */
   function name();
-  /**
-   * Return the language native name
-   */
-  function nativeName();
   /**
    * Return the two letter language language iso code (639-1)
    */
@@ -379,11 +375,46 @@ class k_EnglishLanguage implements k_Language {
   function name() {
     return 'English';
   }
-  function nativeName() {
-    return 'English';
-  }
   function isoCode() {
     return 'en';
+  }
+}
+
+/**
+ * A factory for recognising and loading the language
+ */
+interface k_TranslatorLoader {
+  /**
+   * Using the context as input, the translatorloader should find and return a translator object.
+   * @return k_Translator
+   */
+  function load(k_Context $context);
+}
+
+/**
+ * A default implementation, which always returns k_EnglishLanguage
+ */
+class k_DefaultTranslatorLoader implements k_TranslatorLoader {
+  function load(k_Context $context) {
+    return new k_DefaultTranslator();
+  }
+}
+
+interface k_Translator {
+  /**
+   * @param string $phrase The phrase to translate
+   * @param k_Language $language The language to translate the phrase to
+   */
+  function translate($phrase, k_Language $language = null);
+}
+
+class k_DefaultTranslator implements k_Translator {
+  protected $phrases;
+  function __construct($phrases = array()) {
+    $this->phrases = $phrases;
+  }
+  function translate($phrase, k_Language $language = null) {
+    return isset($this->phrases[$phrase]) ? $this->phrases[$phrase] : $phrase;
   }
 }
 
@@ -405,6 +436,8 @@ interface k_Context {
   function remoteAddr();
   function identity();
   function language();
+  function translator();
+  function t($phrase, k_Language $language = null);
   function url($path = "", $params = array());
   function subspace();
   function negotiateContentType($candidates = array());
@@ -444,6 +477,10 @@ class k_HttpRequest implements k_Context {
   protected $language_loader;
   /** @var k_Language */
   protected $language;
+  /** @var k_TranslatorLoader */
+  protected $translator_loader;
+  /** @var k_Translator */
+  protected $translator;
   /** @var k_ContentTypeNegotiator */
   protected $content_type_negotiator;
   /**
@@ -451,11 +488,12 @@ class k_HttpRequest implements k_Context {
     * @param string
     * @param k_IdentityLoader
     * @param k_LanguageLoader
-    * @param k_adapter_MockGlobalsAccess
-    * @param k_adapter_MockCookieAccess
-    * @param k_adapter_MockSessionAccess
+    * @param k_TranslatorLoader
+    * @param k_adapter_GlobalsAccess
+    * @param k_adapter_CookieAccess
+    * @param k_adapter_SessionAccess
     */
-  function __construct($href_base = null, $request_uri = null, k_IdentityLoader $identity_loader = null, k_LanguageLoader $language_loader = null, k_adapter_GlobalsAccess $superglobals = null, k_adapter_CookieAccess $cookie_access = null, k_adapter_SessionAccess $session_access = null, k_adapter_UploadedFileAccess $file_access = null) {
+  function __construct($href_base = null, $request_uri = null, k_IdentityLoader $identity_loader = null, k_LanguageLoader $language_loader = null, k_TranslatorLoader $translator_loader = null, k_adapter_GlobalsAccess $superglobals = null, k_adapter_CookieAccess $cookie_access = null, k_adapter_SessionAccess $session_access = null, k_adapter_UploadedFileAccess $file_access = null) {
     if (preg_match('~/$~', $href_base)) {
       throw new Exception("href_base may _not_ have trailing slash");
     }
@@ -488,6 +526,7 @@ class k_HttpRequest implements k_Context {
     $this->session_access = $session_access ? $session_access : new k_adapter_DefaultSessionAccess($this->cookie_access);
     $this->identity_loader = $identity_loader ? $identity_loader : new k_DefaultIdentityLoader();
     $this->language_loader = $language_loader ? $language_loader : new k_DefaultLanguageLoader();
+    $this->translator_loader = $translator_loader ? $translator_loader : new k_DefaultTranslatorLoader();
     $this->href_base = $href_base === null ? preg_replace('~(.*)/.*~', '$1', $this->server['SCRIPT_NAME']) : $href_base;
     $this->request_uri = $request_uri === null ? $this->server['REQUEST_URI'] : $request_uri;
     $this->subspace =
@@ -612,6 +651,19 @@ class k_HttpRequest implements k_Context {
       $this->language = $this->language_loader->load($this);
     }
     return $this->language;
+  }
+  /**
+    * @return k_Translator
+    */
+  function translator() {
+    if (!isset($this->translator)) {
+      $this->translator = $this->translator_loader->load($this);
+    }
+    return $this->translator;
+  }
+  function t($phrase, k_Language $language = null) {
+    $language = $language ? $language : $this->language();
+    return $this->translator()->translate($phrase, $language);
   }
   /**
     * Generates a URL relative to this component
@@ -948,6 +1000,12 @@ abstract class k_Component implements k_Context {
   }
   function language() {
     return $this->context->language();
+  }
+  function translator() {
+    return $this->context->translator();
+  }
+  function t($phrase, k_Language $language = null) {
+    return $this->context->t($phrase, $language);
   }
   /**
     * @param mixed
@@ -1451,6 +1509,8 @@ class k_Bootstrap {
   protected $identity_loader;
   /** @var k_LanguageLoader */
   protected $language_loader;
+  /** @var k_TranslatorLoader */
+  protected $translator_loader;
   /** @var k_adapter_GlobalsAccess */
   protected $globals_access;
   /**
@@ -1541,6 +1601,15 @@ class k_Bootstrap {
     return $this;
   }
   /**
+    * Set the translator loader.
+    * @param k_TranslatorLoader
+    * @return k_Bootstrap
+   */
+  function setTranslatorLoader(k_TranslatorLoader $translator_loader) {
+    $this->translator_loader = $translator_loader;
+    return $this;
+  }
+  /**
     * Enable/disable the in-browser debug-bar.
     * @param boolean
     * @return k_Bootstrap
@@ -1572,7 +1641,7 @@ class k_Bootstrap {
     */
   protected function context() {
     if (!isset($this->http_request)) {
-      $this->http_request = new k_HttpRequest($this->href_base, null, $this->identityLoader(), $this->languageLoader(), $this->globalsAccess());
+      $this->http_request = new k_HttpRequest($this->href_base, null, $this->identityLoader(), $this->languageLoader(), $this->translatorLoader(), $this->globalsAccess());
     }
     return $this->http_request;
   }
@@ -1611,6 +1680,15 @@ class k_Bootstrap {
       $this->language_loader = new k_DefaultLanguageLoader();
     }
     return $this->language_loader;
+  }
+  /**
+    * @return k_TranslatorLoader
+    */
+  protected function translatorLoader() {
+    if (!isset($this->translator_loader)) {
+      $this->translator_loader = new k_DefaultTranslatorLoader();
+    }
+    return $this->translator_loader;
   }
   /**
     * @return k_adapter_GlobalsAccess

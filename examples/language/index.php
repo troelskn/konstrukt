@@ -5,15 +5,12 @@ class SwedishLanguage implements k_Language {
   function name() {
     return 'Swedish';
   }
-  function nativeName() {
-    return 'Svenska';
-  }
   function isoCode() {
     return 'sv';
   }
 }
 
-class MyLanguageLoader implements  k_LanguageLoader {
+class MyLanguageLoader implements k_LanguageLoader {
   function load(k_Context $context) {
     if($context->query('lang') == 'sv') {
       return new SwedishLanguage();
@@ -26,7 +23,7 @@ class MyLanguageLoader implements  k_LanguageLoader {
 
 class Root extends k_Component {
   function renderHtml() {
-    return sprintf("<p>Current language is: %s (%s)</p>", $this->language()->name(), $this->language()->nativeName());
+    return sprintf("<p>Current language is: %s (%s)</p>", $this->language()->name(), $this->language()->isoCode());
   }
 }
 
