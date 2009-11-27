@@ -33,7 +33,7 @@ class FrenchLanguage implements k_Language {
     return 'French';
   }
   function isoCode() {
-    return 'de';
+    return 'fr';
   }
 }
 
