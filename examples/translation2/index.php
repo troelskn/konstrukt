@@ -89,9 +89,11 @@ class k_Translation2Translator implements k_Translator {
   }
 
   function translate($phrase, k_Language $language = null) {
-    // @todo Translation2 has something called pageID() which can
-    //       either be set as the second parameter in the get()-method
-    //       or set via setPageID(). Can this be accomodated?
+    // Translation2 groups translations with pageID(). This can
+    // be accommodated like this
+    if (is_array($phrase) && count($phrase) == 2) {
+        return $this->translation2->get($phrase[0], $phrase[1]);
+    }
     return $this->translation2->get($phrase, 'basic');
   }
 }

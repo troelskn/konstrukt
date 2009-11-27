@@ -42,5 +42,11 @@
                 <tr lang='da'>Hvordan har du det?</tr>
             </string>
         </page>
+        <page key='advanced'>
+            <string key='How am I?'>
+                <tr lang='en'>How am I?</tr>
+                <tr lang='da'>Hvordan har jeg det?</tr>
+            </string>
+        </page>        
     </pages>
 </translation2>

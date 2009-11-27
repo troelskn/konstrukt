@@ -23,6 +23,12 @@ class TestOfLanguageLoading extends WebTestCase {
     $this->assertResponse(200);
     $this->assertText("Hvordan har du det?");
   }
+  function test_being_able_to_set_pageid() {
+    $this->assertTrue($this->get('/template?lang=da'));
+    $this->assertResponse(200);
+    $this->assertText("Hvordan har du det?");
+    $this->assertText("Hvordan har jeg det?");
+  }
   function test_negotiate_language() {
     $this->assertTrue($this->get('/'));
     $this->assertResponse(200);
