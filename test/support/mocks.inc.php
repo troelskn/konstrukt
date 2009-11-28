@@ -143,3 +143,30 @@ class VariableStream {
     }
   }
 }
+
+class test_EnglishLanguage implements k_Language {
+  function name() {
+    return 'English';
+  }
+  function isoCode() {
+    return 'en';
+  }
+}
+
+class test_LanguageLoader implements k_LanguageLoader {
+  function load(k_Context $context) {
+    return new test_EnglishLanguage();
+  }
+}
+
+class test_Translator implements k_Translator {
+  function translate($phrase, k_Language $language = null) {
+    
+  }
+}
+
+class test_TranslatorLoader implements k_TranslatorLoader {
+  function load(k_Context $context) {
+    return new test_Translator();
+  }
+}

@@ -192,8 +192,8 @@ class k_VirtualSimpleUserAgent {
     $this->components = $components ? $components : new k_DefaultComponentCreator();
     $this->charset_strategy = $charset_strategy ? $charset_strategy : new k_charset_Utf8CharsetStrategy();
     $this->identity_loader = $identity_loader ? $identity_loader : new k_DefaultIdentityLoader();
-    $this->language_loader = $language_loader ? $language_loader : new k_DefaultLanguageLoader();
-    $this->translator_loader = $translator_loader ? $translator_loader : new k_DefaultTranslatorLoader();
+    $this->language_loader = $language_loader;
+    $this->translator_loader = $translator_loader;
     $this->root_class_name = $root_class_name;
     if (!$root_class_name) {
       throw new Exception("root_class_name not specified");

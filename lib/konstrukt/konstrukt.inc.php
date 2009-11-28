@@ -363,24 +363,6 @@ interface k_LanguageLoader {
 }
 
 /**
- * A default implementation, which always returns k_EnglishLanguage
- */
-class k_DefaultLanguageLoader implements k_LanguageLoader {
-  function load(k_Context $context) {
-    return new k_EnglishLanguage();
-  }
-}
-
-class k_EnglishLanguage implements k_Language {
-  function name() {
-    return 'English';
-  }
-  function isoCode() {
-    return 'en';
-  }
-}
-
-/**
  * A factory for recognising and loading the language
  */
 interface k_TranslatorLoader {
@@ -391,31 +373,12 @@ interface k_TranslatorLoader {
   function load(k_Context $context);
 }
 
-/**
- * A default implementation, which always returns k_EnglishLanguage
- */
-class k_DefaultTranslatorLoader implements k_TranslatorLoader {
-  function load(k_Context $context) {
-    return new k_DefaultTranslator();
-  }
-}
-
 interface k_Translator {
   /**
    * @param string $phrase The phrase to translate
    * @param k_Language $language The language to translate the phrase to
    */
   function translate($phrase, k_Language $language = null);
-}
-
-class k_DefaultTranslator implements k_Translator {
-  protected $phrases;
-  function __construct($phrases = array()) {
-    $this->phrases = $phrases;
-  }
-  function translate($phrase, k_Language $language = null) {
-    return isset($this->phrases[$phrase]) ? $this->phrases[$phrase] : $phrase;
-  }
 }
 
 /**
@@ -525,8 +488,8 @@ class k_HttpRequest implements k_Context {
     $this->cookie_access = $cookie_access ? $cookie_access : new k_adapter_DefaultCookieAccess($this->server['SERVER_NAME'], $superglobals->cookie());
     $this->session_access = $session_access ? $session_access : new k_adapter_DefaultSessionAccess($this->cookie_access);
     $this->identity_loader = $identity_loader ? $identity_loader : new k_DefaultIdentityLoader();
-    $this->language_loader = $language_loader ? $language_loader : new k_DefaultLanguageLoader();
-    $this->translator_loader = $translator_loader ? $translator_loader : new k_DefaultTranslatorLoader();
+    $this->language_loader = $language_loader;
+    $this->translator_loader = $translator_loader;
     $this->href_base = $href_base === null ? preg_replace('~(.*)/.*~', '$1', $this->server['SCRIPT_NAME']) : $href_base;
     $this->request_uri = $request_uri === null ? $this->server['REQUEST_URI'] : $request_uri;
     $this->subspace =
@@ -648,6 +611,9 @@ class k_HttpRequest implements k_Context {
     */
   function language() {
     if (!isset($this->language)) {
+      if(!isset($this->language_loader)) {
+        throw new ErrorException('Trying to load a language when no language loader is provided');
+      }
       $this->language = $this->language_loader->load($this);
     }
     return $this->language;
@@ -657,6 +623,9 @@ class k_HttpRequest implements k_Context {
     */
   function translator() {
     if (!isset($this->translator)) {
+      if(!isset($this->translator_loader)) {
+        throw new ErrorException('Trying to load a translator when no translator loader is provided');
+      }
       $this->translator = $this->translator_loader->load($this);
     }
     return $this->translator;
@@ -1673,21 +1642,15 @@ class k_Bootstrap {
     return $this->identity_loader;
   }
   /**
-    * @return k_LanguageLoader
+    * @return mixed k_LanguageLoader or null
     */
   protected function languageLoader() {
-    if (!isset($this->language_loader)) {
-      $this->language_loader = new k_DefaultLanguageLoader();
-    }
     return $this->language_loader;
   }
   /**
-    * @return k_TranslatorLoader
+    * @return mixed k_TranslatorLoader or null
     */
   protected function translatorLoader() {
-    if (!isset($this->translator_loader)) {
-      $this->translator_loader = new k_DefaultTranslatorLoader();
-    }
     return $this->translator_loader;
   }
   /**

@@ -1,6 +1,15 @@
 <?php
 require_once 'konstrukt/konstrukt.inc.php';
 
+class EnglishLanguage implements k_Language {
+  function name() {
+    return 'English';
+  }
+  function isoCode() {
+    return 'en';
+  }
+}
+
 class DanishLanguage implements k_Language {
   function name() {
     return 'Danish';
@@ -61,13 +70,13 @@ class MyLanguageLoader implements k_LanguageLoader {
     $language = HTTP::negotiateLanguage($supported);
     if (PEAR::isError($language)) {
       // fallback language in case of unable to negotiate
-      return new k_DanishLanguage();
+      return new DanishLanguage();
     }
 
     if ($language == 'en-US') {
-        return new k_EnglishLanguage();
+        return new EnglishLanguage();
     }
-    return new k_DanishLanguage();
+    return new DanishLanguage();
   }
 }
 

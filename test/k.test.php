@@ -423,3 +423,33 @@ class TestOfContentTypeDispathing extends UnitTestCase {
     }
   }
 }
+
+class TestOfLanguageLoading {
+  function createComponent($method, $headers = array()) {
+    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost', 'REQUEST_METHOD' => $method), $headers);
+    $language_loader = new test_LanguageLoader();
+    $http = new k_HttpRequest('', '/', new k_DefaultIdentityLoader(), $language_loader, null, $glob);
+    $components = new k_DefaultComponentCreator();
+    return $components->create('test_ContentTypeComponent', $http);
+  }
+  function test_that_a_language_is_loaded() {
+    $component = $this->createComponent('get');
+    $language = $component->language();
+    $this->assertTrue($language instanceof k_Language);
+  }
+}
+
+class TestOfTranslatorLoading {
+  function createComponent($method, $headers = array()) {
+    $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost', 'REQUEST_METHOD' => $method), $headers);
+    $translator_loader = new test_TranslatorLoader();
+    $http = new k_HttpRequest('', '/', new k_DefaultIdentityLoader(), null, $translator_loader, $glob);
+    $components = new k_DefaultComponentCreator();
+    return $components->create('test_ContentTypeComponent', $http);
+  }
+  function test_that_a_translator_is_loaded() {
+    $component = $this->createComponent('get');
+    $translator = $component->language();
+    $this->assertTrue($translator instanceof k_Translator);
+  }
+}

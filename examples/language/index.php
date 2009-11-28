@@ -1,6 +1,15 @@
 <?php
 require_once 'konstrukt/konstrukt.inc.php';
 
+class EnglishLanguage implements k_Language {
+  function name() {
+    return 'English';
+  }
+  function isoCode() {
+    return 'en';
+  }
+}
+
 class SwedishLanguage implements k_Language {
   function name() {
     return 'Swedish';
@@ -15,9 +24,9 @@ class MyLanguageLoader implements k_LanguageLoader {
     if($context->query('lang') == 'sv') {
       return new SwedishLanguage();
     } else if($context->query('lang') == 'en') {
-      return new k_EnglishLanguage();
+      return new EnglishLanguage();
     }
-    return new k_EnglishLanguage();
+    return new EnglishLanguage();
   }
 }
 

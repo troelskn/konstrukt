@@ -1,6 +1,15 @@
 <?php
 require_once 'konstrukt/konstrukt.inc.php';
 
+class EnglishLanguage implements k_Language {
+  function name() {
+    return 'English';
+  }
+  function isoCode() {
+    return 'en';
+  }
+}
+
 class SwedishLanguage implements k_Language {
   function name() {
     return 'Swedish';
@@ -15,9 +24,19 @@ class MyLanguageLoader implements k_LanguageLoader {
     if($context->query('lang') == 'sv') {
       return new SwedishLanguage();
     } else if($context->query('lang') == 'en') {
-      return new k_EnglishLanguage();
+      return new EnglishLanguage();
     }
-    return new k_EnglishLanguage();
+    return new EnglishLanguage();
+  }
+}
+
+class SimpleTranslator implements k_Translator {
+  protected $phrases;
+  function __construct($phrases = array()) {
+    $this->phrases = $phrases;
+  }
+  function translate($phrase, k_Language $language = null) {
+    return isset($this->phrases[$phrase]) ? $this->phrases[$phrase] : $phrase;
   }
 }
 
@@ -34,7 +53,7 @@ class SimpleTranslatorLoader implements k_TranslatorLoader {
         'Meatballs' => 'Swedish meatballs',
       );
     }
-    return new k_DefaultTranslator($phrases);
+    return new SimpleTranslator($phrases);
   }
 }
 
