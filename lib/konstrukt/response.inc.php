@@ -203,7 +203,7 @@ abstract class k_BaseResponse implements k_Response {
  */
 class k_HttpResponse extends k_BaseResponse {
   protected $content_type = 'text/html';
-  function __construct($status = 200, $content = "", $input_is_utf8 = false) {
+  function __construct($status = 200, $content = "", $input_is_utf8 = true) {
     if (!is_string($content)) {
       throw new Exception("Illegal 2 argument - Expected string, but got a " . gettype($content));
     }
