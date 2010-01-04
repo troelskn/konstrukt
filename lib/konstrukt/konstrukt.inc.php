@@ -976,6 +976,12 @@ abstract class k_Component implements k_Context {
   function t($phrase, k_Language $language = null) {
     return $this->context->t($phrase, $language);
   }
+  /*
+   * @return k_Document
+   */
+  function document() {
+    return $this->document;
+  }
   /**
     * @param mixed
     * @param array
