@@ -58,10 +58,18 @@ class k_adapter_SafeGlobalsAccess implements k_adapter_GlobalsAccess {
     return $this->charset->decodeInput($this->unMagic($_GET));
   }
   function body() {
+    if ($_SERVER['REQUEST_METHOD'] === 'PUT' && $_SERVER['CONTENT_TYPE'] === 'application/x-www-form-urlencoded') {
+      parse_str($this->charset->decodeInput($this->rawHttpRequestBody()), $buffer);
+      return $buffer;
+    }
     return $this->charset->decodeInput($this->unMagic($_POST));
   }
   function rawHttpRequestBody() {
-    return file_get_contents('php://input');
+    static $input = null;
+    if (!$input) {
+      $input = file_get_contents('php://input');
+    }
+    return $input;
   }
   function server() {
     return $this->charset->decodeInput($this->unMagic($_SERVER));
