@@ -1220,8 +1220,8 @@ abstract class k_Component implements k_Context {
     * @return string
     */
   function subview() {
-    if (preg_match('~^.*\?([a-z]+)~i', $this->requestUri(), $mm)) {
-      return $mm[1];
+    if (preg_match('~^.*\?([^=&]+)~i', $this->requestUri(), $mm)) {
+      return urldecode($mm[1]);
     }
   }
 }

@@ -119,4 +119,15 @@ class TestOfUrlGeneration extends UnitTestCase {
     $this->assertEqual($http->url('show', array('event_id' => $url, 'create')), 'show?create&event_id=http%3A%2F%2Fwww.example.org%2F');
   }
 
+  function test_subview_cares_about_underscores() {
+    $http = $this->createHttp('/web2.0', '/foo/bar?delete');
+    $components = new k_DefaultComponentCreator();
+    $root = $components->create('test_CircularComponent', $http);
+    $this->assertEqual('delete', $root->subview());
+
+    $http = $this->createHttp('/web2.0', '/foo/bar?delete_something');
+    $components = new k_DefaultComponentCreator();
+    $root = $components->create('test_CircularComponent', $http);
+    $this->assertEqual('delete_something', $root->subview());
+  }
 }
