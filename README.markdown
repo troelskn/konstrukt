@@ -9,19 +9,19 @@ Konstrukt is a minimalistic framework which provides a foundation on which to bu
 Key Aspects
 ---
 
-    * Controllers are resources
-    * URI-to-controller-mapping gives your application a logical structure
-    * Routing based on logic rather than rules
-    * Nested controllers supports composite view rendering
+* Controllers are resources
+* URI-to-controller-mapping gives your application a logical structure
+* Routing based on logic rather than rules
+* Nested controllers supports composite view rendering
 
 Design Goals
 ---
 
-    * Embrace HTTP rather than hide it
-    * Enable the programmer, rather than automating
-    * Favour aggregation over code-generation or config-files
-    * Encourage encapsulation, and deter use of global scope
-    * Limit focus to the controller layer
+* Embrace HTTP rather than hide it
+* Enable the programmer, rather than automating
+* Favour aggregation over code-generation or config-files
+* Encourage encapsulation, and deter use of global scope
+* Limit focus to the controller layer
 
 Getting Started
 ---
