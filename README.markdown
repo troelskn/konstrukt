@@ -1,4 +1,4 @@
-[http://www.konstrukt.dk/](konstrukt.dk)
+[konstrukt.dk](http://www.konstrukt.dk/)
 ===
 
 About
