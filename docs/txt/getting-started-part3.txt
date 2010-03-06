@@ -125,8 +125,8 @@ A lot of the bootstrapping that we did above would need to be done for each new 
 Before we continue, we'll just pull in the remaining bits from `starterpack_default`:
 
 ..shell
-svn export http://konstrukt.googlecode.com/svn/trunk/examples/starterpack_default/script script
-svn export http://konstrukt.googlecode.com/svn/trunk/examples/starterpack_default/test test
+cp -R starterpack_default/script script
+cp -R examples/starterpack_default/test test
 
 This "upgrades" our `starterpack_light`, so that our application is now similar to how it would have looked if we started out with `starterpack_default` (Except for the bootstrap, which we'll cover later). The folder `script/` contains various commandline scripts for maintenance and code generation.
 

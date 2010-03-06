@@ -10,10 +10,10 @@ A proper component does not communicate directly with its environment. Instead o
 
 Creating a new project
 ----------------------
-For this tutorial we'll create a very simple application. Konstrukt doesn't strictly enforce any particular directory layout, but to provide a starting point, you can take a copy of the folder `examples/starterpack_light` from the distribution of Konstrukt. Assuming that your web root is at `/var/www`, copy the directory `examples/starterpack_light` to `/var/www/foo` for our application "foo". For a real application, you'd probably want to mount the application on its own virtualhost, but this is a quick way to get started and it's trivial to move the application later on. If you have svn installed, you can type the following on the command line to create your project:
+For this tutorial we'll create a very simple application. Konstrukt doesn't strictly enforce any particular directory layout, but to provide a starting point, you can take a copy of the folder `examples/starterpack_light` from the distribution of Konstrukt. Assuming that your web root is at `/var/www`, copy the directory `examples/starterpack_light` to `/var/www/foo` for our application "foo". For a real application, you'd probably want to mount the application on its own virtualhost, but this is a quick way to get started and it's trivial to move the application later on. Download the newest version of konstrukt from: [http://github.com/troelskn/konstrukt/downloads](http://github.com/troelskn/konstrukt/downloads). Then copy `starterpack_light`:
 
 ..shell
-svn export http://konstrukt.googlecode.com/svn/tags/2.1.1/examples/starterpack_light /var/www/foo
+cp -R examples/starterpack_light /var/www/foo
 
 `starterpack_light` is a basic setup, which contains a simple directory structure, and other things that you need to begin a web application. There is also a more complete setup at `starterpack_default`, which is recommended for new applications; The reason we're using the minimal setup in this tutorial, is to keep external dependencies low.
 
