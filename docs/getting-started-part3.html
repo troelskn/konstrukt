@@ -19,7 +19,7 @@
 <p>You can install Bucket in a shared place on your machine, but for this tutorial, we'll just pull it in to the application we're working on. Open a shell, go to your site's root folder (<code>/var/www/foo</code>) and type the following commands:</p>
 
 <pre class="shell">mkdir thirdparty
-git clone git@github.com:troelskn/bucket.git thirdparty/bucket</pre>
+git clone git://github.com/troelskn/bucket.git thirdparty/bucket</pre>
 
 <p>This will pull a copy of Bucket into the folder <code>thirdparty/bucket</code>.</p>
 
@@ -123,8 +123,8 @@ k<span class="br0">&#40;</span><span class="br0">&#41;</span>
 
 <p>Before we continue, we'll just pull in the remaining bits from <code>starterpack_default</code>:</p>
 
-<pre class="shell">svn export http://konstrukt.googlecode.com/svn/trunk/examples/starterpack_default/script script
-svn export http://konstrukt.googlecode.com/svn/trunk/examples/starterpack_default/test test</pre>
+<pre class="shell">cp -R starterpack_default/script script
+cp -R examples/starterpack_default/test test</pre>
 
 <p>This "upgrades" our <code>starterpack_light</code>, so that our application is now similar to how it would have looked if we started out with <code>starterpack_default</code> (Except for the bootstrap, which we'll cover later). The folder <code>script/</code> contains various commandline scripts for maintenance and code generation.</p>
 
