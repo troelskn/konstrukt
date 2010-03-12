@@ -4,7 +4,7 @@
 About
 ---
 
-Konstrukt is a minimalistic framework which provides a foundation on which to build rather than a boxed solution to all problems. It focuses on the controller layer, and tries to encourage the developer to deal directly with the HTTP protocol instead of abstracting it away. Konstrukt uses a hierarchical controller pattern, which provides a greater level of flexibility than the popular routed front controller frameworks. 
+Konstrukt is a minimalistic framework which provides a foundation on which to build rather than a boxed solution to all problems. It focuses on the controller layer, and tries to encourage the developer to deal directly with the HTTP protocol instead of abstracting it away. Konstrukt uses a hierarchical controller pattern, which provides a greater level of flexibility than the popular routed front controller frameworks.
 
 Key Aspects
 ---
@@ -37,6 +37,8 @@ The easiest way to install Konstrukt, is through PEAR. In a console, type the fo
 
 You can create a new project by cloning the starterpack under `/examples/`:
 
-    svn export http://konstrukt.googlecode.com/svn/tags/2.3.1/examples/starterpack_default myapp
+Download the newest version of konstrukt from: [http://github.com/troelskn/konstrukt/downloads](http://github.com/troelskn/konstrukt/downloads). Then copy `starterpack_default`:
 
-Replace `myapp` with the name of your app. This will create a new directory with a fresh project in.
+    cp -R examples/starterpack_default /var/www/foo
+
+Replace `/var/www/foo` with the location where you want your app to reside.
