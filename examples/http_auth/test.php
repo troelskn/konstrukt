@@ -1,8 +1,8 @@
 <?php
-error_reporting(E_ALL | E_STRICT);
+error_reporting(E_ALL);
 
 // You need to have simpletest in your include_path
-if (realpath($_SERVER['PHP_SELF']) == __FILE__) {
+if (realpath($_SERVER['SCRIPT_FILENAME']) == __FILE__) {
   require_once 'simpletest/autorun.php';
 }
 require_once 'konstrukt/virtualbrowser.inc.php';

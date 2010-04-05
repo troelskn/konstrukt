@@ -1,5 +1,5 @@
 <?php
-require_once 'konstrukt/charset.inc.php';
+require_once dirname(__FILE__) . '/charset.inc.php';
 
   /**
    * Mappings between content-types and handler names. If you need to support exotic content-types, you can add to this array.
