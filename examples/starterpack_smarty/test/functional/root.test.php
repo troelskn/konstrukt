@@ -1,6 +1,6 @@
 <?php
 // You need to have simpletest in your include_path
-if (realpath($_SERVER['PHP_SELF']) == __FILE__) {
+if (realpath($_SERVER['SCRIPT_FILENAME']) == __FILE__) {
   require_once 'simpletest/autorun.php';
 }
 require_once dirname(__FILE__) . '/../../config/global.inc.php';
