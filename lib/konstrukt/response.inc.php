@@ -25,6 +25,8 @@ $GLOBALS['konstrukt_content_types'] = array(
   'application/x-www-form-urlencoded' => 'form',
   'application/json' => 'json',
   'application/x-serialized-php' => 'php',
+  'application/ms-excel' => 'xls',
+  'text/x-vcard' => 'vcf'
 );
 
 /**
@@ -418,3 +420,40 @@ class k_XmlResponse extends k_BaseResponse {
     return $document->saveXML();
   }
 }
+
+class k_PdfResponse extends k_ComplexResponse {
+  function contentType() {
+      return 'application/pdf';
+  }
+  protected function marshal() {
+    return $this->content;
+  }
+}
+
+class k_XlsResponse extends k_ComplexResponse {
+  function contentType() {
+    return 'application/excel';
+  }
+  protected function marshal() {
+    return $this->content;
+  }
+}
+
+class k_VcfResponse extends k_ComplexResponse {
+  function contentType() {
+    return 'text/x-vcard';
+  }
+  protected function marshal() {
+    return $this->content;
+  }
+}
+
+class k_OioxmlResponse extends k_ComplexResponse {
+  function contentType() {
+    return 'xml/oioxml';
+  }
+  protected function marshal() {
+    return $this->content;
+  }
+}
+
