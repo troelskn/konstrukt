@@ -58,7 +58,7 @@ Some times you may need to have a URL refer directly to a specific representatio
 
 Some times you need to be able to display alternative views of the same resource + content-type. The most common example is for forms. A url like `/superheroes/batman` might show a html page for the dark knight, but which url should be used to edit the stats for him? One option is to use a sub component, as in `/superheroes/batman/edit`, but this suggests that `edit` is a resource under `batmna`, when it is really just another representation of it. A place where this causes trouble, is if a component has children. For example, `/superheroes/create` might be a form for creating a new entity, but it could also refer to an entity named `create`.
 
-To deal with these issues, Konstrukt provides a concept called *subviews*. If the url contains a parameter without any value, following right after the question mark, it will be used as a prefix to the render method. For example, `/foo/bar.html?edit` will resolve to `renderHtmlEdit`, if defined. Again, the content-type may be left out, so that `/foo/bar?edit` resolves to the same handler.
+To deal with these issues, Konstrukt provides a concept called *subviews*. If the url contains a parameter without any value, following right after the question mark, it will be used as a suffix to the render method. For example, `/foo/bar.html?edit` will resolve to `renderHtmlEdit`, if defined. Again, the content-type may be left out, so that `/foo/bar?edit` resolves to the same handler.
 
 To have a subview, there *must* be a primary view. Eg. you can't have `renderHtmlEdit` without having `renderHtml`.
 
