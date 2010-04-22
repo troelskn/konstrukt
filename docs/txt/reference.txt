@@ -189,7 +189,7 @@ The cookie wrapper works just as the session wrapper. Each component has a metho
 
 In PHP files uploaded with a form are accessible through `$_FILES`. Inside a component, you can access the same information through the method `file()`. You can either pass a parameter to get back a specific file or call it without any arguments to get a hashmap of all files. A file is wrapped in an object of the type `k_adapter_UploadedFile`, which helps to abstract direct access to the filesystem away. As a side effect it also has a simpler interface than PHPs native handling of file uploads. To save an uploaded file, just call `writeTo($path_destination)` with the destination as argument.
 
-Note that you need to go through the [regular hoops to get file uploads working](http://www.php.net/features.file-upload.post-method.php). Most importantly you need to set the `enctype="multipart/form-data"` property on your form tag. When you do this, the hanler for processing the form will be named `postMultipart()`. (See [input handlers](#input-handlers) for more details).
+Note that you need to go through the [regular hoops to get file uploads working](http://www.php.net/features.file-upload.post-method.php). Most importantly you need to set the `enctype="multipart/form-data"` property on your form tag. When you do this, the handler for processing the form will be named `postMultipart()`. (See [input handlers](#input-handlers) for more details).
 
 Url generation
 --------------

@@ -360,7 +360,7 @@ It's the context that specifies a namespace for its subcomponents, and it works 
 
 <p>In PHP files uploaded with a form are accessible through <code>$_FILES</code>. Inside a component, you can access the same information through the method <code>file()</code>. You can either pass a parameter to get back a specific file or call it without any arguments to get a hashmap of all files. A file is wrapped in an object of the type <code>k_adapter_UploadedFile</code>, which helps to abstract direct access to the filesystem away. As a side effect it also has a simpler interface than PHPs native handling of file uploads. To save an uploaded file, just call <code>writeTo($path_destination)</code> with the destination as argument.</p>
 
-<p>Note that you need to go through the <a href="http://www.php.net/features.file-upload.post-method.php">regular hoops to get file uploads working</a>. Most importantly you need to set the <code>enctype="multipart/form-data"</code> property on your form tag. When you do this, the hanler for processing the form will be named <code>postMultipart()</code>. (See <a href="#input-handlers">input handlers</a> for more details).</p>
+<p>Note that you need to go through the <a href="http://www.php.net/features.file-upload.post-method.php">regular hoops to get file uploads working</a>. Most importantly you need to set the <code>enctype="multipart/form-data"</code> property on your form tag. When you do this, the handler for processing the form will be named <code>postMultipart()</code>. (See <a href="#input-handlers">input handlers</a> for more details).</p>
 
 <h2 id="url-generation">Url generation</h2>
 
