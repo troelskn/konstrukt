@@ -132,7 +132,7 @@
 
 <p>Some times you need to be able to display alternative views of the same resource + content-type. The most common example is for forms. A url like <code>/superheroes/batman</code> might show a html page for the dark knight, but which url should be used to edit the stats for him? One option is to use a sub component, as in <code>/superheroes/batman/edit</code>, but this suggests that <code>edit</code> is a resource under <code>batmna</code>, when it is really just another representation of it. A place where this causes trouble, is if a component has children. For example, <code>/superheroes/create</code> might be a form for creating a new entity, but it could also refer to an entity named <code>create</code>.</p>
 
-<p>To deal with these issues, Konstrukt provides a concept called <em>subviews</em>. If the url contains a parameter without any value, following right after the question mark, it will be used as a prefix to the render method. For example, <code>/foo/bar.html?edit</code> will resolve to <code>renderHtmlEdit</code>, if defined. Again, the content-type may be left out, so that <code>/foo/bar?edit</code> resolves to the same handler.</p>
+<p>To deal with these issues, Konstrukt provides a concept called <em>subviews</em>. If the url contains a parameter without any value, following right after the question mark, it will be used as a suffix to the render method. For example, <code>/foo/bar.html?edit</code> will resolve to <code>renderHtmlEdit</code>, if defined. Again, the content-type may be left out, so that <code>/foo/bar?edit</code> resolves to the same handler.</p>
 
 <p>To have a subview, there <em>must</em> be a primary view. Eg. you can't have <code>renderHtmlEdit</code> without having <code>renderHtml</code>.</p>
 
@@ -360,7 +360,7 @@ It's the context that specifies a namespace for its subcomponents, and it works 
 
 <p>In PHP files uploaded with a form are accessible through <code>$_FILES</code>. Inside a component, you can access the same information through the method <code>file()</code>. You can either pass a parameter to get back a specific file or call it without any arguments to get a hashmap of all files. A file is wrapped in an object of the type <code>k_adapter_UploadedFile</code>, which helps to abstract direct access to the filesystem away. As a side effect it also has a simpler interface than PHPs native handling of file uploads. To save an uploaded file, just call <code>writeTo($path_destination)</code> with the destination as argument.</p>
 
-<p>Note that you need to go through the <a href="http://www.php.net/features.file-upload.post-method.php">regular hoops to get file uploads working</a>. Most importantly you need to set the <code>enctype="multipart/form-data"</code> property on your form tag. When you do this, the hanler for processing the form will be named <code>postMultipart()</code>. (See <a href="#input-handlers">input handlers</a> for more details).</p>
+<p>Note that you need to go through the <a href="http://www.php.net/features.file-upload.post-method.php">regular hoops to get file uploads working</a>. Most importantly you need to set the <code>enctype="multipart/form-data"</code> property on your form tag. When you do this, the handler for processing the form will be named <code>postMultipart()</code>. (See <a href="#input-handlers">input handlers</a> for more details).</p>
 
 <h2 id="url-generation">Url generation</h2>
 

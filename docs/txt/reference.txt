@@ -58,7 +58,7 @@ Some times you may need to have a URL refer directly to a specific representatio
 
 Some times you need to be able to display alternative views of the same resource + content-type. The most common example is for forms. A url like `/superheroes/batman` might show a html page for the dark knight, but which url should be used to edit the stats for him? One option is to use a sub component, as in `/superheroes/batman/edit`, but this suggests that `edit` is a resource under `batmna`, when it is really just another representation of it. A place where this causes trouble, is if a component has children. For example, `/superheroes/create` might be a form for creating a new entity, but it could also refer to an entity named `create`.
 
-To deal with these issues, Konstrukt provides a concept called *subviews*. If the url contains a parameter without any value, following right after the question mark, it will be used as a prefix to the render method. For example, `/foo/bar.html?edit` will resolve to `renderHtmlEdit`, if defined. Again, the content-type may be left out, so that `/foo/bar?edit` resolves to the same handler.
+To deal with these issues, Konstrukt provides a concept called *subviews*. If the url contains a parameter without any value, following right after the question mark, it will be used as a suffix to the render method. For example, `/foo/bar.html?edit` will resolve to `renderHtmlEdit`, if defined. Again, the content-type may be left out, so that `/foo/bar?edit` resolves to the same handler.
 
 To have a subview, there *must* be a primary view. Eg. you can't have `renderHtmlEdit` without having `renderHtml`.
 
@@ -189,7 +189,7 @@ The cookie wrapper works just as the session wrapper. Each component has a metho
 
 In PHP files uploaded with a form are accessible through `$_FILES`. Inside a component, you can access the same information through the method `file()`. You can either pass a parameter to get back a specific file or call it without any arguments to get a hashmap of all files. A file is wrapped in an object of the type `k_adapter_UploadedFile`, which helps to abstract direct access to the filesystem away. As a side effect it also has a simpler interface than PHPs native handling of file uploads. To save an uploaded file, just call `writeTo($path_destination)` with the destination as argument.
 
-Note that you need to go through the [regular hoops to get file uploads working](http://www.php.net/features.file-upload.post-method.php). Most importantly you need to set the `enctype="multipart/form-data"` property on your form tag. When you do this, the hanler for processing the form will be named `postMultipart()`. (See [input handlers](#input-handlers) for more details).
+Note that you need to go through the [regular hoops to get file uploads working](http://www.php.net/features.file-upload.post-method.php). Most importantly you need to set the `enctype="multipart/form-data"` property on your form tag. When you do this, the handler for processing the form will be named `postMultipart()`. (See [input handlers](#input-handlers) for more details).
 
 Url generation
 --------------
