@@ -171,7 +171,7 @@ class k_adapter_DefaultCookieAccess implements k_adapter_CookieAccess {
     * @return null
     */
   function __construct($domain, $raw) {
-    $this->domain = $domain;
+    $this->domain = $domain === 'localhost' ? false : $domain;
     $this->raw = $raw;
   }
   function has($key) {
