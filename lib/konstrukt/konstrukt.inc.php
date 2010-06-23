@@ -1086,10 +1086,10 @@ abstract class k_Component implements k_Context {
   }
   /**
     * @param string
-    * @param string
+    * @param string A namespace for querystring parameters
     * @return k_Component
     */
-  protected function createComponent($class_name, $namespace) {
+  protected function createComponent($class_name, $namespace = '') {
     return $this->component_creator->create($class_name, $this, $namespace);
   }
   /**
