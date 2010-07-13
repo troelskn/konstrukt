@@ -88,7 +88,7 @@ function e($str) {
  * Translates a string.
  */
 function t($str) {
-  return $GLOBALS['k_current_context']->translator()->translate($str);
+  return $GLOBALS['k_current_context']->t($str);
 }
 
 /**
