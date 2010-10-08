@@ -178,6 +178,9 @@ class k_adapter_DefaultCookieAccess implements k_adapter_CookieAccess {
     return isset($this->raw[$key]);
   }
   function get($key, $default = null) {
+    if ($key === null) {
+      return $this->raw;
+    }
     return isset($this->raw[$key]) ? $this->raw[$key] : $default;
   }
   function set($key, $value, $expire = 0, $secure = false, $httponly = false) {
@@ -226,6 +229,9 @@ class k_adapter_DefaultSessionAccess implements k_adapter_SessionAccess {
   }
   function get($key, $default = null) {
     $this->autoStart();
+    if ($key === null) {
+      return $_SESSION;
+    }
     return isset($_SESSION[$key]) ? $_SESSION[$key] : $default;
   }
   function set($key, $value) {
@@ -280,6 +286,9 @@ class k_adapter_MockSessionAccess implements k_adapter_SessionAccess {
     * @return string
     */
   function get($key, $default = null) {
+    if ($key === null) {
+      return $this->raw;
+    }
     return isset($this->raw[$key]) ? $this->raw[$key] : $default;
   }
   /**
