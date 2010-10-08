@@ -59,6 +59,6 @@ verbose("===========================================\n");
 if ($failures == 0) {
   echo "Done .. OK\n";
 } else {
-  echo "Done .. $runs tests completed with $passes passes and $failures failues.\n";
+  echo "Done .. $runs tests completed with $passes passes and $failures failures.\n";
   exit(1);
 }
