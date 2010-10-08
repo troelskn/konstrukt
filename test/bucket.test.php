@@ -32,7 +32,7 @@ class TestOfBucketAdapter extends UnitTestCase {
 
   protected function makeHttp() {
     $glob = new k_adapter_MockGlobalsAccess(array(), array(), array('SERVER_NAME' => 'localhost'));
-    return new k_HttpRequest('', '/foo/bar', new k_DefaultIdentityLoader(), $glob);
+    return new k_HttpRequest('', '/foo/bar', new k_DefaultIdentityLoader(), null, null, $glob);
   }
 
   function test_can_create_simple_component_with_default_container() {
