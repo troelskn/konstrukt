@@ -1,9 +1,10 @@
 <?php
 error_reporting(E_ALL | E_STRICT);
+set_include_path(__DIR__ . PATH_SEPARATOR . __DIR__ . '/../lib/' . PATH_SEPARATOR . get_include_path());
 
 // You need to have simpletest in your include_path
 require_once 'simpletest/unit_tester.php';
-if (realpath($_SERVER['PHP_SELF']) == __FILE__) {
+if (realpath($_SERVER['SCRIPT_FILENAME']) == __FILE__) {
   require_once 'simpletest/autorun.php';
 }
 
@@ -161,7 +162,7 @@ Dispatching:
   subtype: ''
   url: '/web2.0/foo'
 Dispatching:
-  name: 'bar'
+  name: 'bar'utorial
   next: 'cux'
   subtype: ''
   url: '/web2.0/foo/bar'

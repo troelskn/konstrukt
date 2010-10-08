@@ -1,9 +1,9 @@
 <?php
-require_once dirname(__FILE__) . '/adapter.inc.php';
-require_once dirname(__FILE__) . '/charset.inc.php';
-require_once dirname(__FILE__) . '/response.inc.php';
-require_once dirname(__FILE__) . '/logging.inc.php';
-require_once dirname(__FILE__) . '/template.inc.php';
+require_once 'konstrukt/adapter.inc.php';
+require_once 'konstrukt/charset.inc.php';
+require_once 'konstrukt/response.inc.php';
+require_once 'konstrukt/logging.inc.php';
+require_once 'konstrukt/template.inc.php';
 
 /**
  * A factory for creating components on-the-fly.

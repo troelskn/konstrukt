@@ -1,15 +1,16 @@
 <?php
 error_reporting(E_ALL | E_STRICT);
+set_include_path(__DIR__ . PATH_SEPARATOR . __DIR__ . '/../lib/' . PATH_SEPARATOR . get_include_path());
 
 // You need to have simpletest in your include_path
 require_once 'simpletest/unit_tester.php';
-if (realpath($_SERVER['PHP_SELF']) == __FILE__) {
+if (realpath($_SERVER['SCRIPT_FILENAME']) == __FILE__) {
   require_once 'simpletest/autorun.php';
 }
 
 require_once '../lib/konstrukt/konstrukt.inc.php';
 // You need to have bucket in your include_path
-require_once 'bucket/lib/bucket.inc.php';
+require_once 'bucket.inc.php';
 
 class test_BasicComponent extends k_Component {}
 

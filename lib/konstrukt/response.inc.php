@@ -1,12 +1,12 @@
 <?php
-require_once dirname(__FILE__) . '/charset.inc.php';
+require_once 'konstrukt/charset.inc.php';
 
-  /**
-   * Mappings between content-types and handler names. If you need to support exotic content-types, you can add to this array.
-   * Note: Theese are just a random selection that I thought might be useful .. you can override in the concrete component, to supply your own.
-   * See also http://rest.blueoxen.net/cgi-bin/wiki.pl?WhichContentType
-   * @var array
-   */
+/**
+ * Mappings between content-types and handler names. If you need to support exotic content-types, you can add to this array.
+ * Note: Theese are just a random selection that I thought might be useful .. you can override in the concrete component, to supply your own.
+ * See also http://rest.blueoxen.net/cgi-bin/wiki.pl?WhichContentType
+ * @var array
+ */
 $GLOBALS['konstrukt_content_types'] = array(
   'text/html' => 'html',
   'text/html+edit' => 'edit',
