@@ -1,6 +1,6 @@
 <?php
 error_reporting(E_ALL | E_STRICT);
-set_include_path(__DIR__ . PATH_SEPARATOR . __DIR__ . '/../lib/' . PATH_SEPARATOR . get_include_path());
+set_include_path(dirname(__FILE__) . PATH_SEPARATOR . dirname(__FILE__) . '/../lib/' . PATH_SEPARATOR . get_include_path());
 
 // You need to have simpletest in your include_path
 require_once 'simpletest/unit_tester.php';
@@ -260,6 +260,12 @@ class TestOfHttpRequest extends UnitTestCase {
     $request = $this->createHttp(array('accept' => 'image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/x-shockwave-flash, application/xaml+xml, application/vnd.ms-xpsdocument, application/x-ms-xbap, application/x-ms-application, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*'));
     $this->assertEqual($request->negotiateContentType(array('text/html')), 'text/html');
   }
+
+  function test_negotiate_returns_first_match_when_no_ranking() {
+    $request = $this->createHttp(array('accept' => 'application/json, text/javascript, */*'));
+    $this->assertEqual($request->negotiateContentType(array('text/html','application/json')), 'application/json');
+  }
+
 }
 
 class TestOfHttpResponse extends UnitTestCase {
