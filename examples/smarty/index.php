@@ -1,6 +1,16 @@
 <?php
+/**
+ * Requires the smarty template framework
+ *
+ * <code>
+ *   pear channel-discover pear-smarty.googlecode.com/svn
+ *   pear install smarty/smarty
+ * </code>
+ *
+ * Make sure that Smarty is in the include path
+ */
 require_once '../../lib/konstrukt/konstrukt.inc.php';
-require_once 'smarty/libs/Smarty.class.php';
+require_once 'Smarty/Smarty.class.php';
 date_default_timezone_set('Europe/Paris');
 
 class HelloComponent extends k_Component {
