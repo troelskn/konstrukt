@@ -1,6 +1,6 @@
 <?php
 error_reporting(E_ALL | E_STRICT);
-set_include_path(__DIR__ . PATH_SEPARATOR . __DIR__ . '/../../lib/' . PATH_SEPARATOR . get_include_path());
+set_include_path(dirname(__FILE__) . PATH_SEPARATOR . dirname(__FILE__) . '/../../lib/' . PATH_SEPARATOR . get_include_path());
 
 // You need to have simpletest in your include_path
 if (realpath($_SERVER['SCRIPT_FILENAME']) == __FILE__) {
