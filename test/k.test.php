@@ -162,7 +162,7 @@ Dispatching:
   subtype: ''
   url: '/web2.0/foo'
 Dispatching:
-  name: 'bar'utorial
+  name: 'bar'
   next: 'cux'
   subtype: ''
   url: '/web2.0/foo/bar'
