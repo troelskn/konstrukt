@@ -22,7 +22,7 @@ class TestOfExampleZendForm extends WebTestCase {
   function test_submit_incomplete_form_shows_validation_failure() {
     $this->assertTrue($this->get('/'));
     $this->clickSubmit("Login");
-    $this->assertText("Value is empty, but a non-empty value is required");
+    $this->assertText("Value is required and can't be empty");
   }
   function test_incomplete_form_carries_values_over() {
     $this->assertTrue($this->get('/'));
