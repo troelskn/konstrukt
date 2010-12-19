@@ -10,6 +10,33 @@ require_once '../../lib/konstrukt/virtualbrowser.inc.php';
 require_once 'index.php';
 
 class TestOfExampleSmarty extends WebTestCase {
+  function setUp() {
+    $_SESSION = array();
+    $this->directory = dirname(__FILE__) . '/templates_c/';
+    if (!is_dir($this->directory)) {
+        mkdir($this->directory);
+    }
+  }
+  function tearDown() {
+    unset($_SESSION);
+    $this->rmdir($this->directory);
+  }
+  function rmdir($dir) {
+    if (is_dir($dir)) {
+      $objects = scandir($dir);
+      foreach ($objects as $object) {
+        if ($object != "." && $object != "..") {
+          if (filetype($dir."/".$object) == "dir") {
+            $this->rmdir($dir."/".$object);
+          } else {
+            unlink($dir."/".$object);
+          }
+        }
+      }
+      reset($objects);
+      rmdir($dir);
+    }
+  }
   function createInvoker() {
     return new SimpleInvoker($this);
   }
