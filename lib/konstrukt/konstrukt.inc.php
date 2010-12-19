@@ -712,9 +712,12 @@ class k_ContentTypeNegotiator {
     */
   function parse($input) {
     $types = array();
+    $position = 0;
     foreach (explode(",", $input) as $tuple) {
       if ($tuple) {
-        $types[] = $this->parseType($tuple);
+        $type = $this->parseType($tuple);
+        $type[4] = $position++;
+        $types[] = $type;
       }
     }
     return $types;
@@ -737,7 +740,11 @@ class k_ContentTypeNegotiator {
     */
   function _sortByQ($a, $b) {
     if ($a[3] === $b[3]) {
-      return 0;
+      // fallback to sort by position
+      if ($a[4] === $b[4]) {
+        return 0;
+      }
+      return ($a[4] > $b[4]) ? 1 : -1;
     }
     return ($a[3] > $b[3]) ? -1 : 1;
   }
