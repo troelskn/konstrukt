@@ -201,7 +201,6 @@ abstract class k_BaseResponse implements k_Response {
  * a response that matches the content-type of the response, such as k_HtmlResponse
  * for test/html responses. If a type doesn't exist, please bring to the attention of
  * the developers, and we'll see if it can be added to the library.
- * @deprecated
  */
 class k_HttpResponse extends k_BaseResponse {
   protected $content_type = 'text/html';
