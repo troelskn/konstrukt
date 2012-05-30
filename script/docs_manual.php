@@ -52,6 +52,7 @@ class ManualProcessor {
     $root = new StdClass();
     $root->parent = null;
     $root->children = array();
+    $root->level = null;
     $state = $root;
     $last = null;
     for ($ii=0, $ll=count($mm[0]); $ii < $ll; ++$ii) {
