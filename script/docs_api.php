@@ -7,12 +7,13 @@ require_once 'includes/pepper.php';
 require_once 'phemto/phemto.php';
 $discoverer = new Pepper_Discoverer();
 
+// $discoverer->readFile('lib/konstrukt/adapter.inc.php');
+// $discoverer->readFile('lib/konstrukt/charset.inc.php');
 $discoverer->readFile('lib/konstrukt/konstrukt.inc.php');
-$discoverer->readFile('lib/konstrukt/adapter.inc.php');
-$discoverer->readFile('lib/konstrukt/charset.inc.php');
-
-// $discoverer->readFile('lib/konstrukt/virtualbrowser.inc.php');
 // $discoverer->readFile('lib/konstrukt/logging.inc.php');
+// $discoverer->readFile('lib/konstrukt/response.inc.php');
+// $discoverer->readFile('lib/konstrukt/template.inc.php');
+// $discoverer->readFile('lib/konstrukt/virtualbrowser.inc.php');
 
 if (in_array('html', $_SERVER['argv']) || in_array('html+tracking', $_SERVER['argv'])) {
   // write api docs
