@@ -150,6 +150,7 @@ class components_contacts_Entity extends k_Component {
   function renderHtmlEdit() {
     $this->document->setTitle("Edit " . $this->contact->full_name());
     $t = new k_Template("templates/contacts-entity-edit.tpl.php");
+    // you do not have to wrap this response in k_HtmlResponse(), but it is valid to do so
     return new k_HtmlResponse($t->render($this, array('contact' => $this->contact)));
   }
   ...
