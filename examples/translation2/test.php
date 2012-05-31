@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ALL | E_STRICT);
+error_reporting(E_ALL ^~E_STRICT);
 set_include_path(dirname(__FILE__) . PATH_SEPARATOR . dirname(__FILE__) . '/../../lib/' . PATH_SEPARATOR . get_include_path());
 
 // You need to have simpletest in your include_path
