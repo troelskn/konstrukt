@@ -48,7 +48,7 @@ foreach (find_files(getcwd(), '/test\.php$/') as $filename) {
       verbose($fail->nodeValue . "\n");
     }
     verbose($q->query('//pass')->length . " passes, ");
-    verbose($q->query('//fail')->length . " failues" . "\n");
+    verbose($q->query('//fail')->length . " failures" . "\n");
   } else {
     $failures += 1;
     verbose($xml);
