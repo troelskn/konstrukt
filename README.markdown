@@ -26,6 +26,10 @@ Design Goals
 Getting Started
 ---
 
+###Read the documentation
+
+You can read the documentation on [konstrukt.dk](http://konstrukt.dk)
+
 ###Installing through PEAR
 
 The easiest way to install Konstrukt, is through PEAR. In a console, type the following:
