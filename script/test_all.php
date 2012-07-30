@@ -33,7 +33,7 @@ function verbose($str) {
 $passes = 0;
 $failures = 0;
 $runs = 0;
-foreach (find_files(getcwd(), '/test\.php$/') as $filename) {
+foreach (find_files(getcwd(), '/\.test\.php$/') as $filename) {
   chdir(dirname($filename));
   $path = realpath(dirname(__FILE__) . '/../lib') . PATH_SEPARATOR . ini_get("include_path");
   $xml = shell_exec('php -d include_path=' . escapeshellarg($path) . ' ' . escapeshellarg(basename($filename)) . ' -x');
