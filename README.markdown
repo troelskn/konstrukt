@@ -1,4 +1,4 @@
-[konstrukt.dk](http://www.konstrukt.dk/)
+[konstrukt.dk](http://www.konstrukt.dk/) [![Build Status](https://secure.travis-ci.org/troelskn/konstrukt.png?branch=master)](http://travis-ci.org/troelskn/konstrukt)
 ===
 
 About
