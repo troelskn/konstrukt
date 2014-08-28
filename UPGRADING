@@ -115,7 +115,7 @@ Other types of responses, such as `k_MovedPermanently`, `k_SeeOther` and `k_Temp
 
 Note that you should still throw meta-responses, such as `k_NotAuthorized`, `k_Forbidden`, `k_PageNotFound`, `k_MethodNotAllowed`, `k_NotImplemented` and `k_NotAcceptable`. These work exactly as they've done prior.
 
-The un-specific `k_HttpResponse` is a bit of a left over now - You should use a subclass that matches the content-type. If no such type exists, please request that it be added to the library, or if it's very specific, just create a class for it your self. The usage of `k_HttpResponse` is deprecated and will probably be removed in the next version.
+The un-specific `k_HttpResponse` is a bit of a left over now - You should use a subclass that matches the content-type. If no such type exists, please request that it be added to the library, or if it's very specific, just create a class for it your self.
 
 ###Subtype syntax
 
