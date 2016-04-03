@@ -33,4 +33,3 @@ if (is_file(dirname(__FILE__) . '/local.inc.php')) {
 } else {
   require_once dirname(__FILE__) . '/development.inc.php';
 }
-

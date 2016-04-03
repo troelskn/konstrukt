@@ -2,6 +2,8 @@
 error_reporting(E_ALL | E_STRICT);
 set_include_path(dirname(__FILE__) . PATH_SEPARATOR . dirname(__FILE__) . '/../lib/' . PATH_SEPARATOR . get_include_path());
 
+require_once dirname(__FILE__) . '/../vendor/autoload.php';
+
 // You need to have simpletest in your include_path
 require_once 'simpletest/unit_tester.php';
 require_once 'simpletest/mock_objects.php';
