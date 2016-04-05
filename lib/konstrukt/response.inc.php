@@ -14,7 +14,6 @@ $GLOBALS['konstrukt_content_types'] = array(
   'text/xml' => 'xml',
   'text/plain' => 'text',
   'text/csv' => 'csv',
-  'text/x-vcard' => 'vcard',
   'application/atom+xml' => 'atom',
   'application/calendar+xml' => 'xcal',
   'application/rdf+xml' => 'rdf',
