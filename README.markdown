@@ -30,12 +30,22 @@ Getting Started
 
 You can read the documentation on [konstrukt.dk](http://konstrukt.dk)
 
-###Installing through PEAR
+###Installing through Composer
 
-The easiest way to install Konstrukt, is through PEAR. In a console, type the following:
+The easiest way to install Konstrukt, is through Composer. Add the following to your `composer.json`:
 
-    sudo pear channel-discover pearhub.org
-    sudo pear install pearhub/konstrukt
+    {
+      "repositories": [
+        {
+          "type": "git",
+          "url": "https://github.com/troelskn/konstrukt.git"
+        }
+      ],
+      "minimum-stability": "dev",
+      "require": {
+        "troelskn/konstrukt": "*"
+      }
+    }
 
 ###Creating a new project
 
