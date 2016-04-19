@@ -16,7 +16,8 @@
     ],
     "license": "GPL-2.0+",
     "require": {
-        "php": ">=5.0.0"
+        "php": ">=5.0.0",
+        "simpletest/simpletest": "1.1.*"
     },
     "repositories": [
         {
@@ -26,13 +27,17 @@
     ],
     "minimum-stability": "dev",
     "require-dev" : {
-        "simpletest/simpletest": "1.1.*",
         "squizlabs/php_codesniffer": "2.*",
         "troelskn/bucket": "*"
     },
     "autoload": {
         "files": [
-            "lib/konstrukt/konstrukt.inc.php"
+            "lib/konstrukt/konstrukt.inc.php",
+            "lib/konstrukt/adapter.inc.php",
+            "lib/konstrukt/charset.inc.php",
+            "lib/konstrukt/response.inc.php",
+            "lib/konstrukt/logging.inc.php",
+            "lib/konstrukt/template.inc.php"
         ]
     }
 }

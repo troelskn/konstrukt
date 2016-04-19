@@ -1,6 +1,6 @@
 <?php
 
-  /*
+/*
 notes on charsets
 -----------------
 

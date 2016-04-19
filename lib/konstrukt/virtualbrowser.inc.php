@@ -1,6 +1,4 @@
 <?php
-require_once 'konstrukt/konstrukt.inc.php';
-require_once 'simpletest/web_tester.php';
 
 class k_VirtualSimpleBrowser extends SimpleBrowser {
   protected $root_class_name;

@@ -1,5 +1,4 @@
 <?php
-require_once 'konstrukt/charset.inc.php';
 
 /**
  * Mappings between content-types and handler names. If you need to support exotic content-types, you can add to this array.
